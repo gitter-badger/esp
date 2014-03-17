@@ -112,10 +112,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ClInclude Include="$(IncDir)\bitos.h" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ClInclude Include="$(IncDir)\edi.h" />
   </ItemGroup>
 
@@ -129,13 +125,12 @@
 
   <ItemDefinitionGroup>
   <Link>
-    <AdditionalDependencies>libappweb.lib;libhttp.lib;libmpr.lib;libpcre.lib;libsql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    <AdditionalDependencies>libappweb.lib;libhttp.lib;libmpr.lib;libpcre.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <AdditionalLibraryDirectories>$(OutDir);$(Cfg)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
   </Link>
 
   <CustomBuildStep>
     <Command>cd ..\..\src
-copy /Y bitos.h $(IncDir)
 copy /Y edi.h $(IncDir)
 copy /Y esp.h $(IncDir)
 copy /Y mdb.h $(IncDir)
