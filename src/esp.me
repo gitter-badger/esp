@@ -1,0 +1,83 @@
+/*
+    esp.me -- MakeMe for Embedded Server Pages
+ */
+
+Me.load({
+    targets: {
+        'esp.h': {
+            type: 'header',
+            headers: [ '*.h' ],
+        },
+
+        libmod_esp: {
+            type: 'lib',
+            depends: [ 'libappweb', 'sqlite' ],
+            sources: [ '*.c' ],
+            headers: [ '*.h' ],
+            exclude: /esp\.c/,
+        },
+
+        espcmd: {
+            path: '${BIN}/esp${EXE}',
+            type: 'exe',
+            depends: [ 'libappweb', 'sqlite', 'libmod_esp' ],
+            sources: [ '*.c' ]
+            platforms: [ 'local' ],
+        },
+
+        'esp.conf': {
+            type: 'file',
+            files: [ 'esp.conf' ],
+        },
+
+        'esp-paks': {
+            path: '${OUT}/paks/',
+            home: '${TOP}/src/paks',
+            files: [ '**' ],
+            platforms: [ 'local' ],
+            'generate-capture': true,
+            build: `
+                trace('Copy', me.dir.out.join('paks'))
+                for each (pak in Path('.').files('esp-*')) {
+                    let version = pak.join('package.json').readJSON().version || '0.0.0'
+                    makeDir(OUT.join('paks', pak, version))
+                    for each (path in pak.files('**')) {
+                        let stem = path.components.slice(1).join(path.separator)
+                        let dest = OUT.join('paks', pak, version, stem)
+                        if (path.isDir) {
+                            makeDir(dest)
+                        } else {
+                            copyFile(path, dest)
+                        }
+                    }
+                }
+            `
+        },
+
+        pakcss: {
+            action: `
+                strace('Run', 'recess -compile export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.less')
+                let result = Cmd.run('recess -compile export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.less')
+                Path('export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.css').write(result)
+
+                strace('Run', 'recess -compile export/esp-html-mvc/templates/esp-html-mvc/client/css/all.less')
+                let result = Cmd.run('recess -compile export/esp-html-mvc/templates/esp-html-mvc/client/css/all.less')
+                Path('export/esp-html-mvc/templates/esp-html-mvc/client/css/all.css').write(result)
+            `
+        },
+
+        'esp-configure': {
+            scripts: {
+                postconfig: `
+                    if (me.platform.os == 'vxworks') {
+                        let evars = []
+                        for (let [key,value] in me.env) {
+                            evars.push('EspEnv ' + key + ' \"' + value + '\"\n')
+                        }
+                        me.dir.lib.join('esp-' + me.platform.os + '.conf').write(evars.join())
+                    }
+                `,
+            },
+        },
+    },
+})

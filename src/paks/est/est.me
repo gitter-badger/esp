@@ -1,0 +1,33 @@
+/*
+    est.me -- MakeMe file for Embedded Secure Transport
+ */
+
+Me.load({
+    probe: {
+        est: {
+            description: 'Embedded Security Transport Library'
+            depends:    [ 'libest' ],
+            extensions: [ 'ssl' ],
+            conflicts:  [ 'matrixssl', 'openssl', 'nanossl' ],
+        },
+    },
+
+    targets: {
+        libest: {
+            type: 'lib',
+            headers: [ '*.h' ],
+            sources: [ 'estLib.c' ],
+            '-compiler': [
+                '-Wall',
+                '-Wshorten-64-to-32',
+            ],
+            extensions: [ 'est' ],
+        },
+
+        'ca-crt': {
+            type: 'file',                                                                                  
+            files: [ 'ca.crt' ],                                                                       
+            path: '${BIN}/ca.crt',                                                                    
+        }, 
+	},
+})

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>ESP The C-Language Web Framework</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel='stylesheet/less' type='text/css' href='css/all.less' />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-default navbar-fixed-top navbar-inverse xnavbar-static-top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><i class="glyphicon glyphicon-eye-open"></i> ESP</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="">Download</a></li>
+                    <li><a href="">Documentation</a></li>
+                    <li><a href="">License</a></li>
+                    <li><a href="">Support</a></li>
+                    <li><a href="">Blog</a></li>
+                    <li><a href="">GitHub</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="jumbotron">
+            <div class="banner">
+                <strong>ESP</strong>
+            </div>
+            <div class="minitext">A JavaScript library for building user interfaces</div>
+            <div class="buttons">
+                <a href="" class="button">Get Started</a>
+                <a href="" class="button">Download</a>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <nav class="sidebar nav-collapse col-sm-2" xng-show="showNav">
+            <ul class="nav nav-tabs nav-stacked">
+                <esp-menu href="/" value="Dash" icon="fa fa-sitemap"></esp-menu>
+                <esp-menu href="/dash/products" value="Products" icon="glyphicon glyphicon-th"></esp-menu>
+                <!--
+                <esp-menu href="/dash/perf.html" value="Performance" icon="fa fa-tachometer"></esp-menu>
+                fa-bug
+                fa-fire
+                -->
+                <esp-menu href="/missing/list" value="Missing" icon="glyphicon glyphicon-flash"></esp-menu>
+                <esp-menu href="/watch/list" value="Watch List" icon="glyphicon glyphicon-eye-open"></esp-menu>
+
+                <esp-menu href="/event/list" value="Events" icon="glyphicon glyphicon-list"></esp-menu>
+                <esp-menu xng-show="Esp.can('edit')" href="/setting" value="Settings" icon="glyphicon glyphicon-cog"></esp-menu>
+                <esp-menu xng-show="Esp.can('edit')" href="/user/list" value="Users" icon="glyphicon glyphicon-user"></esp-menu>
+            </ul>
+        </nav>
+        <section class="content col-sm-10" id="content">
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        <p>Some content</p>
+        </section>
+    </main>
+
+    <footer id="author">
+        <span class="pull-right">Powered by ESP &mdash; &copy; Embedthis Software 2013</span>
+    </footer>
+
+    <script src='paks/html5shiv/html5shiv.js' type='text/javascript'></script>
+    <script src='paks/less/less.js' type='text/javascript'></script>
+</body>
+</html>

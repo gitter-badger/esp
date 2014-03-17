@@ -1,0 +1,132 @@
+/*
+    manifest.me - MakeMe Manifest for ESP
+ */
+
+Me.load({
+    /*
+        Package manifest instructions
+
+        The sets used are: binary, service, test, doc, dev, package, source
+     */
+    manifest: {
+        home: me.dir.src,
+        packages:   {
+            install: {
+                inherit:    'package-manifest',
+                prefixes:   [ 'root', 'app', 'vapp', 'bin', 'man'],
+                sets:       [ 'core', 'libs', 'doc' ],
+                platforms:  [ 'windows', 'unix' ]
+            },
+            binary: {
+                inherit:    'package-manifest',
+                prefixes:   [ 'root', 'app', 'vapp', 'bin', 'man'],
+                formats:    [ 'native', 'tar' ],
+                sets:       [ 'core', 'libs', 'doc', 'package' ],
+                platforms:  [ 'freebsd', 'linux', 'windows', 'macosx' ]
+            },
+            source: {
+                inherit:    'package-manifest',
+                prefixes:   [ 'root', 'src'],
+                formats:    [ 'tar' ],
+                sets:       [ 'source' ],
+            },
+            pak: {
+                inherit:    'package-manifest',
+                prefixes:   [ 'src'],
+                formats:    [ 'tar' ],
+                sets:       [ 'pak' ],
+            },
+        },
+
+        files: [ 
+            /* Binary Set */
+            {   from:   '${BIN}/esp${EXE}',
+                to:     '${abin}/',
+                linkin: '${bin}',
+                set:    'core',
+
+            },{ from: [
+                    '${BIN}/libappweb${SHOBJ}',
+                    '${BIN}/libest${SHOBJ}',
+                    '${BIN}/libhttp${SHOBJ}',
+                    '${BIN}/libmpr${SHOBJ}',
+                    '${BIN}/libmprssl${SHOBJ}',
+                    '${BIN}/libpcre${SHOBJ}',
+                ],
+                to:     '${abin}/',
+                set:    'libs',
+                enable: '!me.settings.static',
+
+            },{ from: [
+                    '${BIN}/ca.crt',
+                ],
+                to:     '${abin}/',
+                set:    'core',
+
+            },{ from:   'doc/man/esp.1',
+                to:     '${adoc}/man/man1/',
+                set:    'doc',
+                linkin: '${man}/man1',
+                enable: "me.platform.like == 'unix'",
+
+            /* Source Set */
+            },{ from:   [ '*.md' ],
+                to:     '${src}/',
+                fold:   true,
+                expand: true,
+                set:    'source',
+
+            },{ from:   [ 'configure' ],
+                to:     '${src}/',
+                permissions: 0755,     
+                set:    'source',
+
+            },{ from:   [ 'Makefile', 'make.bat', 'main.me', 'package.json', 'src', 'doc', 'projects', 'package' ],
+                to:     '${src}/',
+                set:    'source',
+
+            /*
+                Pak set
+             */
+            },{
+                from:       'package/esp.me',
+                to:         '${src}/esp.me',
+                set:        'pak',
+
+            },{
+                from:       [
+                    'src/edi.h',
+                    'src/mdb.h',
+                    'src/esp.h',
+                ],
+                to:         '${src}/esp.h',
+                cat:        true, 
+                filter:     /^#inc.*edi.*$|^#inc.*mdb.*$/mg,
+                header:     '#include \"me.h\"\n\n#if ME_EXT_ESP\n\n#include \"osdep.h\"\n#include \"appweb.h\"\n',
+                footer:     '#endif /* ME_EXT_ESP */',
+                title:      '${settings.title} Library Source',
+                set:        'pak',
+
+            },{
+                from:       ['src/*.c'], 
+                to:         '${src}/espLib.c',
+                cat:        true,                                                                                         
+                filter:     /^#inc.*appweb.*$|^#inc.*esp.*$|^#inc.*edi.*$|^#inc.*mdb.*$|^#inc.*customize.*$/mg,
+                exclude:    /esp.c$|\/paks\//,
+                header:     '#include \"esp.h\"\n\n#if ME_EXT_ESP',
+                footer:     '#endif /* ME_EXT_ESP */',
+                title:      '${settings.title} Library Source',
+                set:        'pak',
+
+            },{
+                from:       'src/esp.c', 
+                to:         '${src}/esp.c',
+                set:        'pak',
+            },{
+                from:       'src/esp.conf', 
+                to:         '${src}/esp.conf',
+                set:        'pak',
+            },
+        ],
+    },
+})

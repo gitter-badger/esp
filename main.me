@@ -1,0 +1,90 @@
+/*
+    main.me -- MakeMe file for ESP
+ */
+
+Me.load({
+    blend: [
+        "src/paks/*/*.me",
+        "src/esp.me",
+        "doc/doc.me",
+    ],
+
+    customize: [
+        /* 
+            The optional custom.me file is loaded after main.me is fully processed. It can
+            thus override any setting. Feel free to create and customize. 
+         */
+        'custom.me',
+    ],
+
+    settings: {
+        makeme: '0.8.0',
+
+        /*
+            Installation prefix set
+         */
+        prefixes: 'package-prefixes',
+        manifest: 'package/manifest.me',
+
+        platforms: [ 'local' ],
+        static: false,
+        tune: 'size',
+
+        extensions: {
+            require:  [ 'compiler', 'appweb', 'osdep', 'http', 'mpr', 'pcre'],
+            discover: [ 'doxygen', 'dsi', 'gzip', 'htmlmin', 'man', 'man2html', 'mdb', 'pak', 'pmaker', 'recess', 
+                        'sqlite', 'ssl', 'uglifyjs', 'utest', 'zip' ],
+            omit:     [ 'cgi', 'dir', 'matrixssl', 'openssl' ],
+        },
+        
+        /*
+            EST SSL stack configuration
+         */
+        est: {
+            camellia: false,
+            padlock: false,
+            sslClient: false,
+            des: false,
+            testCerts: false,
+            xtea: false,
+            romTables: false,
+            genPrime: false,
+        },
+
+        http: {
+            /* Use PAM (Plugable Authentication Module) to store passwords */
+            pam: false,
+            webSockets: true,
+        },
+                                                                                                           
+        mpr: {                                                                                             
+            /*                                                                                             
+                Enable logging via mprLog to the log file. Error messages are always enabled.              
+                The default is to enable logging for both debug and release builds.                        
+             */                                                                                            
+            logging: true,                                                                                 
+        },
+
+        tune: 'speed',
+    },
+
+    targets: {
+        projects: {
+            action: "
+                genProjects('', 'default', ['freebsd-x86', 'linux-x86', 'macosx-x64', 'windows-x86'])
+            ",
+        },
+    },
+
+    probe: {
+        mdb: {
+            description: 'MDB Database',
+            path: function (ext) me.dir.src.join('src/mdb.c'),
+        },
+    },
+
+    usage: {
+        // 'mpr.logging':  'Enable application logging (true|false)',
+        // 'mpr.tracing':  'Enable debug tracing (true|false)',                                               
+    },
+})

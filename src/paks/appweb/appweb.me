@@ -1,0 +1,21 @@
+/*
+    appweb.me -- MakeMe File to build the Appweb library when embedded in another product
+ */
+
+Me.load({
+    probe: {
+        appweb: {
+            description: 'Appweb Web Server',
+            depends: [ 'libappweb' ],
+        },
+    },
+    targets: {
+        libappweb: {
+            type: 'lib',
+            sources: [ 'appwebLib.c' ],
+            headers: [ '*.h' ],
+            depends: [ 'libhttp', 'libpcre', 'libmpr' ],
+            extensions: [ 'appweb' ],
+        },
+    },
+})
