@@ -9,7 +9,7 @@
 
 #include "appweb.h"
 
-#if ME_EXT_APPWEB
+#if ME_COM_APPWEB
 
 /************************************************************************/
 /*
@@ -1429,7 +1429,7 @@ static int listenDirective(MaState *state, cchar *key, cchar *value)
  */
 static int listenSecureDirective(MaState *state, cchar *key, cchar *value)
 {
-#if ME_EXT_SSL
+#if ME_COM_SSL
     HttpEndpoint    *endpoint;
     char            *ip;
     int             port;
@@ -2769,27 +2769,27 @@ static bool conditionalDefinition(MaState *state, cchar *key)
     } else if (state->appweb->skipModules) {
         /* ESP utility needs to be able to load mod_esp */
         if (sstarts(mprGetAppName(), "esp") && scaselessmatch(key, "ESP_MODULE")) {
-            result = ME_EXT_ESP;
+            result = ME_COM_ESP;
         }
 
     } else {
         if (scaselessmatch(key, "CGI_MODULE")) {
-            result = ME_EXT_CGI;
+            result = ME_COM_CGI;
 
         } else if (scaselessmatch(key, "DIR_MODULE")) {
-            result = ME_EXT_DIR;
+            result = ME_COM_DIR;
 
         } else if (scaselessmatch(key, "EJS_MODULE")) {
-            result = ME_EXT_EJS;
+            result = ME_COM_EJS;
 
         } else if (scaselessmatch(key, "ESP_MODULE")) {
-            result = ME_EXT_ESP;
+            result = ME_COM_ESP;
 
         } else if (scaselessmatch(key, "PHP_MODULE")) {
-            result = ME_EXT_PHP;
+            result = ME_COM_PHP;
 
         } else if (scaselessmatch(key, "SSL_MODULE")) {
-            result = ME_EXT_SSL;
+            result = ME_COM_SSL;
         }
     }
     return (not) ? !result : result;
@@ -3538,7 +3538,7 @@ PUBLIC int maRunWebClient(cchar *method, cchar *uri, cchar *data, char **respons
 
 
 
-#if ME_EXT_DIR
+#if ME_COM_DIR
 /********************************** Defines ***********************************/
 /*
     Handler configuration
@@ -4243,7 +4243,7 @@ PUBLIC int maOpenDirHandler(Http *http)
     maAddDirective(appweb, "Options", optionsDirective);
     return 0;
 }
-#endif /* ME_EXT_DIR */
+#endif /* ME_COM_DIR */
 
 
 /*
@@ -4744,7 +4744,7 @@ static int manageDir(HttpConn *conn)
             }
         }
     }
-#if ME_EXT_DIR
+#if ME_COM_DIR
     /*
         Directory Listing. If a directory, test if a directory listing should be rendered. If so, delegate to the
         dirHandler. Cannot use the sendFile handler and must use the netConnector.
@@ -4996,7 +4996,7 @@ PUBLIC void maLogRequest(HttpConn *conn)
 
 
 
-#if ME_EXT_CGI
+#if ME_COM_CGI
 /************************************ Locals ***********************************/
 
 typedef struct Cgi {
@@ -6049,7 +6049,7 @@ PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
     return 0;
 }
 
-#endif /* ME_EXT_CGI */
+#endif /* ME_COM_CGI */
 
 /*
     @copy   default
@@ -6086,7 +6086,7 @@ PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
 
 
 
-#if ME_EXT_EJS
+#if ME_COM_EJS
     #include    "ejs.h"
 
 /************************************* Data ***********************************/
@@ -6238,14 +6238,14 @@ PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
     maAddDirective(appweb, "EjsWorkers", ejsWorkersDirective);
     return 0;
 }
-#else /* ME_EXT_EJS */
+#else /* ME_COM_EJS */
 
 PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
 {
     mprNop(0);
     return 0;
 }
-#endif /* ME_EXT_EJS */
+#endif /* ME_COM_EJS */
 
 /*
     @copy   default
@@ -6283,7 +6283,7 @@ PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
 
 
 
-#if ME_EXT_PHP
+#if ME_COM_PHP
 
 #if ME_WIN_LIKE
     /*
@@ -6757,8 +6757,8 @@ static int initializePhp(Http *http)
 
     mprTrace(2, "php: initialize php library");
     appweb = httpGetContext(http);
-#if defined(ME_EXT_PHP_INI)
-    phpSapiBlock.php_ini_path_override = ME_EXT_PHP_INI;
+#if defined(ME_COM_PHP_INI)
+    phpSapiBlock.php_ini_path_override = ME_COM_PHP_INI;
 #else
     phpSapiBlock.php_ini_path_override = appweb->defaultServer->defaultHost->defaultRoute->home;
 #endif
@@ -6832,14 +6832,14 @@ PUBLIC int maPhpHandlerInit(Http *http, MprModule *module)
     return 0;
 }
 
-#else /* ME_EXT_PHP */
+#else /* ME_COM_PHP */
 
 PUBLIC int maPhpHandlerInit(Http *http, MprModule *module)
 {
     mprNop(0);
     return 0;
 }
-#endif /* ME_EXT_PHP */
+#endif /* ME_COM_PHP */
 
 /*
     @copy   default
@@ -6876,7 +6876,7 @@ PUBLIC int maPhpHandlerInit(Http *http, MprModule *module)
 
 
 
-#if ME_EXT_SSL
+#if ME_COM_SSL
 /*********************************** Code *************************************/
 
 static void checkSsl(MaState *state)
@@ -7146,7 +7146,7 @@ PUBLIC int maSslModuleInit(Http *http, MprModule *mp)
 {
     return 0;
 }
-#endif /* ME_EXT_SSL */
+#endif /* ME_COM_SSL */
 
 /*
     @copy   default
@@ -22259,7 +22259,7 @@ PUBLIC MaAppweb *maCreateAppweb()
     /* 
        Open the builtin handlers 
      */
-#if ME_EXT_DIR
+#if ME_COM_DIR
     maOpenDirHandler(http);
 #endif
     maOpenFileHandler(http);
@@ -22427,7 +22427,7 @@ PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, c
         route = mprGetFirstItem(host->routes);
         assert(route);
 
-#if ME_EXT_CGI
+#if ME_COM_CGI
         maLoadModule(appweb, "cgiHandler", "libmod_cgi");
         if (httpLookupStage(http, "cgiHandler")) {
             httpAddRouteHandler(route, "cgiHandler", "cgi cgi-nph bat cmd pl py");
@@ -22444,19 +22444,19 @@ PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, c
             }
         }
 #endif
-#if ME_EXT_ESP
+#if ME_COM_ESP
         maLoadModule(appweb, "espHandler", "libmod_esp");
         if (httpLookupStage(http, "espHandler")) {
             httpAddRouteHandler(route, "espHandler", "esp");
         }
 #endif
-#if ME_EXT_EJS
+#if ME_COM_EJS
         maLoadModule(appweb, "ejsHandler", "libmod_ejs");
         if (httpLookupStage(http, "ejsHandler")) {
             httpAddRouteHandler(route, "ejsHandler", "ejs");
         }
 #endif
-#if ME_EXT_PHP
+#if ME_COM_PHP
         maLoadModule(appweb, "phpHandler", "libmod_php");
         if (httpLookupStage(http, "phpHandler")) {
             httpAddRouteHandler(route, "phpHandler", "php");
@@ -22865,4 +22865,4 @@ PUBLIC HttpAuth *maGetDefaultAuth(MaServer *server)
 
 
 PUBLIC void appwebStaticInitialize() {}
-#endif /* ME_EXT_APPWEB */
+#endif /* ME_COM_APPWEB */

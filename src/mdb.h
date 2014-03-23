@@ -12,7 +12,7 @@
 #include    "http.h"
 #include    "edi.h"
 
-#if ME_EXT_MDB
+#if ME_COM_MDB
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,7 +100,7 @@ typedef struct Mdb {
 } /* extern C */
 #endif
 
-#endif /* ME_EXT_MDB */
+#endif /* ME_COM_MDB */
 #endif /* _h_MDB */
 
 /*

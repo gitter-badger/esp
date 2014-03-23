@@ -1023,11 +1023,11 @@ PUBLIC EdiGrid *ediPivotGrid(EdiGrid *grid, int flags);
   */
 PUBLIC EdiGrid *ediSortGrid(EdiGrid *grid, cchar *sortColumn, int sortOrder);
 
-#if ME_EXT_MDB
+#if ME_COM_MDB
 PUBLIC void mdbInit();
 #endif
 
-#if ME_EXT_SQLITE
+#if ME_COM_SQLITE
 PUBLIC void sdbInit();
 #endif
 

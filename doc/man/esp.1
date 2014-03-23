@@ -28,6 +28,7 @@ commands ...
  esp clean
  esp compile
  esp compile [pathFilters...]
+ esp debug|release
  esp generate app name [packs]
  esp generate controller name [action [, action] ...]
  esp generate migration description model [field:type [, field:type] ...]
@@ -208,6 +209,10 @@ in the Appweb source code built for that platform.
 .RS 5
 \fbesp -platform /home/dev/linux-arm-debug compile
 .RE
+
+.SH DEBUG or RELEASE
+The \fBesp debug\fR command will modify the "esp.mode" property and set it to the "debug" value.
+The \fBesp release\fR command will set the esp mode to "release".
 
 .SH RUNNING
 .PP

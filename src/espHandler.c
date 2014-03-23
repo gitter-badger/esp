@@ -105,6 +105,7 @@ static void closeEsp(HttpQueue *q)
 }
 
 
+#if !ME_STATIC
 /*
     This is called when unloading a view or controller module
     All of ESP must be quiesced.
@@ -139,6 +140,7 @@ static bool espUnloadModule(cchar *module, MprTicks timeout)
     }
     return 0;
 }
+#endif
 
 
 PUBLIC void espClearFlash(HttpConn *conn)
@@ -1771,11 +1773,11 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
     if ((esp->ediService = ediCreateService()) == 0) {
         return 0;
     }
-#if ME_EXT_MDB
+#if ME_COM_MDB
     /* Memory database */
     mdbInit();
 #endif
-#if ME_EXT_SQLITE
+#if ME_COM_SQLITE
     sdbInit();
 #endif
     return 0;

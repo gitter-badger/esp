@@ -102,8 +102,8 @@ Me.load({
                 to:         '${src}/esp.h',
                 cat:        true, 
                 filter:     /^#inc.*edi.*$|^#inc.*mdb.*$/mg,
-                header:     '#include \"me.h\"\n\n#if ME_EXT_ESP\n\n#include \"osdep.h\"\n#include \"appweb.h\"\n',
-                footer:     '#endif /* ME_EXT_ESP */',
+                header:     '#include \"me.h\"\n\n#if ME_COM_ESP\n\n#include \"osdep.h\"\n#include \"appweb.h\"\n',
+                footer:     '#endif /* ME_COM_ESP */',
                 title:      '${settings.title} Library Source',
                 set:        'pak',
 
@@ -113,8 +113,8 @@ Me.load({
                 cat:        true,                                                                                         
                 filter:     /^#inc.*appweb.*$|^#inc.*esp.*$|^#inc.*edi.*$|^#inc.*mdb.*$|^#inc.*customize.*$/mg,
                 exclude:    /esp.c$|\/paks\//,
-                header:     '#include \"esp.h\"\n\n#if ME_EXT_ESP',
-                footer:     '#endif /* ME_EXT_ESP */',
+                header:     '#include \"esp.h\"\n\n#if ME_COM_ESP',
+                footer:     '#endif /* ME_COM_ESP */',
                 title:      '${settings.title} Library Source',
                 set:        'pak',
 

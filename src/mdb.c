@@ -13,7 +13,7 @@
 #include    "mdb.h"
 #include    "pcre.h"
 
-#if ME_EXT_MDB
+#if ME_COM_MDB
 /************************************* Local **********************************/
 
 #define MDB_LOAD_BEGIN   1      /* Initial state */
@@ -1537,7 +1537,7 @@ static int parseOperation(cchar *operation)
 /* To prevent ar/ranlib warnings */
 PUBLIC void mdbDummy() {}
 
-#endif /* ME_EXT_MDB */
+#endif /* ME_COM_MDB */
 /*
     @copy   default
 

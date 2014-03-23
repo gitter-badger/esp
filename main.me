@@ -9,6 +9,12 @@ Me.load({
         "doc/doc.me",
     ],
 
+    configure: {
+        requires:  [ 'compiler', 'appweb', 'osdep', 'http', 'mpr', 'pcre'],
+        discovers: [ 'mdb', 'sqlite', 'ssl', ],
+        extras:    [ 'cgi', 'dir' ],
+    },
+
     customize: [
         /* 
             The optional custom.me file is loaded after main.me is fully processed. It can
@@ -30,12 +36,6 @@ Me.load({
         static: false,
         tune: 'size',
 
-        extensions: {
-            require:  [ 'compiler', 'appweb', 'osdep', 'http', 'mpr', 'pcre'],
-            discover: [ 'doxygen', 'dsi', 'gzip', 'htmlmin', 'man', 'man2html', 'mdb', 'pak', 'pmaker', 'recess', 
-                        'sqlite', 'ssl', 'uglifyjs', 'utest', 'zip' ],
-            omit:     [ 'cgi', 'dir', 'matrixssl', 'openssl' ],
-        },
         
         /*
             EST SSL stack configuration

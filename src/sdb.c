@@ -9,7 +9,7 @@
 #include    "http.h"
 #include    "edi.h"
 
-#if ME_EXT_SQLITE
+#if ME_COM_SQLITE
  #include    "sqlite3.h"
 
 #ifndef ME_MAX_SQLITE_MEM
@@ -1034,7 +1034,7 @@ static void initSqlite()
 #else
 /* To prevent ar/ranlib warnings */
 PUBLIC void sdbDummy() {}
-#endif /* ME_EXT_SQLITE */
+#endif /* ME_COM_SQLITE */
 
 /*
     @copy   default
