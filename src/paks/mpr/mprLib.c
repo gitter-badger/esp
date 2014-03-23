@@ -1701,9 +1701,9 @@ static void printGCStats()
 {
     MprRegion   *region;
     MprMem      *mp;
-    size_t      freeBytes, activeBytes, eternalBytes, regionBytes, available;
+    uint64      freeBytes, activeBytes, eternalBytes, regionBytes, available;
     char        *tag;
-    int         regions, freeCount, activeCount, eternalCount, regionCount, empty;
+    int         regions, freeCount, activeCount, eternalCount, regionCount;
 
     printf("\nRegion Stats\n");
     regions = 0;
@@ -1713,7 +1713,6 @@ static void printGCStats()
     for (region = heap->regions; region; region = region->next, regions++) {
         regionCount = 0;
         regionBytes = 0;
-        empty = 1;
 
         for (mp = region->start; mp < region->end; mp = GET_NEXT(mp)) {
             assert(mp->size > 0);
@@ -1726,14 +1725,12 @@ static void printGCStats()
                 eternalCount++;
                 regionCount++;
                 regionBytes += mp->size;
-                empty = 0;
 
             } else {
                 activeBytes += mp->size;
                 activeCount++;
                 regionCount++;
                 regionBytes += mp->size;
-                empty = 0;
             }
         }
         available = region->size - regionBytes - MPR_ALLOC_ALIGN(sizeof(MprRegion));

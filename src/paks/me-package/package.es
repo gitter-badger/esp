@@ -324,7 +324,6 @@ function cachePackage(package, prefixes, fmt) {
     let home = App.dir
     try {
         trace('Cache', me.settings.title + ' ' + version)
-        // UNUSED package.copy(base.join('bower.json'))
         App.chdir(staging)
         run('pak -f cache ' + me.platform.vname)
     } finally {
@@ -489,7 +488,6 @@ function makeSimplePackage(package, prefixes, fmt) {
     if (fmt == 'pak') {
         let base = prefixes.staging.join(me.platform.vname)
         let package = base.join('package.json')
-        // UNUSED package.copy(base.join('bower.json'))
     }
     let name = me.dir.rel.join(me.platform.vname + '-' + fmt + '.tar')
     let zname = name.replaceExt('tgz')
