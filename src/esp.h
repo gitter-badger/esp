@@ -35,7 +35,7 @@ extern "C" {
     #define ME_ESP_RELOAD_TIMEOUT (5 * 1000)           /**< Timeout for reloading esp modules */
 #endif
 #ifndef ME_ESP_PAKS
-    #define ME_ESP_PAKS    "paks"                      /**< Default Paks directory name*/
+    #define ME_ESP_PAKS    "esp"                       /**< Default Paks directory name */
 #endif
 #ifndef ME_ESP_PACKAGE
     #define ME_ESP_PACKAGE "package.json"              /**< Pak file name */
