@@ -126,7 +126,19 @@ Me.load({
                 from:       'src/esp.conf', 
                 to:         '${src}/esp.conf',
                 set:        'pak',
-            },
+            },{
+                from:   [
+                             'doc/api/espBare.html', 'doc/api/esp*.tags', 'doc/api/esp.dtags',
+                             'doc/api/ediBare.html', 'doc/api/edi*.tags', 'doc/api/edi.dtags',
+                ],
+                to:         '${src}/doc/api/',
+                set:        'pak',
+            },{
+                from:       'doc/man/*.1',
+                exclude:    /appman|appweb.1|appwebMonitor|makerom|manager|http.1|authpass.1/,
+                to:         '${src}/doc/man/',
+                set:        'pak',
+            }
         ],
     },
 })
