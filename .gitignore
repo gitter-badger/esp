@@ -17,4 +17,4 @@
 *.out
 *.app
 macosx-*
-start.me
+/start.me
