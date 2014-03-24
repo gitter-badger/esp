@@ -56,7 +56,12 @@ extern "C" {
 #define httpAddRouteSet espAddRouteSet
 #endif
 
+#ifndef ESP_VERSION
+    #define ESP_VERSION ME_VERSION
+#endif
+
 /********************************** Defines ***********************************/
+
 /**
     Procedure callback
     @ingroup Esp
