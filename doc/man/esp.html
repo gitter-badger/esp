@@ -15,6 +15,7 @@ ESP(1)                           User Commands                          ESP(1)
         esp clean
         esp compile
         esp compile [pathFilters...]
+        esp debug|release
         esp generate app name [packs]
         esp generate controller name [action [, action] ...]
         esp  generate  migration  description model [field:type [, field:type]
@@ -192,6 +193,11 @@ ESP(1)                           User Commands                          ESP(1)
        the Appweb source code built for that platform.
 
             <B>esp -platform /home/dev/linux-arm-debug compile</B>
+
+<B>DEBUG or RELEASE</B>
+       The <B>esp debug </B>command will modify the "esp.mode" property and set it to
+       the "debug" value.  The <B>esp release </B>command will set the  esp  mode  to
+       "release".
 
 <B>RUNNING</B>
        To run your application:

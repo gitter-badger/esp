@@ -3141,7 +3141,7 @@ PUBLIC void espRefresh(HttpConn *conn, cchar *on, cchar *off, cchar *options);
 
 /**
     Render a script link.
-    @param uri Script URI to load. Set to null to get a default set of scripts. See #httpUri for a list of possible
+    @param uri Script URI to load. Set to null to get a default set of scripts. See #httpLink for a list of possible
         URI formats.
     @param conn Http connection object
     @param options Extra options. See \l EspControl \el for a list of the standard options.
@@ -3153,7 +3153,7 @@ PUBLIC void espScript(HttpConn *conn, cchar *uri, cchar *options);
 
 /**
     Render a stylesheet link
-    @param uri Stylesheet URI to load. Set to null to get a default set of stylesheets. See #httpUri for a list of possible
+    @param uri Stylesheet URI to load. Set to null to get a default set of stylesheets. See #httpLink for a list of possible
         URI formats.
     @param conn Http connection object
     @param options Extra options. See \l EspControl \el for a list of the standard options.
@@ -3483,7 +3483,7 @@ PUBLIC void refresh(cchar *on, cchar *off, cchar *options);
 
 /**
     Render a script link
-    @param uri Script URI to load. Set to null to get a default set of scripts. See #httpUri for a list of possible
+    @param uri Script URI to load. Set to null to get a default set of scripts. See #httpLink for a list of possible
         URI formats.
     @param options Extra options. See \l EspControl \el for a list of the standard options.
     @ingroup EspAbbrev
@@ -3495,7 +3495,7 @@ PUBLIC void script(cchar *uri, cchar *options);
 /**
     Render a stylesheet link
     @param uri Stylesheet URI to load. Set to null to get a default set of stylesheets. 
-        See #httpUri for a list of possible URI formats.
+        See #httpLink for a list of possible URI formats.
     @param options Extra options. See \l EspControl \el for a list of the standard options.
     @ingroup EspAbbrev
     @stability Deprecated

@@ -17,6 +17,7 @@ SYNOPSIS
         esp clean
         esp compile
         esp compile [pathFilters...]
+        esp debug|release
         esp generate app name [packs]
         esp generate controller name [action [, action] ...]
         esp  generate  migration  description model [field:type [, field:type]
@@ -201,6 +202,12 @@ CROSS-COMPILING
        the Appweb source code built for that platform.
 
             esp -platform /home/dev/linux-arm-debug compile
+
+
+DEBUG or RELEASE
+       The esp debug command will modify the "esp.mode" property and set it to
+       the "debug" value.  The esp release command will set the  esp  mode  to
+       "release".
 
 
 RUNNING

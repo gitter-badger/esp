@@ -1,12 +1,12 @@
 /*
-    doc.me -- MakeMe file for Appweb documentation 
+    doc.me -- MakeMe file for ESP documentation 
  */
 
 Me.load({
 
     targets: {
         patch: {
-            action: "
+            action: `
                 trace('Patch', 'Patch version string ${settings.version}')
                 let path = Path('product/version.html')
                 let settings = me.settings
@@ -21,17 +21,16 @@ Me.load({
                     settings.title + ' ' + settings.version + '<'))
                 for each (path in Path('.').files('**.html', {exclude: /Bare.html|dsi/})) {
                     vtrace('Patch', path)
-                    run([me.extensions.dsi.path, '-I ', path])
+                    run(['dsi', '-I ', path])
                 }
-            "
+            `
         },
 
         api: {
-            action: "
-                apidoc('api/appweb.dox', '${SRC}/src/appweb.h', 'Appweb', 'api/*.tags')
-                apidoc('api/edi.dox', ['${SRC}/src/esp/edi.h', '${SRC}/src/esp/mdb.h' ], 'EDI', ls('api/*.tags'))
-                apidoc('api/esp.dox', ['${SRC}/src/esp/esp.h'], 'ESP', ls('api/*.tags'))
-                for each (let f: Path in ['api/appweb.html', 'api/http.html', 'api/mpr.html', 'api/esp.html', 'api/edi.html']) {
+            action: `
+                apidoc('api/edi.dox', ['${SRC}/src/edi.h', '${SRC}/src/mdb.h' ], 'EDI', ls('api/*.tags'))
+                apidoc('api/esp.dox', ['${SRC}/src/esp.h'], 'ESP', ls('api/*.tags'))
+                for each (let f: Path in ['api/http.html', 'api/mpr.html', 'api/esp.html', 'api/edi.html']) {
                     trace('Generate', f)
                     apiwrap(f)
                     f.write(f.readString().replace(/mprBare.html/g, 'mpr.html').
@@ -39,11 +38,11 @@ Me.load({
                                            replace(/external=\"mpr.dtags\"/g, '').
                                            replace(/external=\"http.dtags\"/g, ''))
                 }
-            ",
+            `,
         },
 
         'esp-doc': {
-            action: "
+            action: `
                 if (Cmd.locate('ejsc')) {
                     let list = Path('api/esp-angular/masters').files('*.es')
                     run('ejsc --doc '  + list.join(' '))
@@ -56,20 +55,20 @@ Me.load({
                         path.remove()
                     }
                 }
-            ",
+            `,
         },
 
         tidy: {
-            action: "
+            action: `
                 for each (path in Path('.').files('**.html', { exclude: /\\/$|dsi|Base|Bare/ })) {
                     trace('Tidy', path)
                     run('tidy -q -config tidy.conf ' + path)
                 }
-            ",
+            `,
         },
 
         'validate-doc': {
-            action: "
+            action: `
                 let vdir = me.dir.cfg.join('validate')
                 vdir.removeAll()
                 for each (file in Path('.').files('**', { exclude: /\\/$|dsi|Base|Bare/ })) {
@@ -82,14 +81,14 @@ Me.load({
                     }
                 }
                 trace('Prepare', vdir)
-            ",
+            `,
         },
 
         'clean-doc': {
             type: 'clean',
-            action: "
+            action: `
                 rmdir(['../doc/api/html', '../doc/api/xml'])
-            "
+            `
         },
     
     },
