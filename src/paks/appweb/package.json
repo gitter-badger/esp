@@ -39,7 +39,6 @@
     "dependencies": {
         "http": "~5.0",
         "me-dev": "~0.8",
-        "me-doc": "~0.8",
         "me-package": "~0.8",
         "mpr": "~5.0",
         "osdep": "~0.8",
@@ -48,13 +47,14 @@
     "optionalDependencies": {
         "angular": "~1.2",
         "ejs": "~2.3",
-        "esp": "~0.9",
+        "esp": "~5",
         "esp-angular": "*",
         "esp-angular-mvc": "*",
         "esp-html-mvc": "*",
         "esp-legacy-mvc": "*",
         "esp-server": "*",
         "est": "~0.6",
+        "php": "~5.4",
         "sqlite": "~1.0",
         "ssl": "~0.8",
         "zlib": "~1.0"
