@@ -387,9 +387,9 @@ static int addHandlerDirective(MaState *state, cchar *key, cchar *value)
         return MPR_ERR_CANT_CREATE;
     }
     if (smatch(handler, "espHandler") && !espLoaded) {
-        path = "./esp.conf";
+        path = "esp.conf";
         if (!mprPathExists(path, R_OK)) {
-            path = httpMakePath(state->route, state->configDir, "${BIN_DIR}/esp.conf");
+            path = mprJoinPath(mprGetAppDir(), "esp.conf");
         }
         if (mprPathExists(path, R_OK)) {
             espLoaded = 1;
@@ -22253,7 +22253,7 @@ PUBLIC MaAppweb *maCreateAppweb()
     httpSetContext(http, appweb);
     appweb->servers = mprCreateList(-1, MPR_LIST_STABLE);
     appweb->localPlatform = slower(sfmt("%s-%s-%s", ME_OS, ME_CPU, ME_PROFILE));
-    maSetPlatform(NULL, NULL);
+    maSetPlatform(NULL, "bin/appweb" ME_EXE);
     maGetUserGroup(appweb);
     maParseInit(appweb);
     /* 
@@ -22540,15 +22540,15 @@ PUBLIC int maSetPlatform(cchar *platformPath, cchar *probe)
 {
     MaAppweb        *appweb;
     MprDirEntry     *dp;
-    cchar           *platform, *dir, *junk, *exe, *path;
+    cchar           *platform, *dir, *junk, *path;
     int             next, i;
 
     appweb = MPR->appwebService;
+    appweb->platform = appweb->platformDir = 0;
+
     if (!platformPath) {
         platformPath = appweb->localPlatform;
     }
-    appweb->platform = appweb->platformDir = 0;
-    
     platform = mprGetPathBase(platformPath);
 
     if (mprPathExists(mprJoinPath(platformPath, probe), X_OK)) {
@@ -22557,19 +22557,18 @@ PUBLIC int maSetPlatform(cchar *platformPath, cchar *probe)
 
     } else if (smatch(platform, appweb->localPlatform)) {
         /*
-            If running inside an appweb source tree, locate the platform directory 
+            Check probe with current executable
          */
-        exe = mprJoinPath(mprGetAppDir(), probe);
-        if (mprPathExists(exe, R_OK)) {
+        path = mprJoinPath(mprGetPathDir(mprGetAppDir()), probe);
+        if (mprPathExists(path, R_OK)) {
             appweb->platform = appweb->localPlatform;
             appweb->platformDir = mprGetPathParent(mprGetAppDir());
 
         } else {
             /*
-                Check installed appweb
+                Check probe with installed product
              */
-            exe = ME_VAPP_PREFIX "/bin/appweb" ME_EXE;
-            if (mprPathExists(exe, R_OK)) {
+            if (mprPathExists(mprJoinPath(ME_VAPP_PREFIX, probe), R_OK)) {
                 appweb->platform = appweb->localPlatform;
                 appweb->platformDir = sclone(ME_VAPP_PREFIX);
             }
@@ -22586,7 +22585,7 @@ PUBLIC int maSetPlatform(cchar *platformPath, cchar *probe)
             for (ITERATE_ITEMS(mprGetPathFiles(dir, 0), dp, next)) {
                 if (dp->isDir && sstarts(mprGetPathBase(dp->name), platform)) {
                     path = mprJoinPath(dir, dp->name);
-                    if (mprPathExists(mprJoinPath(path, mprJoinPath("bin", probe)), X_OK)) {
+                    if (mprPathExists(mprJoinPath(path, probe), X_OK)) {
                         appweb->platform = mprGetPathBase(dp->name);
                         appweb->platformDir = mprJoinPath(dir, dp->name);
                         break;
@@ -22597,9 +22596,11 @@ PUBLIC int maSetPlatform(cchar *platformPath, cchar *probe)
         }
     }
     if (!appweb->platform) {
+        mprLog(1, "Cannot find platform %s", platformPath);
         return MPR_ERR_CANT_FIND;
     }
     if (maParsePlatform(appweb->platform, &junk, &junk, &junk) < 0) {
+        mprLog(1, "Cannot parse platform %s", appweb->platform);
         return MPR_ERR_BAD_ARGS;
     }
     appweb->platformDir = mprGetAbsPath(appweb->platformDir);
