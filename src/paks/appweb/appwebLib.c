@@ -22402,14 +22402,12 @@ PUBLIC MaServer *maCreateServer(MaAppweb *appweb, cchar *name)
 PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, cchar *documents, cchar *ip, int port)
 {
     MaAppweb        *appweb;
-    Http            *http;
     HttpEndpoint    *endpoint;
     HttpHost        *host;
     HttpRoute       *route;
     char            *path;
 
     appweb = server->appweb;
-    http = appweb->http;
 
     if (configFile) {
         path = mprGetAbsPath(configFile);
@@ -22431,7 +22429,7 @@ PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, c
 
 #if ME_COM_CGI
         maLoadModule(appweb, "cgiHandler", "libmod_cgi");
-        if (httpLookupStage(http, "cgiHandler")) {
+        if (httpLookupStage(appweb->http, "cgiHandler")) {
             httpAddRouteHandler(route, "cgiHandler", "cgi cgi-nph bat cmd pl py");
             /*
                 Add cgi-bin with a route for the /cgi-bin URL prefix.
@@ -22448,19 +22446,19 @@ PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, c
 #endif
 #if ME_COM_ESP
         maLoadModule(appweb, "espHandler", "libmod_esp");
-        if (httpLookupStage(http, "espHandler")) {
+        if (httpLookupStage(appweb->http, "espHandler")) {
             httpAddRouteHandler(route, "espHandler", "esp");
         }
 #endif
 #if ME_COM_EJS
         maLoadModule(appweb, "ejsHandler", "libmod_ejs");
-        if (httpLookupStage(http, "ejsHandler")) {
+        if (httpLookupStage(appweb->http, "ejsHandler")) {
             httpAddRouteHandler(route, "ejsHandler", "ejs");
         }
 #endif
 #if ME_COM_PHP
         maLoadModule(appweb, "phpHandler", "libmod_php");
-        if (httpLookupStage(http, "phpHandler")) {
+        if (httpLookupStage(appweb->http, "phpHandler")) {
             httpAddRouteHandler(route, "phpHandler", "php");
         }
 #endif
