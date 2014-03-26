@@ -18,7 +18,7 @@
 
 <body>
     <div class="top">
-        <a class="logo" href="http://appwebserver.org/">&nbsp;</a>
+        <a class="logo" href="http://embedthis.com/">&nbsp;</a>
         <div class="topRight">
             <div class="search">
                 <div id="cse-search-form"></div>
@@ -47,28 +47,19 @@
                 <li><a href="#compilation">Compilation</a></li>
                 <li><a href="#directives">Directives</a></li>
             </ul>
-<!-- BeginDsi "dsi/webFrameSeeAlso.html" -->
-            <h1>See Also</h1>
-            <ul class="nav">
-                <li><a href="../../../guide/appweb/users/frameworks.html">Web Frameworks</a></li>
-                <li><a href="../../../guide/appweb/users/action.html">Action Handler</a></li>
-                <li><a href="../../../guide/appweb/users/cgi.html">CGI</a></li>
-                <li><a href="../../../guide/esp/users/index.html">ESP</a></li>
-                <li><a href="../../../guide/appweb/users/ejs.html">Ejscript</a></li>
-                <li><a href="../../../guide/appweb/users/php.html">PHP</a></li>
-                <li><a href="../../../guide/appweb/users/index.html">User Guide Overview</a></li>
-                <li><a href="../../../guide/appweb/users/configuration.html">Configuring Appweb</a></li>
-                <li><a href="../../../guide/appweb/users/ports.html">Ports and Binding</a></li>
-                <li><a href="../../../guide/appweb/users/authentication.html">User Authorization</a></li>
-                <li><a href="../../../guide/appweb/users/logFiles.html">Log Files</a></li>
-                <li><a href="../../../guide/appweb/users/vhosts.html">Virtual Hosts</a></li>
-                <li><a href="../../../guide/appweb/users/security.html">Security Considerations</a></li>
-                <li><a href="../../../guide/appweb/users/ssl.html">SSL</a></li>
-                <li><a href="../../../guide/appweb/users/modules.html">Appweb Modules</a></li>
-                <li><a href="../../../guide/appweb/users/stages.html">Pipeline Stages</a></li>
-                <li><a href="../../../guide/appweb/users/client.html">HTTP Client</a></li>
-                <li><a href="../../../ref/appweb/architecture.html">Appweb Architecture</a></li>
-            </ul>
+<!-- BeginDsi "dsi/espSeeAlso.html" -->
+		        <h1>See Also</h1>
+		        <ul class="nav">
+		          <li><a href="../../../guide/esp/users/overview.html">ESP Overview</a></li>
+		          <li><a href="../../../guide/esp/users/pages.html">ESP Pages</a></li>
+		          <li><a href="../../../guide/esp/users/config.html">ESP Configuration Directives</a></li>
+		          <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers and Actions</a></li>
+		          <li><a href="../../../guide/esp/users/mvc.html">ESP MVC</a></li>
+		          <li><a href="../../../guide/esp/users/pages-tour.html">ESP Page Tour</a></li>
+		          <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+		          <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
+		          <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
+		        </ul>
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
@@ -441,7 +432,7 @@ EspCompile cc -shared ${DEBUG} -Wall -Wno-unused-result \
           '000262706376373952077:1hs0lhenihk');
         customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
         var options = new google.search.DrawOptions();
-        options.enableSearchboxOnly("http://appwebserver.org/search.html");
+        options.enableSearchboxOnly("http://embedthis.com/search.html");
         customSearchControl.draw('cse-search-form', options);
       }, true);
     </script>
