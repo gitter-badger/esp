@@ -1827,7 +1827,9 @@ static int monitorDirective(MaState *state, cchar *key, cchar *value)
     if (!maTokenize(state, expr, "%S %S %S", &counter, &relation, &limit)) {
         return MPR_ERR_BAD_SYNTAX;
     }
-    httpAddMonitor(counter, relation, getnum(limit), httpGetTicks(period), defenses);
+    if (httpAddMonitor(counter, relation, getnum(limit), httpGetTicks(period), defenses) < 0) {
+        return MPR_ERR_BAD_SYNTAX;
+    }
     return 0;
 }
 
@@ -4350,9 +4352,9 @@ static void openFileHandler(HttpQueue *q)
     if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
         if (!(info->valid || info->isDir)) {
             if (rx->referrer) {
-                mprLog(2, "fileHandler: Cannot find filename %s from referrer %s", tx->filename, rx->referrer);
+                mprLog(3, "fileHandler: Cannot find filename %s from referrer %s", tx->filename, rx->referrer);
             } else {
-                mprLog(2, "fileHandler: Cannot find filename %s", tx->filename);
+                mprLog(3, "fileHandler: Cannot find filename %s", tx->filename);
             }
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
             return;
