@@ -1,4 +1,4 @@
-Embedthis Pak GPL License Agreement
+Embedthis ESP GPL License Agreement
 
 This software is licensed according to the provisions of GNU GENERAL PUBLIC LICENSE below. 
 

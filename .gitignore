@@ -18,3 +18,4 @@
 *.app
 macosx-*
 /start.me
+/releases
