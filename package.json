@@ -24,28 +24,22 @@
         "appweb": "~5.0",
         "ejs": "~2.3",
         "esp": "~5.0",
+        "esp-html-mvc": "*",
+        "esp-server": "*",
+        "est": "*",
         "http": "*",
         "me-dev": "~0.8",
         "mpr": "*",
         "osdep": "~0.8",
         "pcre": "*",
         "php": "~5.4",
+        "sqlite": "*",
         "ssl": "~0.8",
         "zlib": "~1.0"
     },
-    "optionalDependencies": {
-        "angular": "~1.2",
-        "esp-angular": "*",
-        "esp-angular-mvc": "*",
-        "esp-html-mvc": "*",
-        "esp-legacy-mvc": "*",
-        "esp-server": "*",
-        "est": "*",
-        "sqlite": "*"
-    },
     "devDependencies": {
         "appweb": "*",
-        "makeme": ">0.8.0"
+        "me": ">0.8.0"
     },
     "dirs": {
         "paks": "src/paks",
@@ -64,7 +58,8 @@
     "paks": {
         "appweb": {
             "noblend": true,
-            "noexport": true
+            "noexport": true,
+            "nodeps": true
         },
         "esp-server": {
             "noblend": true,
