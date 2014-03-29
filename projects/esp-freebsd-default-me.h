@@ -257,7 +257,7 @@
     #define ME_COM_MATRIXSSL 0
 #endif
 #ifndef ME_COM_MDB
-    #define ME_COM_MDB 0
+    #define ME_COM_MDB 1
 #endif
 #ifndef ME_COM_MPR
     #define ME_COM_MPR 1
@@ -275,7 +275,7 @@
     #define ME_COM_PCRE 1
 #endif
 #ifndef ME_COM_SQLITE
-    #define ME_COM_SQLITE 0
+    #define ME_COM_SQLITE 1
 #endif
 #ifndef ME_COM_SSL
     #define ME_COM_SSL 1
