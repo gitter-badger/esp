@@ -22,12 +22,16 @@
     },
     "dependencies": {
         "appweb": "~5.0",
+        "ejs": "~2.3",
+        "esp": "~5.0",
         "http": "*",
         "me-dev": "~0.8",
         "mpr": "*",
         "osdep": "~0.8",
         "pcre": "*",
-        "ssl": "~0.8"
+        "php": "~5.4",
+        "ssl": "~0.8",
+        "zlib": "~1.0"
     },
     "optionalDependencies": {
         "angular": "~1.2",
