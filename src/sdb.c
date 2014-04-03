@@ -216,7 +216,7 @@ static EdiRec *sdbCreateRec(Edi *edi, cchar *tableName)
     int     i;
 
     schema = getSchema(edi, tableName);
-    if ((rec = mprAllocMem(sizeof(EdiRec) + sizeof(EdiField) * schema->nfields, MPR_ALLOC_MANAGER | MPR_ALLOC_ZERO)) == 0) {
+    if ((rec = mprAllocBlock(sizeof(EdiRec) + sizeof(EdiField) * schema->nfields, MPR_ALLOC_MANAGER | MPR_ALLOC_ZERO)) == 0) {
         return 0;
     }
     mprSetManager(rec, (MprManager) ediManageEdiRec);
@@ -857,7 +857,7 @@ static EdiRec *createBareRec(Edi *edi, cchar *tableName, int nfields)
 {
     EdiRec  *rec;
 
-    if ((rec = mprAllocMem(sizeof(EdiRec) + sizeof(EdiField) * nfields, MPR_ALLOC_MANAGER | MPR_ALLOC_ZERO)) == 0) {
+    if ((rec = mprAllocBlock(sizeof(EdiRec) + sizeof(EdiField) * nfields, MPR_ALLOC_MANAGER | MPR_ALLOC_ZERO)) == 0) {
         return 0;
     }
     mprSetManager(rec, (MprManager) ediManageEdiRec);
