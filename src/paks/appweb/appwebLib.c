@@ -22862,6 +22862,7 @@ PUBLIC HttpAuth *maGetDefaultAuth(MaServer *server)
 
 /* slink.c  -- Generated AppWeb Static Initialization */
 
+#include "mpr.h"
 
 
 PUBLIC void appwebStaticInitialize() {}
