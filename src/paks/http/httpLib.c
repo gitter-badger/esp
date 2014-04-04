@@ -2611,8 +2611,8 @@ PUBLIC void httpDisconnect(HttpConn *conn)
     if (conn->sock) {
         mprDisconnectSocket(conn->sock);
     }
-    conn->connError = 1;
-    conn->error = 1;
+    conn->connError++;
+    conn->error++;
     conn->keepAliveCount = 0;
     if (conn->tx) {
         conn->tx->finalized = 1;
@@ -2823,12 +2823,12 @@ PUBLIC HttpConn *httpAcceptConn(HttpEndpoint *endpoint, MprEvent *event)
     conn->ip = sclone(sock->ip);
 
     if ((value = httpMonitorEvent(conn, HTTP_COUNTER_ACTIVE_CONNECTIONS, 1)) > conn->limits->connectionsMax) {
-        mprError("Too many concurrent connections %d/%d", (int) value, conn->limits->connectionsMax);
+        mprLog(2, "Too many concurrent connections %d/%d", (int) value, conn->limits->connectionsMax);
         httpDestroyConn(conn);
         return 0;
     }
     if (mprGetHashLength(http->addresses) > conn->limits->clientMax) {
-        mprError("Too many concurrent clients %d/%d", mprGetHashLength(http->addresses), conn->limits->clientMax);
+        mprLog(2, "Too many concurrent clients %d/%d", mprGetHashLength(http->addresses), conn->limits->clientMax);
         httpDestroyConn(conn);
         return 0;
     }
@@ -7094,7 +7094,10 @@ PUBLIC void httpCreateTxPipeline(HttpConn *conn, HttpRoute *route)
     openQueues(conn);
 
     if (conn->error) {
-        conn->writeq->stage = tx->handler = conn->http->passHandler;
+        if (tx->handler != http->passHandler) {
+            tx->handler = http->passHandler;
+            httpAssignQueue(conn->writeq, tx->handler, HTTP_QUEUE_TX);
+        }
     }
     tx->flags |= HTTP_TX_PIPELINE;
 }
@@ -7198,7 +7201,7 @@ static void openQueues(HttpConn *conn)
             if (q->open && !(q->flags & (HTTP_QUEUE_OPEN_TRIED))) {
                 if (q->pair == 0 || !(q->pair->flags & HTTP_QUEUE_OPEN_TRIED)) {
                     openQueue(q, tx->chunkSize);
-                    if (q->open /* UNUSED && !tx->finalized */) {
+                    if (q->open) {
                         q->flags |= HTTP_QUEUE_OPEN_TRIED;
                         if (q->stage->open(q) == 0) {
                             q->flags |= HTTP_QUEUE_OPENED;
@@ -7263,7 +7266,7 @@ PUBLIC void httpStartPipeline(HttpConn *conn)
 
     if (rx->needInputPipeline) {
         qhead = tx->queue[HTTP_QUEUE_RX];
-        for (q = qhead->nextQ; /* UNUSED !tx->finalized && */ q->nextQ != qhead; q = nextQ) {
+        for (q = qhead->nextQ; q->nextQ != qhead; q = nextQ) {
             nextQ = q->nextQ;
             if (q->start && !(q->flags & HTTP_QUEUE_STARTED)) {
                 if (q->pair == 0 || !(q->pair->flags & HTTP_QUEUE_STARTED)) {
@@ -7274,7 +7277,7 @@ PUBLIC void httpStartPipeline(HttpConn *conn)
         }
     }
     qhead = tx->queue[HTTP_QUEUE_TX];
-    for (q = qhead->prevQ; /* UNUSED !tx->finalized && */q->prevQ != qhead; q = prevQ) {
+    for (q = qhead->prevQ; q->prevQ != qhead; q = prevQ) {
         prevQ = q->prevQ;
         if (q->start && !(q->flags & HTTP_QUEUE_STARTED)) {
             q->flags |= HTTP_QUEUE_STARTED;
@@ -7295,7 +7298,7 @@ PUBLIC void httpReadyHandler(HttpConn *conn)
     HttpQueue   *q;
 
     q = conn->writeq;
-    if (q->stage && q->stage->ready && /* UNUSED !conn->tx->finalized && */ !(q->flags & HTTP_QUEUE_READY)) {
+    if (q->stage && q->stage->ready && !(q->flags & HTTP_QUEUE_READY)) {
         q->flags |= HTTP_QUEUE_READY;
         q->stage->ready(q);
     }
@@ -7310,7 +7313,7 @@ static void httpStartHandler(HttpConn *conn)
 
     conn->tx->started = 1;
     q = conn->writeq;
-    if (q->stage->start /* UNUSED && !conn->tx->finalized */ && !(q->flags & HTTP_QUEUE_STARTED)) {
+    if (q->stage->start && !(q->flags & HTTP_QUEUE_STARTED)) {
         q->flags |= HTTP_QUEUE_STARTED;
         q->stage->start(q);
     }
@@ -8055,7 +8058,6 @@ static bool applyRange(HttpQueue *q, HttpPacket *packet)
         httpPutBackPacket(q, packet);
         return 0;
     }
-
     /*
         Process the data packet over multiple ranges ranges until all the data is processed or discarded.
         A packet may contain data or it may be empty with an associated entityLength. If empty, range packets
@@ -16477,7 +16479,7 @@ PUBLIC void httpSetFilename(HttpConn *conn, cchar *filename, int flags)
 
     tx = conn->tx;
     info = &tx->fileInfo;
-    tx->flags &= (HTTP_TX_NO_CHECK | HTTP_TX_NO_MAP);
+    tx->flags &= ~(HTTP_TX_NO_CHECK | HTTP_TX_NO_MAP);
     tx->flags |= (flags & (HTTP_TX_NO_CHECK | HTTP_TX_NO_MAP));
 
     if (filename == 0) {
@@ -19028,9 +19030,12 @@ static void closeWebSock(HttpQueue *q)
     if (q->conn && q->conn->rx) {
         ws = q->conn->rx->webSocket;
         assert(ws);
-        if (ws && ws->pingEvent) {
-            mprRemoveEvent(ws->pingEvent);
-            ws->pingEvent = 0;
+        if (ws) {
+            ws->state = WS_STATE_CLOSED;
+           if (ws->pingEvent) {
+                mprRemoveEvent(ws->pingEvent);
+                ws->pingEvent = 0;
+           }
         }
     }
 }
