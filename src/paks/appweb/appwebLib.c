@@ -4332,7 +4332,7 @@ static int rewriteFileHandler(HttpConn *conn)
 
 
 
-static void openFileHandler(HttpQueue *q)
+static int openFileHandler(HttpQueue *q)
 {
     HttpRx      *rx;
     HttpTx      *tx;
@@ -4347,7 +4347,7 @@ static void openFileHandler(HttpQueue *q)
     info = &tx->fileInfo;
 
     if (conn->error) {
-        return;
+        return MPR_ERR_CANT_OPEN;
     }
     if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
         if (!(info->valid || info->isDir)) {
@@ -4357,7 +4357,6 @@ static void openFileHandler(HttpQueue *q)
                 mprLog(3, "fileHandler: Cannot find filename %s", tx->filename);
             }
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
-            return;
         } 
         if (!tx->etag) {
             /* Set the etag for caching in the client */
@@ -4410,6 +4409,7 @@ static void openFileHandler(HttpQueue *q)
     } else {
         httpError(conn, HTTP_CODE_BAD_METHOD, "Unsupported method");
     }
+    return 0;
 }
 
 
@@ -5045,7 +5045,7 @@ static void readFromCgi(Cgi *cgi, int channel);
 /*
     Open the handler for a new request
  */
-static void openCgi(HttpQueue *q)
+static int openCgi(HttpQueue *q)
 {
     HttpConn    *conn;
     Cgi         *cgi;
@@ -5056,15 +5056,16 @@ static void openCgi(HttpQueue *q)
     if ((nproc = (int) httpMonitorEvent(conn, HTTP_COUNTER_ACTIVE_PROCESSES, 1)) >= conn->limits->processMax) {
         httpError(conn, HTTP_CODE_SERVICE_UNAVAILABLE, "Server overloaded");
         mprLog(2, "Too many concurrent processes %d/%d", nproc, conn->limits->processMax);
-        return;
+        return MPR_ERR_CANT_OPEN;
     }
     if ((cgi = mprAllocObj(Cgi, manageCgi)) == 0) {
         /* Normal mem handler recovery */ 
-        return;
+        return MPR_ERR_MEMORY;
     }
     httpTrimExtraPath(conn);
     httpMapFile(conn);
     httpCreateCGIParams(conn);
+
     q->queueData = q->pair->queueData = cgi;
     cgi->conn = conn;
     cgi->readq = httpCreateQueue(conn, conn->http->cgiConnector, HTTP_QUEUE_RX, 0);
@@ -5072,6 +5073,7 @@ static void openCgi(HttpQueue *q)
     cgi->readq->pair = cgi->writeq;
     cgi->writeq->pair = cgi->readq;
     cgi->writeq->queueData = cgi->readq->queueData = cgi;
+    return 0;
 }
 
 
@@ -5084,15 +5086,6 @@ static void manageCgi(Cgi *cgi, int flags)
         mprMark(cgi->cmd);
         mprMark(cgi->headers);
         mprMark(cgi->location);
-#if UNUSED
-    } else {
-        assert(!cgi->cmd);
-        if (cgi->cmd) {
-            /* Just for safety */
-            //  MOB 
-            mprDestroyCmd(cgi->cmd);
-        }
-#endif
     }
 }
 
@@ -5229,6 +5222,10 @@ static void browserToCgiData(HttpQueue *q, HttpPacket *packet)
     conn = q->conn;
     assert(q == conn->readq);
 
+    if (cgi == 0) {
+        //MOB
+        return;
+    }
     if (httpGetPacketLength(packet) == 0) {
         /* End of input */
         if (conn->rx->remainingContent > 0) {
@@ -5313,6 +5310,10 @@ static void cgiToBrowserService(HttpQueue *q)
     cgi = q->queueData;
     conn = q->conn;
     assert(q == conn->writeq);
+    if (cgi == 0) {
+        //MOB
+        return;
+    }
     cmd = cgi->cmd;
 
     /*
@@ -6102,7 +6103,7 @@ static char startup[] = "\
 /*
     Open handler for a new request
  */
-static void openEjs(HttpQueue *q)
+static int openEjs(HttpQueue *q)
 {
     HttpConn    *conn;
     HttpRx      *rx;
@@ -6116,7 +6117,7 @@ static void openEjs(HttpQueue *q)
 
     mprTrace(5, "Open EJS handler");
     if (conn->ejs) {
-        return;
+        return -1;
     }
     /*
         FUTURE OPT - check this pool is usable over all routes
@@ -6139,7 +6140,7 @@ static void openEjs(HttpQueue *q)
      */
     if ((ejs = ejsAllocPoolVM(pool, EJS_FLAG_HOSTED)) == 0) {
         httpError(conn, HTTP_CODE_SERVICE_UNAVAILABLE, "Cannot create Ejs interpreter");
-        return;
+        return -1;
     }
     conn->ejs = ejs;
     ejs->hosted = 1;
@@ -6155,6 +6156,7 @@ static void openEjs(HttpQueue *q)
      */
     conn->http->activeVMs = pool->count + (pool->template ? 1 : 0);
 #endif
+    return 0;
 }
 
 

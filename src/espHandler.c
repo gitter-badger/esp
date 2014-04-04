@@ -19,6 +19,8 @@ static Esp *esp;
 
 /************************************ Forward *********************************/
 
+static void closeEsp(HttpQueue *q);
+//  TODO - why public
 PUBLIC EspRoute *espInitRoute(HttpRoute *route);
 static int espDbDirective(MaState *state, cchar *key, cchar *value);
 static int espEnvDirective(MaState *state, cchar *key, cchar *value);
@@ -40,7 +42,7 @@ static bool loadEspModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *ki
 /*
     Open an instance of the ESP for a new request
  */
-static void openEsp(HttpQueue *q)
+static int openEsp(HttpQueue *q)
 {
     HttpConn    *conn;
     HttpRx      *rx;
@@ -51,17 +53,19 @@ static void openEsp(HttpQueue *q)
     conn = q->conn;
     rx = conn->rx;
 
+    if ((req = mprAllocObj(EspReq, manageReq)) == 0) {
+        httpMemoryError(conn);
+        return MPR_ERR_MEMORY;
+    }
+
     /*
         If unloading a module, this lock will cause a wait here while ESP applications are reloaded.
+        Do not use atomic APIs here
      */
     lock(esp);
     esp->inUse++;
     unlock(esp);
 
-    if ((req = mprAllocObj(EspReq, manageReq)) == 0) {
-        httpMemoryError(conn);
-        return;
-    }
     /*
         Find the ESP route configuration. Search up the route parent chain.
      */
@@ -76,12 +80,14 @@ static void openEsp(HttpQueue *q)
         eroute = espInitRoute(route);
         if (maParseFile(NULL, mprJoinPath(mprGetAppDir(), "esp.conf")) < 0) {
             httpError(conn, 0, "Cannot parse esp.conf");
-            return;
+            closeEsp(q);
+            return MPR_ERR_CANT_OPEN;
         }
     }
     if (!eroute) {
         httpError(conn, 0, "Cannot find a suitable ESP route");
-        return;
+        closeEsp(q);
+        return MPR_ERR_CANT_OPEN;
     }
     conn->data = req;
     req->esp = esp;
@@ -93,6 +99,7 @@ static void openEsp(HttpQueue *q)
     if (!route->cookie && eroute->appName && *eroute->appName) {
         route->cookie = eroute->appName;
     }
+    return 0;
 }
 
 
