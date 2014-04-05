@@ -301,7 +301,6 @@ DEPS_1 = $(DEPS_1) src\paks\me-dev\dev.me
 DEPS_1 = $(DEPS_1) src\paks\me-dev\LICENSE.md
 DEPS_1 = $(DEPS_1) src\paks\me-dev\package.json
 DEPS_1 = $(DEPS_1) src\paks\me-dev\README.md
-DEPS_1 = $(DEPS_1) src\paks\me-dev\src
 DEPS_1 = $(DEPS_1) src\paks\me-doc
 DEPS_1 = $(DEPS_1) src\paks\me-doc\doc.es
 DEPS_1 = $(DEPS_1) src\paks\me-doc\doc.me
