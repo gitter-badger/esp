@@ -20,3 +20,4 @@ macosx-*
 /start.me
 /releases
 /doc/lf/
+*.guid
