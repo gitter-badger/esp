@@ -828,24 +828,6 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
 }
 
 
-#if ME_ESP_LEGACY
-PUBLIC void espSetLegacyDirs(HttpRoute *route)
-{
-    EspRoute    *eroute;
-    char        *dir;
-
-    eroute = route->eroute;
-    dir = route->documents;
-    eroute->clientDir  = mprJoinPath(dir, "static");
-    eroute->layoutsDir = mprJoinPath(dir, "layouts");
-    eroute->viewsDir   = mprJoinPath(dir, "views");
-    httpSetRouteVar(route, "CLIENT_DIR", eroute->clientDir);
-    httpSetRouteVar(route, "LAYOUTS_DIR", eroute->layoutsDir);
-    httpSetRouteVar(route, "VIEWS_DIR", eroute->viewsDir);
-}
-#endif
-
-
 /*
     Manage all links for EspReq for the garbage collector
  */
@@ -872,9 +854,6 @@ static void manageEsp(Esp *esp, int flags)
         mprMark(esp->databases);
         mprMark(esp->databasesTimer);
         mprMark(esp->ediService);
-#if ME_ESP_LEGACY
-        mprMark(esp->internalOptions);
-#endif
         mprMark(esp->local);
         mprMark(esp->mutex);
         mprMark(esp->views);
@@ -904,70 +883,6 @@ static EspRoute *getEroute(HttpRoute *route)
     }
     return espInitRoute(route);
 }
-
-
-#if ME_ESP_LEGACY
-/*
-    Deprecated in 4.4
- */
-static HttpRoute *addLegacyRestful(HttpRoute *parent, cchar *prefix, cchar *action, cchar *methods, cchar *pattern, 
-    cchar *target, cchar *resource)
-{
-    cchar       *name, *nameResource, *source, *token;
-
-    token = "{controller}";
-    nameResource = smatch(resource, token) ? "*" : resource;
-
-    if (parent->prefix) {
-        name = sfmt("%s/%s/%s", parent->prefix, nameResource, action);
-        pattern = sfmt("^%s/%s%s", parent->prefix, resource, pattern);
-    } else {
-        name = sfmt("/%s/%s", nameResource, action);
-        if (*resource == '{') {
-            pattern = sfmt("^/%s%s", resource, pattern);
-        } else {
-            pattern = sfmt("^/{controller=%s}%s", resource, pattern);
-        }
-    }
-    if (*resource == '{') {
-        target = sfmt("$%s-%s", resource, target);
-        source = sfmt("$%s.c", resource);
-    } else {
-        target = sfmt("%s-%s", resource, target);
-        source = sfmt("%s.c", resource);
-    }
-    return httpDefineRoute(parent, name, methods, pattern, target, source);
-}
-
-
-/*
-    Deprecated in 4.4.0
- */
-PUBLIC void httpAddLegacyResourceGroup(HttpRoute *parent, cchar *prefix, cchar *resource)
-{
-    addLegacyRestful(parent, prefix, "create",    "POST",    "(/)*$",                   "create",        resource);
-    addLegacyRestful(parent, prefix, "destroy",   "DELETE",  "/{id=[0-9]+}$",           "destroy",       resource);
-    addLegacyRestful(parent, prefix, "edit",      "GET",     "/{id=[0-9]+}/edit$",      "edit",          resource);
-    addLegacyRestful(parent, prefix, "init",      "GET",     "/init$",                  "init",          resource);
-    addLegacyRestful(parent, prefix, "list",      "GET",     "(/)*$",                   "list",          resource);
-    addLegacyRestful(parent, prefix, "show",      "GET",     "/{id=[0-9]+}$",           "show",          resource);
-    addLegacyRestful(parent, prefix, "update",    "PUT",     "/{id=[0-9]+}$",           "update",        resource);
-    addLegacyRestful(parent, prefix, "action",    "POST",    "/{action}/{id=[0-9]+}$",  "${action}",     resource);
-    addLegacyRestful(parent, prefix, "default",   "GET,POST","/{action}$",              "cmd-${action}", resource);
-}
-
-
-PUBLIC void httpAddLegacyResource(HttpRoute *parent, cchar *prefix, cchar *resource)
-{
-    addLegacyRestful(parent, prefix, "init",      "GET",     "/init$",       "init",          resource);
-    addLegacyRestful(parent, prefix, "create",    "POST",    "(/)*$",        "create",        resource);
-    addLegacyRestful(parent, prefix, "edit",      "GET",     "/edit$",       "edit",          resource);
-    addLegacyRestful(parent, prefix, "show",      "GET",     "(/)*$",        "show",          resource);
-    addLegacyRestful(parent, prefix, "update",    "PUT",     "(/)*$",        "update",        resource);
-    addLegacyRestful(parent, prefix, "destroy",   "DELETE",  "(/)*$",        "destroy",       resource);
-    addLegacyRestful(parent, prefix, "default",   "GET,POST","/{action}$",   "cmd-${action}", resource);
-}
-#endif
 
 
 PUBLIC void espAddHomeRoute(HttpRoute *parent)
@@ -1006,33 +921,6 @@ PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
         httpHideRoute(route, 1);
         eroute->viewsDir = eroute->appDir;
         eroute->layoutsDir = mprJoinPath(eroute->clientDir, "layouts");
-
-#if ME_ESP_LEGACY
-    /*
-        Deprecated in 4.4
-     */
-    } else if (scaselessmatch(set, "mvc")) {
-        espAddHomeRoute(route);
-        httpAddClientRoute(route, "/static", "/static");
-
-    } else if (scaselessmatch(set, "mvc-fixed")) {
-        espAddHomeRoute(route);
-        httpAddClientRoute(route, "/static", "/static");
-        httpDefineRoute(route, "default", NULL, "^/{controller}(~/{action}~)", "${controller}-${action}", "${controller}.c");
-
-    } else if (scaselessmatch(set, "restful") || scaselessmatch(set, "esp-legacy-mvc")) {
-        if (eroute->legacy) {
-            espAddHomeRoute(route);
-            httpAddClientRoute(route, "/static", "/static");
-            httpAddLegacyResourceGroup(route, "", "{controller}");
-        } else {
-            httpAddResourceGroup(route, route->serverPrefix, "{controller}");
-            httpAddClientRoute(route, "", "/client");
-        }
-
-    } else if (!scaselessmatch(set, "none")) {
-        mprError("Unknown route set %s", set);
-#endif
     }
 }
 
@@ -1048,8 +936,6 @@ PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
         name=NAME 
         prefix=PREFIX 
         routes=ROUTES 
-
-    Old syntax DEPRECATED in 4.4: EspApp Prefix [Dir [RouteSet [Database]]]
  */
 static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
 {
@@ -1078,35 +964,16 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
                 dir = ovalue;
             } else if (smatch(option, "combined")) {
                 combined = ovalue;
-#if DEPRECATED || 1
-            } else if (smatch(option, "flat")) {
-                combined = ovalue;
-#endif
             } else if (smatch(option, "name")) {
                 name = ovalue;
             } else if (smatch(option, "prefix")) {
                 prefix = ovalue;
             } else if (smatch(option, "routes")) {
                 routeSet = ovalue;
-#if DEPRECATED || 1
-            } else if (smatch(option, "type")) {
-                /* Ignored */
-#endif
             } else {
                 mprError("Unknown EspApp option \"%s\"", option);
             }
         }
-
-#if DEPRECATED || 1
-    } else {
-        /* 
-            Deprecated in 4.4.0
-         */
-        if (!maTokenize(state, value, "%S ?S ?S ?S", &prefix, &dir, &routeSet, &database)) {
-            return MPR_ERR_BAD_SYNTAX;
-        }
-        name = "app";
-#endif
     }
     if (smatch(prefix, "/") || smatch(prefix, "")) {
         prefix = 0;
@@ -1154,11 +1021,6 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
     }
     espSetConfig(route, "esp.appPrefix", prefix);
     espSetConfig(route, "esp.prefix", sjoin(prefix ? prefix : "", route->serverPrefix, NULL));
-#if ME_ESP_LEGACY
-    if (eroute->legacy && (eroute->routeSet == 0 || *eroute->routeSet == '\0')) {
-        eroute->routeSet = sclone("restful");
-    }
-#endif
     if (auth) {
         if (httpSetAuthStore(route->auth, auth) < 0) {
             mprError("The %s AuthStore is not available on this platform", auth);
@@ -1169,10 +1031,7 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
     httpAddRouteHandler(route, "espHandler", "");
     httpAddRouteHandler(route, "espHandler", "esp");
 
-#if ME_ESP_LEGACY
-    if (!eroute->legacy)
-#endif
-        httpAddRouteIndex(route, "index.esp");
+    httpAddRouteIndex(route, "index.esp");
 
     if (database) {
         eroute->database = sclone(database);
@@ -1356,10 +1215,6 @@ static int espDirDirective(MaState *state, cchar *key, cchar *value)
             eroute->srcDir = path;
         } else if (smatch(name, "views")) {
             eroute->viewsDir = path;
-#if DEPRECATED || 1
-        } else if (smatch(name, "static")) {
-            eroute->clientDir = path;
-#endif
         }
         httpSetRouteVar(state->route, name, path);
     }
@@ -1577,8 +1432,6 @@ static int espRoutePrefixDirective(MaState *state, cchar *key, cchar *value)
         prefix=PREFIX 
         source=SOURCE
         target=TARGET
-
-    Old syntax DEPRECATED in 4.4: EspRoute name methods prefix target source
  */
 static int espRouteDirective(MaState *state, cchar *key, cchar *value)
 {
@@ -1611,15 +1464,6 @@ static int espRouteDirective(MaState *state, cchar *key, cchar *value)
                 mprError("Unknown EspRoute option \"%s\"", option);
             }
         }
-#if DEPRECATED || 1
-    } else {
-        /* 
-            Deprecated in 4.4.0
-         */
-        if (!maTokenize(state, value, "%S %S %S %S ?S", &name, &methods, &prefix, &target, &source)) {
-            return MPR_ERR_BAD_SYNTAX;
-        }
-#endif
     }
     if (!prefix || !target) {
         return MPR_ERR_BAD_SYNTAX;
@@ -1680,24 +1524,6 @@ static int espRouteSetDirective(MaState *state, cchar *key, cchar *value)
 }
 
 
-#if DEPRECATED || 1
-/*
-    EspShowErrors on|off
-    Now use ShowErrors
- */
-static int espShowErrorsDirective(MaState *state, cchar *key, cchar *value)
-{
-    bool    on;
-
-    if (!maTokenize(state, value, "%B", &on)) {
-        return MPR_ERR_BAD_SYNTAX;
-    }
-    httpSetRouteShowErrors(state->route, on);
-    return 0;
-}
-#endif
-
-
 /*
     EspUpdate on|off
  */
@@ -1745,9 +1571,6 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
     if (module) {
         mprSetModuleFinalizer(module, unloadEsp);
     }
-#if ME_ESP_LEGACY
-    espInitHtmlOptions(esp);
-#endif
     /* Thread-safe */
     if ((esp->views = mprCreateHash(-1, MPR_HASH_STATIC_VALUES)) == 0) {
         return 0;
@@ -1774,9 +1597,6 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
     maAddDirective(appweb, "EspRoutePrefix", espRoutePrefixDirective);
     maAddDirective(appweb, "EspRouteSet", espRouteSetDirective);
     maAddDirective(appweb, "EspUpdate", espUpdateDirective);
-#if DEPRECATED || 1
-    maAddDirective(appweb, "EspShowErrors", espShowErrorsDirective);
-#endif
     if ((esp->ediService = ediCreateService()) == 0) {
         return 0;
     }

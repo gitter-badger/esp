@@ -100,17 +100,6 @@ PUBLIC int espCache(HttpRoute *route, cchar *uri, int lifesecs, int flags)
 }
 
 
-#if ME_ESP_LEGACY
-/*
-    Should not be called explicitly
- */
-PUBLIC bool espCheckSecurityToken(HttpConn *conn) 
-{
-    return httpCheckSecurityToken(conn);
-}
-#endif
-
-
 PUBLIC cchar *espCreateSession(HttpConn *conn)
 {
     HttpSession *session;
@@ -270,14 +259,6 @@ PUBLIC cchar *espGetDocuments(HttpConn *conn)
 }
 
 
-#if ME_ESP_LEGACY
-PUBLIC cchar *espGetDir(HttpConn *conn)
-{
-    return espGetDocuments(conn);
-}
-#endif
-
-
 PUBLIC EspRoute *espGetEspRoute(HttpConn *conn)
 {
     return conn->rx->route->eroute;
@@ -423,14 +404,6 @@ PUBLIC char *espGetStatusMessage(HttpConn *conn)
 }
 
 
-#if ME_ESP_LEGACY
-PUBLIC char *espGetTop(HttpConn *conn)
-{
-    return httpLink(conn, "~");
-}
-#endif
-
-
 PUBLIC MprHash *espGetUploads(HttpConn *conn)
 {
     return conn->rx->files;
@@ -512,152 +485,106 @@ PUBLIC int espLoadConfig(HttpRoute *route)
         eroute->configLoaded = cinfo.mtime;
     }
     if (!eroute->config) {
-#if ME_ESP_LEGACY
-        if (!mprPathExists(cpath, R_OK)) {
-            if (!eroute->legacy) {
-                mprLog(2, "esp: Missing %s, switching to esp-legacy-mvc mode", cpath);
-            }
-            eroute->legacy = 1;
-        } else 
-#endif
-        {
-            if ((cdata = mprReadPathContents(cpath, NULL)) == 0) {
-                mprError("Cannot read ESP configuration from %s", cpath);
-                unlock(eroute);
-                return MPR_ERR_CANT_READ;
-            }
-            if ((eroute->config = mprParseJsonEx(cdata, 0, 0, 0, &errorMsg)) == 0) {
-                mprError("Cannot parse %s: error %s", cpath, errorMsg);
-                unlock(eroute);
-                return 0;
-            }
-            /*
-                Blend the mode properties into settings
-             */
-            eroute->mode = mprGetJson(eroute->config, "esp.mode", 0);
-            if (!eroute->mode) {
-                eroute->mode = sclone("debug");
-                mprLog(3, "esp: application \"%s\" running in \"%s\" mode", eroute->appName, eroute->mode);
-            }
-            debug = smatch(eroute->mode, "debug");
-            if ((msettings = mprGetJsonObj(eroute->config, sfmt("esp.modes.%s", eroute->mode), 0)) != 0) {
-                settings = mprLookupJsonObj(eroute->config, "esp");
-                mprBlendJson(settings, msettings, MPR_JSON_OVERWRITE);
-                mprSetJson(settings, "esp.mode", eroute->mode, 0);
-            }
-            if ((value = espGetConfig(route, "esp.auth", 0)) != 0) {
-                if (httpSetAuthStore(route->auth, value) < 0) {
-                    mprError("The %s AuthStore is not available on this platform", value);
-                }
-            }
-            if ((value = espGetConfig(route, "esp.combined", 0)) != 0) {
-                eroute->combined = smatch(value, "true");
-                if (eroute->combined) {
-                    mprLog(3, "esp: app %s configured for combined compilation", eroute->appName);
-                }
-            }
-            if ((value = espGetConfig(route, "esp.compile", 0)) != 0) {
-                if (smatch(value, "debug") || smatch(value, "symbols")) {
-                    eroute->compileMode = ESP_COMPILE_DEBUG;
-                } else if (smatch(value, "release") || smatch(value, "optimized")) {
-                    eroute->compileMode = ESP_COMPILE_RELEASE;
-                }
-            }
-            if ((value = espGetConfig(route, "esp.server.redirect", 0)) != 0) {
-                if (smatch(value, "true") || smatch(value, "secure")) {
-                    pattern = route->prefix ? sfmt("%s/", route->prefix) : "/";
-                    alias = httpCreateAliasRoute(route, pattern, 0, 0);
-                    httpSetRouteTarget(alias, "redirect", "0 https://");
-                    /* A null age suppresses the strict transport security header */
-                    httpAddRouteCondition(alias, "secure", 0, HTTP_ROUTE_NOT);
-                    httpFinalizeRoute(alias);
-                }
-            }
-            if ((value = espGetConfig(route, "esp.showErrors", 0)) != 0) {
-                httpSetRouteShowErrors(route, smatch(value, "true"));
-            } else if (debug) {
-                httpSetRouteShowErrors(route, 1);
-            }
-            if ((value = espGetConfig(route, "esp.update", 0)) != 0) {
-                eroute->update = smatch(value, "true");
-            }
-            if ((value = espGetConfig(route, "esp.keepSource", 0)) != 0) {
-                eroute->keepSource = smatch(value, "true");
-            }
-            if ((value = espGetConfig(route, "esp.serverPrefix", 0)) != 0) {
-                httpSetRouteServerPrefix(route, value);
-                httpSetRouteVar(route, "SERVER_PREFIX", sjoin(route->prefix ? route->prefix: "", route->serverPrefix, 0));
-            }
-#if DEPRECATED || 1
-            if ((value = espGetConfig(route, "esp.routePrefix", 0)) != 0) {
-                httpSetRouteServerPrefix(route, value);
-                httpSetRouteVar(route, "SERVER_PREFIX", sjoin(route->prefix ? route->prefix: "", route->serverPrefix, 0));
-            }
-#endif
-            if ((value = espGetConfig(route, "esp.login.name", 0)) != 0) {
-                /* Automatic login as this user. Password not required */
-                httpSetAuthUsername(route->auth, value);
-            }
-            if ((value = espGetConfig(route, "esp.xsrf", 0)) != 0) {
-                httpSetRouteXsrf(route, smatch(value, "true"));
-#if DEPRECATED || 1
-            } else if ((value = espGetConfig(route, "esp.xsrfToken", 0)) != 0) {
-                httpSetRouteXsrf(route, smatch(value, "true"));
-#endif
-            } else {
-                httpSetRouteXsrf(route, 1);
-            }
-            if ((value = espGetConfig(route, "esp.json", 0)) != 0) {
-                eroute->json = smatch(value, "true");
-#if DEPRECATED || 1
-            } else {
-                if ((value = espGetConfig(route, "esp.sendJson", 0)) != 0) {
-                    eroute->json = smatch(value, "true");
-                }
-#endif
-            }
-            if ((value = espGetConfig(route, "esp.timeouts.session", 0)) != 0) {
-                route->limits->sessionTimeout = httpGetTicks(value);
-                mprLog(3, "esp: set session timeout to %s", value);
-            }
-#if DEPRECATED || 1
-            if (espTestConfig(route, "esp.map", "compressed")) {
-                httpAddRouteMapping(route, "css,html,js,less,txt,xml", "${1}.gz, min.${1}.gz, min.${1}");
-            }
-#endif
-            if (espTestConfig(route, "esp.compressed", "true")) {
-                httpAddRouteMapping(route, "css,html,js,less,txt,xml", "${1}.gz, min.${1}.gz, min.${1}");
-            }
-            if ((value = espGetConfig(route, "esp.cache", 0)) != 0) {
-                clientLifespan = httpGetTicks(value);
-                httpAddCache(route, NULL, NULL, "html,gif,jpeg,jpg,png,pdf,ico,js,txt,less", NULL, clientLifespan, 0, 
-                    HTTP_CACHE_CLIENT | HTTP_CACHE_ALL);
-            }
-            if (!eroute->database) {
-                if ((eroute->database = espGetConfig(route, "esp.server.database", 0)) != 0) {
-                    if (espOpenDatabase(route, eroute->database) < 0) {
-                        mprError("Cannot open database %s", eroute->database);
-                        unlock(eroute);
-                        return MPR_ERR_CANT_OPEN;
-                    }
-                }
-            }
-#if ME_ESP_LEGACY
-            if (espHasPak(route, "esp-legacy-mvc")) {
-                eroute->legacy = 1;
-            }
-#endif
+        if ((cdata = mprReadPathContents(cpath, NULL)) == 0) {
+            mprError("Cannot read ESP configuration from %s", cpath);
+            unlock(eroute);
+            return MPR_ERR_CANT_READ;
         }
-#if ME_ESP_LEGACY
-        if (eroute->legacy) {
-            espSetLegacyDirs(route);
-            httpSetRouteServerPrefix(route, "");
-            if (!eroute->config) {
-                eroute->config = mprCreateJson(MPR_JSON_OBJ);
-                espAddPak(route, "esp-legacy-mvc", 0);
+        if ((eroute->config = mprParseJsonEx(cdata, 0, 0, 0, &errorMsg)) == 0) {
+            mprError("Cannot parse %s: error %s", cpath, errorMsg);
+            unlock(eroute);
+            return 0;
+        }
+        /*
+            Blend the mode properties into settings
+         */
+        eroute->mode = mprGetJson(eroute->config, "esp.mode", 0);
+        if (!eroute->mode) {
+            eroute->mode = sclone("debug");
+            mprLog(3, "esp: application \"%s\" running in \"%s\" mode", eroute->appName, eroute->mode);
+        }
+        debug = smatch(eroute->mode, "debug");
+        if ((msettings = mprGetJsonObj(eroute->config, sfmt("esp.modes.%s", eroute->mode), 0)) != 0) {
+            settings = mprLookupJsonObj(eroute->config, "esp");
+            mprBlendJson(settings, msettings, MPR_JSON_OVERWRITE);
+            mprSetJson(settings, "esp.mode", eroute->mode, 0);
+        }
+        if ((value = espGetConfig(route, "esp.auth", 0)) != 0) {
+            if (httpSetAuthStore(route->auth, value) < 0) {
+                mprError("The %s AuthStore is not available on this platform", value);
             }
         }
-#endif
+        if ((value = espGetConfig(route, "esp.combined", 0)) != 0) {
+            eroute->combined = smatch(value, "true");
+            if (eroute->combined) {
+                mprLog(3, "esp: app %s configured for combined compilation", eroute->appName);
+            }
+        }
+        if ((value = espGetConfig(route, "esp.compile", 0)) != 0) {
+            if (smatch(value, "debug") || smatch(value, "symbols")) {
+                eroute->compileMode = ESP_COMPILE_DEBUG;
+            } else if (smatch(value, "release") || smatch(value, "optimized")) {
+                eroute->compileMode = ESP_COMPILE_RELEASE;
+            }
+        }
+        if ((value = espGetConfig(route, "esp.server.redirect", 0)) != 0) {
+            if (smatch(value, "true") || smatch(value, "secure")) {
+                pattern = route->prefix ? sfmt("%s/", route->prefix) : "/";
+                alias = httpCreateAliasRoute(route, pattern, 0, 0);
+                httpSetRouteTarget(alias, "redirect", "0 https://");
+                /* A null age suppresses the strict transport security header */
+                httpAddRouteCondition(alias, "secure", 0, HTTP_ROUTE_NOT);
+                httpFinalizeRoute(alias);
+            }
+        }
+        if ((value = espGetConfig(route, "esp.showErrors", 0)) != 0) {
+            httpSetRouteShowErrors(route, smatch(value, "true"));
+        } else if (debug) {
+            httpSetRouteShowErrors(route, 1);
+        }
+        if ((value = espGetConfig(route, "esp.update", 0)) != 0) {
+            eroute->update = smatch(value, "true");
+        }
+        if ((value = espGetConfig(route, "esp.keepSource", 0)) != 0) {
+            eroute->keepSource = smatch(value, "true");
+        }
+        if ((value = espGetConfig(route, "esp.serverPrefix", 0)) != 0) {
+            httpSetRouteServerPrefix(route, value);
+            httpSetRouteVar(route, "SERVER_PREFIX", sjoin(route->prefix ? route->prefix: "", route->serverPrefix, 0));
+        }
+        if ((value = espGetConfig(route, "esp.login.name", 0)) != 0) {
+            /* Automatic login as this user. Password not required */
+            httpSetAuthUsername(route->auth, value);
+        }
+        if ((value = espGetConfig(route, "esp.xsrf", 0)) != 0) {
+            httpSetRouteXsrf(route, smatch(value, "true"));
+        } else {
+            httpSetRouteXsrf(route, 1);
+        }
+        if ((value = espGetConfig(route, "esp.json", 0)) != 0) {
+            eroute->json = smatch(value, "true");
+        }
+        if ((value = espGetConfig(route, "esp.timeouts.session", 0)) != 0) {
+            route->limits->sessionTimeout = httpGetTicks(value);
+            mprLog(3, "esp: set session timeout to %s", value);
+        }
+        if (espTestConfig(route, "esp.compressed", "true")) {
+            httpAddRouteMapping(route, "css,html,js,less,txt,xml", "${1}.gz, min.${1}.gz, min.${1}");
+        }
+        if ((value = espGetConfig(route, "esp.cache", 0)) != 0) {
+            clientLifespan = httpGetTicks(value);
+            httpAddCache(route, NULL, NULL, "html,gif,jpeg,jpg,png,pdf,ico,js,txt,less", NULL, clientLifespan, 0, 
+                HTTP_CACHE_CLIENT | HTTP_CACHE_ALL);
+        }
+        if (!eroute->database) {
+            if ((eroute->database = espGetConfig(route, "esp.server.database", 0)) != 0) {
+                if (espOpenDatabase(route, eroute->database) < 0) {
+                    mprError("Cannot open database %s", eroute->database);
+                    unlock(eroute);
+                    return MPR_ERR_CANT_OPEN;
+                }
+            }
+        }
     }
     unlock(eroute);
     return 0;
@@ -788,12 +715,6 @@ PUBLIC void espRenderFlash(HttpConn *conn, cchar *kinds)
     for (kp = 0; (kp = mprGetNextKey(req->flash, kp)) != 0; ) {
         msg = kp->data;
         if (strstr(kinds, kp->key) || strstr(kinds, "all")) {
-#if ME_ESP_LEGACY
-            EspRoute *eroute = conn->rx->route->eroute;
-            if (eroute->legacy) {
-                espRender(conn, "<div class='esp-flash esp-flash-%s'>%s</div>", kp->key, msg);
-            } else 
-#endif
             espRender(conn, "<span class='feedback-%s animate'>%s</span>", kp->key, msg);
         }
     }

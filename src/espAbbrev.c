@@ -119,14 +119,6 @@ PUBLIC void flush()
 }
 
 
-#if ME_ESP_LEGACY
-PUBLIC cchar *getAppUri()
-{
-    return espGetTop(getConn());
-}
-#endif
-
-
 PUBLIC MprList *getColumns(EdiRec *rec)
 {
     if (rec == 0) {
@@ -197,14 +189,6 @@ PUBLIC cchar *getDocuments()
 {
     return getConn()->rx->route->documents;
 }
-
-
-#if ME_ESP_LEGACY
-PUBLIC cchar *getDir()
-{
-    return getDocuments();
-}
-#endif
 
 
 PUBLIC EspRoute *getEspRoute()
@@ -305,14 +289,6 @@ PUBLIC cchar *getConfig(cchar *field)
     }
     return value;
 }
-
-
-#if ME_ESP_LEGACY
-PUBLIC cchar *getTop()
-{
-    return getAppUri();
-}
-#endif
 
 
 PUBLIC MprHash *getUploads()
@@ -453,17 +429,6 @@ PUBLIC EdiGrid *readWhere(cchar *tableName, cchar *fieldName, cchar *operation, 
 }
 
 
-#if ME_ESP_LEGACY
-/* 
-    Deprecated in 4.4.1 
- */
-PUBLIC EdiGrid *readRecsWhere(cchar *tableName, cchar *fieldName, cchar *operation, cchar *value)
-{
-    return readWhere(tableName, fieldName, operation, value);
-}
-#endif
-
-
 PUBLIC EdiGrid *readTable(cchar *tableName)
 {
     return setGrid(ediReadWhere(getDatabase(), tableName, 0, 0, 0));
@@ -491,10 +456,10 @@ PUBLIC void removeCookie(cchar *name)
 PUBLIC bool removeRec(cchar *tableName, cchar *key)
 {
     if (ediRemoveRec(getDatabase(), tableName, key) < 0) {
-        feedback("error", "Cannot delete %s", spascal(tableName));
+        feedback("error", "Cannot delete %s", stitle(tableName));
         return 0;
     }
-    feedback("inform", "Deleted %s", spascal(tableName));
+    feedback("inform", "Deleted %s", stitle(tableName));
     return 1;
 }
 
@@ -885,10 +850,10 @@ PUBLIC bool updateRec(EdiRec *rec)
     }
     setRec(rec);
     if (ediUpdateRec(getDatabase(), rec) < 0) {
-        feedback("error", "Cannot save %s", spascal(rec->tableName));
+        feedback("error", "Cannot save %s", stitle(rec->tableName));
         return 0;
     }
-    feedback("inform", "Saved %s", spascal(rec->tableName));
+    feedback("inform", "Saved %s", stitle(rec->tableName));
     return 1;
 }
 

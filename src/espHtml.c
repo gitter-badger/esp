@@ -37,7 +37,7 @@ PUBLIC void input(cchar *field, cchar *optionString)
     options = httpGetOptions(optionString);
     style = httpGetOption(options, "class", "");
     errorMsg = rec->errors ? mprLookupKey(rec->errors, field) : 0;
-    error = (errorMsg && !eroute->legacy) ? sfmt("<span class=\"field-error\">%s</span>", errorMsg) : ""; 
+    error = errorMsg ? sfmt("<span class=\"field-error\">%s</span>", errorMsg) : ""; 
 
     switch (type) {
     case EDI_TYPE_BOOL:
@@ -46,7 +46,7 @@ PUBLIC void input(cchar *field, cchar *optionString)
         for (kp = 0; (kp = mprGetNextKey(choices, kp)) != 0; ) {
             checked = (smatch(kp->data, value)) ? " checked" : "";
             espRender(conn, "%s <input type='radio' name='%s' value='%s'%s%s class='%s'/>\r\n",
-                spascal(kp->key), field, kp->data, checked, map(conn, options), style);
+                stitle(kp->key), field, kp->data, checked, map(conn, options), style);
         }
         break;
         /* Fall through */
@@ -115,18 +115,6 @@ static cchar *getValue(HttpConn *conn, cchar *fieldName, MprHash *options)
     value = 0;
     if (record) {
         value = ediGetFieldValue(record, fieldName);
-#if ME_ESP_LEGACY
-        if (record->errors && eroute->legacy) {
-            MprKey  *field;
-            cchar   *msg;
-            #define ESTYLE(s) "esp-" s 
-            for (ITERATE_KEY_DATA(record->errors, field, msg)) {
-                if (smatch(field->key, fieldName)) {
-                    httpInsertOption(options, "class", ESTYLE("field-error"));
-                }
-            }
-        }
-#endif
     }
     if (value == 0) {
         value = httpGetOption(options, "value", 0);
