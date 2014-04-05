@@ -102,7 +102,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\edi.c" />
     <ClCompile Include="..\..\src\espAbbrev.c" />
-    <ClCompile Include="..\..\src\espDeprecated.c" />
     <ClCompile Include="..\..\src\espFramework.c" />
     <ClCompile Include="..\..\src\espHandler.c" />
     <ClCompile Include="..\..\src\espHtml.c" />
