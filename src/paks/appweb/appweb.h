@@ -612,7 +612,7 @@ PUBLIC bool maTokenize(MaState *state, cchar *str, cchar *fmt, ...);
     @param tok Next token reference
     @return Reference to the next token. (Not allocate
     @ingroup MaAppweb
-    @stability Prototype
+    @stability Evolving
 */
 PUBLIC char *maGetNextArg(char *s, char **tok);
 

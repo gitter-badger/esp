@@ -435,6 +435,7 @@ PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue);
  */
 PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
 
+#if UNUSED
 /**
     Initialzie a route for use by ESP
     @param route HttpRoute to modify
@@ -443,6 +444,7 @@ PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
     @stability Prototype
  */
 PUBLIC EspRoute *espInitRoute(HttpRoute *route);
+#endif
 
 /**
     Load ESP package.json configuration file 
