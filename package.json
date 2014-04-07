@@ -32,8 +32,8 @@
         "esp-html-mvc": "*",
         "esp-server": "*",
         "est": "*",
-        "sqlite": "*",
-        "ssl": "~0.8"
+        "me-ssl": "~0.8",
+        "sqlite": "*"
     },
     "devDependencies": {
         "appweb": "*",
