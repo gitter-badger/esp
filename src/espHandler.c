@@ -723,7 +723,7 @@ PUBLIC void espManageEspRoute(EspRoute *eroute, int flags)
 }
 
 
-PUBLIC EspRoute *espInitRoute(HttpRoute *route)
+static EspRoute *espInitRoute(HttpRoute *route)
 {
     cchar       *path;
     MprPath     info;

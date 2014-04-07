@@ -443,7 +443,7 @@ PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
     @ingroup EspRoute
     @stability Prototype
  */
-PUBLIC EspRoute *espInitRoute(HttpRoute *route);
+static EspRoute *espInitRoute(HttpRoute *route);
 #endif
 
 /**
