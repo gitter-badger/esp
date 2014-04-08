@@ -1188,7 +1188,6 @@
 ../src/paks/me-dev/LICENSE.md,
 ../src/paks/me-dev/package.json,
 ../src/paks/me-dev/README.md,
-../src/paks/me-dev/src,
 ../src/paks/me-doc,
 ../src/paks/me-doc/doc.es,
 ../src/paks/me-doc/doc.me,
