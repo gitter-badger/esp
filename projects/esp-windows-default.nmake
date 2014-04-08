@@ -301,6 +301,7 @@ DEPS_1 = $(DEPS_1) src\paks\me-dev\dev.me
 DEPS_1 = $(DEPS_1) src\paks\me-dev\LICENSE.md
 DEPS_1 = $(DEPS_1) src\paks\me-dev\package.json
 DEPS_1 = $(DEPS_1) src\paks\me-dev\README.md
+DEPS_1 = $(DEPS_1) src\paks\me-dev\src
 DEPS_1 = $(DEPS_1) src\paks\me-doc
 DEPS_1 = $(DEPS_1) src\paks\me-doc\doc.es
 DEPS_1 = $(DEPS_1) src\paks\me-doc\doc.me
@@ -315,6 +316,14 @@ DEPS_1 = $(DEPS_1) src\paks\me-package\package.es
 DEPS_1 = $(DEPS_1) src\paks\me-package\package.json
 DEPS_1 = $(DEPS_1) src\paks\me-package\package.me
 DEPS_1 = $(DEPS_1) src\paks\me-package\README.md
+DEPS_1 = $(DEPS_1) src\paks\me-ssl
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\LICENSE.md
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\matrixssl.me
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\nanossl.me
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\openssl.me
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\package.json
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\README.md
+DEPS_1 = $(DEPS_1) src\paks\me-ssl\ssl.me
 DEPS_1 = $(DEPS_1) src\paks\mpr
 DEPS_1 = $(DEPS_1) src\paks\mpr\LICENSE.md
 DEPS_1 = $(DEPS_1) src\paks\mpr\makerom.c
@@ -346,14 +355,6 @@ DEPS_1 = $(DEPS_1) src\paks\sqlite\sqlite.c
 DEPS_1 = $(DEPS_1) src\paks\sqlite\sqlite.me
 DEPS_1 = $(DEPS_1) src\paks\sqlite\sqlite3.c
 DEPS_1 = $(DEPS_1) src\paks\sqlite\sqlite3.h
-DEPS_1 = $(DEPS_1) src\paks\ssl
-DEPS_1 = $(DEPS_1) src\paks\ssl\LICENSE.md
-DEPS_1 = $(DEPS_1) src\paks\ssl\matrixssl.me
-DEPS_1 = $(DEPS_1) src\paks\ssl\nanossl.me
-DEPS_1 = $(DEPS_1) src\paks\ssl\openssl.me
-DEPS_1 = $(DEPS_1) src\paks\ssl\package.json
-DEPS_1 = $(DEPS_1) src\paks\ssl\README.md
-DEPS_1 = $(DEPS_1) src\paks\ssl\ssl.me
 
 $(CONFIG)\esp: $(DEPS_1)
 	cd src\paks

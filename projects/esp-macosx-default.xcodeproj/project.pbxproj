@@ -1188,6 +1188,7 @@
 ../src/paks/me-dev/LICENSE.md,
 ../src/paks/me-dev/package.json,
 ../src/paks/me-dev/README.md,
+../src/paks/me-dev/src,
 ../src/paks/me-doc,
 ../src/paks/me-doc/doc.es,
 ../src/paks/me-doc/doc.me,
@@ -1202,6 +1203,14 @@
 ../src/paks/me-package/package.json,
 ../src/paks/me-package/package.me,
 ../src/paks/me-package/README.md,
+../src/paks/me-ssl,
+../src/paks/me-ssl/LICENSE.md,
+../src/paks/me-ssl/matrixssl.me,
+../src/paks/me-ssl/nanossl.me,
+../src/paks/me-ssl/openssl.me,
+../src/paks/me-ssl/package.json,
+../src/paks/me-ssl/README.md,
+../src/paks/me-ssl/ssl.me,
 ../src/paks/mpr,
 ../src/paks/mpr/LICENSE.md,
 ../src/paks/mpr/makerom.c,
@@ -1232,15 +1241,7 @@
 ../src/paks/sqlite/sqlite.c,
 ../src/paks/sqlite/sqlite.me,
 ../src/paks/sqlite/sqlite3.c,
-../src/paks/sqlite/sqlite3.h,
-../src/paks/ssl,
-../src/paks/ssl/LICENSE.md,
-../src/paks/ssl/matrixssl.me,
-../src/paks/ssl/nanossl.me,
-../src/paks/ssl/openssl.me,
-../src/paks/ssl/package.json,
-../src/paks/ssl/README.md,
-../src/paks/ssl/ssl.me
+../src/paks/sqlite/sqlite3.h
 			);
 			outputPaths = (
 ../macosx-x64-default/esp
