@@ -46,7 +46,7 @@
     },
     "optionalDependencies": {
         "ejs": "~2.3",
-        "esp": "~5",
+        "esp": "~1",
         "esp-html-mvc": "*",
         "esp-server": "*",
         "est": "~0.6",

@@ -36,8 +36,8 @@
             <h1>Quick Nav</h1>
             <ul>
                 <li><a href="#pkg">Installing the PKG Image</a></li>
-                <li><a href="#removing">Removing Appweb</a></li>
-                <li><a href="#running">Running Appweb</a></li>
+                <li><a href="#removing">Removing ESP</a></li>
+                <li><a href="#running">Running ESP</a></li>
             </ul>
 <!-- BeginDsi "dsi/installSeeAlso.html" -->
             <h1>See Also</h1>
@@ -63,7 +63,8 @@
         </div>
         <div class="contentLeft">
             <h1>Installing on MAC OS X</h1>
-            <p>The Embedthis Appweb install distribution for Mac OS X is published as a an installable pkg file.</p>
+            <p>The Embedthis ESP install distribution for Mac OSX is published as a an 
+            installable pkg file.</p>
             
             <a id="pkg"></a>
             <h2 class="section">Installing the PKG Image</h2>
@@ -72,45 +73,18 @@
             </ol>
             
             <a id="removing"></a>
-            <h2 class="section">Removing Appweb</h2>
+            <h2 class="section">Removing ESP</h2>
             <ol>
-                <li>Run a terminal and change directory to the installation directory for Appweb. This is typically
+                <li>Run a terminal and change directory to the installation directory for ESP. This is typically
                 "/etc/appweb".</li>
-                <li>Run the remove script in the install directory for Appweb by typing
+                <li>Run the remove script in the install directory for ESP by typing
                     <pre>
 sudo ./uninstall
 </pre>
                 </li>
             </ol>
-            
-            <a id="running"></a>
-            <h2 class="section">Running Appweb</h2>
-            <p>Appweb will start when the installation procedure completes.
-            Thereafter, Appweb will automatically start when the system is rebooted.</p>
-            <p>If you wish to manually stop Appweb type:</p>
-            <pre>
-sudo appman stop
-</pre>
-            <p>To restart Appweb:</p>
-            <pre>
-sudo appman start
-</pre>
-            <p>Alternatively, you can run appweb manually (if not already running):</p>
-            <pre>
-cd /etc/appweb
-appweb
-</pre>
-            <p>Appweb is configured by default to listen on port 80. To test that it is serving pages, point your
-            browser at http://localhost. To tailor the Embedthis Appweb configuration, including the default port,
-            you may wish to edit the appweb.conf configuration file.</p>
-            <p>To get all the options for Appweb read the man page via:</p>
-            <pre>
-man appweb
-</pre>or get the command help via:
-            <pre>
-appweb --help
-</pre>
         </div>
+        <p>&nbsp;</p>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->
 	<div class="bottom">

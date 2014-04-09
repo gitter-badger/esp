@@ -3,7 +3,7 @@
 #
 
 NAME                  := esp
-VERSION               := 5.0.0
+VERSION               := 1.0.0
 PROFILE               ?= default
 ARCH                  ?= $(shell uname -m | sed 's/i.86/x86/;s/x86_64/x64/;s/arm.*/arm/;s/mips.*/mips/')
 CC_ARCH               ?= $(shell echo $(ARCH) | sed 's/x86/i686/;s/x64/x86_64/')
@@ -16,12 +16,12 @@ PATH                  := $(LBIN):$(PATH)
 ME_COM_APPWEB         ?= 1
 ME_COM_CGI            ?= 0
 ME_COM_DIR            ?= 0
-ME_COM_EST            ?= 1
+ME_COM_EST            ?= 0
 ME_COM_HTTP           ?= 1
 ME_COM_MATRIXSSL      ?= 0
 ME_COM_MDB            ?= 1
 ME_COM_NANOSSL        ?= 0
-ME_COM_OPENSSL        ?= 0
+ME_COM_OPENSSL        ?= 1
 ME_COM_PCRE           ?= 1
 ME_COM_SQLITE         ?= 1
 ME_COM_SSL            ?= 1
@@ -88,12 +88,6 @@ TARGETS               += $(CONFIG)/esp
 TARGETS               += $(CONFIG)/bin/esp.conf
 TARGETS               += $(CONFIG)/bin/esp
 TARGETS               += $(CONFIG)/bin/ca.crt
-ifeq ($(ME_COM_HTTP),1)
-    TARGETS           += $(CONFIG)/bin/http
-endif
-ifeq ($(ME_COM_EST),1)
-    TARGETS           += $(CONFIG)/bin/libest.so
-endif
 TARGETS               += $(CONFIG)/bin/libmprssl.so
 ifeq ($(ME_COM_SQLITE),1)
     TARGETS           += $(CONFIG)/bin/sqlite
@@ -140,8 +134,6 @@ clean:
 	rm -f "$(CONFIG)/obj/espHandler.o"
 	rm -f "$(CONFIG)/obj/espHtml.o"
 	rm -f "$(CONFIG)/obj/espTemplate.o"
-	rm -f "$(CONFIG)/obj/estLib.o"
-	rm -f "$(CONFIG)/obj/http.o"
 	rm -f "$(CONFIG)/obj/httpLib.o"
 	rm -f "$(CONFIG)/obj/makerom.o"
 	rm -f "$(CONFIG)/obj/mdb.o"
@@ -154,9 +146,7 @@ clean:
 	rm -f "$(CONFIG)/bin/esp.conf"
 	rm -f "$(CONFIG)/bin/esp"
 	rm -f "$(CONFIG)/bin/ca.crt"
-	rm -f "$(CONFIG)/bin/http"
 	rm -f "$(CONFIG)/bin/libappweb.so"
-	rm -f "$(CONFIG)/bin/libest.so"
 	rm -f "$(CONFIG)/bin/libhttp.so"
 	rm -f "$(CONFIG)/bin/libmod_esp.so"
 	rm -f "$(CONFIG)/bin/libmpr.so"
@@ -816,140 +806,67 @@ $(CONFIG)/bin/ca.crt: $(DEPS_34)
 	cp src/paks/http/ca.crt $(CONFIG)/bin/ca.crt
 
 #
-#   http.o
-#
-DEPS_35 += $(CONFIG)/inc/me.h
-DEPS_35 += $(CONFIG)/inc/http.h
-
-$(CONFIG)/obj/http.o: \
-    src/paks/http/http.c $(DEPS_35)
-	@echo '   [Compile] $(CONFIG)/obj/http.o'
-	$(CC) -c -o $(CONFIG)/obj/http.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/http/http.c
-
-ifeq ($(ME_COM_HTTP),1)
-#
-#   httpcmd
-#
-DEPS_36 += $(CONFIG)/inc/mpr.h
-DEPS_36 += $(CONFIG)/inc/me.h
-DEPS_36 += $(CONFIG)/inc/osdep.h
-DEPS_36 += $(CONFIG)/obj/mprLib.o
-DEPS_36 += $(CONFIG)/bin/libmpr.so
-DEPS_36 += $(CONFIG)/inc/pcre.h
-DEPS_36 += $(CONFIG)/obj/pcre.o
-ifeq ($(ME_COM_PCRE),1)
-    DEPS_36 += $(CONFIG)/bin/libpcre.so
-endif
-DEPS_36 += $(CONFIG)/inc/http.h
-DEPS_36 += $(CONFIG)/obj/httpLib.o
-DEPS_36 += $(CONFIG)/bin/libhttp.so
-DEPS_36 += $(CONFIG)/obj/http.o
-
-LIBS_36 += -lhttp
-LIBS_36 += -lmpr
-ifeq ($(ME_COM_PCRE),1)
-    LIBS_36 += -lpcre
-endif
-
-$(CONFIG)/bin/http: $(DEPS_36)
-	@echo '      [Link] $(CONFIG)/bin/http'
-	$(CC) -o $(CONFIG)/bin/http $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/http.o" $(LIBPATHS_36) $(LIBS_36) $(LIBS_36) $(LIBS) $(LIBS) 
-endif
-
-#
 #   est.h
 #
-$(CONFIG)/inc/est.h: $(DEPS_37)
+$(CONFIG)/inc/est.h: $(DEPS_35)
 	@echo '      [Copy] $(CONFIG)/inc/est.h'
-	mkdir -p "$(CONFIG)/inc"
-	cp src/paks/est/est.h $(CONFIG)/inc/est.h
-
-#
-#   estLib.o
-#
-DEPS_38 += $(CONFIG)/inc/me.h
-DEPS_38 += $(CONFIG)/inc/est.h
-DEPS_38 += $(CONFIG)/inc/osdep.h
-
-$(CONFIG)/obj/estLib.o: \
-    src/paks/est/estLib.c $(DEPS_38)
-	@echo '   [Compile] $(CONFIG)/obj/estLib.o'
-	$(CC) -c -o $(CONFIG)/obj/estLib.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/est/estLib.c
-
-ifeq ($(ME_COM_EST),1)
-#
-#   libest
-#
-DEPS_39 += $(CONFIG)/inc/est.h
-DEPS_39 += $(CONFIG)/inc/me.h
-DEPS_39 += $(CONFIG)/inc/osdep.h
-DEPS_39 += $(CONFIG)/obj/estLib.o
-
-$(CONFIG)/bin/libest.so: $(DEPS_39)
-	@echo '      [Link] $(CONFIG)/bin/libest.so'
-	$(CC) -shared -o $(CONFIG)/bin/libest.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/estLib.o" $(LIBS) 
-endif
 
 #
 #   mprSsl.o
 #
-DEPS_40 += $(CONFIG)/inc/me.h
-DEPS_40 += $(CONFIG)/inc/mpr.h
-DEPS_40 += $(CONFIG)/inc/est.h
+DEPS_36 += $(CONFIG)/inc/me.h
+DEPS_36 += $(CONFIG)/inc/mpr.h
+DEPS_36 += $(CONFIG)/inc/est.h
 
 $(CONFIG)/obj/mprSsl.o: \
-    src/paks/mpr/mprSsl.c $(DEPS_40)
+    src/paks/mpr/mprSsl.c $(DEPS_36)
 	@echo '   [Compile] $(CONFIG)/obj/mprSsl.o'
-	$(CC) -c -o $(CONFIG)/obj/mprSsl.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)/matrixssl" "-I$(ME_COM_NANOSSL_PATH)/src" "-I$(ME_COM_OPENSSL_PATH)/include" src/paks/mpr/mprSsl.c
+	$(CC) -c -o $(CONFIG)/obj/mprSsl.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_OPENSSL_PATH)/include" "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)/matrixssl" "-I$(ME_COM_NANOSSL_PATH)/src" src/paks/mpr/mprSsl.c
 
 #
 #   libmprssl
 #
-DEPS_41 += $(CONFIG)/inc/mpr.h
-DEPS_41 += $(CONFIG)/inc/me.h
-DEPS_41 += $(CONFIG)/inc/osdep.h
-DEPS_41 += $(CONFIG)/obj/mprLib.o
-DEPS_41 += $(CONFIG)/bin/libmpr.so
-DEPS_41 += $(CONFIG)/inc/est.h
-DEPS_41 += $(CONFIG)/obj/estLib.o
-ifeq ($(ME_COM_EST),1)
-    DEPS_41 += $(CONFIG)/bin/libest.so
-endif
-DEPS_41 += $(CONFIG)/obj/mprSsl.o
+DEPS_37 += $(CONFIG)/inc/mpr.h
+DEPS_37 += $(CONFIG)/inc/me.h
+DEPS_37 += $(CONFIG)/inc/osdep.h
+DEPS_37 += $(CONFIG)/obj/mprLib.o
+DEPS_37 += $(CONFIG)/bin/libmpr.so
+DEPS_37 += $(CONFIG)/inc/est.h
+DEPS_37 += $(CONFIG)/obj/mprSsl.o
 
-LIBS_41 += -lmpr
+LIBS_37 += -lmpr
+ifeq ($(ME_COM_OPENSSL),1)
+    LIBS_37 += -lssl
+    LIBPATHS_37 += -L$(ME_COM_OPENSSL_PATH)
+endif
+ifeq ($(ME_COM_OPENSSL),1)
+    LIBS_37 += -lcrypto
+    LIBPATHS_37 += -L$(ME_COM_OPENSSL_PATH)
+endif
 ifeq ($(ME_COM_EST),1)
-    LIBS_41 += -lest
+    LIBS_37 += -lest
 endif
 ifeq ($(ME_COM_MATRIXSSL),1)
-    LIBS_41 += -lmatrixssl
-    LIBPATHS_41 += -L$(ME_COM_MATRIXSSL_PATH)
+    LIBS_37 += -lmatrixssl
+    LIBPATHS_37 += -L$(ME_COM_MATRIXSSL_PATH)
 endif
 ifeq ($(ME_COM_NANOSSL),1)
-    LIBS_41 += -lssls
-    LIBPATHS_41 += -L$(ME_COM_NANOSSL_PATH)/bin
-endif
-ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_41 += -lssl
-    LIBPATHS_41 += -L$(ME_COM_OPENSSL_PATH)
-endif
-ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_41 += -lcrypto
-    LIBPATHS_41 += -L$(ME_COM_OPENSSL_PATH)
+    LIBS_37 += -lssls
+    LIBPATHS_37 += -L$(ME_COM_NANOSSL_PATH)/bin
 endif
 
-$(CONFIG)/bin/libmprssl.so: $(DEPS_41)
+$(CONFIG)/bin/libmprssl.so: $(DEPS_37)
 	@echo '      [Link] $(CONFIG)/bin/libmprssl.so'
-	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_41) $(LIBS_41) $(LIBS_41) $(LIBS) 
+	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_37) $(LIBS_37) $(LIBS_37) $(LIBS) 
 
 #
 #   sqlite.o
 #
-DEPS_42 += $(CONFIG)/inc/me.h
-DEPS_42 += $(CONFIG)/inc/sqlite3.h
+DEPS_38 += $(CONFIG)/inc/me.h
+DEPS_38 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite.o: \
-    src/paks/sqlite/sqlite.c $(DEPS_42)
+    src/paks/sqlite/sqlite.c $(DEPS_38)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.o'
 	$(CC) -c -o $(CONFIG)/obj/sqlite.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/sqlite/sqlite.c
 
@@ -957,74 +874,113 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   sqliteshell
 #
-DEPS_43 += $(CONFIG)/inc/sqlite3.h
-DEPS_43 += $(CONFIG)/inc/me.h
-DEPS_43 += $(CONFIG)/obj/sqlite3.o
-DEPS_43 += $(CONFIG)/bin/libsql.so
-DEPS_43 += $(CONFIG)/obj/sqlite.o
+DEPS_39 += $(CONFIG)/inc/sqlite3.h
+DEPS_39 += $(CONFIG)/inc/me.h
+DEPS_39 += $(CONFIG)/obj/sqlite3.o
+DEPS_39 += $(CONFIG)/bin/libsql.so
+DEPS_39 += $(CONFIG)/obj/sqlite.o
 
-LIBS_43 += -lsql
+LIBS_39 += -lsql
 
-$(CONFIG)/bin/sqlite: $(DEPS_43)
+$(CONFIG)/bin/sqlite: $(DEPS_39)
 	@echo '      [Link] $(CONFIG)/bin/sqlite'
-	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_43) $(LIBS_43) $(LIBS_43) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_39) $(LIBS_39) $(LIBS_39) $(LIBS) $(LIBS) 
 endif
 
 #
 #   stop
 #
-stop: $(DEPS_44)
+stop: $(DEPS_40)
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_45)
+installBinary: $(DEPS_41)
 	( \
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
-	ln -s "5.0.0" "$(ME_APP_PREFIX)/latest" ; \
+	ln -s "1.0.0" "$(ME_APP_PREFIX)/latest" ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
 	cp $(CONFIG)/bin/esp $(ME_VAPP_PREFIX)/bin/esp ; \
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
 	rm -f "$(ME_BIN_PREFIX)/esp" ; \
 	ln -s "$(ME_VAPP_PREFIX)/bin/esp" "$(ME_BIN_PREFIX)/esp" ; \
 	cp $(CONFIG)/bin/libappweb.so $(ME_VAPP_PREFIX)/bin/libappweb.so ; \
-	cp $(CONFIG)/bin/libest.so $(ME_VAPP_PREFIX)/bin/libest.so ; \
 	cp $(CONFIG)/bin/libhttp.so $(ME_VAPP_PREFIX)/bin/libhttp.so ; \
 	cp $(CONFIG)/bin/libmpr.so $(ME_VAPP_PREFIX)/bin/libmpr.so ; \
 	cp $(CONFIG)/bin/libmprssl.so $(ME_VAPP_PREFIX)/bin/libmprssl.so ; \
 	cp $(CONFIG)/bin/libpcre.so $(ME_VAPP_PREFIX)/bin/libpcre.so ; \
 	cp $(CONFIG)/bin/libsql.so $(ME_VAPP_PREFIX)/bin/libsql.so ; \
 	cp $(CONFIG)/bin/libmod_esp.so $(ME_VAPP_PREFIX)/bin/libmod_esp.so ; \
+	if [ "$(ME_COM_OPENSSL)" = 1 ]; then true ; \
+	cp $(CONFIG)/bin/libssl*.so* $(ME_VAPP_PREFIX)/bin/libssl*.so* ; \
+	cp $(CONFIG)/bin/libcrypto*.so* $(ME_VAPP_PREFIX)/bin/libcrypto*.so* ; \
+	fi ; \
+	if [ "$(ME_COM_EST)" = 1 ]; then true ; \
+	cp $(CONFIG)/bin/libest.so $(ME_VAPP_PREFIX)/bin/libest.so ; \
+	fi ; \
 	cp $(CONFIG)/bin/ca.crt $(ME_VAPP_PREFIX)/bin/ca.crt ; \
+	cp $(CONFIG)/bin/esp.conf $(ME_VAPP_PREFIX)/bin/esp.conf ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
 	cp doc/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
 	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
 	ln -s "$(ME_VAPP_PREFIX)/doc/man/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/inc" ; \
+	cp $(CONFIG)/inc/me.h $(ME_VAPP_PREFIX)/inc/me.h ; \
+	mkdir -p "$(ME_INC_PREFIX)/esp" ; \
+	rm -f "$(ME_INC_PREFIX)/esp/me.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/me.h" "$(ME_INC_PREFIX)/esp/me.h" ; \
+	cp src/esp.h $(ME_VAPP_PREFIX)/inc/esp.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/esp.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/esp.h" "$(ME_INC_PREFIX)/esp/esp.h" ; \
+	cp src/edi.h $(ME_VAPP_PREFIX)/inc/edi.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/edi.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/edi.h" "$(ME_INC_PREFIX)/esp/edi.h" ; \
+	cp src/paks/osdep/osdep.h $(ME_VAPP_PREFIX)/inc/osdep.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/osdep.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/osdep.h" "$(ME_INC_PREFIX)/esp/osdep.h" ; \
+	cp src/paks/appweb/appweb.h $(ME_VAPP_PREFIX)/inc/appweb.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/appweb.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/appweb.h" "$(ME_INC_PREFIX)/esp/appweb.h" ; \
+	cp src/paks/est/est.h $(ME_VAPP_PREFIX)/inc/est.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/est.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/est.h" "$(ME_INC_PREFIX)/esp/est.h" ; \
+	cp src/paks/http/http.h $(ME_VAPP_PREFIX)/inc/http.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/http.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/http.h" "$(ME_INC_PREFIX)/esp/http.h" ; \
+	cp src/paks/mpr/mpr.h $(ME_VAPP_PREFIX)/inc/mpr.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/mpr.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/mpr.h" "$(ME_INC_PREFIX)/esp/mpr.h" ; \
+	cp src/paks/pcre/pcre.h $(ME_VAPP_PREFIX)/inc/pcre.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/pcre.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/pcre.h" "$(ME_INC_PREFIX)/esp/pcre.h" ; \
+	cp src/paks/sqlite/sqlite3.h $(ME_VAPP_PREFIX)/inc/sqlite3.h ; \
+	rm -f "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
+	ln -s "$(ME_VAPP_PREFIX)/inc/sqlite3.h" "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
 	)
 
 #
 #   start
 #
-start: $(DEPS_46)
+start: $(DEPS_42)
 
 #
 #   install
 #
-DEPS_47 += stop
-DEPS_47 += installBinary
-DEPS_47 += start
+DEPS_43 += stop
+DEPS_43 += installBinary
+DEPS_43 += start
 
-install: $(DEPS_47)
+install: $(DEPS_43)
 
 #
 #   uninstall
 #
-DEPS_48 += stop
+DEPS_44 += stop
 
-uninstall: $(DEPS_48)
+uninstall: $(DEPS_44)
 	( \
 	cd .; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
@@ -1035,6 +991,6 @@ uninstall: $(DEPS_48)
 #
 #   version
 #
-version: $(DEPS_49)
-	echo 5.0.0
+version: $(DEPS_45)
+	echo 1.0.0
 

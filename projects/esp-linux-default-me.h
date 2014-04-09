@@ -13,7 +13,7 @@
     #define ME_COMPANY "embedthis"
 #endif
 #ifndef ME_COMPATIBLE
-    #define ME_COMPATIBLE "5.0.0"
+    #define ME_COMPATIBLE "1.0.0"
 #endif
 #ifndef ME_COMPILER_HAS_ATOMIC
     #define ME_COMPILER_HAS_ATOMIC 0
@@ -130,7 +130,7 @@
     #define ME_TUNE "speed"
 #endif
 #ifndef ME_VERSION
-    #define ME_VERSION "5.0.0"
+    #define ME_VERSION "1.0.0"
 #endif
 
 /* Prefixes */
@@ -150,7 +150,7 @@
     #define ME_APP_PREFIX "/usr/local/lib/esp"
 #endif
 #ifndef ME_VAPP_PREFIX
-    #define ME_VAPP_PREFIX "/usr/local/lib/esp/5.0.0"
+    #define ME_VAPP_PREFIX "/usr/local/lib/esp/1.0.0"
 #endif
 #ifndef ME_BIN_PREFIX
     #define ME_BIN_PREFIX "/usr/local/bin"
@@ -183,7 +183,7 @@
     #define ME_CACHE_PREFIX "/var/spool/esp/cache"
 #endif
 #ifndef ME_SRC_PREFIX
-    #define ME_SRC_PREFIX "esp-5.0.0"
+    #define ME_SRC_PREFIX "esp-1.0.0"
 #endif
 
 /* Suffixes */
@@ -219,7 +219,7 @@
 
 /* Miscellaneous */
 #ifndef ME_MAJOR_VERSION
-    #define ME_MAJOR_VERSION 5
+    #define ME_MAJOR_VERSION 1
 #endif
 #ifndef ME_MINOR_VERSION
     #define ME_MINOR_VERSION 0
@@ -228,7 +228,7 @@
     #define ME_PATCH_VERSION 0
 #endif
 #ifndef ME_VNUM
-    #define ME_VNUM 500000000
+    #define ME_VNUM 100000000
 #endif
 
 /* Components */
@@ -245,7 +245,7 @@
     #define ME_COM_DIR 0
 #endif
 #ifndef ME_COM_EST
-    #define ME_COM_EST 1
+    #define ME_COM_EST 0
 #endif
 #ifndef ME_COM_HTTP
     #define ME_COM_HTTP 1
@@ -266,7 +266,7 @@
     #define ME_COM_NANOSSL 0
 #endif
 #ifndef ME_COM_OPENSSL
-    #define ME_COM_OPENSSL 0
+    #define ME_COM_OPENSSL 1
 #endif
 #ifndef ME_COM_OSDEP
     #define ME_COM_OSDEP 1

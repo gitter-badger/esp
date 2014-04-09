@@ -3,7 +3,7 @@
 #
 
 NAME                  = esp
-VERSION               = 5.0.0
+VERSION               = 1.0.0
 
 OS                    = windows
 PA                    = $(PROCESSOR_ARCHITECTURE)
@@ -36,7 +36,7 @@ ME_COM_CGI            = 0
 ME_COM_DIR            = 0
 !ENDIF
 !IF "$(ME_COM_EST)" == ""
-ME_COM_EST            = 1
+ME_COM_EST            = 0
 !ENDIF
 !IF "$(ME_COM_HTTP)" == ""
 ME_COM_HTTP           = 1
@@ -51,7 +51,7 @@ ME_COM_MDB            = 1
 ME_COM_NANOSSL        = 0
 !ENDIF
 !IF "$(ME_COM_OPENSSL)" == ""
-ME_COM_OPENSSL        = 0
+ME_COM_OPENSSL        = 1
 !ENDIF
 !IF "$(ME_COM_PCRE)" == ""
 ME_COM_PCRE           = 1
@@ -123,12 +123,6 @@ TARGETS               = $(TARGETS) $(CONFIG)\esp
 TARGETS               = $(TARGETS) $(CONFIG)\bin\esp.conf
 TARGETS               = $(TARGETS) $(CONFIG)\bin\esp.exe
 TARGETS               = $(TARGETS) $(CONFIG)\bin\ca.crt
-!IF "$(ME_COM_HTTP)" == "1"
-TARGETS               = $(TARGETS) $(CONFIG)\bin\http.exe
-!ENDIF
-!IF "$(ME_COM_EST)" == "1"
-TARGETS               = $(TARGETS) $(CONFIG)\bin\libest.dll
-!ENDIF
 TARGETS               = $(TARGETS) $(CONFIG)\bin\libmprssl.dll
 TARGETS               = $(TARGETS) $(CONFIG)\bin\removeFiles.exe
 !IF "$(ME_COM_SQLITE)" == "1"
@@ -166,8 +160,6 @@ clean:
 	if exist "$(CONFIG)\obj\espHandler.obj" del /Q "$(CONFIG)\obj\espHandler.obj"
 	if exist "$(CONFIG)\obj\espHtml.obj" del /Q "$(CONFIG)\obj\espHtml.obj"
 	if exist "$(CONFIG)\obj\espTemplate.obj" del /Q "$(CONFIG)\obj\espTemplate.obj"
-	if exist "$(CONFIG)\obj\estLib.obj" del /Q "$(CONFIG)\obj\estLib.obj"
-	if exist "$(CONFIG)\obj\http.obj" del /Q "$(CONFIG)\obj\http.obj"
 	if exist "$(CONFIG)\obj\httpLib.obj" del /Q "$(CONFIG)\obj\httpLib.obj"
 	if exist "$(CONFIG)\obj\makerom.obj" del /Q "$(CONFIG)\obj\makerom.obj"
 	if exist "$(CONFIG)\obj\mdb.obj" del /Q "$(CONFIG)\obj\mdb.obj"
@@ -184,18 +176,10 @@ clean:
 	if exist "$(CONFIG)\bin\esp.pdb" del /Q "$(CONFIG)\bin\esp.pdb"
 	if exist "$(CONFIG)\bin\esp.exp" del /Q "$(CONFIG)\bin\esp.exp"
 	if exist "$(CONFIG)\bin\ca.crt" del /Q "$(CONFIG)\bin\ca.crt"
-	if exist "$(CONFIG)\bin\http.exe" del /Q "$(CONFIG)\bin\http.exe"
-	if exist "$(CONFIG)\bin\http.lib" del /Q "$(CONFIG)\bin\http.lib"
-	if exist "$(CONFIG)\bin\http.pdb" del /Q "$(CONFIG)\bin\http.pdb"
-	if exist "$(CONFIG)\bin\http.exp" del /Q "$(CONFIG)\bin\http.exp"
 	if exist "$(CONFIG)\bin\libappweb.dll" del /Q "$(CONFIG)\bin\libappweb.dll"
 	if exist "$(CONFIG)\bin\libappweb.lib" del /Q "$(CONFIG)\bin\libappweb.lib"
 	if exist "$(CONFIG)\bin\libappweb.pdb" del /Q "$(CONFIG)\bin\libappweb.pdb"
 	if exist "$(CONFIG)\bin\libappweb.exp" del /Q "$(CONFIG)\bin\libappweb.exp"
-	if exist "$(CONFIG)\bin\libest.dll" del /Q "$(CONFIG)\bin\libest.dll"
-	if exist "$(CONFIG)\bin\libest.lib" del /Q "$(CONFIG)\bin\libest.lib"
-	if exist "$(CONFIG)\bin\libest.pdb" del /Q "$(CONFIG)\bin\libest.pdb"
-	if exist "$(CONFIG)\bin\libest.exp" del /Q "$(CONFIG)\bin\libest.exp"
 	if exist "$(CONFIG)\bin\libhttp.dll" del /Q "$(CONFIG)\bin\libhttp.dll"
 	if exist "$(CONFIG)\bin\libhttp.lib" del /Q "$(CONFIG)\bin\libhttp.lib"
 	if exist "$(CONFIG)\bin\libhttp.pdb" del /Q "$(CONFIG)\bin\libhttp.pdb"
@@ -879,160 +863,87 @@ $(CONFIG)\bin\ca.crt: $(DEPS_34)
 	copy /Y src\paks\http\ca.crt $(CONFIG)\bin\ca.crt
 
 #
-#   http.obj
-#
-DEPS_35 = $(DEPS_35) $(CONFIG)\inc\me.h
-DEPS_35 = $(DEPS_35) $(CONFIG)\inc\http.h
-
-$(CONFIG)\obj\http.obj: \
-    src\paks\http\http.c $(DEPS_35)
-	@echo '   [Compile] $(CONFIG)/obj/http.obj'
-	"$(CC)" -c -Fo$(CONFIG)\obj\http.obj -Fd$(CONFIG)\obj\http.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\paks\http\http.c
-
-!IF "$(ME_COM_HTTP)" == "1"
-#
-#   httpcmd
-#
-DEPS_36 = $(DEPS_36) $(CONFIG)\inc\mpr.h
-DEPS_36 = $(DEPS_36) $(CONFIG)\inc\me.h
-DEPS_36 = $(DEPS_36) $(CONFIG)\inc\osdep.h
-DEPS_36 = $(DEPS_36) $(CONFIG)\obj\mprLib.obj
-DEPS_36 = $(DEPS_36) $(CONFIG)\bin\libmpr.dll
-DEPS_36 = $(DEPS_36) $(CONFIG)\inc\pcre.h
-DEPS_36 = $(DEPS_36) $(CONFIG)\obj\pcre.obj
-!IF "$(ME_COM_PCRE)" == "1"
-DEPS_36 = $(DEPS_36) $(CONFIG)\bin\libpcre.dll
-!ENDIF
-DEPS_36 = $(DEPS_36) $(CONFIG)\inc\http.h
-DEPS_36 = $(DEPS_36) $(CONFIG)\obj\httpLib.obj
-DEPS_36 = $(DEPS_36) $(CONFIG)\bin\libhttp.dll
-DEPS_36 = $(DEPS_36) $(CONFIG)\obj\http.obj
-
-LIBS_36 = $(LIBS_36) libhttp.lib
-LIBS_36 = $(LIBS_36) libmpr.lib
-!IF "$(ME_COM_PCRE)" == "1"
-LIBS_36 = $(LIBS_36) libpcre.lib
-!ENDIF
-
-$(CONFIG)\bin\http.exe: $(DEPS_36)
-	@echo '      [Link] $(CONFIG)/bin/http.exe'
-	"$(LD)" -out:$(CONFIG)\bin\http.exe -entry:mainCRTStartup -subsystem:console $(LDFLAGS) $(LIBPATHS) "$(CONFIG)\obj\http.obj" $(LIBPATHS_36) $(LIBS_36) $(LIBS_36) $(LIBS) 
-!ENDIF
-
-#
 #   est.h
 #
-$(CONFIG)\inc\est.h: $(DEPS_37)
+$(CONFIG)\inc\est.h: $(DEPS_35)
 	@echo '      [Copy] $(CONFIG)/inc/est.h'
-	if not exist "$(CONFIG)\inc" md "$(CONFIG)\inc"
-	copy /Y src\paks\est\est.h $(CONFIG)\inc\est.h
-
-#
-#   estLib.obj
-#
-DEPS_38 = $(DEPS_38) $(CONFIG)\inc\me.h
-DEPS_38 = $(DEPS_38) $(CONFIG)\inc\est.h
-DEPS_38 = $(DEPS_38) $(CONFIG)\inc\osdep.h
-
-$(CONFIG)\obj\estLib.obj: \
-    src\paks\est\estLib.c $(DEPS_38)
-	@echo '   [Compile] $(CONFIG)/obj/estLib.obj'
-	"$(CC)" -c -Fo$(CONFIG)\obj\estLib.obj -Fd$(CONFIG)\obj\estLib.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\paks\est\estLib.c
-
-!IF "$(ME_COM_EST)" == "1"
-#
-#   libest
-#
-DEPS_39 = $(DEPS_39) $(CONFIG)\inc\est.h
-DEPS_39 = $(DEPS_39) $(CONFIG)\inc\me.h
-DEPS_39 = $(DEPS_39) $(CONFIG)\inc\osdep.h
-DEPS_39 = $(DEPS_39) $(CONFIG)\obj\estLib.obj
-
-$(CONFIG)\bin\libest.dll: $(DEPS_39)
-	@echo '      [Link] $(CONFIG)/bin/libest.dll'
-	"$(LD)" -dll -out:$(CONFIG)\bin\libest.dll -entry:$(ENTRY) $(LDFLAGS) $(LIBPATHS) "$(CONFIG)\obj\estLib.obj" $(LIBS) 
-!ENDIF
 
 #
 #   mprSsl.obj
 #
-DEPS_40 = $(DEPS_40) $(CONFIG)\inc\me.h
-DEPS_40 = $(DEPS_40) $(CONFIG)\inc\mpr.h
-DEPS_40 = $(DEPS_40) $(CONFIG)\inc\est.h
+DEPS_36 = $(DEPS_36) $(CONFIG)\inc\me.h
+DEPS_36 = $(DEPS_36) $(CONFIG)\inc\mpr.h
+DEPS_36 = $(DEPS_36) $(CONFIG)\inc\est.h
 
 $(CONFIG)\obj\mprSsl.obj: \
-    src\paks\mpr\mprSsl.c $(DEPS_40)
+    src\paks\mpr\mprSsl.c $(DEPS_36)
 	@echo '   [Compile] $(CONFIG)/obj/mprSsl.obj'
-	"$(CC)" -c -Fo$(CONFIG)\obj\mprSsl.obj -Fd$(CONFIG)\obj\mprSsl.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)\matrixssl" "-I$(ME_COM_NANOSSL_PATH)\src" "-I$(ME_COM_OPENSSL_PATH)\include" src\paks\mpr\mprSsl.c
+	"$(CC)" -c -Fo$(CONFIG)\obj\mprSsl.obj -Fd$(CONFIG)\obj\mprSsl.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_OPENSSL_PATH)\include" "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)\matrixssl" "-I$(ME_COM_NANOSSL_PATH)\src" src\paks\mpr\mprSsl.c
 
 #
 #   libmprssl
 #
-DEPS_41 = $(DEPS_41) $(CONFIG)\inc\mpr.h
-DEPS_41 = $(DEPS_41) $(CONFIG)\inc\me.h
-DEPS_41 = $(DEPS_41) $(CONFIG)\inc\osdep.h
-DEPS_41 = $(DEPS_41) $(CONFIG)\obj\mprLib.obj
-DEPS_41 = $(DEPS_41) $(CONFIG)\bin\libmpr.dll
-DEPS_41 = $(DEPS_41) $(CONFIG)\inc\est.h
-DEPS_41 = $(DEPS_41) $(CONFIG)\obj\estLib.obj
-!IF "$(ME_COM_EST)" == "1"
-DEPS_41 = $(DEPS_41) $(CONFIG)\bin\libest.dll
-!ENDIF
-DEPS_41 = $(DEPS_41) $(CONFIG)\obj\mprSsl.obj
+DEPS_37 = $(DEPS_37) $(CONFIG)\inc\mpr.h
+DEPS_37 = $(DEPS_37) $(CONFIG)\inc\me.h
+DEPS_37 = $(DEPS_37) $(CONFIG)\inc\osdep.h
+DEPS_37 = $(DEPS_37) $(CONFIG)\obj\mprLib.obj
+DEPS_37 = $(DEPS_37) $(CONFIG)\bin\libmpr.dll
+DEPS_37 = $(DEPS_37) $(CONFIG)\inc\est.h
+DEPS_37 = $(DEPS_37) $(CONFIG)\obj\mprSsl.obj
 
-LIBS_41 = $(LIBS_41) libmpr.lib
+LIBS_37 = $(LIBS_37) libmpr.lib
+!IF "$(ME_COM_OPENSSL)" == "1"
+LIBS_37 = $(LIBS_37) libeay32.lib
+LIBPATHS_37 = $(LIBPATHS_37) -libpath:$(ME_COM_OPENSSL_PATH)
+!ENDIF
+!IF "$(ME_COM_OPENSSL)" == "1"
+LIBS_37 = $(LIBS_37) libssleay32.lib
+LIBPATHS_37 = $(LIBPATHS_37) -libpath:$(ME_COM_OPENSSL_PATH)
+!ENDIF
 !IF "$(ME_COM_EST)" == "1"
-LIBS_41 = $(LIBS_41) libest.lib
+LIBS_37 = $(LIBS_37) libest.lib
 !ENDIF
 !IF "$(ME_COM_MATRIXSSL)" == "1"
-LIBS_41 = $(LIBS_41) libmatrixssl.lib
-LIBPATHS_41 = $(LIBPATHS_41) -libpath:$(ME_COM_MATRIXSSL_PATH)
+LIBS_37 = $(LIBS_37) libmatrixssl.lib
+LIBPATHS_37 = $(LIBPATHS_37) -libpath:$(ME_COM_MATRIXSSL_PATH)
 !ENDIF
 !IF "$(ME_COM_NANOSSL)" == "1"
-LIBS_41 = $(LIBS_41) libssls.lib
-LIBPATHS_41 = $(LIBPATHS_41) -libpath:$(ME_COM_NANOSSL_PATH)/bin
-!ENDIF
-!IF "$(ME_COM_OPENSSL)" == "1"
-LIBS_41 = $(LIBS_41) libeay32.lib
-LIBPATHS_41 = $(LIBPATHS_41) -libpath:$(ME_COM_OPENSSL_PATH)
-!ENDIF
-!IF "$(ME_COM_OPENSSL)" == "1"
-LIBS_41 = $(LIBS_41) libssleay32.lib
-LIBPATHS_41 = $(LIBPATHS_41) -libpath:$(ME_COM_OPENSSL_PATH)
+LIBS_37 = $(LIBS_37) libssls.lib
+LIBPATHS_37 = $(LIBPATHS_37) -libpath:$(ME_COM_NANOSSL_PATH)/bin
 !ENDIF
 
-$(CONFIG)\bin\libmprssl.dll: $(DEPS_41)
+$(CONFIG)\bin\libmprssl.dll: $(DEPS_37)
 	@echo '      [Link] $(CONFIG)/bin/libmprssl.dll'
-	"$(LD)" -dll -out:$(CONFIG)\bin\libmprssl.dll -entry:$(ENTRY) $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)\obj\mprSsl.obj" $(LIBPATHS_41) $(LIBS_41) $(LIBS_41) $(LIBS) 
+	"$(LD)" -dll -out:$(CONFIG)\bin\libmprssl.dll -entry:$(ENTRY) $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)\obj\mprSsl.obj" $(LIBPATHS_37) $(LIBS_37) $(LIBS_37) $(LIBS) 
 
 #
 #   removeFiles.obj
 #
-DEPS_42 = $(DEPS_42) $(CONFIG)\inc\me.h
+DEPS_38 = $(DEPS_38) $(CONFIG)\inc\me.h
 
 $(CONFIG)\obj\removeFiles.obj: \
-    package\windows\removeFiles.c $(DEPS_42)
+    package\windows\removeFiles.c $(DEPS_38)
 	@echo '   [Compile] $(CONFIG)/obj/removeFiles.obj'
 	"$(CC)" -c -Fo$(CONFIG)\obj\removeFiles.obj -Fd$(CONFIG)\obj\removeFiles.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) package\windows\removeFiles.c
 
 #
 #   removeFiles
 #
-DEPS_43 = $(DEPS_43) $(CONFIG)\inc\me.h
-DEPS_43 = $(DEPS_43) $(CONFIG)\obj\removeFiles.obj
+DEPS_39 = $(DEPS_39) $(CONFIG)\inc\me.h
+DEPS_39 = $(DEPS_39) $(CONFIG)\obj\removeFiles.obj
 
-$(CONFIG)\bin\removeFiles.exe: $(DEPS_43)
+$(CONFIG)\bin\removeFiles.exe: $(DEPS_39)
 	@echo '      [Link] $(CONFIG)/bin/removeFiles.exe'
 	"$(LD)" -out:$(CONFIG)\bin\removeFiles.exe -entry:WinMainCRTStartup -subsystem:windows $(LDFLAGS) $(LIBPATHS) "$(CONFIG)\obj\removeFiles.obj" $(LIBS) 
 
 #
 #   sqlite.obj
 #
-DEPS_44 = $(DEPS_44) $(CONFIG)\inc\me.h
-DEPS_44 = $(DEPS_44) $(CONFIG)\inc\sqlite3.h
+DEPS_40 = $(DEPS_40) $(CONFIG)\inc\me.h
+DEPS_40 = $(DEPS_40) $(CONFIG)\inc\sqlite3.h
 
 $(CONFIG)\obj\sqlite.obj: \
-    src\paks\sqlite\sqlite.c $(DEPS_44)
+    src\paks\sqlite\sqlite.c $(DEPS_40)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.obj'
 	"$(CC)" -c -Fo$(CONFIG)\obj\sqlite.obj -Fd$(CONFIG)\obj\sqlite.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\paks\sqlite\sqlite.c
 
@@ -1040,68 +951,87 @@ $(CONFIG)\obj\sqlite.obj: \
 #
 #   sqliteshell
 #
-DEPS_45 = $(DEPS_45) $(CONFIG)\inc\sqlite3.h
-DEPS_45 = $(DEPS_45) $(CONFIG)\inc\me.h
-DEPS_45 = $(DEPS_45) $(CONFIG)\obj\sqlite3.obj
-DEPS_45 = $(DEPS_45) $(CONFIG)\bin\libsql.dll
-DEPS_45 = $(DEPS_45) $(CONFIG)\obj\sqlite.obj
+DEPS_41 = $(DEPS_41) $(CONFIG)\inc\sqlite3.h
+DEPS_41 = $(DEPS_41) $(CONFIG)\inc\me.h
+DEPS_41 = $(DEPS_41) $(CONFIG)\obj\sqlite3.obj
+DEPS_41 = $(DEPS_41) $(CONFIG)\bin\libsql.dll
+DEPS_41 = $(DEPS_41) $(CONFIG)\obj\sqlite.obj
 
-LIBS_45 = $(LIBS_45) libsql.lib
+LIBS_41 = $(LIBS_41) libsql.lib
 
-$(CONFIG)\bin\sqlite.exe: $(DEPS_45)
+$(CONFIG)\bin\sqlite.exe: $(DEPS_41)
 	@echo '      [Link] $(CONFIG)/bin/sqlite.exe'
-	"$(LD)" -out:$(CONFIG)\bin\sqlite.exe -entry:mainCRTStartup -subsystem:console $(LDFLAGS) $(LIBPATHS) "$(CONFIG)\obj\sqlite.obj" $(LIBPATHS_45) $(LIBS_45) $(LIBS_45) $(LIBS) 
+	"$(LD)" -out:$(CONFIG)\bin\sqlite.exe -entry:mainCRTStartup -subsystem:console $(LDFLAGS) $(LIBPATHS) "$(CONFIG)\obj\sqlite.obj" $(LIBPATHS_41) $(LIBS_41) $(LIBS_41) $(LIBS) 
 !ENDIF
 
 #
 #   stop
 #
-stop: $(DEPS_46)
+stop: $(DEPS_42)
 #  Omit build script stop
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_47)
+installBinary: $(DEPS_43)
 	cd .
 	if not exist "$(ME_VAPP_PREFIX)\bin" md "$(ME_VAPP_PREFIX)\bin"
 	copy /Y $(CONFIG)\bin\esp.exe "$(ME_VAPP_PREFIX)\bin\esp.exe"
 	copy /Y $(CONFIG)\bin\libappweb.dll "$(ME_VAPP_PREFIX)\bin\libappweb.dll"
-	copy /Y $(CONFIG)\bin\libest.dll "$(ME_VAPP_PREFIX)\bin\libest.dll"
 	copy /Y $(CONFIG)\bin\libhttp.dll "$(ME_VAPP_PREFIX)\bin\libhttp.dll"
 	copy /Y $(CONFIG)\bin\libmpr.dll "$(ME_VAPP_PREFIX)\bin\libmpr.dll"
 	copy /Y $(CONFIG)\bin\libmprssl.dll "$(ME_VAPP_PREFIX)\bin\libmprssl.dll"
 	copy /Y $(CONFIG)\bin\libpcre.dll "$(ME_VAPP_PREFIX)\bin\libpcre.dll"
 	copy /Y $(CONFIG)\bin\libsql.dll "$(ME_VAPP_PREFIX)\bin\libsql.dll"
 	copy /Y $(CONFIG)\bin\libmod_esp.dll "$(ME_VAPP_PREFIX)\bin\libmod_esp.dll"
+!IF "$(ME_COM_OPENSSL)" == "1"
+	copy /Y $(CONFIG)\bin\libeay32.dll "$(ME_VAPP_PREFIX)\bin\libeay32.dll"
+	copy /Y $(CONFIG)\bin\ssleay32.dll "$(ME_VAPP_PREFIX)\bin\ssleay32.dll"
+!ENDIF
+!IF "$(ME_COM_EST)" == "1"
+	copy /Y $(CONFIG)\bin\libest.dll "$(ME_VAPP_PREFIX)\bin\libest.dll"
+!ENDIF
 	copy /Y $(CONFIG)\bin\ca.crt "$(ME_VAPP_PREFIX)\bin\ca.crt"
+	copy /Y $(CONFIG)\bin\esp.conf "$(ME_VAPP_PREFIX)\bin\esp.conf"
+	if not exist "$(ME_VAPP_PREFIX)\inc" md "$(ME_VAPP_PREFIX)\inc"
+	copy /Y $(CONFIG)\inc\me.h "$(ME_VAPP_PREFIX)\inc\me.h"
+	copy /Y src\esp.h "$(ME_VAPP_PREFIX)\inc\esp.h"
+	copy /Y src\edi.h "$(ME_VAPP_PREFIX)\inc\edi.h"
+	copy /Y src\paks\osdep\osdep.h "$(ME_VAPP_PREFIX)\inc\osdep.h"
+	copy /Y src\paks\appweb\appweb.h "$(ME_VAPP_PREFIX)\inc\appweb.h"
+	copy /Y src\paks\est\est.h "$(ME_VAPP_PREFIX)\inc\est.h"
+	copy /Y src\paks\http\http.h "$(ME_VAPP_PREFIX)\inc\http.h"
+	copy /Y src\paks\mpr\mpr.h "$(ME_VAPP_PREFIX)\inc\mpr.h"
+	copy /Y src\paks\pcre\pcre.h "$(ME_VAPP_PREFIX)\inc\pcre.h"
+	copy /Y src\paks\sqlite\sqlite3.h "$(ME_VAPP_PREFIX)\inc\sqlite3.h"
 	cd .
 
 #
 #   start
 #
-start: $(DEPS_48)
+start: $(DEPS_44)
 #  Omit build script start
 
 #
 #   install
 #
-DEPS_49 = $(DEPS_49) stop
-DEPS_49 = $(DEPS_49) installBinary
-DEPS_49 = $(DEPS_49) start
+DEPS_45 = $(DEPS_45) stop
+DEPS_45 = $(DEPS_45) installBinary
+DEPS_45 = $(DEPS_45) start
 
-install: $(DEPS_49)
+install: $(DEPS_45)
 #  Omit build script install
 
 #
 #   uninstall
 #
-DEPS_50 = $(DEPS_50) stop
+DEPS_46 = $(DEPS_46) stop
 
-uninstall: $(DEPS_50)
+uninstall: $(DEPS_46)
 	cd .
 	if exist "$(ME_VAPP_PREFIX)" rd /Q /S "$(ME_VAPP_PREFIX)"
 	if exist "$(ME_VAPP_PREFIX)\bin" rd /Q "$(ME_VAPP_PREFIX)\bin"
+	if exist "$(ME_VAPP_PREFIX)\inc" rd /Q "$(ME_VAPP_PREFIX)\inc"
 	if exist "$(ME_VAPP_PREFIX)\man" rd /Q "$(ME_VAPP_PREFIX)\man"
 	if exist "$(ME_VAPP_PREFIX)\latest" del /Q "$(ME_VAPP_PREFIX)\latest"
 	if exist "$(ME_VAPP_PREFIX)" rd /Q "$(ME_VAPP_PREFIX)"
@@ -1110,6 +1040,6 @@ uninstall: $(DEPS_50)
 #
 #   version
 #
-version: $(DEPS_51)
-	echo 5.0.0
+version: $(DEPS_47)
+	echo 1.0.0
 

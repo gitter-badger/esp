@@ -119,7 +119,7 @@ div.content {
 
 div.content a {
 	color: #284898; 
-	text-decoration: underline; 
+	text-decoration: none; 
 }
 
 div.content a:hover { 
