@@ -105,8 +105,8 @@ typedef struct EspState {
     MprBuf  *end;                           /**< Accumulated compiled esp end of function code */
 } EspState;
 
-#define ESP_COMPILE_DEBUG   1               /**< Override to compile in debug mode. Defaults to same as Appweb */
-#define ESP_COMPILE_RELEASE 2               /**< Override to compile in release mode */
+#define ESP_COMPILE_SYMBOLS     1           /**< Override to compile in debug mode. Defaults to same as Appweb */
+#define ESP_COMPILE_OPTIMIZED   2           /**< Override to compile in release mode */
 
 /**
     Top level ESP structure. This is a singleton.

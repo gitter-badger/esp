@@ -1026,26 +1026,27 @@ static cchar *getDebug(EspRoute *eroute)
 {
     MaAppweb    *appweb;
     Esp         *esp;
-    int         debug;
+    int         symbols;
 
     appweb = MPR->appwebService;
     esp = MPR->espService;
-    if (esp->compileMode == ESP_COMPILE_DEBUG) {
-        debug = 1;
-    } else if (esp->compileMode == ESP_COMPILE_RELEASE) {
-        debug = 0;
-    } else if (eroute->compileMode == ESP_COMPILE_DEBUG) {
-        debug = 1;
-    } else if (eroute->compileMode == ESP_COMPILE_RELEASE) {
-        debug = 0;
+    symbols = 0;
+    if (esp->compileMode == ESP_COMPILE_SYMBOLS) {
+        symbols = 1;
+    } else if (esp->compileMode == ESP_COMPILE_OPTIMIZED) {
+        symbols = 0;
+    } else if (eroute->compileMode == ESP_COMPILE_SYMBOLS) {
+        symbols = 1;
+    } else if (eroute->compileMode == ESP_COMPILE_OPTIMIZED) {
+        symbols = 0;
     } else {
-        debug = sends(appweb->platform, "-debug") || sends(appweb->platform, "-xcode") || 
+        symbols = sends(appweb->platform, "-debug") || sends(appweb->platform, "-xcode") || 
             sends(appweb->platform, "-mine") || sends(appweb->platform, "-vsdebug");
     }
     if (scontains(appweb->platform, "windows-")) {
-        return (debug) ? "-DME_DEBUG -Zi -Od" : "-Os";
+        return (symbols) ? "-DME_DEBUG -Zi -Od" : "-Os";
     }
-    return (debug) ? "-DME_DEBUG -g" : "-O2";
+    return (symbols) ? "-DME_DEBUG -g" : "-O2";
 }
 
 

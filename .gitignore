@@ -21,3 +21,4 @@ macosx-*
 /releases
 /doc/lf/
 *.guid
+projects/esp-macosx-mine*

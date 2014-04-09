@@ -55,118 +55,81 @@
             <h1>Embedthis ESP&trade; Features</h1><a id="components"></a>
             <p>The ESP product includes the following components:</p>
             <ul>
-                <li>C-Languge web framework</li>
+                <li>C-Languge Model-View-Controller web framework</li>
                 <li>Application and scaffold generator</li>
-                <li>Appweb HTTP Client and Server libraries</li>
-                <li>Interface to Secure Sockets Layer (SSL/TLS)</li>
+                <li>Appweb HTTP engine</li>
                 <li>Documentation</li>
                 <li>Samples</li>
                 <li>Source code</li>
             </ul>
-
             <h2 class="section">Feature Overview</h2>
             <h3>Web Framework</h3>
             <ul>
-                <li>Full HTTP/1.1 support</li>
-                <li>IPv4 and IPv6</li>
-                <li>Multithreaded, event-based server</li>
-                <li>Fast co-routine request pipeline</li>
-                <li>Request routing with RegularExpression request rewriting</li>
-                <li>Supports ranged, chunked and pipelined requests</li>
-                <li>Sendfile and vectored I/O</li>
-                <li>Virtual Hosting. IP-based and Name-based</li>
-                <li>Error and access Logging (Common Log Format)</li>
-                <li>Appweb, Apache style configuration</li>
-                <li>Sand-box resource limits</li>
-                <li>Monitoring and defensive counter-measures</li>
+                <li>MVC web framework</li>
+                <li>MDB and SQLite databases</li>
+                <li>RESTful URI mapping and routing</li>
+                <li>Transparent recompilation and reload (browser reload triggered)</li>
+                <li>Session and cookie management</li>
+                <li>Web page templates with inline C-code and master layout pages</li>
+                <li>Response caching</li>
+                <li>JSON parser supporting JSON requests and responses</li>
+                <li>AJAX and async request support</li>
+                <li>AngularJS support</li>
             </ul>
-
-- App generation
-- Scaffold generation
-- Databases: SQLite, MDB
-- Database migrations
-- RESTful URI Routing
-- JSON 
-- AJAX
-- Transparent recompilation and reload (browser reload triggered)
-- Compilation into single application executable
-- Pak integration
-- Catalog of extension paks 
-- Sessions, flash
-- Integrated response caching
-- Security 
-    - XSRF mitigation
-- Page templates with inline C code
-- Master Layout Pages
-- Garbage collection
-- AngularJS integration and support
-
-
-            <h3>HTTP Server Engine</h3>
+            <h3>Content Generation</h3>
+            <ul>
+                <li>Application generator</li>
+                <li>Scaffold generator</li>
+                <li>Database migration generation and management</li>
+                <li>Extensible components via the <a href="http://embedthis.com/products/pak/">Pak</a> package manager and catalog</li>
+                <li>Client side asset minimization and compression</li>
+                <li>Batch compilation</li>
+                <li>Packaging applications into single executable</li>
+            </ul>
+            <h3>Appweb HTTP Engine</h3>
             <ul>
                 <li>Full HTTP/1.1 support</li>
                 <li>IPv4 and IPv6</li>
                 <li>Multithreaded, event-based server</li>
                 <li>Fast co-routine request pipeline</li>
-                <li>Request routing with RegularExpression request rewriting</li>
+                <li>RESTful request routing with regular expression matching and rewriting</li>
                 <li>Supports ranged, chunked and pipelined requests</li>
-                <li>Sendfile and vectored I/O</li>
+                <li>Efficient transmission via sendfile and vectored I/O</li>
                 <li>Virtual Hosting. IP-based and Name-based</li>
                 <li>Error and access Logging (Common Log Format)</li>
                 <li>Appweb, Apache style configuration</li>
                 <li>Sand-box resource limits</li>
                 <li>Monitoring and defensive counter-measures</li>
             </ul>
-
             <h3>Performance</h3>
             <ul>
                 <li>Request throughput (&gt; 40,000 requests per second on Macbook Pro)</li>
-                <li>Multi-threaded core for scale and blocking requests</li>
-                <li>Small memory footprint even under heavy load (from 2MB)</li>
+                <li>Multi-threaded, event-based core for scale and blocking requests</li>
+                <li>Small memory footprint even under heavy load (from 1MB)</li>
             </ul>
-
             <h3>Modularity</h3>
             <ul>
-                <li>Dynamic loading of modules</li>
-                <li>Modules for CGI, Directory Listings, ESP, Ejscript, PHP, file upload and SSL</li>
+                <li>Dynamic loading and reloading of applications, pages and controllers</li>
                 <li>Configurable request routing</li>
-                <li>Extensible/replaceable authorization, SSL and script</li>
+                <li>Extensible/replaceable authorization and SSL</li>
             </ul>
             <h3>Security</h3>
             <ul>
                 <li>Secure Sockets Layer (SSL)</li>
                 <li>Basic and Digest Authentication</li>
                 <li>Route based authorization</li>
+                <li>User authentication and role-based security</li>
+                <li>XSRF tokens to minimize CSRF threats</li>
                 <li>Sandbox limits</li>
                 <li>Access and access violation logging</li>
-                <li>Safe portable runtime to protect against memory leaks and buffer overflows</li>
-            </ul>
-            <h3>Dynamic Content</h3>
-            <ul>
-                <li>Embedded Server Pages (included)</li>
-                <li>Support for Ejscript Server-Side JavaScript (separate product)</li>
-                <li>PHP (separate)</li>
-                <li>CGI/1.1</li>
-            </ul>
-            <h3>Embedded Server Pages (ESP) Web Framework</h3>
-            <ul>
-                <li>Web page templating engine with layout pages</li>
-                <li>Model/View/Controller paradigm or stand-alone web pages</li>
-                <li>Embedded "C" language code in HTML pages</li>
-                <li>Fast, automatic recompilation and reloading of updated web pages</li>
-                <li>Ajax View Controls with jQuery support</li>
-                <li>Session and flash inter-request state management</li>
-                <li>Routing of URL requests directly to "C" language functions</li>
-                <li>Integrated and transparent content caching</li>
+                <li>Safe portable runtime to protect against buffer overflows</li>
+                <li>Garbage collector to eliminate memory leaks</li>
             </ul>
             <h3>Developer Support</h3>
             <ul>
-                <li>HTTP server and client libraries</li>
-                <li>Shared and static library build options</li>
                 <li>Extensive "C" API</li>
-                <li>Easy, intuitive programming model</li>
-                <li>Coding minimized as most features can be specified via the configuration file</li>
                 <li>Extensive debug trace logging</li>
+                <li>Online community support forum</li>
             </ul>
             <h3>Documentation</h3>
             <ul>
@@ -177,12 +140,12 @@
             </ul>
             <h3>Platform Support</h3>
             <ul>
-                <li>Linux (2.6)</li>
+                <li>Linux (2.6 and later)</li>
                 <li>Windows (7 and later)</li>
-                <li>MAC OSX (Lion)</li>
+                <li>Mac OSX (10.7 and later)</li>
                 <li>VxWorks (6.X)</li>
-                <li>Free BSD</li>
-                <li>Unix</li>
+                <li>Free BSD (10.X)</li>
+                <li>Packaged installations for Windows and MAC OSX</li>
             </ul>
             <h3>Embedding Support</h3>
             <ul>
@@ -190,18 +153,6 @@
                 <li>Full cross-compilation support. Use Windows, Linux or Mac as build system</li>
                 <li>Fine-grained control for conditional build and compilation</li>
                 <li>Execute from ROM (XIP)</li>
-            </ul>
-            <h3>Other Features</h3>
-            <ul>
-                <li>Packaged installations for Linux, Windows and MAC OS X</li>
-                <li>Run as a service/daemon</li>
-                <li>HTTP server and client access program</li>
-            </ul>
-            <h3>Standards</h3>
-            <ul>
-                <li>HTTP/1.1</li>
-                <li>CGI/1.1</li>
-                <li>Apache configuration file and logging compatibility</li>
             </ul>
         </div>
     </div>

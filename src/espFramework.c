@@ -522,9 +522,9 @@ PUBLIC int espLoadConfig(HttpRoute *route)
         }
         if ((value = espGetConfig(route, "esp.compile", 0)) != 0) {
             if (smatch(value, "debug") || smatch(value, "symbols")) {
-                eroute->compileMode = ESP_COMPILE_DEBUG;
+                eroute->compileMode = ESP_COMPILE_SYMBOLS;
             } else if (smatch(value, "release") || smatch(value, "optimized")) {
-                eroute->compileMode = ESP_COMPILE_RELEASE;
+                eroute->compileMode = ESP_COMPILE_OPTIMIZED;
             }
         }
         if ((value = espGetConfig(route, "esp.server.redirect", 0)) != 0) {
