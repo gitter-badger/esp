@@ -435,17 +435,6 @@ PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue);
  */
 PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
 
-#if UNUSED
-/**
-    Initialzie a route for use by ESP
-    @param route HttpRoute to modify
-    @return The allocated EspRoute object
-    @ingroup EspRoute
-    @stability Prototype
- */
-static EspRoute *espInitRoute(HttpRoute *route);
-#endif
-
 /**
     Load ESP package.json configuration file 
     @param route HttpRoute defining the ESP application

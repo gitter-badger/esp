@@ -137,6 +137,7 @@ static MprList *getRoutes();
 static MprHash *getTargets(int argc, char **argv);
 static cchar *getTemplate(cchar *key, MprHash *tokens);
 static cchar *getPakVersion(cchar *name, cchar *version);
+static void getValue(int argc, char **argv);
 static bool identifier(cchar *name);
 static void initialize(int argc, char **argv);
 static bool inRange(cchar *expr, cchar *version);
@@ -159,6 +160,7 @@ static int reverseSortFiles(MprDirEntry **d1, MprDirEntry **d2);
 static void run(int argc, char **argv);
 static bool selectResource(cchar *path, cchar *kind);
 static void setMode(cchar *mode);
+static void setValue(int argc, char **argv);
 static int sortFiles(MprDirEntry **d1, MprDirEntry **d2);
 static void qtrace(cchar *tag, cchar *fmt, ...);
 static void trace(cchar *tag, cchar *fmt, ...);
@@ -446,6 +448,9 @@ static void process(int argc, char **argv)
     } else if (smatch(cmd, "generate")) {
         generate(argc - 1, &argv[1]);
 
+    } else if (smatch(cmd, "get")) {
+        getValue(argc - 1, &argv[1]);
+
     } else if (smatch(cmd, "install")) {
         app->routes = getRoutes();
         install(argc - 1, &argv[1]);
@@ -464,6 +469,9 @@ static void process(int argc, char **argv)
     } else if (smatch(cmd, "run")) {
         app->routes = getRoutes();
         run(argc - 1, &argv[1]);
+
+    } else if (smatch(cmd, "set")) {
+        setValue(argc - 1, &argv[1]);
 
     } else if (smatch(cmd, "uninstall")) {
         app->routes = getRoutes();
@@ -556,6 +564,23 @@ static void generate(int argc, char **argv)
     if (!app->error) {
         qtrace("Generate", "Complete");
     }
+}
+
+
+static void getValue(int argc, char **argv)
+{
+    cchar   *key, *value;
+
+    if (argc < 1) {
+        usageError();
+        return;
+    }
+    key = argv[0];
+
+    app->targets = getTargets(0, NULL);
+    app->routes = getRoutes();
+    value = espGetConfig(app->route, key, "");
+    printf("%s\n", value);
 }
 
 
@@ -778,6 +803,23 @@ static void setMode(cchar *mode)
     app->quiet = 1;
     clean(0, NULL);
     app->quiet = quiet;
+}
+
+
+static void setValue(int argc, char **argv)
+{
+    cchar   *key, *value;
+
+    if (argc < 2) {
+        usageError();
+        return;
+    }
+    key = argv[0];
+    value = argv[1];
+
+    app->targets = getTargets(0, NULL);
+    app->routes = getRoutes();
+    editProperty(key, value);
 }
 
 

@@ -28,7 +28,7 @@
         <div class="crumbs">
             <a href="../../index.html">Home</a>
 <!-- EndDsi -->
-             &gt; <b>Appweb Features</b>
+             &gt; <b>ESP Features</b>
         </div>
     </div>
     <div class="content">
@@ -52,19 +52,56 @@
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
-            <h1>Embedthis Appweb&trade; Features</h1><a id="components"></a>
-            <p>The Appweb product includes the following components:</p>
+            <h1>Embedthis ESP&trade; Features</h1><a id="components"></a>
+            <p>The ESP product includes the following components:</p>
             <ul>
-                <li>Appweb HTTP Server main program</li>
-                <li>Appweb HTTP Client program</li>
+                <li>C-Languge web framework</li>
+                <li>Application and scaffold generator</li>
                 <li>Appweb HTTP Client and Server libraries</li>
-                <li>Multiple web frameworks</li>
                 <li>Interface to Secure Sockets Layer (SSL/TLS)</li>
                 <li>Documentation</li>
                 <li>Samples</li>
                 <li>Source code</li>
             </ul>
+
             <h2 class="section">Feature Overview</h2>
+            <h3>Web Framework</h3>
+            <ul>
+                <li>Full HTTP/1.1 support</li>
+                <li>IPv4 and IPv6</li>
+                <li>Multithreaded, event-based server</li>
+                <li>Fast co-routine request pipeline</li>
+                <li>Request routing with RegularExpression request rewriting</li>
+                <li>Supports ranged, chunked and pipelined requests</li>
+                <li>Sendfile and vectored I/O</li>
+                <li>Virtual Hosting. IP-based and Name-based</li>
+                <li>Error and access Logging (Common Log Format)</li>
+                <li>Appweb, Apache style configuration</li>
+                <li>Sand-box resource limits</li>
+                <li>Monitoring and defensive counter-measures</li>
+            </ul>
+
+- App generation
+- Scaffold generation
+- Databases: SQLite, MDB
+- Database migrations
+- RESTful URI Routing
+- JSON 
+- AJAX
+- Transparent recompilation and reload (browser reload triggered)
+- Compilation into single application executable
+- Pak integration
+- Catalog of extension paks 
+- Sessions, flash
+- Integrated response caching
+- Security 
+    - XSRF mitigation
+- Page templates with inline C code
+- Master Layout Pages
+- Garbage collection
+- AngularJS integration and support
+
+
             <h3>HTTP Server Engine</h3>
             <ul>
                 <li>Full HTTP/1.1 support</li>
@@ -76,16 +113,18 @@
                 <li>Sendfile and vectored I/O</li>
                 <li>Virtual Hosting. IP-based and Name-based</li>
                 <li>Error and access Logging (Common Log Format)</li>
-                <li>Apache style configuration</li>
-                <li>Manager monitoring process</li>
+                <li>Appweb, Apache style configuration</li>
                 <li>Sand-box resource limits</li>
+                <li>Monitoring and defensive counter-measures</li>
             </ul>
+
             <h3>Performance</h3>
             <ul>
-                <li>Request throughput (&gt; 9,000 requests per second)</li>
+                <li>Request throughput (&gt; 40,000 requests per second on Macbook Pro)</li>
                 <li>Multi-threaded core for scale and blocking requests</li>
-                <li>Small memory footprint even under heavy load (from 1MB)</li>
+                <li>Small memory footprint even under heavy load (from 2MB)</li>
             </ul>
+
             <h3>Modularity</h3>
             <ul>
                 <li>Dynamic loading of modules</li>

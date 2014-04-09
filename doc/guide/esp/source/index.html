@@ -38,9 +38,8 @@
                 <li><a href="#building">Building</a></li>
                 <li><a href="#get">Accessing the Source</a></li>
                 <li><a href="#repository">Repository</a></li>
-                <li><a href="#porting">Porting</a></li>
                 <li><a href="make.html">Building with Make</a></li>
-                <li><a href="bit.html">Building with Bit</a></li>
+                <li><a href="me.html">Building with MakeMe</a></li>
                 <li><a href="ide.html">Building with an IDE</a></li>
             </ul>
 <!-- BeginDsi "dsi/sourceSeeAlso.html" -->
@@ -48,7 +47,6 @@
             <ul class="nav">
                 <li><a href="../../../guide/esp/source/index.html">Working with Source</a></li>
                 <li><a href="../../../guide/esp/source/building.html">Building From Source</a></li>
-                <li><a href="../../../guide/esp/source/porting.html">Porting Guide</a></li>
 
                 <li><a href="../../../ref/esp/index.html">Programmers Reference</a></li>
                 <li><a href="../../../api/native.html">Native APIs</a></li>
@@ -97,10 +95,14 @@ $ git clone http://github.com/embedthis/appweb-4
                 href="https://github.com/embedthis/appweb-4">https://github.com/embedthis/appweb-4</a>. This is also a
             convenient way to get the source code. </p>
             <h3>Repository Branches</h3>
-            The repository has two primary branches for development and release: Master and Dev. 
+            The repository has three primary branches for development and release: master, lts and dev. 
             <h4>Master Branch</h4>
-            <p>The Master branch in the repository is used for released versions. The HEAD of the branch contains the 
+            <p>The master branch in the repository is used for released versions. The HEAD of the branch contains the 
             most recent release of the software. This branch is regarded as stable and ready for production use.</p>
+            <h4>LTS Branch</h4>
+            <p>The lts branch in the repository is used for the LTS release versions. 
+            The HEAD of the branch contains the most recent LTS release of the software. 
+            This branch is regarded as stable and ready for production use.</p>
             <h4>Dev Branch</h4>
             <p>The Dev branch in the repository is used for ongoing developement. New features and test fixes are pushed
             to this repository on a regular basis. It is not as bug-free as the Master branch and should not be used

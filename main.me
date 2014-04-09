@@ -68,6 +68,12 @@ Me.load({
         tune: 'speed',
     },
 
+    scripts: {
+        loaded: `
+            me.targets.httpcmd.enable = false
+        `,
+    },
+
     targets: {
         mdb: {
             configurable: true,
