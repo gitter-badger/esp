@@ -205,7 +205,7 @@
 
 /* Profile */
 #ifndef ME_CONFIG_CMD
-    #define ME_CONFIG_CMD "me -d -q -platform macosx-x64-default -configure . -gen xcode"
+    #define ME_CONFIG_CMD "me -d -q -platform macosx-x64-default -configure . -with est -gen xcode"
 #endif
 #ifndef ME_ESP_PRODUCT
     #define ME_ESP_PRODUCT 1
@@ -245,7 +245,7 @@
     #define ME_COM_DIR 0
 #endif
 #ifndef ME_COM_EST
-    #define ME_COM_EST 0
+    #define ME_COM_EST 1
 #endif
 #ifndef ME_COM_HTTP
     #define ME_COM_HTTP 1
@@ -266,7 +266,7 @@
     #define ME_COM_NANOSSL 0
 #endif
 #ifndef ME_COM_OPENSSL
-    #define ME_COM_OPENSSL 1
+    #define ME_COM_OPENSSL 0
 #endif
 #ifndef ME_COM_OSDEP
     #define ME_COM_OSDEP 1

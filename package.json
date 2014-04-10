@@ -29,11 +29,12 @@
         "pcre": "*"
     },
     "optionalDependencies": {
-        "esp-html-mvc": "*",
-        "esp-server": "*",
-        "est": "*",
+        "esp-html-mvc": "~1.0",
+        "esp-mvc": "~1.0",
+        "esp-server": "~1.0",
+        "est": "~0.6",
         "me-ssl": "~0.8",
-        "sqlite": "*"
+        "sqlite": "~1"
     },
     "devDependencies": {
         "appweb": "*",
@@ -63,9 +64,29 @@
             "noblend": true,
             "noexport": true
         },
+        "esp-mvc": {
+            "noblend": true,
+            "noexport": true
+        },
         "esp-html-mvc": {
             "noblend": true,
             "noexport": true
+        }
+    },
+    "esp": {
+        "combined": false,
+        "update": true,
+        "serverPrefix": "/do",
+        "server": {
+            "generate": {
+                "appweb": "esp-mvc/appweb.conf",
+                "migration": "esp-mvc/migration.c",
+                "controller": "esp-mvc/controller.c",
+                "controller-singleton": "esp-mvc/controller.c",
+                "files": [
+                    "esp-mvc/src/app.c"
+                ]
+            }
         }
     }
 }
