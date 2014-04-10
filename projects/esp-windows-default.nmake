@@ -3,7 +3,7 @@
 #
 
 NAME                  = esp
-VERSION               = 1.0.0
+VERSION               = 1.0.0-rc0
 
 OS                    = windows
 PA                    = $(PROCESSOR_ARCHITECTURE)
@@ -1153,5 +1153,5 @@ uninstall: $(DEPS_50)
 #   version
 #
 version: $(DEPS_51)
-	echo 1.0.0
+	echo 1.0.0-rc0
 

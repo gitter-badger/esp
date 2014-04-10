@@ -7,7 +7,7 @@
     ],
     "precious": true,
     "dependencies": {
-        "esp-server": "~1.0"
+        "esp-mvc": "~1.0"
     },
     "export": [
         "templates/**"

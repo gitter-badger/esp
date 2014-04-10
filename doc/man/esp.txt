@@ -24,8 +24,12 @@ SYNOPSIS
        ...]
         esp generate scaffold model [field:type [, field:type] ...]
         esp generate table name model [field:type [, field:type] ...]
+        esp install paks...
         esp migrate [forward|backward|NNN]
-        esp run
+        esp mode [debug|release|otherMode]
+        esp [run] [ip]:[port]
+        esp uninstall paks...
+        esp upgrade paks..
 
 DESCRIPTION
        The  esp  command generates, manages and runs ESP web applications.  It
@@ -243,6 +247,8 @@ COMMANDS
              esp generate scaffold model [field:type [, field:type] ...]
              esp generate table name model [field:type [, field:type] ...]
              esp run
+             esp run 4000
+             esp mode debug
 
 
 OPTIONS
@@ -277,6 +283,9 @@ OPTIONS
              Name[,moduleName][:logLevel]".   Level  3  will trace the request
              and response headers.
 
+       --optimize
+             Compile optimized without debug symbols.
+
        --overwrite
              Overwrite existing files.  Ejsweb  normally  will  not  overwrite
              existing  files.  This  is to preserve user changes to previously
@@ -296,9 +305,6 @@ OPTIONS
              Force a recompile of all items when used with  the  compile  com-
              mand.   When  used  with migrate, this will recreate the database
              and apply all migrations.
-
-       --reverse
-             Reverse the application of migrations.
 
        --routeName name
              This selects the Appweb route by name that will be used  for  the
@@ -321,6 +327,9 @@ OPTIONS
              Use static linking when building ESP  applications.  This  causes
              esp to create archive libraries instead of shared libraries.
 
+       --symbols
+             Compile for debug with symbols.
+
        --table name
              Override  the  database table name when generating tables, migra-
              tions or scaffolds. This is useful to request a plural version of
@@ -340,8 +349,8 @@ REPORTING BUGS
 
 
 COPYRIGHT
-       Copyright  (C)  2004-2014  Embedthis  Software.   ESP is a trademark of
-       Embedthis Software.
+       Copyright  (C)  2004-2014 Embedthis Software. Embedthis ESP is a trade-
+       mark of Embedthis Software.
 
 
 SEE ALSO

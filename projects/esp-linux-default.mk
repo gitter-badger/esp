@@ -3,7 +3,7 @@
 #
 
 NAME                  := esp
-VERSION               := 1.0.0
+VERSION               := 1.0.0-rc0
 PROFILE               ?= default
 ARCH                  ?= $(shell uname -m | sed 's/i.86/x86/;s/x86_64/x64/;s/arm.*/arm/;s/mips.*/mips/')
 CC_ARCH               ?= $(shell echo $(ARCH) | sed 's/x86/i686/;s/x64/x86_64/')
@@ -1006,7 +1006,7 @@ installBinary: $(DEPS_45)
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
-	ln -s "1.0.0" "$(ME_APP_PREFIX)/latest" ; \
+	ln -s "1.0.0-rc0" "$(ME_APP_PREFIX)/latest" ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
 	cp $(CONFIG)/bin/esp $(ME_VAPP_PREFIX)/bin/esp ; \
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
@@ -1098,5 +1098,5 @@ uninstall: $(DEPS_48)
 #   version
 #
 version: $(DEPS_49)
-	echo 1.0.0
+	echo 1.0.0-rc0
 
