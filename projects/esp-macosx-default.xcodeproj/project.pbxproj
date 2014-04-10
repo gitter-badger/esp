@@ -1991,7 +1991,7 @@ fi";
 		8805DFA48805ED9600000116 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = ;
+				PRODUCT_NAME = esp-paks;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2003,7 +2003,7 @@ fi";
 		8805DFA48805ED9600000117 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = ;
+				PRODUCT_NAME = esp-paks;
 
 
 			};
@@ -2033,7 +2033,7 @@ fi";
 		8805DFA48805ED960000011A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = esp;
+				PRODUCT_NAME = espcmd;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2045,7 +2045,7 @@ fi";
 		8805DFA48805ED960000011B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = esp;
+				PRODUCT_NAME = espcmd;
 
 
 			};
@@ -2054,7 +2054,7 @@ fi";
 		8805DFA48805ED960000011C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = ca.crt;
+				PRODUCT_NAME = http-ca-crt;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2066,7 +2066,7 @@ fi";
 		8805DFA48805ED960000011D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = ca.crt;
+				PRODUCT_NAME = http-ca-crt;
 
 
 			};
@@ -2075,7 +2075,7 @@ fi";
 		8805DFA48805ED960000011E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libappweb.dylib;
+				PRODUCT_NAME = libappweb;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2087,7 +2087,7 @@ fi";
 		8805DFA48805ED960000011F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libappweb.dylib;
+				PRODUCT_NAME = libappweb;
 
 
 			};
@@ -2096,7 +2096,7 @@ fi";
 		8805DFA48805ED9600000120 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libest.dylib;
+				PRODUCT_NAME = libest;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2108,7 +2108,7 @@ fi";
 		8805DFA48805ED9600000121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libest.dylib;
+				PRODUCT_NAME = libest;
 
 
 			};
@@ -2117,7 +2117,7 @@ fi";
 		8805DFA48805ED9600000122 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libhttp.dylib;
+				PRODUCT_NAME = libhttp;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2129,7 +2129,7 @@ fi";
 		8805DFA48805ED9600000123 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libhttp.dylib;
+				PRODUCT_NAME = libhttp;
 
 
 			};
@@ -2138,7 +2138,7 @@ fi";
 		8805DFA48805ED9600000124 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmod_esp.dylib;
+				PRODUCT_NAME = libmod_esp;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2150,7 +2150,7 @@ fi";
 		8805DFA48805ED9600000125 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmod_esp.dylib;
+				PRODUCT_NAME = libmod_esp;
 
 
 			};
@@ -2159,7 +2159,7 @@ fi";
 		8805DFA48805ED9600000126 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmpr.dylib;
+				PRODUCT_NAME = libmpr;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2171,7 +2171,7 @@ fi";
 		8805DFA48805ED9600000127 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmpr.dylib;
+				PRODUCT_NAME = libmpr;
 
 
 			};
@@ -2180,7 +2180,7 @@ fi";
 		8805DFA48805ED9600000128 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmprssl.dylib;
+				PRODUCT_NAME = libmprssl;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2192,7 +2192,7 @@ fi";
 		8805DFA48805ED9600000129 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libmprssl.dylib;
+				PRODUCT_NAME = libmprssl;
 
 
 			};
@@ -2201,7 +2201,7 @@ fi";
 		8805DFA48805ED960000012A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libpcre.dylib;
+				PRODUCT_NAME = libpcre;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"PCRE_CHAR=char",
@@ -2214,7 +2214,7 @@ fi";
 		8805DFA48805ED960000012B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libpcre.dylib;
+				PRODUCT_NAME = libpcre;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"PCRE_CHAR=char",
@@ -2226,7 +2226,7 @@ fi";
 		8805DFA48805ED960000012C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libsql.dylib;
+				PRODUCT_NAME = libsql;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2239,7 +2239,7 @@ fi";
 		8805DFA48805ED960000012D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libsql.dylib;
+				PRODUCT_NAME = libsql;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 
 
@@ -2270,7 +2270,7 @@ fi";
 		8805DFA48805ED9600000130 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = sqlite;
+				PRODUCT_NAME = sqliteshell;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2282,7 +2282,7 @@ fi";
 		8805DFA48805ED9600000131 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = sqlite;
+				PRODUCT_NAME = sqliteshell;
 
 
 			};
