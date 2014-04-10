@@ -2033,7 +2033,7 @@ fi";
 		427AB890427AC9580000011A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = espcmd;
+				PRODUCT_NAME = esp;
 
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ME_DEBUG",
@@ -2045,7 +2045,7 @@ fi";
 		427AB890427AC9580000011B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = espcmd;
+				PRODUCT_NAME = esp;
 
 
 			};
