@@ -4,10 +4,10 @@ esp \- ESP Application Generator for Server-Side Web Applications.
 .SH SYNOPSIS
 .B esp
 [\fI--apply]\fR] 
-[\fI--chdir dir]\fR] 
 [\fI--config configFile]\fR] 
 [\fI--database DB]\fR] 
 [\fI--genlink slink.c\fR]
+[\fI--home dir]\fR] 
 [\fI--keep\fR]
 [\fI--listen [ip:]port\fR]
 [\fI--log logFile:level\fR]
@@ -261,9 +261,6 @@ esp has the following command usage patterns:
 .SH OPTIONS
 .PP
 .TP 6
-\fB\--chdir dir\fR
-Change the current working directory before beginning processing.
-.TP 6
 \fB\--config configFile\fR
 Use the specified config file instead of appweb.conf
 .TP 6
@@ -274,6 +271,9 @@ Use the specified database provider. Set to "mdb" or "sdb" for SQLite.
 Generate a static link initialization file for ESP pages and applications. 
 This is used with --static to generate a appwebStaticInitialize() function that will invoke all ESP initializers.
 By default, appweb expects this to be in the src/server/slink.c file.
+.TP 6
+\fB\--home dir\fR
+Change the current working directory before beginning processing.
 .TP 6
 \fB\--keep\fR
 Keep intermediate source files in the cache directory. This overrides the 
