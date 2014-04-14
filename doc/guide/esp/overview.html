@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Embedthis ESP 1.0.0 Documentation</title>
+    <title>Embedthis ESP 1.0.0-rc0 Documentation</title>
     <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
         embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
     <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web servers for 
@@ -22,13 +22,13 @@
         <div class="topRight">
             <div class="search">
                 <div id="cse-search-form"></div>
-                <div class="version">Embedthis ESP 1.0.0</div>
+                <div class="version">Embedthis ESP 1.0.0-rc0</div>
             </div>
         </div>
         <div class="crumbs">
             <a href="../../index.html">Home</a>
 <!-- EndDsi -->
-             &gt;<a href="users/index.html">User Guide</a> &gt; <b>ESP Overview</b>
+             &gt;<a href="users/index.html">User Guide</a> &gt; <b>ESP Tech Overview</b>
         </div>
     </div>
     <div class="content">
@@ -54,30 +54,40 @@
 <!-- BeginDsi "dsi/userGuideSeeAlso.html" -->
             <h1>See Also</h1>
             <ul class="nav">
-                <li><a href="../../guide/esp/users/index.html">User Guide Overview</a></li>
-                <li><a href="../../guide/esp/users/configuration.html">Configuring ESP</a></li>
-                <li><a href="../../guide/esp/users/overview.html">ESP Overview</a></li>
-                <li><a href="../../guide/esp/users/pages.html">ESP Pages</a></li>
-                <li><a href="../../guide/esp/users/config.html">ESP Configuration Directives</a></li>
-                <li><a href="../../guide/esp/users/controllers.html">ESP Controllers and Actions</a></li>
-                <li><a href="../../guide/esp/users/mvc.html">ESP MVC</a></li>
-                <li><a href="../../guide/esp/users/pages-tour.html">ESP Page Tour</a></li>
+                <li><a href="../../guide/esp/users/index.html">ESP Overview</a></li>
+                <li><a href="../../guide/esp/users/mvc.html">MVC Framework</a></li>
+                <li><a href="../../guide/esp/users/config.html">Configuring ESP</a></li>
+                <li><a href="../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
+                <li><a href="../../guide/esp/users/controllers.html">ESP Controllers</a></li>
                 <li><a href="../../guide/esp/users/generator.html">ESP Generator</a></li>
                 <li><a href="../../guide/esp/users/database.html">ESP Database Interface</a></li>
                 <li><a href="../../guide/esp/users/caching.html">Caching Responses</a></li>
+                <li><a href="../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
+                <li><a href="../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
-            <h1>ESP Overview</h1>
+            <h1>ESP Tech Overview</h1>
             <p>ESP is a web framework that makes it dramatically easier to create blazing fast,
             dynamic web applications. ESP uses the "C" language for server-side web programming which allows easy
             access to low-level data for management user interfaces. </p>
-            <p>However, ESP is not a traditional low-level environment. If web pages or controllers are modified during development, the code is transparently recompiled and reloaded. ESP uses garbage collection for safe memory management. This enables unparalleled performance with "script-like" flexibility for web applications. </p>
+            <p>However, ESP is not a traditional low-level environment. Further, if web pages or controllers are 
+            modified during development, the code is transparently recompiled and reloaded. ESP uses garbage 
+            collection for safe memory management. This enables unparalleled performance with "script-like" 
+            flexibility for web applications. </p>
             
-            <p>The ESP web framework provides a complete set of components including: an application generator, 
-            web request handler, templating engine, Model-View-Controller framework, Web Sockets, database 
-            migrations  and an extensive programming API.</p>
+            <p>The ESP web framework provides a complete set of components including</p>
+            <ul>
+                <li>Model-View-Controller framework</li>
+                <li>Application and scaffold generator</li> 
+                <li>Integrated Appweb HTTP engine</li>
+                <li>Web page templating engine</li>
+                <li>Web Sockets</li>
+                <li>Embedded databases</li>
+                <li>Database migrations</li>
+                <li>Extensive programmer API</li>
+            </ul>
             <p>This document describes the ESP web framework and how to use ESP.</p>
             
             <a id="patterns"></a>
@@ -94,7 +104,7 @@
             <p>Your applications can choose a predominating pattern or you can mix patterns in a 
                 single application if desired.</p>
             <a name="standalone"></a>
-            <h3>Stand-alone Pages</h3>
+            <h2>Stand-alone Pages</h2>
             <p>An ESP page is a standard HTML web page with embedded "C" code that executes at run-time to create a dynamic
             client response. Pages typically have a "<em>.esp</em>" extension and may use ESP layout pages to
             define the look and feel of the application in one place.</p>
@@ -102,16 +112,16 @@
 <pre>&lt;h1&gt;Hello World&lt;/h1&gt;
 &lt;p&gt;<b>&lt;% render("A random number %d", rand(0)); %&gt;</b>&lt;/p&gt;</pre>
             <p>When the web page is requested, the web page including the code inside the ESP tags is compiled
-            and saved as a shared library. When executed the <em>render</em> call 
-            replaces  tag code in the resulting page sent to the client. The code inside the ESP tags is 
-            any standard C code.</p>
-            <p> If the page is modified, the next time it is requested, the page and embedded C code 
-            will be transparently recompiled and reloaded.</p>
+            and saved as a shared library. When the page is requested, the call to <em>render</em> will 
+            replace the code between <em><% ... %></em> with the result of the render call and then the composite page 
+            will be sent to the client. The code inside the ESP tags is any standard C code.</p>
+            <p>The next time the page is requested, it will be transparently recompiled and reloaded if the source
+            web page has been modified</p>
             <p>See <a href="#pages">ESP Pages</a> below for more details.</p>
             <a name="webservices"></a>
-            <h3>Web Services</h3>
-            <p>ESP is especially we suited for high performance web services. ESP permits the binding of URLs 
-            directly to C functions via Appweb routes. When the URL is requested, the corresponding C function, often
+            <h2>Web Services</h2>
+            <p>ESP is especially well suited for high performance web services. ESP permits the binding of URLs 
+            directly to C functions. When the URL is requested, the corresponding C function, often
             called an <em>"action"</em>, is executed to dynamically generate a response. 
             The actions are typically grouped into a loadable ESP controller file. For example:</p>
             <pre>
@@ -121,18 +131,17 @@ static void <b>hello()</b> {
     finalize();
 }
 /* Initialization of Actions */
-ESP_EXPORT int esp_module_greeting(HttpRoute *route, MprModule *module) {
-    espDefineAction(route, "greeting-hello", hello);
+ESP_EXPORT int esp_module_greeting(HttpRoute *route) {
+    espDefineAction(route, "greeting-hello", <b>hello</b>);
     return 0;
 } 
 </pre>
-            <p>This is a loadable ESP controller with one action function. The actions are published by binding
-            via Routes to URLs  When the appropriate URL is 
-            requested, the "hello" function is run to generate the response. During development, 
-            if the file containing this code is modified, the page will be transparently recompiled and reloaded before
-            running the new code.</p>
+            <p>This example is a loadable ESP controller with one action function. The actions are published by binding
+            functions to route names. When the appropriate URL is requested, the "hello" function is run to generate the response. 
+            During development, if the file containing this code is modified, the page will be transparently 
+           recompiled and reloaded before running the new code.</p>
             <a name="mvc"></a>
-            <h3>Model-View-Controller</h3>
+            <h2>Model-View-Controller</h2>
             <p>A Model-View Controller application, also known as an MVC app, is a proven paradigm for organizing larger web
             applications. In this pattern, it is the "model" that manages the state of the application including the 
             database. The "controller" responds to inputs and invokes then the relevant "views" to generate the 
@@ -143,60 +152,56 @@ ESP_EXPORT int esp_module_greeting(HttpRoute *route, MprModule *module) {
             application skeletons and scaffolds.</p>
             <p>ESP support two styles of MVC applications:</p>
             <ul>
-                <li>Single Page Applications</li>
                 <li>Server-side MVC Applications</li>
+                <li>Single Page Applications</li>
             </ul>
+            <h3>Server-side MVC Applications</h3>
+            <p>ESP implements server-side MVC applications by providing a powerful HTML templating engine. This engine
+            permits the easy insertion of dynamic data into web pages before they are delivered to the client.
+            A common look-and-feel is achieved by using master layout pages.</p>
             <a name="spa"></a>
             <h3>Single Page Applications</h3>
             <p>Single page applications deliver the entire web application as a single page and then incrementally
             download resources and data in the background as required. With this paradigm, it is the client that 
-            defines the entire user interface via a client-side Javascript framework such as Angular. The server 
+            defines the entire user interface via a client-side Javascript framework such as 
+            <a href="http://angularjs.org">Angular</a>. The server 
             provides the initial page load and ongoing data. This approach can provide a more responsive and 
             fluid user experience without the delays caused by page reloads.</p>
             <p>ESP is well suited to SPA applications and can deliver all the required resources and data for such apps.
-            <p>ESP includes support for the <a href="http://angularjs.org">Angular</a> SPA client framework. The 
+            ESP includes support for the <a href="http://angularjs.org">Angular</a> SPA client framework. The 
             <em>esp</em> application generator can generate Angular application skeletons and client-side scaffolds.</p>
-            <h3>Server-side MVC Applications</h3>
-            <p>An alternative approach to MVC web applications is to generate HTML pages dynamically at the server.
-            ESP provides a powerful HTML templating engine with master page layouts. This permits the easy insertion
-            of dynamic data into web pages before they are delivered to the client.</p>
             <h2 class="section">ESP Web Framework</h2>
             <img src="../../images/espArchitecture.jpg" alt="ESP Web Framework Architecture" />
             <p>The main components of the ESP Web Framework are:</p>
             <ul>
-                <li><a href="#handler">ESP Handler</a> &mdash; ESP request handler</li>
-                <li><a href="#pages">ESP Pages</a> &mdash; ESP Pages and Layouts</li>
-                <li><a href="#controllers">ESP Controllers</a> &mdash; ESP Controllers and Actions</li>
-                <li><a href="#models">ESP Models</a> &mdash; ESP Models and Databases</li>
-                <li><a href="#compiler">ESP Compilation</a> &mdash; Compile ESP pages, controllers and applications</li>
-                <li><a href="#generator">ESP Generator</a> &mdash; Generate applications, controllers and scaffolds</li>
-                <li><a href="#api">ESP API</a> &mdash; ESP Programming Interface</li>
-            </ul>
+                <li><a href="#http">Embedthis Http Engine</a></li>
+                <li><a href="#pages">ESP Pages</a></li>
+                <li><a href="#controllers">ESP Controllers</a></li>
+                <li><a href="#models">ESP Models</a></li>
+                <li><a href="#compiler">ESP Compilation</a></li>
+                <li><a href="#generator">ESP Generator</a></li>
+                <li><a href="#api">ESP API</a></li>
+            </ul> 
             
-            <a id="handler"></a>
-            <h2 class="section">ESP Handler</h2>
-            <p>Appweb hosts the ESP handler via a loadable module called <em>libmod_esp</em>.  This is an 
-            Appweb module that includes the ESP web framework. The module is configured by directives in the
-            <em>appweb.conf</em> configuration file.</p>
-            <pre>LoadModule espHandler libmod_esp
-AddHandler espHandler esp</pre>
-            <p>This will load the ESP module and serve all URLs that end with ".esp" via the ESP handler.</p>
-            <p>ESP applications are defined via the EspApp directive. For example:</p> 
-            <pre>&lt;EspApp name="store" prefix="/store" dir="/dir/to/storeApp"&gt;
-    ...
-&lt;/EspApp&gt;</pre>
-            <p>This defines an ESP application at the URI "/store" in the directory "/dir/to/storeApp".</p>
+            <a id="http"></a>
+            <h2 class="section">HTTP Engine</h2>
+            <p>ESP includes and embedded copy of the 
+                <a href="http://embedthis.com/products/appweb">Appweb HTTP engine</a>. This is an high performance,
+               event-based, multithreaded HTTP engine. It fully supports HTTP/1.1 with extensions for WebSockets,
+               Sessions, SSL, Security Limits and Defensive counter-measures.</p>
+            <p>ESP requests are served via a loadable module called <em>libmod_esp</em>.  This is an
+            Appweb module that to respond to ESP requests.</p>
             <a id="pages"></a>
             <h2 class="section">ESP Pages</h2>
-            <p>The ESP pages are responsible for generating the user interface and provide: 
+            <p>The ESP Pages provide the "View" portion of MVC frameworks and are responsible for generating 
+            the user interface. They provid: </p>
             <ul>
                 <li>Embedded "C" language code for dynamic HTML responses</li>
                 <li>Master layout pages for consistent UI look and feel</li>
                 <li>An ESP API library to render output</li>
             </ul>
             <p>Note that if using ESP for a <a href="#spa">Single Page Architecture</a> application, the views are
-            typically generated by the client using a client-side framework such as <a href="http://angularjs.org">Angular</a>.
-            In this case, ESP pages are used for the initial, "single" home page.</p>
+            typically generated by the client using a client-side framework such as <a href="http://angularjs.org">Angular</a>. In this case, ESP views are used for the initial, "single" home page.</p>
             <a id="pipeline"></a>
             <h3>ESP Pipeline</h3>
             <p>The ESP pipeline processes ESP pages to generate client responses. The process begins with
@@ -265,17 +270,16 @@ AddHandler espHandler esp</pre>
             string value into the web page. A printf format specifier can be used to specify a different variable type.
             For example, if <em>ivar</em> is an integer:</p>
             <pre>&lt;%= %d ivar %&gt;</pre>
-            <p>The @!variable directive is a shortcut for &lt;%= expression %&gt;.</p>
-            <p>The @@param directive substitutes the value of a request parameter or session variable of the same 
+            <p>The <em>@!variable</em> directive is a shortcut for &lt;%= expression %&gt;.</p>
+            <p>The <em>@@param</em> directive substitutes the value of a request parameter or session variable of the same 
                 name after HTML escaping the value.</p>
-            <p>The @~ is replaced with a URL to the top of the application. This addresses the "client" documents
-                directory.</p>
-            <p>The @| is replaced with a URL to the top server-side prefix of the application. This addresses 
+            <p>The <em>@~</em> is replaced with a URL to the top of the application. This addresses the "client" documents directory.</p>
+            <p>The <em>@|</em> is replaced with a URL to the top server-side prefix of the application. This addresses 
                 the server-side controllers.</p>
-            <p>The &lt;% include "filename" %&gt; directive will include the given file name at the location of the
+            <p>The <em>&lt;% include "filename" %&gt;</em> directive will include the given file name at the location of the
             directive when parsing the web page. Included files may contain ESP directives and
             include directives can be nested.</p>
-            <p>The &lt;%@ layout "file" %&gt; directive specifies the name of the layout page. By using this directive
+            <p>The <em>&lt;%@ layout "file" %&gt;</em> directive specifies the name of the layout page. By using this directive
             in layout pages, you can build up the web page layout by nesting layout pages. If omitted in content pages,
             which is usually the case, the default layout of <em>layouts/default.esp</em> will be used. 
             If omitted in layout pages, it is assumed the layout page is the top level layout page.</p>
@@ -366,21 +370,20 @@ static void update() {
             file to define the appropriate compilation command line for your target. </p>
             <a id="generator"></a>
             <h2 class="section">ESP Generator</h2>
-            <p>The ESP framework includes a utility program to generate new applications, controllers, models, 
-            migrations and scaffolds.
-            This program is called <em>esp</em> and automates many common tasks when dealing with MVC applications.</p>
+            <p>The ESP framework includes a utility program called <em>esp</em> that is used to generate new applications, controllers, models, migrations and scaffolds. It is also used to serve the application.</p>
            
             <p>To create a new bare-bones application called demo:</p>
-            <pre>esp generate app demo</pre>
+            <pre>mkdir demo
+cd demo
+esp install esp-server</pre>
             <p>This will create the following files:</p>
             <ul>
-                <li>demo/appweb.conf</li>
-                <li>demo/package.json</li>
-                <li>demo/src/app.c</li>
+                <li>package.json</li>
+                <li>client/*</li>
             </ul>
             <p>The <em>esp</em> program creates the application directory and populates it with the necessary
             directories, configuration files and stubs to begin the application.</p>
-            <p>When you run Appweb, ESP will automatically compile and components as required. </p>
+            <p>When you run ESP will automatically compile and components as required. </p>
             <p>To create a more featured MVC demo application with support for the Angular client framework, use:</p>
             <pre>esp generate app demo esp-angular-mvc</pre>
             <a id="api"></a>

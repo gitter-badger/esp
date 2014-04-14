@@ -481,7 +481,7 @@ PUBLIC int espLoadConfig(HttpRoute *route)
     cpath = mprJoinPath(route->documents, ME_ESP_PACKAGE);
     if (mprGetPathInfo(cpath, &cinfo) == 0) {
         if (eroute->config && cinfo.mtime > eroute->configLoaded) {
-            //  MOB - but some of these operations are not idempotent
+            /* WARNING: all operations below must be idempotent */
             eroute->config = 0;
         }
         eroute->configLoaded = cinfo.mtime;
@@ -530,6 +530,9 @@ PUBLIC int espLoadConfig(HttpRoute *route)
             }
         }
         if ((value = espGetConfig(route, "esp.server.redirect", 0)) != 0) {
+            /*
+                Disabling redirect may require a server reboot
+             */
             if (smatch(value, "true") || smatch(value, "secure")) {
                 pattern = route->prefix ? sfmt("%s/", route->prefix) : "/";
                 alias = httpCreateAliasRoute(route, pattern, 0, 0);
@@ -563,6 +566,9 @@ PUBLIC int espLoadConfig(HttpRoute *route)
             Must be after serverPrefix
          */
         if ((value = espGetConfig(route, "esp.server.routes", 0)) != 0) {
+            /*
+                Changing the route set will require a server reboot
+             */
             set = stok(sclone(value), ", \t", &next);
             while (set) {
                 espAddRouteSet(route, set);
