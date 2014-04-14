@@ -468,7 +468,8 @@ PUBLIC int espLoadConfig(HttpRoute *route)
     MprJson     *msettings, *settings;
     MprPath     cinfo;
     MprTicks    clientLifespan;
-    cchar       *cdata, *cpath, *value, *errorMsg, *pattern;
+    cchar       *cdata, *cpath, *value, *errorMsg, *pattern, *set;
+    char        *next;
     bool        debug;
 
     eroute = route->eroute;
@@ -480,6 +481,7 @@ PUBLIC int espLoadConfig(HttpRoute *route)
     cpath = mprJoinPath(route->documents, ME_ESP_PACKAGE);
     if (mprGetPathInfo(cpath, &cinfo) == 0) {
         if (eroute->config && cinfo.mtime > eroute->configLoaded) {
+            //  MOB - but some of these operations are not idempotent
             eroute->config = 0;
         }
         eroute->configLoaded = cinfo.mtime;
@@ -550,8 +552,24 @@ PUBLIC int espLoadConfig(HttpRoute *route)
         }
         if ((value = espGetConfig(route, "esp.serverPrefix", 0)) != 0) {
             httpSetRouteServerPrefix(route, value);
+            /* Compute the aggregate app+server prefix */
+            espSetConfig(route, "esp.prefix", sjoin(route->prefix ? route->prefix : "", route->serverPrefix, NULL));
+#if UNUSED
+            //  MOB - Http seems to compute this 
             httpSetRouteVar(route, "SERVER_PREFIX", sjoin(route->prefix ? route->prefix: "", route->serverPrefix, 0));
+#endif
         }
+        /*
+            Must be after serverPrefix
+         */
+        if ((value = espGetConfig(route, "esp.server.routes", 0)) != 0) {
+            set = stok(sclone(value), ", \t", &next);
+            while (set) {
+                espAddRouteSet(route, set);
+                set = stok(NULL, ", \t", &next);
+            }
+        }
+
         if ((value = espGetConfig(route, "esp.login.name", 0)) != 0) {
             /* Automatic login as this user. Password not required */
             httpSetAuthUsername(route->auth, value);

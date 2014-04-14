@@ -100,15 +100,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ClCompile Include="..\..\src\edi.c" />
     <ClCompile Include="..\..\src\esp.c" />
-    <ClCompile Include="..\..\src\espAbbrev.c" />
-    <ClCompile Include="..\..\src\espFramework.c" />
-    <ClCompile Include="..\..\src\espHandler.c" />
-    <ClCompile Include="..\..\src\espHtml.c" />
-    <ClCompile Include="..\..\src\espTemplate.c" />
-    <ClCompile Include="..\..\src\mdb.c" />
-    <ClCompile Include="..\..\src\sdb.c" />
   </ItemGroup>
 
   <ItemDefinitionGroup>

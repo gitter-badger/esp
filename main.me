@@ -56,13 +56,13 @@ Me.load({
             pam: false,
             webSockets: true,
         },
-                                                                                                           
-        mpr: {                                                                                             
-            /*                                                                                             
-                Enable logging via mprLog to the log file. Error messages are always enabled.              
-                The default is to enable logging for both debug and release builds.                        
-             */                                                                                            
-            logging: true,                                                                                 
+
+        mpr: {
+            /*
+                Enable logging via mprLog to the log file. Error messages are always enabled.
+                The default is to enable logging for both debug and release builds.
+             */
+            logging: true,
         },
 
         tune: 'speed',
@@ -71,6 +71,7 @@ Me.load({
     scripts: {
         loaded: `
             me.targets.httpcmd.enable = false
+            me.targets.makerom.enable = false
         `,
     },
 
@@ -89,6 +90,6 @@ Me.load({
 
     usage: {
         // 'mpr.logging':  'Enable application logging (true|false)',
-        // 'mpr.tracing':  'Enable debug tracing (true|false)',                                               
+        // 'mpr.tracing':  'Enable debug tracing (true|false)',
     },
 })

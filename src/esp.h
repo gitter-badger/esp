@@ -235,6 +235,9 @@ PUBLIC void espAddHomeRoute(HttpRoute *route);
  */
 PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set);
 
+//  MOB - DOC
+PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet);
+
 /**
     Add caching for response content.
     @description This call configures caching for request responses. Caching may be used for any HTTP method, 

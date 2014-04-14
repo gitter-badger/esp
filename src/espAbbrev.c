@@ -612,7 +612,8 @@ PUBLIC void scripts(cchar *patterns)
         return;
     }
     if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
-        mprLog(0, "scripts(): Cannot find any files matching %s", patterns);
+        files = mprCreateList(0, 0);
+        mprAddItem(files, patterns);
     }
     for (ITERATE_ITEMS(files, path, next)) {
         if (schr(path, '$')) {
