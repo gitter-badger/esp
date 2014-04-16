@@ -64,38 +64,43 @@
             <h1>ESP MVC Tour</h1>
             <p>This quick tour of the ESP MVC Framework provides an overview of the ESP generator for 
             Model-View-Controller applications. The generated application will use the 
-            <em>esp-html-mvc</em> Pak which provides a server-side MVC framework.</p>
-
-            <p>Before starting, first make sure you have read the <a href="quick.html">Quick Start</a>,
-            and the <a href="tour.html">ESP Tour</a> and that you have ESP installed on your system so you
-            can type along as you go. This tour uses the <em><a href="../users/generator.html">esp</a></em> application
+            <a href="http://angularjs.org">AngularJS</a> client-side library.</p>
+            <p>Before starting, first make sure you have read the <a href="../../appweb/users/quickStart.html">Quick Start</a>,
+            and the <a href="pages-tour.html">ESP Pages Tour</a> and that you have ESP installed on your system so you
+            can type along as you go. This tour uses the <em><a href="generator.html">esp</a></em> application
             generator.</p>
-
             <a id="blog"></a>
+            <a id="create"></a>
             <h2 class="section">Creating a New Application</h2>
             <p>To create a new ESP application, you will use <em>esp</em>, the ESP application generator
-            program. Make a directory named <em>blog</em> and then install the esp-html-mvc Pak.</p>
+            program. Type the following esp command in a command terminal window:</p>
             <pre>
-home&gt; <b>mkdir blog
-cd blog
-esp install esp-html-mvc</b>
-      [Save] /Users/mob/git/junk/package.json
-   [Install] esp-html-mvc 1.0.0-rc0
-         ... 
-      [Info] esp-html-mvc successfully installed
+home&gt; <b>esp generate app blog angular-mvc</b>
+    [Create] Directory: blog
+  [Generate] Component: server
+  [Generate] Component: angular-mvc
+  [Generate] Component: angular
+  [Generate] Component: angular-local
+  [Generate] Component: angular-session
+  [Generate] Component: angular-esp
+  [Generate] Component: bootstrap
+  [Generate] Component: html5shiv
+  [Generate] Component: angular-ui-bootstrap
+  [Generate] Component: font-awesome
+  [Generate] Component: less
+  [Generate] Component: more
+  [Generate] Component: respond
+    [Create] Directory: blog/src
+    [Create] blog/src/app.c
+    [Create] Directory: blog/db
+      [Task] Complete
 </pre>
-            <p>This simple command accomplished quite a bit, including:
-            <ul>
-                <li>Create a core structure with directories for various parts of the application. Initially, some of
-                    these directories are empty, but they will be used as your application grows.</li>
-                <li>Installed the esp-html-mvc, esp-mvc and esp-server Paks. You can see these via:</p>
-                    <pre class="dir">test> <b>esp list</b>
-esp-html-mvc 1.0.0-rc0
-esp-mvc 1.0.0-rc0
-esp-server 1.0.0-rc0</pre></li>
-                <li>Created a <em>package.json</em> files that configures and control how your application will run.</li>
-            </ul>
-
+            <p>This simple command accomplished quite a bit. It first created a new directory called <b>blog</b> for
+            the application, and then created subdirectories for various parts of the application. Initially, some of
+            these directories are empty, but they will be used as your application grows.</p>
+            <p>The command created two configuration files that control how your application will run. The first, 
+            <em>appweb.conf</em> configures Appweb to host your application. The second, <em>package.json</em> is the
+            ESP configuration file for your application. </p>
             <h2>Conventions</h2>
             <p>The ESP web framework follows the <i>"convention over
             configuration"</i> philosophy popularized by <a href="http://www.rubyonrails.org">Ruby on Rails</a>. This
@@ -113,19 +118,11 @@ esp-server 1.0.0-rc0</pre></li>
                 <tbody>
                     <tr>
                         <td>cache</td>
-                        <td>Cached compiled controller and view modules</td>
+                        <td>Cached controller and view modules</td>
                     </tr>
                     <tr>
                         <td>client</td>
                         <td>Client-side scripts, pages and style-sheets</td>
-                    </tr>
-                    <tr>
-                        <td>client/app</td>
-                        <td>Application views</td>
-                    </tr>
-                    <tr>
-                        <td>client/paks</td>
-                        <td>Installed Paks</td>
                     </tr>
                     <tr>
                         <td>controllers</td>
@@ -139,42 +136,71 @@ esp-server 1.0.0-rc0</pre></li>
                         <td>layouts</td>
                         <td>Server-side web page layout templates</td>
                     </tr>
+                    <tr>
+                        <td>views</td>
+                        <td>Server-side generated web pages</td>
+                    </tr>
                 </tbody>
             </table>
-            <p>See the "<a href="../users/generator.html">esp</a>" command documentation for an explanation of the other generated
+            <p>See the "<a href="generator.html">esp</a>" command documentation for an explanation of the other generated
             directories.</p>
             
             <a id="run"></a>
-            <h2 class="section">Access your Application</h2>
-            <p>To access your application enter <em>http://localhost:4000</em> in your browser. 
-            You should see your first application home page.</p>
-            <img src="../../../images/esp/mvc-tour/home.png" alt="home" class="bare-screen" /> 
+            <h2 class="section">Running your Application</h2>
+            <p>You can immediately run your application after generation. The <em>esp</em> command will invoke appweb
+            to run your application: </p>
+            <pre>
+home&gt; cd blog
+home/blog&gt;<b> esp run</b>
+       [RUN] appweb -v
+       appweb: 2: Configuration for Embedthis Appweb
+appweb: 2: ---------------------------------------------
+appweb: 2: Version:            4.4.0-0
+appweb: 2: BuildType:          Debug
+appweb: 2: CPU:                x64
+appweb: 2: OS:                 macosx
+appweb: 2: Host:               magnetar.local
+appweb: 2: Directory:          /Users/mob/git/apps/demo
+appweb: 2: Configure:          bit configure
+appweb: 2: ---------------------------------------------
+appweb: 2: Using config file: "/Users/mob/git/apps/demo/appweb.conf"
+appweb: 2: Loading native module libmod_esp.dylib
+appweb: 2: Loading native module app_d9ae850162d60511cf2c50ebea6595b1.dylib
+appweb: 2: Started HTTP  service on "127.0.0.1:4800"
+appweb: 1: Started at Mon Sep 23 12:53:26 2014 PDT with max 5 threads
+</pre>
+            <p>Then enter <em>localhost:4000</em> in your browser. You should see your first application home
+            page.</p>
+            
  
             <a id="scaffolds"></a>
             <h2>Scaffolds</h2>
-            <p>Scaffolding is a quick way to generate pieces of your application. Once the <em>esp-html-mvc</em> framework
-            pak is installed, the <em>esp</em> command can generate
+            <p>Scaffolding is a quick way to generate pieces of your application. The <em>esp</em> command can generate
             database tables, views and controllers for you. The command below will create a <em>post</em> database table
             with a blog post title and post comment body. The <em>title</em> is a string data type and the <em>body</em> is a
             multi-line text field.</p>
             <pre>
 home/blog&gt; <b>esp generate scaffold post title:string body:text</b>
-    [Create] Directory: client/app
-    [Create] client/app/post.c
-    [Create] Directory: app/post
-    [Create] app/post/post-list.esp
-    [Create] app/post/post-edit.esp
+    [Create] Directory: controllers
+    [Create] controllers/post.c
+    [Create] Directory: client/app/post
+    [Create] client/app/post/PostControl.js
+    [Create] client/app/post/post-list.html
+    [Create] client/app/post/post-edit.html
+    [Create] client/app/post/Post.js
     [Create] Directory: db/migrations
-    [Create] db/migrations/201404151110250_create_scaffold_post.c
-   [Compile] db/migrations/201404151110250_create_scaffold_post.c
-   [Migrate] Apply 201404151110250_create_scaffold_post.c
-   [Migrate] All migrations applied
-  [Generate] Complete
+    [Create] db/migrations/201409231500250_create_scaffold_post.c
+   [Compile] db/migrations/201409231500250_create_scaffold_post.c
+   [Migrate] Apply 201409231500250_create_scaffold_post.c 
+      [Task] All migrations applied
+      [Task] Complete
 </pre>
             <p>This command created:</p>
             <ul>
                 <li>A server-side post Controller (post.c)</li>
-                <li>Server-side HTML views for listing posts (post-list) and editing posts (post-edit).</li>
+                <li>A client-side post Controller (PostControl.js)</li>
+                <li>A client-side HTML views for listing posts (post-list) and editing posts (post-edit).</li>
+                <li>A client-side post Model to hold post data.</li>
                 <li>A database migration to create the post database table.</li>
             </ul>
             <p>The command also run the migration to create the database and table.</p>

@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
     <title>Embedthis ESP 1.0.0-rc0 Documentation</title>
-    <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
-        embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
-    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web servers for 
-        devices and applications." />
+    <meta name="keywords" content="web framework, embedded web server, application web server, 
+        embedded server, small web server, HTTP server, node, nginx, appweb" />
+    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web 
+        technology for devices and applications." />
 	<meta name="robots" content="index,follow" />
 	<link href="../../../doc.css" rel="stylesheet" type="text/css" />
 	<link href="../../../print.css" rel="stylesheet" type="text/css" media="print"/>
@@ -71,31 +71,34 @@
                 your application but it can also be used to install extension packages, generate scaffolds, and 
                 otherwise manage your application.</p>
                 <p>To run esp, create a directory to contain your ESP application and then from that directory,
-                run <em>esp</em>:</p>
+                run <em>esp</em>. In this example, we create a directory called "<em>test</em>".</p>
                 <pre>
 <b>mkdir test
 cd test
 esp</b>
 esp: 2: Started HTTP service on "127.0.0.1:4000"
 esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
-            <p>ESP is now running in and ready to serve documents from the current directory.</p>
-            <p>To see what else esp can do, type
+            <p>ESP is now running and ready to serve documents from the "<em>test</em>" directory.</p>
+            <p>For help on the <em>esp</em> utility, type:</p>
             <pre><b>man esp</b>
 # or
 <b>esp -help</b></pre>
             <a id="hello"></a>
             <h2 class="section">Hello World</h2>
             <p>The first step in any tour is to create a simple "Hello World" web page. 
-            ESP web pages have an <em>.esp</em>.
-            Create a file called <em>hello.esp</em> using your favorite text editor with the following content:</p>
+            ESP web pages have an "<em>.esp</em>" extension.
+            Create a file called <em>hello.esp</em> using your favorite text editor in the <em>test</em> directory
+            with the following content:</p>
             <pre>
 &lt;html&gt;
 &lt;body&gt;
 &lt;h1&gt;Hello World&lt;/h1&gt;
 &lt;/body&gt;
 </pre>
-            <p>To view the "Hello" web page, type the following url: <em>http://localhost:4000/hello.esp</em> into your browser.</p>
-            <img src="../../../images/esp/tour/hello.png" alt="hello" class= "bare-screen" /> 
+            <p>To view the "Hello" web page, type the following URL: 
+            <em>http://localhost:4000/hello.esp</em> into your browser.</p>
+            <img src="../../../images/esp/tour/hello.png" alt="hello" class="bare-screen" /> 
+
             <a id="dynamic"></a>
             <h2 class="section">Dynamic Content</h2>
             <p>While that was fun, the output is static and boring, so let's add some dynamic content. You can embed
@@ -106,7 +109,7 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>To add the current date and time, modify the hello.esp web page and add the highlighted line:</p>
             <pre>
 &lt;h1&gt;Hello Bright World&lt;/h1&gt;
-&lt;h2&gt;<b>Generated on &lt;%= mprGetDate(0); %&gt;</b>&lt;/h2&gt;
+&lt;h2&gt;Generated on <b>&lt;%= mprGetDate(0); %&gt;</b>&lt;/h2&gt;
 </pre>
             <p>Now when you re-run the page, it will display the current date and time. If you refresh the page by
             pressing reload, the new date and time will be displayed.</p>
@@ -124,7 +127,8 @@ esp: 2: GET /hello.esp HTTP/1.1
 esp: 2: esp: compile hello.esp
 esp: 2: Loading native module view_d2f3bdb8df0a0f0b440ea83c81b618c5.dylib
 esp: 2:   HTTP/1.1 200 OK</pre>
-            <p>This output traces each request and response, but also notifies you that the page was recompiled.</p>
+            <p>This output traces each request and response, but also notifies you that the page was recompiled.
+            Any request or page syntax errors will be show in the esp log output.</p>
             <p>You can also embed more complex C code in your ESP page, like:</p>
             <pre>
 <b>&lt;h3&gt;&lt;% render("Request method is %s", getMethod()); %&gt;&lt;/h3&gt;</b>
@@ -139,31 +143,33 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             statements in your web page. The <em>render</em> function allows you to write arbitrary data which is patched
             back where the directive was defined in the page. See the <a href="../users/pages.html">Web Pages and Templates</a>
             document for full details about all the ESP web page directives.</p>
-            
  
             <a id="applications"></a>
             <h2 class="section">ESP Applications</h2>
             <p>To create more complex ESP applications than a simple hello-world, we will typically want a bit 
-            more structure. The <em>esp</em> utility is a great aid to quickly assemble pieces of an application.</p>
-            <p>In the test directory we created above, we can install pre-built ESP extensions packs. These are 
-            published in the <a href="https://embedthis.com/catalog/">Pak Catalog</a> using the 
-            <a href="https://embedthis.com/products/pak/index.html">Pak</a> package manager. The <em>esp</em>
-            command has built-in support for Pak, so you can easily install and remove Paks. For example to
-            install jQuery:</p>
+            more structure. The <em>esp</em> utility is a great aid to create a good structure for adding ESP pages, 
+            controllers and to quickly assemble pieces of an application.</p>
+
+            <h3>Installing Extension Paks</h3>
+            <p>In the test directory we created above, we can install ESP extensions packs via <em>esp</em>.
+            <p>For example to install the ESP server-side MVC framework:</p>
             <pre>
-<b>esp install jquery</b>
-      [Save] package.json
-   [Install] jquery 1.9.1
+<b>esp install html-mvc</b>
+   [Install] esp-html-mvc 1.0.0-rc0
+   [Install] esp-mvc 1.0.0-rc0
+   [Install] esp-server 1.0.0-rc0
 </pre>
-            <p>ESP includes two MVC frameworks to get you started quickly. These generate
-            the core structure of your application. </p>
+
+            <h3>MVC Paks</h3>
+            <p>ESP includes two MVC framework paks to get you started quickly. These frameworks provide
+            the core structure of your application and include templates and scaffolds that are used to 
+            generate models, views and controllers as your application grows. </p>
             <ul>
                 <li>esp-html-mvc &mdash; For a server-side MVC application</li>
                 <li>esp-angular-mvc &mdash; For a client-side MVC application using 
                     <a href="http://angularjs.org">AngularJS</a></li>
             </ul>
-            <p>To create the structure for an server-side MVC application, type the following in your
-                ESP application directory:</p>
+            <p>To add the esp-html-mvc framework, type:</p>
 <pre>esp install esp-html-mvc</pre>
             <p>This will install the <em>esp-html-mvc</em> Pak, all dependent paks and create the 
             necessary directories for your application to grow. It will create:</p>
@@ -178,6 +184,24 @@ esp: 2:   HTTP/1.1 200 OK</pre>
                 <li>client/index.esp &mdash; Home page for your application.</li>
                 <li>client/paks &mdash; Installed Paks.</li>
             </ul>
+
+            <p>Once installed, you can generate other assets such as controllers, database tables, migrations and 
+                MVC scaffolds.</p>
+
+            <h3>Using the Pak Manager</h3>
+            <p>ESP includes a set of common ESP extension packs, but by using the
+            <a href="https://embedthis.com/products/pak/index.html">Pak</a> package manager, you can retrieve more
+            extension packs from the online <a href="https://embedthis.com/catalog/">Pak Catalog</a>.
+            For example, to install jQuery:</p>
+            <pre>
+<b>pak install jquery</b>
+   [Install] jquery 1.9.1
+    [Update] package.json
+</pre>
+            <p>This will download the jQuery pak and save it in the local Pak cache (typically in ~/.paks). It will
+            then be installed in your local application directory.</p>
+           
+
             <h3>Compiling</h3>
             <p>Your application will be automatically compiled by ESP as required, but you can pre-compile 
             using the esp utility.</p>
@@ -212,8 +236,8 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <p>If you want to host your application in <a href="http://embedthis.com/products/appweb/">Appweb</a>,
             generate the required appweb.conf via:</p>
             <pre>esp generate appweb</pre>
-            <p>This will generate a stand-alone appweb.conf that includes the required EspApp directive to define
-            your application. </p>
+            <p>This will generate a stand-alone appweb.conf that includes the required 
+                <a href="../users/appweb.html#espApp">EspApp</a> directive to define your application. </p>
             <pre>
 &lt;EspApp name="test" routes="esp-html-mvc"&gt;</pre>
             
@@ -228,7 +252,7 @@ esp: 2:   HTTP/1.1 200 OK</pre>
                 <li><a href="mvc.html">ESP MVC Framework</a></li>
             </ul>
             <p>You may also like to ask questions at the 
-            <a href="http://appwebserver.org/forum/">Appweb Support Forum</a>.</p>
+            <a href="https://groups.google.com/group/embedthis-esp">ESP Support Forum</a>.</p>
         </div>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->

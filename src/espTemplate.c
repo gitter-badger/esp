@@ -306,9 +306,6 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
             *errMsg = sfmt("Cannot read %s", source);
             return 0;
         }
-        /*
-            Use layouts iff there is a source defined on the route. Only MVC/controllers based apps do this.
-         */
         if (eroute->layoutsDir) {
             layout = mprJoinPath(eroute->layoutsDir, "default.esp");
         }

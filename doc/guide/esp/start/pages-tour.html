@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
     <title>Embedthis ESP 1.0.0-rc0 Documentation</title>
-    <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
-        embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
-    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web servers for 
-        devices and applications." />
+    <meta name="keywords" content="web framework, embedded web server, application web server, 
+        embedded server, small web server, HTTP server, node, nginx, appweb" />
+    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web 
+        technology for devices and applications." />
 	<meta name="robots" content="index,follow" />
 	<link href="../../../doc.css" rel="stylesheet" type="text/css" />
 	<link href="../../../print.css" rel="stylesheet" type="text/css" media="print"/>
@@ -35,10 +35,8 @@
         <div class="contentRight">
             <h1>Quick Nav</h1>
             <ul class="nav">
-                <li><a href="#starting">Starting Appweb</a></li>
-                <li><a href="#testing">Testing Appweb</a></li>
+                <li><a href="#run">Running ESP</a></li>
                 <li><a href="#hello">Hello World</a></li>
-                <li><a href="#dynamic">Dynamic Content</a></li>
                 <li><a href="#declarations">Declarations</a></li>
                 <li><a href="#params">Forms and Parameters</a></li>
                 <li><a href="#sessions">Sessions and Flash</a></li>
@@ -63,41 +61,43 @@
         </div>
         <div class="contentLeft">
             <h1>ESP Pages Tour</h1>
-            <p>This quick tour of the ESP Web Framework provides an overview of ESP and how to use it in web pages.
-            First make sure you have read the <a href="../../esp/users/quickStart.html">Quick Start</a> and 
-            that you have ESP installed on your system so you can type along as you go.</p>
+            <p>This tour of ESP Pages provides an overview of how to create ESP Pages. 
+            First make sure you have ESP installed on your system so you can type along as you go, and
+            have read the quick tour <a href="tour.html">Quick Tour</a>.</p>
             
+            <a id="run"></a>
+            <h2 class="section">Running ESP</h2>
+            <p>The first step is to create a directory for your ESP pages and run the <em>esp</em> utility to start
+            listening for web requests from your browser.
+            In this example, we create a directory called "<em>test</em>".</p>
+<pre><b>mkdir test
+cd test
+esp</b>
+esp: 2: Started HTTP service on "127.0.0.1:4000"
+esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
+            <p>ESP is now running and ready to serve documents from the "<em>test</em>" directory. ESP will display
+            request errors and trace to the console.</p>
+
             <a id="hello"></a>
             <h2 class="section">Hello World</h2>
-            <p>The first step in any tour is to create a simple "Hello World" web page. ESP web pages have an <em>.esp</em>
-            extension. Create a file called <em>hello.esp</em> under the directory nominated as your <em>Documents</em> 
-            directory in the <em>appweb.conf</em> configuration file. Create a file using your favorite text editor with 
-            the following content:</p>
-            <pre>
-&lt;html&gt;
-&lt;body&gt;
-&lt;h1&gt;Hello World&lt;/h1&gt;
-&lt;/body&gt;
-</pre>
-            <p>Don't worry about the layout directive for now, that tells ESP not to use a layout page.</p>
-            <p>To view the "Hello" web page, type the following url: <em>http://localhost/hello.esp</em> into your browser.</p>
-            <img src="../../../images/esp/pages-tour/hello.png" alt="hello" class= "bare-screen" /> 
-            <a id="dynamic"></a>
-            <h2 class="section">Dynamic Content</h2>
-            <p>While that was fun, the output is static and boring, so let's add some dynamic content. You can embed
-            "C" language code and ESP function calls  by including them inside a special ESP web page directive that 
-            will be executed and converted to HTML before being sent to the client. There are a variety of server-side 
-            ESP web page directives, the one you'll use first, is: </p>
-            <p><em>&lt;%= expression %&gt;</em>.</p>
-            <p>To add the current date and time, modify the hello.esp web page and add the highlighted line:</p>
+            <p>The first step is to create a dynamic "Hello World" web page. ESP pages have an <em>.esp</em>
+            extension, so create a file called <em>hello.esp</em> in the <em>test</em> directory.
+            Use your favorite text editor with the following content. </p>
             <pre>
 &lt;h1&gt;Hello Bright World&lt;/h1&gt;
-&lt;h2&gt;<b>Generated on &lt;%= mprGetDate(0); %&gt;</b>&lt;/h2&gt;
+&lt;h2&gt;Generated on <b>&lt;%= mprGetDate(0); %&gt;</b>&lt;/h2&gt;
 </pre>
+
+            <p>This code blends HTML with embedded "C" language code inside a special ESP web page 
+            directive. This code will be executed and converted to HTML before being sent to the client. 
+            There are a variety of ESP page directives, the one you'll use first, is: </p>
+            <p><em>&lt;%= expression %&gt;</em>.</p>
+
             <p>Now when you re-run the page, it will display the current date and time. If you refresh the page by
             pressing reload, the new date and time will be displayed.</p>
             
-            <img src="../../../images/esp/pages-tour/hello-dynamic.png" alt="hello" class="bare-screen" />
+            <img src="../../../images/esp/tour/hello-dynamic.png" alt="hello" class= "bare-screen" /> 
+
             <h4>No Restart Required</h4>
             <p>Notice that you did not have to restart the web server, nor did you have to manually recompile the
             ESP code. Rather, ESP transparently recompiled the web page in the background. ESP noticed that the hello.esp
@@ -162,14 +162,14 @@
             <a id="layouts"></a>
             <h2>Layouts</h2>
             <p>ESP Layouts provide a powerful and flexible solution for implementing a consistent UI. 
-            ESP pages use layout pages that define the look and feel of an application. Content pages are 
+            ESP pages optionally use layout pages that define the look and feel of an application. Content pages are 
             then rendered by merging with one or more layout pages that define the look and feel of the 
             application to create a composite page that the user will actually see. In this way, a web 
             application can easily maintain a consistent look and feel without repeating boilerplate code 
             from page to page. </p>
             
             <p>A layout page provides template for the page and defines the location for the content via a
-                <em>&lt;%@ content %&gt;</em> directive.</p>
+                <em>&lt;%@ content %&gt;</em> directive. For example, this is a simple ESP layout page:</p>
 <pre>
 &lt;html&gt;
 &lt;body&gt;
@@ -185,12 +185,9 @@
             <p>A content page defines only the HTML and code that is unique for a specific page. 
             It is merged with a layout page by inserting the content and replacing the <em>&lt;%@ content %&gt;</em> tag 
             in the layout page.</p>
-            <p>To use a layout page, a layout directory must be defined in the <em>appweb.conf</em> configuration file
-            using the EspDir directive. With this directive, pages will use the 
-            "<em>./layouts/default.esp</em>" layout page by default.
-<pre>EspDir layout "./layouts"</pre>
-            <p>The ESP <em>&lt;%@ layout</em> directive may be used in web pages to control what layout page (if any) 
-            is used for the page. </p>
+            <p>To use a layout page, create a layout page called <em>default.esp</em> under the <em>client/layouts</em> 
+            directory. Create the directory if it does not exist.</p>
+            <p>ESP pages can specify a different layout page using the layout directive. For example:</p>
 <pre>
 &lt;%@ layout "custom-layout.esp" %&gt;
 &lt;h1&gt;Hello Bright World&lt;/h1&gt;
@@ -205,7 +202,7 @@
                 <li><a href="mvc-tour.html">ESP MVC Tour</a>
             </ul>
             <p>You may also like to ask questions at the 
-            <a href="http://appwebserver.org/forum/">Appweb Support Forum</a>.</p>
+            <a href="http://groups.google.com/group/embedthis-esp/">ESP Support Forum</a>.</p>
         </div>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->

@@ -152,6 +152,7 @@ static bool identifier(cchar *name);
 static MprJson *createPackage();
 static void initialize(int argc, char **argv);
 static bool inRange(cchar *expr, cchar *version);
+static void init(int argc, char **argv);
 static void install(int argc, char **argv);
 static bool installPak(cchar *name, cchar *criteria, bool topLevel);
 static bool installPakFiles(cchar *name, cchar *version, bool topLevel);
@@ -474,6 +475,9 @@ static void parseCommand(int argc, char **argv)
     } else if (smatch(cmd, "get")) {
         app->require = REQ_PACKAGE;
 
+    } else if (smatch(cmd, "init")) {
+        app->require = 0;
+
     } else if (smatch(cmd, "install")) {
         app->require = 0;
 
@@ -691,6 +695,9 @@ static void process(int argc, char **argv)
     } else if (smatch(cmd, "get")) {
         getPackageValue(argc - 1, &argv[1]);
 
+    } else if (smatch(cmd, "init")) {
+        init(argc - 1, &argv[1]);
+
     } else if (smatch(cmd, "install")) {
         install(argc - 1, &argv[1]);
 
@@ -831,6 +838,12 @@ static void getPackageValue(int argc, char **argv)
     } else {
         printf("undefined\n");
     }
+}
+
+
+static void init(int argc, char **argv)
+{
+    savePackage();
 }
 
 
@@ -1412,7 +1425,7 @@ static cchar *findAppwebConfig()
     if (path == 0) {
         path = name;
     }
-    mprLog(3, "Probe for \"%s\"", path);
+    mprLog(5, "Probe for \"%s\"", path);
     if (!mprPathExists(path, R_OK)) {
         if (app->appwebConfig) {
             fail("Cannot open config file %s", path);
@@ -1420,7 +1433,7 @@ static cchar *findAppwebConfig()
         }
         path = 0;
         for (current = mprGetCurrentPath(); current; current = parent) {
-            mprLog(3, "Probe for \"%s\"", current);
+            mprLog(5, "Probe for \"%s\"", current);
             if (mprPathExists(mprJoinPath(current, name), R_OK)) {
                 path = mprJoinPath(current, name);
                 break;

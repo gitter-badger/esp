@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
     <title>Embedthis ESP 1.0.0-rc0 Documentation</title>
-    <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
-        embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
-    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web servers for 
-        devices and applications." />
+    <meta name="keywords" content="web framework, embedded web server, application web server, 
+        embedded server, small web server, HTTP server, node, nginx, appweb" />
+    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web 
+        technology for devices and applications." />
 	<meta name="robots" content="index,follow" />
 	<link href="../../../doc.css" rel="stylesheet" type="text/css" />
 	<link href="../../../print.css" rel="stylesheet" type="text/css" media="print"/>
@@ -65,81 +65,131 @@
         </div>
         <div class="contentLeft">
             <h1>Configuring ESP</h1>
-            <p>ESP is managed by a set of configuration directives in the <em>appweb.conf</em>
-            configuration file. These directives manage:</p>
+            <p>ESP applications use a <em>package.json</em> configuration file to define applications-specific
+            configuration data. This file is a JSON property file that is made available to server-side 
+            controllers and pages, and portions are provided to client-side scripts.</p>
+            <p>The package.json permits you to configure:</p> 
+            <!--MOB refine list -->
             <ul>
-                <li>ESP applications</li>
-                <li>URI parsing and routing</li>
-                <li>ESP directory locations</li>
+                <li>Application name, version and description</li>
+                <li>ESP directory locations and structure</li>
+                <li>Required and optional extension packages</li>
+                <li>Client-side scripts</li>
+                <li>Execution mode: debug or release</li>
+                <li>Response Caching </li>
+                <li>Application timeouts</li>
                 <li>ESP Error handling</li>
-                <li>Compilation and linking of ESP components</li>
-                <li>Database access and binding</li>
+                <li>Database name and location</li>
+                <li>Application compilation policy</li>
+                <li>Default data formats</li>
             </ul>
             <p>This document will cover the various ESP directives and the steps to configure ESP applications.</p>
-            <a id="module"></a>
-            <h2 class="section">ESP Module</h2>
-            <p>Before ESP can be used, the ESP web framework including the ESP handler must be loaded. ESP is packaged as 
-            as an Appweb module called "<em>libmod_esp</em>". This is loaded into Appweb via the <em>LoadModule</em>
-            directive.</p>
-<pre>LoadModule espHandler libmod_esp</pre>
-            <p>This loads the <em>libmod_esp</em> module and invokes the ESP module initialization routine that registers
-            ESP with Appweb.</p>
-            <a id="handler"></a>
-            <h2>ESP Handler</h2>
-            <p>For ESP to receive incoming client requests, the Appweb router must be told what requests to send to ESP.
-            The <em>AddHandler</em> directive below achieves this. It tells Appweb that the <em>espHandler</em> will service
-            all URIs that end with "<em>.esp</em>".</p>
-<pre>AddHandler espHandler esp</pre>
-            <p>This is all that is needed to service any ESP web page that ends with "<em>.esp</em>". If you want to
-            ESP pages with another extension, you can specify extra extensions:</p>
-<pre>AddHandler espHandler esp myesp</pre>
+            <p>If you need to do more complex routing of URIs or more granular control of authentication, you may
+            need to specify additional routes in an <em>appweb.conf</em> configuration file. For details, see
+            <a href="appweb.html">Configuring ESP in Appweb</a>.</p>
+            <h2>Package.json</h2>
+            <p>The package.json schema is defined by the <a href="http://embedthis.com/products/pak/">Pak</a>
+            package manager and conform to the <a href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS
+            Packages 1.1</a> specification. One package.json file is used for the ESP application itself and 
+            each installed extension package will have its own package.json file. This permits <em>esp</em> or
+            the Pak manager, <em>pak</em> to easily manage installed packages and dependencies.</p>
+            <p>Here is a quick look at a package.json file. The <em>esp</em> property section (in yellow)
+            if specific to ESP. The properties outside <em>esp</em> are generic to the Pak package manager.</p>
+<pre>{
+    "dependencies": {
+        "esp-server": "1.x",
+    },
+    "client-scripts": [
+        "app/**.js*",
+    ],
+    <b>esp: {
+        server: {
+            redirect: "secure"
+            database: "mdb://blog.mdb"
+        },
+        showErrors: true,
+        update: true,
+    }</b>,
+},</pre>
+            <h3>Creating a package.json file</h3>
+            <p>When serving stand-alone <em>esp</em> pages, you do not need a package.json file, ESP has
+            sensible defaults. However, when creating more complex applications, you will need a package.json
+            to collect your application configuration in one place.</p>
+            <p>To create a package.json, you can either run <em>esp init</em> or you can install one or more
+            ESP paks and the package.json will be created automatically.</p>
+            <pre><b>esp init</b></pre> 
+            <p>This will create a default package.json using the name of the current directory as the application 
+            name. For example:</p>
+            <pre>{
+    "name": "test",
+    "title": "test",
+    "description": "test",
+    "version": "0.0.0",
+    "dependencies": {},
+    "client-scripts": [],
+    "dirs": {}
+}</pre>
+            <p>Alternatively, a package.json will be created if you install one more more packs</p>
+            <pre><b>esp install esp-html-mvc</b></pre>
+            <p>ESP contains a subset of the <a href="http://embedthis.com/products/pak/">Pak</a> package manager.
+            As such, it can install, list, uninstall and upgrade packages. You can use either <em>esp</em> or
+            <em>pak</em> to perform such operations on paks for your application.</p>
+            <a id="mode"></a>
+            <h3>Execution Mode</h3>
+            <p>ESP provides a convenient way to select a set of properties that correspond to a desired execution
+            mode. Example modes are: <em>debug</em>, <em>test</em> or <em>release</em>. In each mode, different
+            compilation, logging, authentication, and timeout parameters may be required. The <em>esp.mode</em>
+            property specifies a collection of properties that will be copied to the top-level esp collection
+            before the application runs. By modifying the <em>esp.mode</em> setting, an entirely different 
+            execution configuration may be selected. ESP makes this easy via the command:</p>
+            <pre>esp mode NAME</pre> 
+            <p>Where NAME is set to a collection of properties in the package.json to copy.</p>
             <a id="errors"></a>
             <h3>Error Handling</h3>
-            <p>If an ESP page has a syntax error or a run-time error, messages will be sent to the Appweb log file.
-            This defaults to the file <em>error.log</em>. If appweb is run manually, you can see these message on 
-            the console.</p> 
-            <p>Often during development, it is useful to send errors back to the browser. To do this, add the following
-            directive to appweb.conf.</p>
-<pre>ShowErrors on</pre>
-            <p>This will display errors to the browser in addition to sending the errors to the Appweb log.</p>
+            <p>If an ESP page has a syntax error or a run-time error, messages will be sent to the ESP log file.
+            This defaults to the console, but can be sent elsewhere by invoking esp with the <em>--log</em> option.</p>
+            <p>Often during development, it is useful to send errors back to the browser. To do this, 
+            set the <em>esp.showErrors</em> property to true: </p>
+            <pre>esp set esp.showErrors true</pre>
             <a id="reload"></a>
             <h3>Reloading</h3>
-            <p>ESP supports an "edit-and-continue" development style where you can make modifications to ESP controllers
-            and pages and when you click reload in your browser, the controller or page will be transparently 
-            recompiled and reloaded. This can be a great boost for development productivity.</p>
+            <p>ESP supports an "edit-and-continue" development style where you can make modifications to 
+            ESP controllers and pages and when you click reload in your browser, the controller or page 
+            will be transparently recompiled and reloaded. This can be a great boost for development productivity.</p>
             <p>If your ESP application is running in debug mode, then ESP
-            will automatically rebuild modified ESP pages and controllers. If your ESP application is running release mode,
-            the default is to not reload. This default behavior can be modified via the package.json esp.mode setting.
-            or the <em>EspUpdate</em> appweb.conf directive. </p>
-            <pre>EspUpdate on</pre>
+            will automatically rebuild modified ESP pages and controllers. If your ESP application is 
+            running release mode, the default is to not reload. 
+            This default behavior can be modified via the <em>esp.mode</em> setting. For example:</p>
+            <pre>esp mode debug</pre>
             <a id="keep"></a>
             <h3>Keep Source</h3>
             <p>Sometimes, it is helpful to preserve intermediate "C" source files so that you can debug
-            your application at the source code level. When an ESP page is parsed, it is blended with a layout page and
-            then an intermediate C source file is generated. This is normally removed after compilation. Setting the
-            <em>EspKeepSource</em> directive to "<em>on</em>" will cause ESP to preserve this intermediate source file
-            in the <em>cache</em> directory.</p>
-            <pre>EspKeepSource on</pre>
+            your application at the source code level. When an ESP page is parsed, it is blended with a 
+            layout page and then an intermediate C source file is generated. This is normally removed after compilation. Setting the
+            <em>esp.keepSource</em> property to "<em>true</em>" will cause ESP to preserve this 
+            intermediate source file in the <em>cache</em> directory.</p>
+            <pre>esp set esp.keepSource true</pre>
             <h2 class="section">Configuring ESP Applications</h2>
             <p>There are four primary use patterns to consider for ESP Applications:</p>
             <ol>
                 <li>Stand-alone ESP Pages</li>
                 <li>Stand-alone ESP Controllers</li>
                 <li>ESP MVC applications</li>
-                <li>ESP WebSockets</li>
+                <li>ESP Web Services using WebSockets</li>
             </ol>
             <p>These may be used in isolation or may be combined in a single application. For configuration, we'll 
                 consider each separately for clarity.</p>
             <a id="pages"></a>
             <h2>ESP Pages</h2>
-            <p>There is no additional configuration require to support ESP pages, other than configuring the ESP module
-            and handler as described above. For stand-alone ESP pages, layout pages are not used by default unless a 
+            <p>There is no additional configuration require to support ESP pages. If you only wish to stand-alone
+            ESP pages, a package.json is not even required.</p>
+            <h4>Layouts</h4>
+            <p>For stand-alone ESP pages, layouts are not used unless a
             <em>&lt;% layout "filename" %&gt;</em> directive is included at
             the top of the page. For ESP MVC applications, the <em>client/layouts/default.esp</em> page is used 
             if present, unless a <em>&lt;% layout "" %&gt;</em> directive instructs ESP to not use any layout.
             In MVC applications, ESP pages may be placed anywhere under the "client" directory which defines the set
-            of public resources for the browser to access and download. In prior Appweb versions, some ESP pages
-            were grouped under a "views" directory. This is no-longer required.</p>
+            of public resources for the browser to access and download. </p>
             <a id="controllers"></a>
             <h2>ESP Controllers</h2>
             <p>ESP Controllers may be used as part of an ESP MVC application or they may be used stand-alone outside
@@ -167,7 +217,7 @@ ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
 </pre>
             <p>This defines a single action which renders the string "Hello World\n" in response to the client request 
             for the URI <em>/greeting/hello</em>. When the URI is requested, the controller is compiled, linked into
-            a dynamic library, saved in the cache directory and loaded into Appweb. If the source is modified, the 
+            a dynamic library, saved in the cache directory and loaded into ESP. If the source is modified, the 
             old controller is unloaded (after ensuring there are no active requests) and the new source is compiled and
             loaded.</p>
             <p>If you wish to pre-compile the controller, use the esp generator program. For example:</p>
@@ -188,7 +238,7 @@ ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
             <pre>&lt;EspApp prefix="/myblog" dir="./blog" routes="esp-html-mvc"&gt;
     ...
 &lt;EspApp&gt;</pre>
-            <p>With this configuration, Appweb will send client requests begin with the URI <em>/myblog</em> 
+            <p>With this configuration, ESP will send client requests begin with the URI <em>/myblog</em> 
             to this ESP application at "./blog".</p>
             <p>Inside the EspApp directory, you can define other routes, configure caching, define resource limits
              or use most Appweb directives.</p>
@@ -198,141 +248,6 @@ ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
             on Windows, the <em>Embedthis Appweb/apps</em> directory. When Appweb is started or restarted, it will
             parse all the config files under the <em>apps</em>. Installing or removing a config file for each 
             application under the <em>apps</em> directory is a simple way to add/remove an application.</p>
-            <a name="json"></a>
-            <h2 class="section">ESP Configuration File</h2>
-            <p>ESP MVC applications use a <em>package.json</em> configuration file to define applications-specific
-            configuration data. This file is a JSON property file that is made available to server-side controllers and
-            portions to client-side scripts. For example:</p>
-            <pre>
-{
-    // Paks used by this application.
-    "dependencies": {
-        "angular": "~1.2",
-        "angular-bootstrap": "~0.7",
-        "bootstrap": ">=3.0.0",
-        "esp-angular": "~*",
-        "esp-angular-mvc": "*",
-        "esp-server": "*",
-        "font-awesome": "~4",
-        "html5shiv": ">=3.6.2",
-        "less": ">=1.3.3",
-    },
-    "client-scripts": [
-        "paks/angular/angular.js",
-        "paks/angular/angular-animate.js",
-        "paks/angular/angular-route.js",
-        "paks/angular-bootstrap/*.js",
-        "paks/esp-angular/*.js",
-        "app/main.js",
-        "app/*/**.js*",
-        "paks/esp-gui/*.js",
-        "paks/html5/html5shiv.js",
-        "paks/less/less.js",
-    ],
-    esp: {
-        // Name of the Auth Store. "app" means server-side auth database
-        auth: "app",
-        // Default presentation formats for various types
-        formats: {
-            date: "yyyy-MM-dd",
-            float: 2,
-            int: 0,
-        },
-        server: {
-            // Redirect all traffic over HTTPS
-            redirect: "secure"
-            // Server side database
-            database: "mdb://blog.mdb"
-        },
-        // URI prefix for all server-side URIs
-        serverPrefix: "/do",
-        // Default timeouts (secs)
-        timeouts: {
-            session: 1800,
-        },
-        // Set to include a XSRF token to minimize CSRF vulnerabilies
-        xsrf: true,
-        // Application mode selects debug or release properties and 
-        // copies them to esp
-        mode: "debug",
-        modes: {
-            debug: {
-                // Application compiled in combined vs discrete mode
-                combined: false,
-                // Display server-side errors in the browser
-                showErrors: true,
-                // Keep intermediate source for views in the cache directory
-                keepSource: true,
-                // Transparently recompile views, controllers and source
-                update: true,
-                // Automatic login credentials.
-                login: {
-                    name: "",
-                    abilities: {
-                        edit: true,
-                        view: true,
-                    },
-                },
-            },
-            release: {
-                //  Same fields as per debug
-            },
-        },
-    },
-},
-</pre>
-            <p>The client does not receive the "esp.server" collection. </p>
-            <a id="routing"></a>
-            <h2 class="section">ESP Routing</h2>
-            <p>So far, we've covered the basics, but ESP provides very powerful routing and directives 
-                that can be utilized to custom configure ESP applications. 
-            An application will typically deal with various resources that need to be managed. For example, a WIFI
-            router UI will need to manage the WIFI network name and password.  A network switch application may 
-            need to manage a group of ethernet ports. Using <a href="http://en.wikipedia.org/wiki/Clean_URL">RESTful Routes</a>,
-            these resources are mapped onto HTTP methods and URIs in a simple and clear manner.</p>
-            <p>ESP provides two directives to create URI routes for resources: </p>
-                <ul>
-                    <li>EspPermResource &mdash; Create routes for a permanent resource (no create or delete)</li>
-                    <li>EspResource &mdash; Create routes for a singleton resource</li>
-                    <li>EspResourceGroup &mdash; Create routes for a group of resources</li>
-                </ul>
-            <h3>EspPermResource</h3>
-            <p>The EspPermResource directive is used to create a RESTful set of routes to manage a permanent resource.
-            A permanent resource is a resource that cannot be created or destroyed. It may be modifified and has 
-            one or more related properties that are managed as a unit. 
-            These routes define URI routes for get, update and custom actions.
-            See the <a href="../../appweb/users/dir/esp.html#espPermResource">EspPermResource</a> reference
-            for details of the actual routes created.</p>
-            <h3>EspResource</h3>
-            <p>The EspResource directive is used to create a RESTful set of routes to manage a singleton resource.
-            A singleton resource is one or more related properties that are managed as a unit, like the WIFI network
-            name and password. These routes define URI routes for create, edit, get, init, remove, show and  
-            update functions. See the <a href="../../appweb/users/dir/esp.html#espResource">EspResource</a> reference
-            for details of the actual routes created.</p>
-            <h3>EspResourceGroup</h3>
-            <p>The EspResourceGroup directive is used to create a RESTful set of routes to manage a singleton resource.
-            A group of resources is one or more instances of a resource that can be managed individually, like the 
-            "port" on a network switch.
-            See the <a href="../../appweb/users/dir/esp.html#espResourceGroup">EspResourceGroup</a> reference
-            for details of the actual routes created.</p>
-            <h3>EspRoute</h3>
-            <p>For more control over individual routes, you can use the 
-            <a href="../../appweb/users/dir/esp.html#espRoute">EspRoute</a> directive that will create a route for a 
-                URI and map the URI to an ESP controller and action. For example: </p>
-                <pre>EspRoute name="/admin" methods="POST" prefix="^/wifi/admin/login"
- &nbsp; &rarr; target="admin-login" source="admin.c"</pre>
-            <p>This will map <em>/wifi/admin/login</em> URI to the <em>admin</em> controller for the
-                <em>login</em> action.</p>
-            <h3>Custom Routes</h3>
-            <p>Sometimes you need a specific, custom mapping of a URI to an ESP controller and action. You can do this
-            with the lowest-level Appweb directives:</p>
-                <ul>
-                    <li><a href="../../appweb/users/dir/route.html#route">Route</a></li>
-                    <li><a href="../../appweb/users/dir/route.html#name">Name</a></li>
-                    <li><a href="../../appweb/users/dir/route.html#source">Source</a></li>
-                    <li><a href="../../appweb/users/dir/route.html#target">Target</a></li>
-                </ul>
-            
             <a id="database"></a>
             <h2 class="section">Databases</h2>
             <p>Databases can be specified and pre-opened via the <em>EspDb</em> directive or via the 
@@ -351,71 +266,221 @@ or
             <p>For SQLite and MDB databases, the database-connection string is the name of the database in the ESP
             <em>db</em> directory. Databases can also be pre-opened via the 
                 <a href="../../appweb/users/dir/esp.html#espApp">EspApp</a> directive.</p>
-            <a id="compilation"></a>
-            <h2 class="section">Compilation</h2>
-            <p>At development time, ESP need to compile ESP controllers and pages into native binary.
-            ESP supplies a pre-configured set of compilation commands for the major operating systems. These
-            are stored in the <em>esp.conf</em> file which is located at <em>/usr/local/lib/appweb/bin</em> on Unix or on
-            Windows at <em>C:/Program Files/Embedthis Appweb/bin</em>. The esp.conf file contains compile and link command
-            templates using the <a href="../../appweb/users/dir/esp.html#espCompile">EspCompile</a> and optionally 
-            <a href="../../appweb/users/dir/esp.html#espLink">EspLink</a>. For example:
-<pre>
-EspCompile cc -shared ${DEBUG} -Wall -Wno-unused-result \
-    -DPIC -fPIC -I. -I${INC} -L${LIB} -Wl,--enable-new-dtags \
-    -Wl,-rpath,$ORIGIN ${LIBS} -o ${OUT}${SHOBJ} ${SRC}
-</pre>
-                <p>The various tokens in braces "${token}", are expanded at runtime depending on the configuration of
-                Appweb. The esp.conf configuration file has conditional sections for Cygwin, Windows, Mac OS X, VxWorks and
-                a default section for Linux/Unix. You can customize this file to suit your system. </p>
-                <p>Some systems require a separate link phase. The <a
-                    href="../../appweb/users/dir/esp.html#espLink">EspLink</a> command can be used to do a separate
-                link. Other systems require that various environment variables be defined for the compiler and linker to
-                successfully run. Use the <a href="../../appweb/users/dir/esp.html#espEnv">EspEnv</a> command for this.
-            <h3>Cross Compilation</h3>
-            <p>When cross-compiling, invoke the <em>esp</em> command with the "<em>--config</em>" switch to specify a
-            separate config file for compiling on the target. Copy the standard <em>esp.conf</em> and modify the compile
-            and link targets as required.</p>
-            
-            <a id="directives"></a>
-            <h2 class="section">Directives List</h2>
-            <p>The following is a list of the various ESP directives and their purpose.</p>
-            <table title="directives">
+            <h2 class="section">ESP Package.json Properties</h2>
+            <h3>Top Level Properties</h3>
+            <table title="top-level collections" class="full">
                 <thead>
-                    <tr><th>Directive</th><th>Purpose</th></tr>
+                    <tr><th>Name</th><th>Description</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><a href="../../appweb/users/dir/esp.html#espApp">EspApp</a></td>
-                            <td>Define an ESP web application</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espCompile">EspCompile</a></td>
-                            <td>Compile command for ESP controllers and pages</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espDb">EspDb</a></td>
-                            <td>Pre-open a database</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espDir">EspDir</a></td>
-                            <td>Set an ESP directory location</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espEnv">EspEnv</a></td>
-                            <td>Set an environment variable</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espKeepSource">EspKeepSource</a></td>
-                            <td>Preserve intermediate page source code</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espLink">EspLink</a></td>
-                            <td>Link command for ESP controllers and pages</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espLoad">EspLoad</a></td>
-                            <td>Pre-load an ESP application</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espPermResource">EspPermResource</a></td>
-                            <td>Create a set of routes for a permanent resource</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espResource">EspResource</a></td>
-                            <td>Create a set of routes for a singleton resource</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espResourceGroup">EspResourceGroup</a></td>
-                            <td>Create a set of routes for a group of resources</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espRoute">EspRoute</a></td>
-                            <td>Define and configure an ESP route</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espRouteSet">EspRouteSet</a></td>
-                            <td>Create a pre-defined set of routes</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/esp.html#espUpdate">EspUpdate</a></td>
-                            <td>Reload updated ESP controllers and pages</td></tr>
-                        <tr><td><a href="../../appweb/users/dir/route.html#showErrors">ShowErrors</a></td>
-                            <td>Show ESP errors to the client</td></tr>
+                    <tr>
+                        <td>name</td>
+                        <td>One word application name.</td>
+                    </tr>
+                    <tr>
+                        <td>title</td>
+                        <td>Multi-word application name to display.</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>Sort-sentance description of the application.</td>
+                    </tr>
+                    <tr>
+                        <td>version</td>
+                        <td>Application version conforming to <a href="http://semver.org">SemVer</a>.</td>
+                    </tr>
+                    <tr>
+                        <td>keywords</td>
+                        <td>Descriptive keywords that Pak can use if the application is published in the
+                            <a href="http://embedthis.com/catalog/">Pak catalog</a>.</td>
+                    </tr>
+                    <tr>
+                        <td>dependencies</td>
+                        <td>Other paks the application requires. The key is the pak name and the value
+                            is a version expression. See
+                            <a href="https://embedthis.com/products/pak/doc/index.html">Pak Documentation for
+                            details.</a></td>
+                    </tr>
+                    <tr>
+                        <td>client-scripts</td>
+                        <td>Scripts to send to the client when parsing the ESP <em>scripts()</em> API. This may
+                        include the "*" wildcard to match any file or "**" to match any file in any directory.</td>
+                    </tr>
+                    <tr>
+                        <td>dirs</td>
+                        <td>Directory locations for ESP: 
+                        <ul>
+                            <li>client &mdash; Directory containing client-side content. All files under this 
+                                directory are visible to the client.</li>
+                            <li>paks &mdash; Directory to contain installed Paks. Defaults to ./paks, 
+                               however this must typically be set to client/paks for many common ESP paks.</li>
+                            <li>pakscache &mdash; Location of the per-user Pak cache. Defaults to ~/.paks.</li>
+                        </ul>
+                    </tr>
+                    <tr>
+                        <td>esp</td>
+                        <td>ESP specific configuration.</td>
+                    </tr>
+                    <tr>
+                        <td>ignore</td>
+                        <td>File patterns to ignore when installing the application or package.</td>
+                    </tr>
                 </tbody>
             </table>
+            <h3>Dependency Expressions</h3>
+            <p>Dependent packs may be specified in the <em>dependencies</em> property. This is an object 
+            collection of paks with version expressions. When esp installs a new pak, an entry for the new pak
+            will be added to the dependency collection. For example:</p>
+            <pre>"dependencies": {
+    "angular": "1.2.0",
+    "bootstrap": "3.0.0",
+}</pre>
+            <h4>Dependency Versions</h4>
+            <p>ESP versions comply with the <a href="http://semver.org">SemVer</a> version specification.
+            Briefly, this means versions are expressed :</p>
+            <pre>MAJOR.MINOR.PATCH-PRERELEASE</pre> 
+            <p>Dependency versions may also include expressions that describe a range of acceptable pak versions.</p>
+            <ul>
+                <li>version &mdash; (allows prereleases)</li>
+                <li>^ version &mdash; (same as >=1.2.3 &lt;2.0.0, does not allow prereleases)</li>
+                <li>~ version &mdash; (same as >=1.2.3 &lt;2.0.0, allows prereleases)</li>
+                <li>1.2.X &mdash; (any version starting with 1.2 (allows prereleases)</li>
+                <li>[&gt;, &gt;=, &lt;, &lt;=, ==, !=] version</li>
+                <li>expression || expression ... (either expression qualifies)</li>
+                <li>expression &amp;&amp; expression ... (both expressions must qualify)</li>
+                <li>expression expression ... (same as &amp;&amp;) </li>
+                </li>
+            </ul>
+            <p>For example:</p>
+                        <pre>"dependencies": {
+    "angular": ">=1.2.0",  /* Versions 1.2.0 or later including prereleases */
+    "bootstrap": "~3",     /* Versions 3.0.0 or later including prereleases */
+    "jquery": "^1.9.1",    /* Version 1.9.1 and not prereleases */
+    "less": "1.3.x",       /* Version 1.3.x and prereleases /
+}</pre>
+            <h3>ESP Configuration &mdash; esp.*</h3>
+            <table title="top-level collections" class="full">
+                <thead>
+                    <tr><th>Name</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>server</td>
+                        <td>Collection of server side configuration that will not be passed to the client.</td>
+                    </tr>
+                    <tr>
+                        <td>mode</td>
+                        <td>Execution mode for the application. Typically <em>debug</em> or <em>release</em>
+                        but can be any identifier word. This selects a property collection of the same name
+                        and copies those properties up one level.</td>
+                    </tr>
+                    <tr>
+                        <td>serverPrefix</td>
+                        <td>URI prefix to communicate with server-side controllers for the application.</td>
+                    </tr>
+                    <tr>
+                        <td>auth</td>
+                        <td>Authentication policy. Set to "basic", digest", or "app" for web form authentication.</td>
+                    </tr>
+                    <tr>
+                        <td>formats</td>
+                        <td>Collection of properties defining default data formats. Used by esp-angular-mvc.
+                        <ul>
+                            <li>date &mdash; Default date format string. For example: "yyyy-MM-dd"</li>
+                            <li>float &mdash; Default number of decimal places to display.</li>
+                        </ul>
+                    </tr>
+                    <tr>
+                        <td>json</td>
+                        <td>Controls if controller responses should be sent in JSON instead of HTML.</td>
+                    </tr>
+                    <tr>
+                        <td>refresh</td>
+                        <td>Default period for to refresh client data in dynamic web pages.</td>
+                    </tr>
+                    <tr>
+                        <td>xsrf</td>
+                        <td>Control if an XSRF anti-forgery token is used on forms.</td>
+                    </tr>
+                    <tr>
+                        <td>timeouts</td>
+                        <td>Collection of timeouts. Currently only a <em>session</em> timeout is supported.
+                        The timeout units are in seconds.</td>
+                    </tr>
+                    <tr>
+                        <td>combined</td>
+                        <td>Controls if the application is to be compiled in <em>combined</em> mode where
+                        all the application is compiled into a single library binary.</td>
+                    </tr>
+                    <tr>
+                        <td>showErrors</td>
+                        <td>Controls if application errors should be displayed in the browser.
+                        Set to true to display errors in the browser.</td>
+                    </tr>
+                    <tr>
+                        <td>keepSource</td>
+                        <td>Set to true to keep intermediate source for views in the cache directory. This can
+                        be an aide for debugging.</td>
+                    </tr>
+                    <tr>
+                        <td>login</td>
+                        <td>Collection of login related properties.</td>
+                    </tr>
+                    <tr>
+                        <td>update</td>
+                        <td>Controls if updated ESP controllers and pages will be recompiled and if 
+                            updated ESP modules will be reloaded. Set to true to enable.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Server Collection &mdash; esp.server.*</h3>
+            <table title="top-level collections" class="full">
+                <thead>
+                    <tr><th>Name</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>database</td>
+                        <td>Datebase to create and open for the application. Of the form:
+                            <em>provider://name.ext</em> where provider is set to either "mdb" for the
+                            embedded memory database or "sdb" for SQLite. The extensions are "mdb" or "sdb"
+                            by convention.</td>
+                    </tr>
+                    <tr>
+                        <td>generate</td>
+                        <td>Collection of properties guiding the <em>esp generate</em> commands.</td>
+                    </tr>
+                    <tr>
+                        <td>redirect</td>
+                        <td>If set to "<em>secure</em>", then all access over HTTP will be redirected over HTTPS
+                        which uses SSL/TLS for encrypted secure communications.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Login Collection &mdash; esp.login.*</h3>
+            <table title="top-level collections" class="full">
+                <thead>
+                    <tr><th>Name</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>Automatically login as this user with the role defined by set of <em>abilities</em>.</td>
+                    </tr>
+                    <tr>
+                        <td>abilities</td>
+                        <td>Property collection of abilites for the user specified via <em>name</em>.
+                        Abilities are simple words that define capabilies. ESP controllers and pages 
+                        can require that certain abilities be present before authorizing access.</td>
+                    </tr>
+                    <tr>
+                        <td>single</td>
+                        <td>Set to true to permit only one simultaneous login. Ideal for some management user
+                        interfaces.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
         </div>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->

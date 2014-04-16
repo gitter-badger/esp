@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
     <title>Embedthis ESP 1.0.0-rc0 Documentation</title>
-    <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
-        embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
-    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web servers for 
-        devices and applications." />
+    <meta name="keywords" content="web framework, embedded web server, application web server, 
+        embedded server, small web server, HTTP server, node, nginx, appweb" />
+    <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web 
+        technology for devices and applications." />
 	<meta name="robots" content="index,follow" />
 	<link href="../../../doc.css" rel="stylesheet" type="text/css" />
 	<link href="../../../print.css" rel="stylesheet" type="text/css" media="print"/>
@@ -28,21 +28,19 @@
         <div class="crumbs">
             <a href="../../../index.html">Home</a>
 <!-- EndDsi -->
-             &gt;<a href="index.html">User Guide</a>&gt; <b>ESP Application Generator</b>
+             &gt;<a href="index.html">User Guide</a>&gt; <b>ESP Application Manager</b>
         </div>
     </div>
     <div class="content">
         <div class="contentRight">
             <h1>Quick Nav</h1>
             <ul class="nav">
-                <li><a href="#generating">Generating Applications</a></li>
+                <li><a href="#generating">Creating Applications</a></li>
                 <li><a href="#controllers">Generating Controllers</a></li>
                 <li><a href="#database">Generating Database Tables</a></li>
                 <li><a href="#scaffolds">Generating Scaffolds</a></li>
-                <!--
                 <li><a href="#migrations">Generating Migrations</a></li>
                 <li><a href="#runMigrations">Running Migrations</a></li>
-                -->
                 <li><a href="#compiling">Compiling</a></li>
                 <li><a href="#running">Running</a></li>
                 <li><a href="#cleaning">Cleaning</a></li>
@@ -65,72 +63,65 @@
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
-            <h1>ESP Application Generator &mdash; <em>esp</em></h1>
-            <p>The ESP web framework provides an application generator and building tool named <em>esp</em>. 
+            <h1>ESP Application Manager &mdash; <em>esp</em></h1>
+            <p>The ESP web framework provides an ESP application manager named <em>esp</em>. 
             This tool makes it easy and quick to create and manage your web applications. The <em>esp</em> 
-            command generates MVC web applications, database schema, scaffolds and views. The <em>esp</em> command 
-            can be used to run your application by invoking the Appweb web server and it can be used to pre-compile
-            controllers, views and web pages.</p>
+            runs ESP applications but it also compiles ESP pages and controllers and generates MVC web 
+            applications, database schema, scaffolds and views. 
             <p>The <em>esp</em> program is not just for MVC applications. It can be used to pre-compile stand-alone
             ESP web pages too.</p> 
             <a id="generating"></a>
-            <h2 class="section">Generating Applications</h2>
-            <p>To start a new web application, run <em>esp</em> to create the application directory and generate the
-            essential application configuration and script files. For example:</p>
-            <pre>esp generate app blog
-[Create] Directory: blog
-[Create] File: blog/appweb.conf
-[Create] File: blog/app.conf
-[Create] File: blog/package.json
-[Create] Directory: blog/src
-[Create] blog/src/app.c
-  [Task] Compile</pre>
-            <p>This generates the bare minimum application without additional packs. The appweb.conf file
-            is an Appweb configuration file. This defines the Appweb and ESP configuration when you run your application.
-            Alternatively, you can use the app.conf file that is suitable when hosting the application from an 
-            existing appweb configuration. The <em>package.json</em> file is the ESP configuration for the application.
-            The application source code stub is generated in <em>app.c</em>.</p>
-            <p>The format of the "esp generate app" command is:</p>
-            <pre>esp generate app NAME [PACKS...]</pre>
+            <h2 class="section">Creating Applications</h2>
+            <p>To start a new web application, create a directory named for the application then run 
+            <em>esp</em> to install the required Paks to initialize the application. 
+            For example:</p>
+            <pre>$ <b>mkdir blog</b>
+$ <b>cd blog</b>
+$ <b>esp install esp-server</b>
+      [Save] /Users/mob/git/junk/package.json
+   [Install] esp-server 1.0.0-rc0
+    [Create] client/paks/esp-server/LICENSE.md
+    [Create] client/paks/esp-server/package.json
+    [Create] client/paks/esp-server/README.md
+    [Create] templates/esp-server/appweb.conf
+      [Info] esp-server successfully installed</pre>
+            <p>This installs the bare minimum application without additional packs. The <em>pacakge.conf</em> file
+            is an ESP configuration file. This defines the configuration to run your application.
+            The templates directory contains components that can be generated at a later stage.</p>
+
+            <p>The format of the "<em>esp install</em>" command is:</p>
+            <pre>$ <b>esp install [PACKS...]</b></pre>
             <p>The given NAME is the name of the application and also the name of the directory into which esp will
             generate the application. The PACKS are optional extension packs for the 
-            generated application. The supported packs are:</p>
+            generated application. The standard packs included with ESP are:</p>
             <ul>
-                <li>angular &mdash; The <a href="http://www.angularjs.org">AngularJS Client Framework</a></li>
-<li>esp-angular &mdash; Angular support for Embedthis ESP</li>
-<li>esp-angular-mvc &mdash; ESP MVC application skeleton for Angular</li>
-<li>esp-angular-session &mdash; Angular session state storage</li>
 <li>esp-server &mdash; Default ESP service-side configuration for Appweb</li>
+<li>esp-mvc &mdash; ESP server-side MVC application skeleton</li>
 <li>esp-html-mvc &mdash; ESP server-side MVC application skeleton</li>
-<li>less &mdash; The <a href="http://lesscss.org">Less</a> CSS pre-processor</li>
-<li>more &mdash; Collection of CSS polyfills for emerging HTML5 elements</li>
             </ul>
+            <p>You can also install packs from a wide variety from the online 
+            <a href="http://embedthis.com/catalog/">Pak Catalog</a> by using the 
+            <a href="http://embedthis.com/products/pak/">Pak Manager</a>.
             <p> For example:</p>
             <pre>
-$ <b>esp generate app blog esp-angular-mvc</b>
-    [Create] Directory: blog
-  [Generate] Pack: esp-server
-  [Generate] Pack: esp-angular-mvc
-  [Generate] Pack: esp-angular
-  [Generate] Pack: less
-  [Generate] Pack: more
-    [Create] Directory: blog/src
-    [Create] blog/src/app.c
-    [Create] Directory: blog/db
-      [Task] Complete
-</pre>
+$ <b>pak install esp-angular-mvc</b></pre>
+            <p>Once Pak has downloaded the desired pack, it will save a copy locally. Thereafter, you can use
+            <em>esp</em> to install that pack in other applications. You can also use <em>pak</em> to pre-load
+            the Pak cache via the <em>pak cache</em> command.</p>
+
             <h3>Pack Dependencies</h3>
-            <p>Pack may depend on other packs. The <em>esp</em> generator will resolve these 
-            dependencies and generate all the required packs. For example: the 
-            <em>esp-angular-mvc</em> pack depends on: angular, esp-angular-session, esp-angularesp, 
-            less and more packs. After generating, the pack dependencies are described in the
-            generated <em>package.json</em> file as the <em>settings.packs</em> property.</p>
+            <p>Pack may depend on other packs. The <em>esp</em> manager will resolve these 
+            dependencies and install all the required packs. For example: the 
+            <em>esp-angular-mvc</em> pack depends on: angular, esp-angular-session, esp-angular, 
+            less and more packs. After installing, the pack dependencies are described in the
+            <em>package.json</em> file in the <em>dependencies</em> property.</p>
+
             <h3>Overwriting</h3>
-            <p>The <em>esp</em> command will create directories and generate configuration and 
-            source code files which can then be manually edited as required. The <em>esp</em> 
-            command is intelligent and will not overwrite existing files after you have generated
-            your application, so you can safely edit without losing your changes. 
-            You can add packs by generating the application and selecting additional packs. 
+            <p>The <em>esp</em> command will create directories and configuration and 
+            source code files that can then be manually edited as required. The <em>esp</em> 
+            command is intelligent and will not overwrite existing files after you have install and modified files.
+            So you can safely edit without losing your changes. 
+            You can add packs at any time by installing additional packs. 
             You can overwrite your changes if you wish to by using the <em>--overwrite</em> switch.</p>
             
             <h3>Created Directories</h3>
@@ -167,16 +158,12 @@ $ <b>esp generate app blog esp-angular-mvc</b>
                         <td>Client side CSS</td>
                     </tr>
                     <tr>
-                        <td>client/layouts</td>
+                        <td>layouts</td>
                         <td>Layout template pages</td>
                     </tr>
                     <tr>
-                        <td>client/lib</td>
-                        <td>Client side Javascript libraries</td>
-                    </tr>
-                    <tr>
-                        <td>client/pages</td>
-                        <td>Stand-alone client-side web pages</td>
+                        <td>client/paks</td>
+                       <td>Installed packs</td>
                     </tr>
                     <tr>
                         <td>controllers</td>
@@ -185,6 +172,10 @@ $ <b>esp generate app blog esp-angular-mvc</b>
                     <tr>
                         <td>db</td>
                         <td>Databases and scripts</td>
+                    </tr>
+                    <tr>
+                        <td>src</td>
+                        <td>Other application C source code</td>
                     </tr>
                 </tbody>
             </table>
@@ -198,16 +189,8 @@ $ <b>esp generate app blog esp-angular-mvc</b>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>appweb.conf</td>
-                        <td>Appweb startup configuration file</td>
-                    </tr>
-                    <tr>
                         <td>package.json</td>
                         <td>ESP configuration file. Available to server and client.</td>
-                    </tr>
-                    <tr>
-                        <td>hosted.conf</td>
-                        <td>Appweb configuration file to include from an appweb.conf file</td>
                     </tr>
                     <tr>
                         <td>client/index.esp</td>
@@ -215,22 +198,22 @@ $ <b>esp generate app blog esp-angular-mvc</b>
                     </tr>
                 </tbody>
             </table>
+
             <a id="controllers"></a>
             <h2 class="section">Generating Controllers</h2>
-            <p>Controllers are the primary mechanism for responding to client requests. To generate a controller:</p>
+            <p>Controllers are the primary mechanism for responding to client requests. 
+            To generate a controller:</p>
             <pre>
-esp generate controller NAME [actions...]
-</pre>
-            <p>This will create the named controller in the <em>controllers</em> directory. A controller manages the
-            web application and the controller action methods are invoked by ESP to respond to client requests and
-            generate responses.</p>
-            <p>If no actions are requested, esp will create a controller with initialization function but without any
-            actions. If actions are specified, esp will create an empty action method for each requested action. You can edit the
+$ <b>esp generate controller NAME [actions...]</b></pre>
+            <p>This will create the named controller in the <em>controllers</em> directory. A controller manages 
+            requests tothe web application. The controller action methods are invoked by ESP to respond to client requests and generate responses.</p>
+            <p>If no actions are requested when generating, <em>esp</em> will create a controller with 
+            an initialization function but without any actions. If actions are specified, <em>esp</em> 
+            will create an empty action method for each requested action. You can edit the
             controller source to meet your needs.</p>
             <p>If you use the command:</p>
             <pre>
-esp generate controller admin edit login logout command
-</pre>
+$ <b>esp generate controller admin edit login logout command</b></pre>
             <p>The following controller code will be generated. There is one function generated for each action 
             and a call to <em>espDefineAction</em> is added to register the controller. The <em>esp_controller_admin</em>
             initialization function is invoked once when the controller is first loaded.</p>
@@ -253,7 +236,7 @@ ESP_EXPORT int esp_module_admin(HttpRoute *route) {
             <p>Database schema can be created and modified via the <em>esp</em> command. 
             This will create a database table with fields of the required types.</p>
             <pre>
-esp generate table NAME [field:type ...]
+$ <b>esp generate table NAME [field:type ...]</b>
 </pre>
             <p>If <em>field:type</em> values are supplied, the database will be updated for each specified field of 
             the requested type. The valid database types are: binary, boolean, date,
@@ -264,7 +247,7 @@ esp generate table NAME [field:type ...]
             migrations by the "<em>esp generate migration</em>" command. This command generates a migration for a
             specific model by creating or removing tables and columns. To generate a migration:</p>
             <pre>
-esp generate migration description MODEL [field:type ...]
+$ <b>esp generate migration description MODEL [field:type ...]</b>
 </pre>
             <p>This will create a migration script under the db/migrations directory. Migration scripts filenames are
             time stamped and use the description as part of the filename for the migration script (so keep it short and
@@ -295,9 +278,7 @@ esp generate migration description MODEL [field:type ...]
             pack &mdash; as the view scaffold depends on the Angular libraries.</p>
             <p>To generate a scaffold:</p>
             <pre>
-esp generate app blog esp-angular-mvc
-cd blog
-<b>esp generate scaffold NAME [field:type ...]</b>
+$ <b>esp generate scaffold NAME [field:type ...]</b>
 </pre>
             <p>This will create a scaffold for the named database table and will generate a controller of the same name. 
             If field:type values are supplied, the database will be updated with columns for
@@ -316,7 +297,7 @@ cd blog
             <h3>Compile Everything</h3>
             <p>The <em>esp</em> command can recompile the entire application via:</p>
             <pre>
-esp compile 
+$ <b>esp compile</b>
 </pre>
             <p>This will compile and link all controllers and views and place the generated shared libraries (DLLs)
             in the <em>cache</em> directory.</p>
@@ -335,11 +316,11 @@ esp compile
             <p>If "<em>esp compile</em>" is invoked with one or more paths on the command line, these paths will act as 
             filters such that only the designated paths will be compiled. For example:</p>
             <pre>
-esp compile web/test.esp
-esp compile myapp
-esp compile views
-esp compile /path/to/my/app
-esp compile /directory/of/apps
+$ <b>esp compile web/test.esp</b>
+$ <b>esp compile myapp</b>
+$ <b>esp compile views</b>
+$ <b>esp compile /path/to/my/app</b>
+$ <b>esp compile /directory/of/apps</b>
 </pre>
             <p>These paths are interpreted as filenames relative to the current directory.
             If a controller, web page filename is provided, only that resource will be compiled. If a directory that 
@@ -364,7 +345,7 @@ esp compile /directory/of/apps
                 slink.c</em> switch. The generated code should be linked with your appweb main program replacing the default
             slink.c file.</p>
             <pre>
-esp --static --genlink slink.c
+$ <b>esp --static --genlink slink.c</b>
 </pre>
             <h3>Cross Compiling</h3>
             <p>When <em>esp compile</em> is invoked, it selects its compile and link rules from the <em>esp.conf</em>
@@ -376,7 +357,7 @@ esp --static --genlink slink.c
             <p>The <em>esp</em> command can select alternate compile and link configurations via the 
             <em>--platform</em> switch. For example:</p>
             <pre>
-esp --platform vxworks-arm-debug
+$ <b>esp --platform vxworks-arm-debug</b>
 </pre>
             <p>This will compile the application for VxWorks on arm. Of course, the resulting module cannot be 
             run on the development system if cross-compiling. 
@@ -391,15 +372,15 @@ esp --platform vxworks-arm-debug
             <h2 class="section">Running</h2>
             <p>To run your application:</p>
             <pre>
-    esp run
-or 
-    appweb -v
+$ <b>esp run</b>
+  # or 
+$ <b>esp</b>
 </pre>
             <a id="cleaning"></a>
             <h2 class="section">Cleaning</h2>
             <p>To clean all generated files under the cache directory:</p>
             <pre>
-esp clean
+$ <b>esp clean</b>
 </pre>
             <a id="options"></a>
             <h2 class="section">Command Options</h2>
@@ -408,36 +389,48 @@ esp clean
 ESP Usage:
   esp [options] [commands]
   Options:
-    --chdir dir                # Change to the named directory first
-    --config configFile        # Use named config file instead appweb.conf
-    --database name            # Database provider 'mdb|sqlite' 
-    --genlink                  # Generate a static link module
-    --host OS                  # Target O/S
+    --config appwebConfig      # Use named config file instead appweb.conf
+    --database name            # Database provider 'mdb|sdb'
+    --genlink filename         # Generate a static link module for combined compilations
+    --home directory           # Change to directory first
     --keep                     # Keep intermediate source
-    --listen [ip:]port         # Listen on specified address 
+    --listen [ip:]port         # Generate app to listen at address
     --log logFile:level        # Log to file file at verbosity level
-    --overwrite                # Overwrite existing files 
-    --quiet                    # Don't emit trace 
-    --platform os-arch-profile # Target platform. May be a full path.
+    --name appName             # Name for the app when compiling combined
+    --optimize                 # Compile optimized without symbols
+    --overwrite                # Overwrite existing files
+    --quiet                    # Don't emit trace
+    --platform os-arch-profile # Target platform
     --rebuild                  # Force a rebuild
-    --reverse                  # Reverse migrations
-    --routeName name           # Route name in appweb.conf to use 
-    --routePrefix prefix       # Route prefix in appweb.conf to use 
+    --routeName name           # Name of route to select
+    --routePrefix prefix       # Prefix of route to select
+    --single                   # Generate a singleton controller
     --show                     # Show compile commands
     --static                   # Use static linking
-    --verbose                  # Emit verbose trace 
-    --why                      # Why compile or skip
+    --symbols                  # Compile for debug with symbols
+    --table name               # Override table name if plural required
+    --verbose                  # Emit more verbose trace
+    --why                      # Why compile or skip building
   Commands:
+    esp config
     esp clean
-    esp compile
     esp compile [pathFilters ...]
-    esp migrate [forward|backward|NNN]
-    esp generate app name
+    esp debug|release
+    esp generate app name [paks...]
     esp generate controller name [action [, action] ...
     esp generate migration description model [field:type [, field:type] ...]
     esp generate scaffold model [field:type [, field:type] ...]
     esp generate table name [field:type [, field:type] ...]
-    esp run
+    esp get package-field
+    esp init
+    esp install paks...
+    esp list
+    esp migrate [forward|backward|NNN]
+    esp mode [debug|release]
+    esp [run] [ip]:[port] ...
+    esp set package-field value
+    esp uninstall paks...
+    esp upgrade paks...
 </pre>
             <table title="switches">
                 <thead>
