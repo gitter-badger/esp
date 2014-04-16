@@ -109,13 +109,6 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>espLoadConfig</name>
-      <anchorfile>group___esp_route.html</anchorfile>
-      <anchor>ga8719b78bdfb4e3228c6e9be843f45140</anchor>
-      <arglist>(HttpRoute *route)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>espSaveConfig</name>
       <anchorfile>group___esp_route.html</anchorfile>
       <anchor>gacd7c962cf79038c3d7604c72dc43bbdb</anchor>

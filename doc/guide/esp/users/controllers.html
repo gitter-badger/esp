@@ -51,9 +51,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -73,14 +72,14 @@
         may be a stand-alone controller.</p>
         <a id="example"></a>
         <h2 class="section">Example of a Controller</h2>
-        <p>So what does a controller look like? Here is a partial example called <em>greeting.c</em>
+        <p>So what does a controller look like? Here is a partial example called <em>controllers/greeting.c</em>
         that has one action to say "Hello World".</p>
         <pre>
 #include "esp.h"
 static void hello() { 
     render("Hello World\n");
 }
-ESP_EXPORT int esp_controller_greeting(HttpRoute *route) 
+ESP_EXPORT int esp_controller_test_greeting(HttpRoute *route) 
 {
     espDefineAction(route, "greeting-hello", hello);
     return 0;
@@ -88,9 +87,60 @@ ESP_EXPORT int esp_controller_greeting(HttpRoute *route)
 </pre>
         <p>If the client browser issues a request for:</p>
         <pre>http://localhost/greeting/hello</pre>
-        <p>ESP will compile and load the greeting.c controller and 
+        <p>ESP will compile the greeting.c controller and then load the controller and
         run the <em>hello</em> function which will respond to the client with "Hello World\n".</p>
-        <a id="config"></a>
+ 
+        <a id="flow"></a>
+        <h2 class="section">Controller Processing</h2>
+        <p>ESP process requests in stages:</p>
+        <ol>
+            <li>Decode the URI and web request</li>
+            <li>Route an incoming request to the ESP request handler</li>
+            <li>If the request is for a controller, load the controller and run the requested action</li>
+            <li>Run the specified controller action determined by the request route pattern</li>
+            <li>If the request is for a web page or if the controller did not render a response 
+                look for a matching web page and run that to render a response</li>
+        </ol>
+  
+        <a id="routing"></a>
+        <h2 class="section">Routing Requests</h2>
+        <p>At the heart of understanding how controllers are loaded and actions are run, is understanding request
+        routing. When ESP HTTP server receives a client request, it examines each of the configured request routes. These
+        may be configred via the <em>package.json</em> or if hosted in Appweb, in the 
+        <em>appweb.conf</em> configuration file. The ESP HTTP server searches the route table, until it finds a matching 
+       route for the request URI. The selected route will then break the URI into tokens and save the token values 
+       as request parameters.</p>
+        <p>For example: consider the URI format:</p>
+        <pre>
+http://example.com/APP/CONTROLLER/ACTION/ID
+</pre>
+        <p>In this example, <em>APP</em> is the (optional) name of the application, <em>CONTROLLER</em> is the controller
+        name, <em>ACTION</em> is the name of the action method to run and <em>ID</em> is a selector for an element
+        in the Model. When the request URI is tokenized, the ESP HTTP router will extract the controller name and then
+        use this name to load the appropriate controller to service the request.</p>
+        <h3>Restful Routes</h3>
+        <p>ESP applications will typically use a collection of Restful routes.
+        Restful routes are a simple, readable, and familiar pattern for many developers and users. 
+        They map common <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> 
+        operations to specific URIs and controller actions.</p>
+        <p>ESP will create a initial set of Restful routes depending on the <em>esp.server.routes</em> configuration.</p>
+<table title="routes">
+    <thead>
+<tr><th>Name</th><th>Method</th><th>Pattern</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+<tr><td>create</td><td>POST</td><td>/CONTROLLER(/)*$</td><td>create</td></tr>
+<tr><td>edit</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}/edit$</td><td>edit</td></tr>
+<tr><td>get</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>get</td></tr>
+<tr><td>init</td><td>GET</td><td>/CONTROLLER/init$</td><td>init</td></tr>
+<tr><td>remove</td><td>DELETE</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>remove</td></tr>
+<tr><td>update</td><td>PUT</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>update</td></tr>
+<tr><td>action</td><td>GET,POST</td><td>/CONTROLLER//{id=[0-9]+}{action}$</td><td>${action}</td></tr>
+<tr><td>default</td><td>GET,POST</td><td>/CONTROLLER/{action}$</td><td>cmd-${action}</td></tr>
+    </tbody>
+</table>
+<!-- MOB
+       <a id="config"></a>
         <h2 class="section">Configuring Controllers</h2>
         <p>Controllers may be configured in two ways:</p>
         <ul>
@@ -129,75 +179,7 @@ ESP_EXPORT int esp_controller_greeting(HttpRoute *route)
         directive that defines the application and creates an initial set of MVC routes for the application.
         For example:</p>
         <pre>EspApp name="store" prefix="/store" dir="./applications/store"</pre>
-        <a id="flow"></a>
-        <h2 class="section">ESP Processing</h2>
-        <p>Appweb and ESP process requests in stages:</p>
-        <ol>
-            <li>Decode the URI and web request</li>
-            <li>Route an incoming request to the request handler (ESP)</li>
-            <li>If the request is for a controller, load the controller and run the requested action</li>
-            <li>Run the specified controller action determined by the request route pattern</li>
-            <li>If the request is for a web page or if the controller did not render a response 
-                look for a matching web page and run that to render a response</li>
-        </ol>
-  
-        <a id="routing"></a>
-        <h2 class="section">Routing Requests</h2>
-        <p>At the heart of understanding how controllers are loaded and actions are run, is understanding Appweb
-        routing. When Appweb receives a client request, it examines each of the request routes configured in the 
-        <em>appweb.conf</em> configuration file, until it finds a matching route for the request URI. The selected
-        route will then break the URI into tokens and save the token values as request parameters.</p>
-        <p>For example: consider the URI format:</p>
-        <pre>
-http://example.com/APP/CONTROLLER/ACTION/ID
-</pre>
-        <p>In this example, <em>APP</em> is the (optional) name of the application, <em>CONTROLLER</em> is the controller
-        name, <em>ACTION</em> is the name of the action method to run and <em>ID</em> is a selector for an element
-        in the Model. When the request URI is tokenized, the Appweb router will extract the controller name and then
-        use this name to load the appropriate controller to service the request.</p>
-        <h3>Fixed Routes</h3>
-        <p>Routes are not required to use tokens, You can define a simple routes that maps a fixed URI to an action. 
-        For example:</p>
-        <pre>EspRoute prefix="^/game$" source="game.c" </pre>
-        <p>This maps the fixed URI <em>/game</em> to the controller in <em>game.c</em>. Here is the sample game
-        controller:</p>
-<pre>
-#include "esp.h"
-static void game() { 
-    render("Game started\n");
-}
-ESP_EXPORT int esp_controller_game(HttpRoute *route) 
-{
-    espDefineAction(route, "game", game);
-    return 0;
-}
-</pre>
-        <h3>Restful Routes</h3>
-        <p>ESP MVC applications will typically use a collection of Restful routes for each controller.
-        Restful routes are a simple, readable, and familiar pattern for many developers and users. 
-        They map common <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> 
-        operations to specific URIs and controller actions.</p>
-        <p>The EspApp directive will create a initial set of Restful routes for the MVC application.
-        Thereafter, the 
-            <a href="../../appweb/users/dir/esp.html#espResource">EspResource</a>, 
-        <a href="../../appweb/users/dir/esp.html#espResourceGroup">EspResourceGroup</a> and 
-        <a href="../../appweb/users/dir/esp.html#espRoute">EspRoute</a> directives may be used to create more routes as
-        required.</p>
-<table title="routes">
-    <thead>
-<tr><th>Name</th><th>Method</th><th>Pattern</th><th>Action</th></tr>
-    </thead>
-    <tbody>
-<tr><td>create</td><td>POST</td><td>/CONTROLLER(/)*$</td><td>create</td></tr>
-<tr><td>edit</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}/edit$</td><td>edit</td></tr>
-<tr><td>get</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>get</td></tr>
-<tr><td>init</td><td>GET</td><td>/CONTROLLER/init$</td><td>init</td></tr>
-<tr><td>remove</td><td>DELETE</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>remove</td></tr>
-<tr><td>update</td><td>PUT</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>update</td></tr>
-<tr><td>action</td><td>GET,POST</td><td>/CONTROLLER//{id=[0-9]+}{action}$</td><td>${action}</td></tr>
-<tr><td>default</td><td>GET,POST</td><td>/CONTROLLER/{action}$</td><td>cmd-${action}</td></tr>
-    </tbody>
-</table>
+-->
             <a id="actions"></a>
             <h2 class="section">Actions</h2>
             <p>Actions are where the controller does its work. In ESP, actions are simple "C" functions and thus
@@ -223,9 +205,8 @@ ESP_EXPORT int esp_controller_APP_NAME(HttpRoute *route)
     return 0;
 }
 </pre>
-            <h3></h3>
             <p>If you want to programmatically bind a C function to a URI without creating a loadable module and without
-            defining an appweb.conf route, 
+            defining explicitly creating a route
             you can call the <a href="../../../api/esp.html#group___esp_route_1ga0d812aed0ff96f0ffa281860270e8910">espBindProc</a>
             API. This will create a new route by inheriting settings from an existing route and then define an action
             based on the supplied URI pattern. Because this creates a new route for each callback, it is best not to use
@@ -241,7 +222,7 @@ ESP_EXPORT int esp_controller_APP_NAME(HttpRoute *route)
             <a id="processing"></a>
             <h3>Processing the Request</h3>
             <p>The controller action can perform any processing it desires. There are no real restrictions except you don't
-            want to block for too long without giving the client some feedback. Because Appweb is multithreaded, you can
+            want to block for too long without giving the client some feedback. Because ESP is multithreaded, you can
             block. In that case, the server will continue to run and serve other requests. However, note that threads
             are a limited resource. It may be better to use non-blocking techniques such as async processing.</p>
             <h3>Async Processing</h3>
@@ -269,11 +250,11 @@ static void first() {
 }
 </pre>
             <p>This example will print "Hello ", then wait five seconds and then print "World". Note that the request
-            is held open, but Appweb is not blocked in any thread. The call to <em>setTimeout</em> will arrange to have
-            the Appweb event loop invoke <em>second</em> after five seconds have elapsed. This pattern is a 
+            is held open, but ESP is not blocked in any thread. The call to <em>setTimeout</em> will arrange to have
+            the ESP event loop invoke <em>second</em> after five seconds have elapsed. This pattern is a 
             highly efficient in its use of system resources and scales very well.</p>
             <h3>Request Timeout Limits</h3>
-            <p>Appweb has a request timeout and a request inactivity timeout. If a request duration exceeds the limit
+            <p>ESP has a request timeout and a request inactivity timeout. If a request duration exceeds the limit
             defined via the RequestTimeout directive in appweb.conf, the request will be aborted. If the request does
             no I/O for more than the limit specified by the InactivityTimeout directive, it will be similarly aborted.
             These limits can be set per route in appweb.conf.</p>
@@ -285,17 +266,17 @@ static void first() {
             system and if the <em>EspUpdate</em> directive is enabled. If so, when a request is received, ESP will
             compile and link the controller as a library and save the result into the ESP <em>cache</em> directory
             for future use. After servicing the first request for the controller, the controller code is retained in
-            memory and the controller will not be reloaded unless the source code is modified. If Appweb is rebooted,
+            memory and the controller will not be reloaded unless the source code is modified. If ESP is rebooted,
             the cached library will be reloaded without recompiling. This provides two levels of caching: in-memory and
             on-disk as a shared library.</p>
             <h3>Development and Production Modes</h3>
             <p>When a request for a controller is received, ESP will test if the source code has been updated to
-            determine if the controller must be recompiled. If the source has been changed, Appweb will wait for all
+            determine if the controller must be recompiled. If the source has been changed, ESP will wait for all
             requests that are using the already loaded controller, to gracefully complete. When no requests are using
-            the old controller version, Appweb will unload the controller, and ESP will recompile the updated controller
+            the old controller version, ESP will unload the controller, and ESP will recompile the updated controller
             source and create a new shared library that will then be loaded and the request servicing resumed.</p>
-            <p>If Appweb was configured and built in debug mode, the default value for <em>EspUpdate</em> will be
-            <em>on</em>. If Appweb was built in release mode, the default value is <em>off</em>. In release mode is it
+            <p>If ESP was configured and built in debug mode, the default value for <em>EspUpdate</em> will be
+            <em>on</em>. If ESP was built in release mode, the default value is <em>off</em>. In release mode is it
             common practice to lock down the compiled controllers and not auto-recompile once deployed.</p>
             <a id="context"></a>
             <h2 class="section">Controller Context</h2>
@@ -477,7 +458,7 @@ static void first() {
             <em>params</em> object which is accessible to actions via the 
             <a href="../../../api/esp.html#group___esp_abbrev_1gad638c34898123293ebc120c1f9396a9c">param</a> API. Each query key/value pair and all
             request form elements posted by the client will become a properties of the <em>params</em> object.
-            When routing the request, Appweb will tokenize the URI and create parameters for each positional token in
+            When routing the request, ESP will tokenize the URI and create parameters for each positional token in
             the URI. The Controller name and Action are defined as the parameters: <em>controller</em> and 
             <em>token</em>.</p>
             <a id="views"></a>

@@ -22,3 +22,4 @@ macosx-*
 /doc/lf/
 *.guid
 projects/esp-macosx-mine*
+pj.new

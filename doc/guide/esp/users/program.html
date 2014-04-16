@@ -28,7 +28,7 @@
         <div class="crumbs">
             <a href="../../../index.html">Home</a>
 <!-- EndDsi -->
-             &gt;<a href="index.html">User Guide</a>&gt; <b>ESP Application Manager</b>
+             &gt;<a href="index.html">User Guide</a>&gt; <b>ESP Program</b>
         </div>
     </div>
     <div class="content">
@@ -54,18 +54,17 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
-            <h1>ESP Application Manager &mdash; <em>esp</em></h1>
-            <p>The ESP web framework provides an ESP application manager named <em>esp</em>. 
-            This tool makes it easy and quick to create and manage your web applications. The <em>esp</em> 
+            <h1>ESP Program &mdash; <em>esp</em></h1>
+            <p>ESP provides an ESP application manager named <em>esp</em>. 
+            This program makes it easy and quick to create and manage your web applications. The <em>esp</em> 
             runs ESP applications but it also compiles ESP pages and controllers and generates MVC web 
             applications, database schema, scaffolds and views. 
             <p>The <em>esp</em> program is not just for MVC applications. It can be used to pre-compile stand-alone
@@ -88,7 +87,6 @@ $ <b>esp install esp-server</b>
             <p>This installs the bare minimum application without additional packs. The <em>pacakge.conf</em> file
             is an ESP configuration file. This defines the configuration to run your application.
             The templates directory contains components that can be generated at a later stage.</p>
-
             <p>The format of the "<em>esp install</em>" command is:</p>
             <pre>$ <b>esp install [PACKS...]</b></pre>
             <p>The given NAME is the name of the application and also the name of the directory into which esp will
@@ -108,14 +106,12 @@ $ <b>pak install esp-angular-mvc</b></pre>
             <p>Once Pak has downloaded the desired pack, it will save a copy locally. Thereafter, you can use
             <em>esp</em> to install that pack in other applications. You can also use <em>pak</em> to pre-load
             the Pak cache via the <em>pak cache</em> command.</p>
-
             <h3>Pack Dependencies</h3>
-            <p>Pack may depend on other packs. The <em>esp</em> manager will resolve these 
+            <p>Pack may depend on other packs. The <em>esp</em> program will resolve these 
             dependencies and install all the required packs. For example: the 
             <em>esp-angular-mvc</em> pack depends on: angular, esp-angular-session, esp-angular, 
             less and more packs. After installing, the pack dependencies are described in the
             <em>package.json</em> file in the <em>dependencies</em> property.</p>
-
             <h3>Overwriting</h3>
             <p>The <em>esp</em> command will create directories and configuration and 
             source code files that can then be manually edited as required. The <em>esp</em> 
@@ -198,7 +194,6 @@ $ <b>pak install esp-angular-mvc</b></pre>
                     </tr>
                 </tbody>
             </table>
-
             <a id="controllers"></a>
             <h2 class="section">Generating Controllers</h2>
             <p>Controllers are the primary mechanism for responding to client requests. 

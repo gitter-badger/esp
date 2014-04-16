@@ -426,7 +426,7 @@ static int loadConfig(HttpRoute *route)
         }
         eroute->configLoaded = cinfo.mtime;
     }
-    if (!eroute->config) {
+    if (!eroute->config && mprPathExists(cpath, R_OK)) {
         if ((cdata = mprReadPathContents(cpath, NULL)) == 0) {
             mprError("Cannot read ESP configuration from %s", cpath);
             unlock(eroute);
@@ -1061,19 +1061,24 @@ PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
     if (set == 0 || *set == 0) {
         return;
     }
-    if (scaselessmatch(set, "esp-angular-mvc")) {
+    if (scaselessmatch(set, "esp-server")) {
+        /* Simple controller/action route */
+        httpAddRestfulRoute(route, route->serverPrefix, "action", "GET,POST","/{action}(/)*$", 
+            "${action}", "{controller}");
+        httpAddClientRoute(route, "", "/public");
+        httpHideRoute(route, 1);
+
+    } else if (scaselessmatch(set, "esp-angular-mvc")) {
         httpAddWebSocketsRoute(route, route->serverPrefix, "/*/stream");
         httpAddResourceGroup(route, route->serverPrefix, "{controller}");
         httpAddClientRoute(route, "", "/public");
         httpHideRoute(route, 1);
-        eroute->viewsDir = eroute->appDir;
 
     } else if (scaselessmatch(set, "esp-html-mvc")) {
         httpAddRestfulRoute(route, route->serverPrefix, "delete", "POST", "/{id=[0-9]+}/delete$", "delete", "{controller}");
         httpAddResourceGroup(route, route->serverPrefix, "{controller}");
         httpAddClientRoute(route, "", "/public");
         httpHideRoute(route, 1);
-        eroute->viewsDir = eroute->appDir;
     }
 }
 
@@ -1118,6 +1123,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     httpAddRouteHandler(route, "espHandler", "");
     httpAddRouteHandler(route, "espHandler", "esp");
     httpAddRouteIndex(route, "index.esp");
+    httpAddRouteIndex(route, "index.html");
 
     if (loadConfig(route) < 0) {
         return MPR_ERR_CANT_LOAD;
@@ -1402,7 +1408,7 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
     setEspDir(route, "db", 0);
     setEspDir(route, "layouts", 0);
     setEspDir(route, "src", 0);
-    setEspDir(route, "views", 0);
+    setEspDir(route, "views", "client/app");
 }
 
 

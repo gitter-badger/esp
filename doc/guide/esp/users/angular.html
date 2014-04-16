@@ -46,9 +46,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -57,21 +56,21 @@
         <div class="contentLeft">
             <h1>ESP for Angular</h1>
             <p>Angular is a client-side web framework designed for single web page applications that is well-suited for
-            creating dynamic management applications. ESP support Angular by providing an Angular component for the
-            esp generator and a script library to support and extend Angular for ESP.</p>
+            creating dynamic management applications. ESP supports Angular by providing an esp-angular-mvc pak that includes
+            everything you need to utilize Angular with ESP.</p>
             <h2>Why Angular?</h2>
             <p>Why use a client-side framework like Angular?  Why not just generate HTML at the web server?
             The answer is a better user experience. By using a framework such as Angular, you can create a faster,
-            more responsive, more dynamic user interface. This is because it creates dynamically creates the user 
-            views at the client. This reduces or eliminates the typical page reload wait times if all views are 
+            more responsive and dynamic user interface. This is because it dynamically creates the user 
+            views at the client to reduce or eliminate the typical page reload wait times if all pages are 
             rendered at the server.</p>
             <p>There are may client-side web frameworks to choose from, but Angular offers one of the more powerful
             framworks that requires very little coding to express and manage user interfaces. </p>
             <img class="big-screen" src="../../../images/esp/angular/kickstart.png" />
-            <p>This screen shot is of the Embedthis Kickstart interface that was created using Appweb and ESP Angular.</p>
+            <p>This screen shot is of the Embedthis Kickstart interface that was created using ESP and Angular.</p>
             <h2>Understanding Angular</h2>
             <p>Angular is a powerful client-side framework and it will take some time to learn and understand it
-            sufficiently to use with Appweb/ESP. It is important to familiar with the key Angular concepts and 
+            sufficiently to use with ESP. It is important to familiar with the key Angular concepts and 
             to create some stand-alone Angular applications before using with ESP. Please see and read the
             Angular resources listed below.</p>
             <h2>Distributed MVC</h2>
@@ -85,12 +84,13 @@
             the client interaction and response data for the presentation views. View templates are dynamically 
             created and populated with server data before being and applied to the brower DOM for display.</p>
             <h2>Generating Applications</h2>
-            <p>The easiest way to get started with ESP for Angular is to use the <em>esp</em> generator program.
+            <p>The easiest way to get started with ESP for Angular is to use the <em>esp</em> program.
             The following sequence will generate an application with ESP for Angular support.</p>
-            <pre>esp generate app myapp esp-angular-mvc</pre>
-            <p>Once generated, you can generate controllers, scaffolds or database migrations. For example:
-            <pre>cd myapp
-esp generate scaffold blog title:string body:text</pre>
+            <pre>$ <b>mkdir myapp</b>
+$ <b>cd myapp</b>
+$ <b>esp install esp-angular-mvc</b></pre>
+            <p>Once installed, you can generate controllers, scaffolds or database migrations. For example:
+            <pre>$ <b>esp generate scaffold blog title:string body:text</b></pre>
             <p>This will generate a MVC scaffold with basic Create/Read/Update/Delete (CRUD) 
             operations, database table, controller and views for "blog" resource.</p>
             <h2>Application Structure</h2>
@@ -101,7 +101,8 @@ esp generate scaffold blog title:string body:text</pre>
             and data model for a given feature are together in one place. This approach scales better as the
             application grows. 
             <h3>Directory Layout</h3>
-            <p>If you use the <em>esp</em> generator to create your application, the default ESP organization is generated for you. Directories are created for client-side code and assets as well as directories for 
+            <p>If you use the <em>esp</em> program to create your application, the default ESP organization is 
+            generated for you. Directories are created for client-side code and assets as well as directories for 
             server-side controllers and database assets.</p>
             <p>The <em>client</em> directory is the set of public files that are served to the client. This directory
             represents the top of the application. Everything under the <em>client</em> directory is visiable to 
@@ -109,13 +110,11 @@ esp generate scaffold blog title:string body:text</pre>
             directory.</p>
             <p>The key directories and files are listed below:</p>
 <pre>
-appweb.conf                 # Appweb configuration file
 package.json                # ESP and application configuration file
-start.bit                   # Bit build file
+start.me                    # MakeMe build file
 cache/                      # Compiled code
 client/                     # Public files served to the client
     app/                    # Application features
-        main.js             # Main application script
         main.js             # Main application script
         name/               # Single (named) application feature
             name.js         # Feature database MVC model
@@ -130,21 +129,17 @@ client/                     # Public files served to the client
         app.less            # Application specific styles
         theme.less          # Application theme variables
     index.esp               # Application home page
-    lib/                    # Third party components
+    paks/                   # Installed packs
 controllers/                # Server-side "C" controllers
     name.c                  # Server controller for feature "name"
 db/                         # Database files
+    name.mdb                # Database file
     migrations              # Database migration "C" scripts
 src/                        # Other application "C" code
     app.c                   # Application global code
 </pre>
-            <p>To change default directories, use the 
-                <a href="../../appweb/users/dir/esp.html#espDir">EspDir</a> configuration directive. For example:
-                <pre>&lt;EspApp name="myapp" routes="esp-angular-mvc"&gt;
-    EspDir cache /var/spool/cache/myapp
-&lt;/EspApp&gt;</pre>
             <h2>Building</h2>
-            <p>An ESP for Angular application is represented by five groups of resources:</p>
+            <p>An ESP Angular application is represented by five groups of resources:</p>
                 <ol>
                     <li>HTML pages</li>
                     <li>Scripts</li>
@@ -304,15 +299,13 @@ debug: {
             <h3>format</h3>
             <p>The format filter transforms data to be displayed to the required format. This can be used to 
             tailor the way dates and numbers are displayed.</p>
+            <!-- MOB
             <h2>User Authentication and Permissions</h2>
                 - User database table vs other stores
                 - User roles
                 - Restricting access on the client side
                 - 
-            <h2>Hosting</h2>
-            <p>Applications created via the <em>esp</em> generator will have a <em>hosted.conf</em> file. This may
-            be modified to suit and then be included from an existing appweb.conf to host.</p>
-            <pre>include /path/to/hosted.conf </pre>
+            -->
             <h2>ESP Angular API</h2>
             <p>For full details of the ESP Angular APIs, see <a href="../../../api/esp-angular/index.html">ESP Angular API</a>.</p>
             <h2>Samples</h2>

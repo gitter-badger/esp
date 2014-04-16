@@ -41,21 +41,21 @@
                 <li><a href="#modules">Modules</a></li>
                 <li><a href="#locking">Locking</a></li>
             </ul>
+<!-- BeginDsi "dsi/progRefSeeAlso.html" -->
             <h1>See Also</h1>
-            <ul>
-                <li><a href="architecture.html">Appweb Architecture</a></li>
-                <li><a href="memory.html">MPR Memory Allocator</a></li>
-                <li><a href="../../guide/appweb/overview.html">User Guide Overview</a></li>
-                <li><a href="../../guide/appweb/users/authentication.html">Authorization</a></li>
-                <li><a href="../../guide/appweb/users/configuration.html">Configuration</a></li>
-                <li><a href="../../guide/appweb/users/configuration.html#directives">Configuration Directives</a></li>
-                <li><a href="../../guide/appweb/users/stages.html">Pipeline Stages</a></li>
-                <li><a href="../../guide/appweb/users/client.html">HTTP Client</a></li>
-                <li><a href="../../guide/appweb/users/modules.html">Loadable Modules</a></li>
-                <li><a href="../../guide/appweb/users/ports.html">Ports and Binding</a></li>
-                <li><a href="../../guide/appweb/users/ssl.html">Secure Sockets Layer</a></li>
-                <li><a href="../../guide/appweb/users/vhosts.html">Virtual Hosts</a></li>
+            <ul class="nav">
+                <li><a href="../../ref/esp/index.html">Programmers Reference</a></li>
+                <li><a href="../../api/native.html">Native APIs</a></li>
+                <li><a href="../../api/esp.html">ESP Native API</a></li>
+                <li><a href="../../api/edi.html">EDI Native API</a></li>
+                <li><a href="../../api/http.html">Http Native API</a></li>
+                <li><a href="../../api/mpr.html">MPR Native API</a></li>
+
+                <li><a href="../../guide/esp/programmers/embedding.html">Embedding ESP</a></li>
+                <li><a href="../../guide/esp/programmers/man.html">Manual Pages</a></li>
+                <li><a href="../../guide/esp/users/index.html">Users Guide</a></li>
             </ul>
+<!-- EndDsi -->
         </div>
         <div class="contentLeft">
             <h1>Multithreaded Programming</h1>
@@ -64,7 +64,7 @@
             <p>Programming in a multithreaded environment can be difficult. Sometimes programming errors are timing related 
             as multiple threads interact. Multithread locks can become tangled and bugs can be difficult to reproduce. 
             To alleviate these problems and
-            enable the benefits of a multi-threaded core, Appweb provides a suite of facilities to make multithreaded
+            enable the benefits of a multi-threaded core, ESP provides a suite of facilities to make multithreaded
             programming easier, more reliable, and more efficient.</p>
             <h3>The Problem of Multithreaded I/O Events</h3>
             <p>A particularly thorny issue in multithreaded servers is how to handle I/O without consuming a thread for
@@ -78,41 +78,37 @@
             drain over the network. Returning the thread to the pool allows other requests to use the thread while the
             first request is waiting for network I/O. When the network is ready, a thread can be obtained from the pool
             and the original request can continue. For this to work, an efficient network event service is 
-            essential. Appweb uses such a thread pool and event service to efficiently manage thread resources. </p>
+            essential. ESP uses such a thread pool and event service to efficiently manage thread resources. </p>
             
             <p>However, this use of such an event service and thread pool raises another problem: races between the 
             foreground request thread and the background async I/O event thread. It is easy for these two threads to 
             simultaneously interact and corrupt critical data structures. A typical solution is to use multithread
             locks to serialize access to such data, but this is a crude solution and often leads to brittle applications.
-            Appweb has a better solution that effectively serializes all activity for a request: per-request 
+            ESP has a better solution that effectively serializes all activity for a request: per-request 
             event dispatchers.</p>
             <a id="dispatchers"></a>
             <h3>Event Dispatchers</h3>
-            <p>The Multithreaded Portable Runtime (MPR) used by Appweb has a facility called Event Dispatchers. These
+            <p>The Multithreaded Portable Runtime (MPR) used by ESP has a facility called Event Dispatchers. These
             are event queues on which all I/O and other event activity for a request can be queued and serviced. 
             Each request has its own dispatcher and so events for a request are serialized.  When a network I/O event
-            is received by Appweb for a request, an event is queued on the request's dispatcher. If the request is 
+            is received by ESP for a request, an event is queued on the request's dispatcher. If the request is 
             currently active (using a thread from the thread pool), the event is queued and no immediate action is taken. 
             When the request has finished its current activity, it will service events on its dispatcher queue and 
             eventually service the I/O event. If the request is currently idle, a thread is assigned from the thread 
             pool for the request, and the thread is resumed to service the request's dispatcher queue. This greatly 
-            simplifies Appweb as all activity for a request is thus serialized via the dispatcher queue.</p>
+            simplifies ESP as all activity for a request is thus serialized via the dispatcher queue.</p>
             <p>By using event dispatchers, multithread locking is not required on every API &mdash; because activity
             is serialized by the dispatcher. This significantly boosts performance and reduces the risk of lock contention.</p>
             <a id="multithreaded"></a>
-            <h3>Multithreaded Appweb</h3>
-            <p>By using request dispatchers, Appweb serializes all request activity, yet it can support many 
-            simultaneous requests due to its multithreaded core. Appweb efficiently utilizes thread resources by using
+            <h3>Multithreaded ESP</h3>
+            <p>By using request dispatchers, ESP serializes all request activity, yet it can support many 
+            simultaneous requests due to its multithreaded core. ESP efficiently utilizes thread resources by using
             a thread pool and not permanently dedicating threads to requests. Threads are temporarily assigned
             only as required by active requests.</p>
             <a id="modules"></a>
             <h3>Modules</h3>
-            <p>Appweb can be extended by writing loadable modules. Modules can add request handlers, pipeline filters,
-            or network connectors. All module code can rely on the fact that request activity will be serialized and
-            no locking is required to serialize I/O activity. Consequently, most module code can be effectively 
-            single-threaded.</p>
-            <p>Appweb can also be extended via ESP applications. These are loadable ESP web pages,
-            and ESP Model-View-Controller applications. These too can rely on the fact that request activity is serialized
+            <p>ESP can be extended via ESP applications. These are loadable ESP web pages,
+            and ESP Model-View-Controller applications. These can rely on the fact that request activity is serialized
             and locking primitives are typically not required. ESP code can thus be simple, 
             single-threaded application code.</p>
             

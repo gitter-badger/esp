@@ -681,7 +681,6 @@ $(CONFIG)/obj/espFramework.o: \
 #   espHandler.o
 #
 DEPS_28 += $(CONFIG)/inc/me.h
-DEPS_28 += $(CONFIG)/inc/http.h
 DEPS_28 += $(CONFIG)/inc/esp.h
 DEPS_28 += $(CONFIG)/inc/edi.h
 

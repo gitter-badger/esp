@@ -57,9 +57,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -213,10 +212,10 @@ ediUpdateRec(db, product);</b>
             
             <a id="connections"></a>
             <h2 class="section">Database Connections</h2>
-            <p>Database connections are one of the few items that are setup by configuration files. The Appweb 
-            configuration file: "appweb.conf" defines the database name, username, password, and other
-            configuration parameters via the <em>EspDb</em> configuration directive.</p>
-            <pre>EspDb mdb://test.mdb</pre>
+            <p>Database connections are one of the few items that are setup at configuration time. The 
+            <em>package.json</em> file defines the database name, username, password, and other
+            configuration parameters via the <em>database</em> property.</p>
+            <pre>database: "mdb://test.mdb"</pre>
             <a id="tables"></a>
             <h2 class="section">Creating Database Tables</h2>
             <p>If creating an MVC application, The <em>esp</em> command can be used to create database tables for you:</p>
@@ -348,7 +347,7 @@ ESP_EXPORT int esp_controller_post(EspRoute *eroute, MprModule *module)
                 <li><a href="mvc-tour.html">MVC Tour</a>.
             </ul>
             <p>You may also like to ask questions at the 
-            <a href="http://appwebserver.org/forum/">Appweb Support Forum</a>.</p>
+            <a href="http://groups.google.com/group/embedthis-esp/">ESP Support Forum</a>.</p>
         </div>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->

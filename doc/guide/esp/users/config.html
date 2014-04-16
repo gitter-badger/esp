@@ -55,9 +55,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -65,37 +64,45 @@
         </div>
         <div class="contentLeft">
             <h1>Configuring ESP</h1>
-            <p>ESP applications use a <em>package.json</em> configuration file to define applications-specific
-            configuration data. This file is a JSON property file that is made available to server-side 
+            <p>ESP applications are configured via a <em>package.json</em> file.
+            This is a JSON property file that is made available to server-side 
             controllers and pages, and portions are provided to client-side scripts.</p>
-            <p>The package.json permits you to configure:</p> 
-            <!--MOB refine list -->
+            <p>The package.json describes and configures:</p> 
             <ul>
                 <li>Application name, version and description</li>
-                <li>ESP directory locations and structure</li>
-                <li>Required and optional extension packages</li>
+                <li>Directory locations and structure</li>
+                <li>Extension packages and dependencies</li>
                 <li>Client-side scripts</li>
                 <li>Execution mode: debug or release</li>
-                <li>Response Caching </li>
+                <li>Response Caching</li>
                 <li>Application timeouts</li>
-                <li>ESP Error handling</li>
+                <li>Error handling</li>
                 <li>Database name and location</li>
                 <li>Application compilation policy</li>
                 <li>Default data formats</li>
             </ul>
-            <p>This document will cover the various ESP directives and the steps to configure ESP applications.</p>
+            <p>This document will cover the various package.json properties and the steps to 
+                configure ESP applications.</p>
             <p>If you need to do more complex routing of URIs or more granular control of authentication, you may
-            need to specify additional routes in an <em>appweb.conf</em> configuration file. For details, see
+                need to specify additional routes in an <em>appweb.conf</em> configuration file. For details, see
             <a href="appweb.html">Configuring ESP in Appweb</a>.</p>
             <h2>Package.json</h2>
             <p>The package.json schema is defined by the <a href="http://embedthis.com/products/pak/">Pak</a>
-            package manager and conform to the <a href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS
+            package manager and conforms to the <a href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS
             Packages 1.1</a> specification. One package.json file is used for the ESP application itself and 
-            each installed extension package will have its own package.json file. This permits <em>esp</em> or
-            the Pak manager, <em>pak</em> to easily manage installed packages and dependencies.</p>
+            each installed extension package will have its own package.json file. This permits <em>esp</em>
+            to easily manage installed packages and dependencies.</p>
+            <p>The <em>esp</em> manager program contains a subset of the 
+            <a href="http://embedthis.com/products/pak/">Pak</a> package manager.
+            As such, it can install, list, uninstall and upgrade packages. You can use either <em>esp</em> or
+            <em>pak</em> to install, uninstall or upgrade paks for your application.</p>
             <p>Here is a quick look at a package.json file. The <em>esp</em> property section (in yellow)
-            if specific to ESP. The properties outside <em>esp</em> are generic to the Pak package manager.</p>
+            if specific to ESP. The other properties are generic to any package using the Pak package manager.</p>
 <pre>{
+    "name": "blog",
+    "title": "My Blog",
+    "description": "My blog with thoughts and tales from my travels in Africa",
+    "version": "1.2.0",
     "dependencies": {
         "esp-server": "1.x",
     },
@@ -113,8 +120,10 @@
 },</pre>
             <h3>Creating a package.json file</h3>
             <p>When serving stand-alone <em>esp</em> pages, you do not need a package.json file, ESP has
-            sensible defaults. However, when creating more complex applications, you will need a package.json
-            to collect your application configuration in one place.</p>
+            sensible defaults and you can just run esp to serve pages. 
+            <pre>$ <b>esp run</b></pre>
+            <p>However, when creating more complex applications, you will need a package.json
+            to store your application configuration.</p>
             <p>To create a package.json, you can either run <em>esp init</em> or you can install one or more
             ESP paks and the package.json will be created automatically.</p>
             <pre><b>esp init</b></pre> 
@@ -131,9 +140,6 @@
 }</pre>
             <p>Alternatively, a package.json will be created if you install one more more packs</p>
             <pre><b>esp install esp-html-mvc</b></pre>
-            <p>ESP contains a subset of the <a href="http://embedthis.com/products/pak/">Pak</a> package manager.
-            As such, it can install, list, uninstall and upgrade packages. You can use either <em>esp</em> or
-            <em>pak</em> to perform such operations on paks for your application.</p>
             <a id="mode"></a>
             <h3>Execution Mode</h3>
             <p>ESP provides a convenient way to select a set of properties that correspond to a desired execution
@@ -143,7 +149,8 @@
             before the application runs. By modifying the <em>esp.mode</em> setting, an entirely different 
             execution configuration may be selected. ESP makes this easy via the command:</p>
             <pre>esp mode NAME</pre> 
-            <p>Where NAME is set to a collection of properties in the package.json to copy.</p>
+            <p>Where NAME is set to a collection of properties in the package.json to copy. This is typically
+                <em>debug</em> or <em>release</em>.</p>
             <a id="errors"></a>
             <h3>Error Handling</h3>
             <p>If an ESP page has a syntax error or a run-time error, messages will be sent to the ESP log file.
@@ -165,107 +172,37 @@
             <h3>Keep Source</h3>
             <p>Sometimes, it is helpful to preserve intermediate "C" source files so that you can debug
             your application at the source code level. When an ESP page is parsed, it is blended with a 
-            layout page and then an intermediate C source file is generated. This is normally removed after compilation. Setting the
+            layout page and then an intermediate C source file is generated. 
+            This is normally removed after compilation. Setting the
             <em>esp.keepSource</em> property to "<em>true</em>" will cause ESP to preserve this 
             intermediate source file in the <em>cache</em> directory.</p>
             <pre>esp set esp.keepSource true</pre>
-            <h2 class="section">Configuring ESP Applications</h2>
-            <p>There are four primary use patterns to consider for ESP Applications:</p>
-            <ol>
-                <li>Stand-alone ESP Pages</li>
-                <li>Stand-alone ESP Controllers</li>
-                <li>ESP MVC applications</li>
-                <li>ESP Web Services using WebSockets</li>
-            </ol>
-            <p>These may be used in isolation or may be combined in a single application. For configuration, we'll 
-                consider each separately for clarity.</p>
+             <a id="database"></a>
+            <h2 class="section">Databases</h2>
+            <p>Databases can be specified and pre-opened via the <em>esp.server.database</em> property 
+                in the <em>package.json</em>. <p>The database property takes the form: 
+                <em>provider://database-connection</em>. For example:</p>
+<pre>
+    database: "mdb://blog.mdb"
+or
+    database "sdb://sqlite.sdb"
+</pre>
+                <p>For SQLite and MDB databases, the database-connection string is the name of the database in the ESP
+                <em>db</em> directory.</p>
+                <p>ESP supports multiple database engines through a single Embedded Database Interface. 
+                Support is included for SQLite and MDB. See <a href="database.html">Database Interface</a> 
+                for more information about Database Support.</p>
             <a id="pages"></a>
             <h2>ESP Pages</h2>
             <p>There is no additional configuration require to support ESP pages. If you only wish to stand-alone
             ESP pages, a package.json is not even required.</p>
             <h4>Layouts</h4>
-            <p>For stand-alone ESP pages, layouts are not used unless a
-            <em>&lt;% layout "filename" %&gt;</em> directive is included at
-            the top of the page. For ESP MVC applications, the <em>client/layouts/default.esp</em> page is used 
-            if present, unless a <em>&lt;% layout "" %&gt;</em> directive instructs ESP to not use any layout.
-            In MVC applications, ESP pages may be placed anywhere under the "client" directory which defines the set
-            of public resources for the browser to access and download. </p>
-            <a id="controllers"></a>
-            <h2>ESP Controllers</h2>
-            <p>ESP Controllers may be used as part of an ESP MVC application or they may be used stand-alone outside
-            an MVC app. A stand-alone controller must define a route that specifies the desired URI, the source file
-            containing the controller and the format of the URI to action mapping. For example:</p>
-            <pre>
-&lt;Route ^/greetings/{action}$&gt;
-    SetHandler espHandler
-    Source     greetings.c
-    Target     run greetings-$1
-&lt;/Route&gt;
-</pre>
-            <p>This defines a controller in <em>greeting.c</em> to respond to URIs that begin with <em>/greetings</em>.
-            <p>Controllers are dynamically loaded and reloaded as required. Controllers contain one or more actions and have
-            a module initialization routine that defines the actions for ESP to support. For example:</p>
-<pre>
-#include "esp.h"
-static void hello() {
-    render("Hello World\n");
-}
-ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
-    espDefineAction(route, "greetings-hello", hello);
-    return 0;
-}
-</pre>
-            <p>This defines a single action which renders the string "Hello World\n" in response to the client request 
-            for the URI <em>/greeting/hello</em>. When the URI is requested, the controller is compiled, linked into
-            a dynamic library, saved in the cache directory and loaded into ESP. If the source is modified, the 
-            old controller is unloaded (after ensuring there are no active requests) and the new source is compiled and
-            loaded.</p>
-            <p>If you wish to pre-compile the controller, use the esp generator program. For example:</p>
-            <pre>esp compile greetings.c</pre>
-            <a id="mvc"></a>
-            <h2 class="section">ESP MVC Applications</h2>
-            <p>ESP MVC applications typically require a little more configuration, but the ESP configuration
-            defaults make this fairly painless.</p>
-            <p>If your MVC application uses RESTful routes and follows the ESP defaults, the one-liner 
-            <a href="../../appweb/users/dir/esp.html#espApp">EspApp</a>
-            directive is typically all you need. This directive takes the following arguments:</p>
-            <pre>&lt;EspApp name="NAME" prefix="URI" dir="Directory" routes="RouteSet"&gt;
-   ...
-&lt;EspApp&gt;</pre>
-            <p>This defines an ESP application at the given directory that will receive 
-            requests that begin with specified URI prefix. This will define a new Route block, inheriting the existing
-            ESP and route configuration. For example, this directive defines a "blog" application stored in the "./blog" directory.</p>
-            <pre>&lt;EspApp prefix="/myblog" dir="./blog" routes="esp-html-mvc"&gt;
-    ...
-&lt;EspApp&gt;</pre>
-            <p>With this configuration, ESP will send client requests begin with the URI <em>/myblog</em> 
-            to this ESP application at "./blog".</p>
-            <p>Inside the EspApp directory, you can define other routes, configure caching, define resource limits
-             or use most Appweb directives.</p>
-            <h3>Separate Config</h3>
-            <p>To modularize each ESP application, it is best practice to create a separate config file for each 
-            application. This per-application config file should be saved to the <em>/etc/appweb/apps</em> or 
-            on Windows, the <em>Embedthis Appweb/apps</em> directory. When Appweb is started or restarted, it will
-            parse all the config files under the <em>apps</em>. Installing or removing a config file for each 
-            application under the <em>apps</em> directory is a simple way to add/remove an application.</p>
-            <a id="database"></a>
-            <h2 class="section">Databases</h2>
-            <p>Databases can be specified and pre-opened via the <em>EspDb</em> directive or via the 
-                <em>server.database</em> property in the <em>package.json</em> for ESP MVC applications. Pre-opening a
-            database connection for an ESP application or route within an application eliminates the run-time delay 
-            connecting to the database. </p>
-            <p>ESP supports multiple database engines through a single Embedded Database Interface. Support is included for
-            SQLite and MDB. See <a href="database.html">Database Interface</a> for more information about
-            Database Support.</p>
-            <p>The EspDb directive takes the form: <em>EspDb provider://database-connection</em>. For example:
-<pre>
-  EspDb mdb://blog.mdb
-or
-  EspDb sqlite://sqlite.sdb
-</pre>
-            <p>For SQLite and MDB databases, the database-connection string is the name of the database in the ESP
-            <em>db</em> directory. Databases can also be pre-opened via the 
-                <a href="../../appweb/users/dir/esp.html#espApp">EspApp</a> directive.</p>
+            <p>Layout pages define a common look and feel for the application and provide the "outer" content for
+            every page. If you do not define a layout page, the ESP pages will be served as-is.
+            If you create a <em>layouts/default.esp</em> layout page, it will be used to wrap the ESP page.  
+            <p>You can select a different layout page via the <em>layout</em> directive at the top of an ESP page.
+            For example:</p>
+                <pre>&lt;% layout "mylayout.esp" %&gt;</pre>
             <h2 class="section">ESP Package.json Properties</h2>
             <h3>Top Level Properties</h3>
             <table title="top-level collections" class="full">

@@ -29,7 +29,7 @@
             <a href="../../../index.html">Home</a>
 <!-- EndDsi -->
              &gt;<a href="index.html">User Guide</a> &gt;
-            <b>Configuring ESP in Appweb</b>
+            <b>Hosting ESP in Appweb</b>
         </div>
     </div>
     <div class="content">
@@ -41,7 +41,7 @@
                 <li><a href="#errors">Error Handling</a></li>
                 <li><a href="#reload">Reloading</a></li>
                 <li><a href="#keep">Keep Source</a></li>
-                <li><a href="#mvc">MVC Applications</a></li>
+                <li><a href="#app">ESP Applications</a></li>
                 <li><a href="#routing">ESP Routes</a></li>
                 <li><a href="#database">Databases</a></li>
                 <li><a href="#compilation">Compilation</a></li>
@@ -55,29 +55,20 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
 <!-- EndDsi -->
         </div>
         <div class="contentLeft">
-            <h1>Configuring ESP in Appweb</h1>
+            <h1>Hosting ESP in Appweb</h1>
             <p>ESP applications are configured primarily via their <em>package.json</em> file. Please
             read <a href="config.html">Configuring ESP</a> first before reading this document.</p>
             <p>ESP may also be managed by Appweb configuration directives in the <em>appweb.conf</em>
-            configuration file. These directives manage:</p>
-            <ul>
-                <li>ESP applications</li>
-                <li>URI parsing and routing</li>
-                <li>ESP directory locations</li>
-                <li>ESP Error handling</li>
-                <li>Compilation and linking of ESP components</li>
-                <li>Database access and binding</li>
-            </ul>
-            <p>This document will cover the various ESP directives and the steps to configure ESP applications.</p>
+            configuration file. The Appweb ESP directives permit the hosting of multiple ESP applications and 
+            granular configuration of routes, authentication and sandbox limits.</p>
             <a id="module"></a>
             <h2 class="section">ESP Module</h2>
             <p>Before ESP can be used, the ESP web framework including the ESP handler must be loaded. ESP is packaged as 
@@ -122,30 +113,10 @@
             <em>EspKeepSource</em> directive to "<em>on</em>" will cause ESP to preserve this intermediate source file
             in the <em>cache</em> directory.</p>
             <pre>EspKeepSource on</pre>
-            <h2 class="section">Configuring ESP Applications</h2>
-            <p>There are four primary use patterns to consider for ESP Applications:</p>
-            <ol>
-                <li>Stand-alone ESP Pages</li>
-                <li>Stand-alone ESP Controllers</li>
-                <li>ESP MVC applications</li>
-                <li>ESP WebSockets</li>
-            </ol>
-            <p>These may be used in isolation or may be combined in a single application. For configuration, we'll 
-                consider each separately for clarity.</p>
-            <a id="pages"></a>
-            <h2>ESP Pages</h2>
-            <p>There is no additional configuration require to support ESP pages, other than configuring the ESP module
-            and handler as described above. For stand-alone ESP pages, layout pages are not used by default unless a 
-            <em>&lt;% layout "filename" %&gt;</em> directive is included at
-            the top of the page. For ESP MVC applications, the <em>client/layouts/default.esp</em> page is used 
-            if present, unless a <em>&lt;% layout "" %&gt;</em> directive instructs ESP to not use any layout.
-            In MVC applications, ESP pages may be placed anywhere under the "client" directory which defines the set
-            of public resources for the browser to access and download. In prior Appweb versions, some ESP pages
-            were grouped under a "views" directory. This is no-longer required.</p>
             <a id="controllers"></a>
             <h2>ESP Controllers</h2>
-            <p>ESP Controllers may be used as part of an ESP MVC application or they may be used stand-alone outside
-            an MVC app. A stand-alone controller must define a route that specifies the desired URI, the source file
+            <p>ESP Controllers may be used as part of an ESP application or they may be used stand-alone outside
+            an ESP app. A stand-alone controller must define a route that specifies the desired URI, the source file
             containing the controller and the format of the URI to action mapping. For example:</p>
             <pre>
 &lt;Route ^/greetings/{action}$&gt;
@@ -172,13 +143,13 @@ ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
             a dynamic library, saved in the cache directory and loaded into Appweb. If the source is modified, the 
             old controller is unloaded (after ensuring there are no active requests) and the new source is compiled and
             loaded.</p>
-            <p>If you wish to pre-compile the controller, use the esp generator program. For example:</p>
+            <p>If you wish to pre-compile the controller, use the <em>esp</em> manager program. For example:</p>
             <pre>esp compile greetings.c</pre>
-            <a id="mvc"></a>
-            <h2 class="section">ESP MVC Applications</h2>
-            <p>ESP MVC applications typically require a little more configuration, but the ESP configuration
+            <a id="app"></a>
+            <h2 class="section">ESP Applications</h2>
+            <p>ESP applications typically require a little more configuration, but the ESP configuration
             defaults make this fairly painless.</p>
-            <p>If your MVC application uses RESTful routes and follows the ESP defaults, the one-liner 
+            <p>If your ESP application uses RESTful routes and follows the ESP defaults, the one-liner 
             <a href="../../appweb/users/dir/esp.html#espApp">EspApp</a>
             directive is typically all you need. This directive takes the following arguments:</p>
             <pre>&lt;EspApp name="NAME" prefix="URI" dir="Directory" routes="RouteSet"&gt;
@@ -250,25 +221,6 @@ ESP_EXPORT int esp_module_greetings(HttpRoute *route) {
                     <li><a href="../../appweb/users/dir/route.html#source">Source</a></li>
                     <li><a href="../../appweb/users/dir/route.html#target">Target</a></li>
                 </ul>
-            
-            <a id="database"></a>
-            <h2 class="section">Databases</h2>
-            <p>Databases can be specified and pre-opened via the <em>EspDb</em> directive or via the 
-                <em>server.database</em> property in the <em>package.json</em> for ESP MVC applications. Pre-opening a
-            database connection for an ESP application or route within an application eliminates the run-time delay 
-            connecting to the database. </p>
-            <p>ESP supports multiple database engines through a single Embedded Database Interface. Support is included for
-            SQLite and MDB. See <a href="database.html">Database Interface</a> for more information about
-            Database Support.</p>
-            <p>The EspDb directive takes the form: <em>EspDb provider://database-connection</em>. For example:
-<pre>
-  EspDb mdb://blog.mdb
-or
-  EspDb sqlite://sqlite.sdb
-</pre>
-            <p>For SQLite and MDB databases, the database-connection string is the name of the database in the ESP
-            <em>db</em> directory. Databases can also be pre-opened via the 
-                <a href="../../appweb/users/dir/esp.html#espApp">EspApp</a> directive.</p>
             <a id="compilation"></a>
             <h2 class="section">Compilation</h2>
             <p>At development time, ESP need to compile ESP controllers and pages into native binary.

@@ -49,9 +49,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -87,7 +86,7 @@
             is received, the ESP page is transparently parsed, converted into "C" code, compiled and saved as 
             a native code shared library. Once loaded, subsequent requests will use the in-memory
             code without any access to the original ESP page. If the system is rebooted, the on-disk cached module 
-            will be loaded without recompilation.</p>p>
+            will be loaded without recompilation.</p>
             
             <img src="../../../images/esp/template/compile.jpeg" alt="compile" />
             <p>The compilation of ESP pages happens automatically and quickly in the background when in development mode. 
@@ -96,7 +95,7 @@
             be controlled by the 
             <em><a href="../../appweb/users/dir/esp.html#espUpdate">EspUpdate</a></em> configuration directive.</p>
             <p>Alternatively, ESP pages can be precompiled via the <em>esp</em> generator program. For example:</p>
-            <pre>esp compile</pre>
+            <pre>$ <b>esp compile</b></pre>
             <p>In fact, the entire application can be compiled into a single combined module by compiling in combined mode.
             In this mode, all the ESP pages, controllers and source code can be compiled into a single, managable
             flexible library file.</p>
@@ -374,8 +373,8 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             ESP believes strongly in the DRY principle: <em>"Don't Repeat Yourself"</em>. </p>
             
             <img src="../../../images/esp/template/layout.jpeg" alt="layout" />
-            <p>For example: if the page below is a layout page called "<em>layouts/default.esp</em>", it will
-            define the top level HTML content for content pages. It has a banner image and division tags that 
+            <p>For example: consider the layout page below named "<em>layouts/default.esp</em>". This will will
+            define the top level HTML layout page for content pages. It has a banner image and division tags that 
             structure the page:</p>
             <pre>
 &lt;html&gt;
@@ -396,7 +395,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             <p>A content page defines only the HTML and code that is unique for a specific page. It is merged with a
             layout page by inserting the content and replacing the <em>&lt;%@ content %&gt;</em> tag in the layout
             page before rendering to the client.</p>
-            <p>For example, consider the content page named "<em>views/demo-index.esp</em>":</p>
+            <p>For example, consider the content page named "<em>demo-index.esp</em>":</p>
             <pre>
 <b>&lt;h1&gt;Content Page&lt;/h1&gt;
 &lt;p&gt;Hello World&lt;/p&gt;</b>
@@ -420,8 +419,8 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             recompiled.</p>
             <a id="alternateLayout"></a>
             <h3>Alternate Layout Pages</h3>
-            <p>ESP pages that are part of an ESP MVC application use the layout page <em>layouts/default.esp</em> by 
-            default. However, a content page can request a specific layout page by using the <em>&lt;%@ layout "file"&gt;</em>
+            <p>ESP pages look for the layout page <em>layouts/default.esp</em> by default. 
+            However, a content page can request a specific layout page by using the <em>&lt;%@ layout "file"&gt;</em>
             directive.</p>
             <pre>
 <b>&lt;%@ layout "alternateLayout.esp"&gt;</b>
@@ -429,11 +428,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
 &lt;p&gt;Hello World&lt;/p&gt;
 </pre>
             <p>This instructs the templating engine to use the "alternateLayout.esp" file rather than the default
-            layout. The default layout page is called "layouts/default.esp". </p>
-            <p>Stand-alone ESP pages that are not a part of an ESP MVC application do NOT use layouts by default. 
-            If you want a stand-alone ESP page to use a layout page, use the layout directive to specify the required
-            layout page.</p>
-            
+            layout.</p>
             <a id="multiple"></a>
             <h3>Multiple Layout Pages</h3>
             <p>You are not restricted to a simple two level layout and content page scheme. A layout page can itself

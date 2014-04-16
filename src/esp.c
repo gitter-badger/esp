@@ -643,10 +643,11 @@ static void initialize(int argc, char **argv)
             app->eroute->update = 1;
             httpSetRouteShowErrors(app->route, 1);
             espSetDefaultDirs(app->route);
+            httpAddRouteHandler(app->route, "espHandler", "esp");
+            httpAddRouteIndex(app->route, "index.esp");
+            httpAddRouteIndex(app->route, "index.html");
         }
-        httpAddRouteHandler(app->route, "espHandler", "esp");
-        httpAddRouteIndex(app->route, "index.esp");
-        httpAddRouteIndex(app->route, "index.html");
+        
         /*
             Load ESP compiler rules
          */
@@ -1119,14 +1120,14 @@ static void run(int argc, char **argv)
     }
     if (!app->appwebConfig) {
         if (argc == 0) {
-            if (maConfigureServer(app->server, NULL, app->home, ".", "127.0.0.1", 4000) < 0) {
+            if (maConfigureServer(app->server, NULL, app->home, ".", "127.0.0.1", 4000, MA_NO_MODULES) < 0) {
                 fail("Cannot configure the server to listen on port 127.0.0.1:%d", 4000);
                 return;
             }
         } else for (i = 0; i < argc; i++) {
             endpoint = argv[i++];
             mprParseSocketAddress(endpoint, &ip, &port, NULL, 80);
-            if (maConfigureServer(app->server, NULL, app->home, ".", ip, port) < 0) {
+            if (maConfigureServer(app->server, NULL, app->home, ".", ip, port, MA_NO_MODULES) < 0) {
                 fail("Cannot configure the server to listen at %s", endpoint);
                 return;
             }
@@ -2535,17 +2536,10 @@ static bool installPakFiles(cchar *name, cchar *criteria, bool topLevel)
 
 static MprJson *createPackage()
 {
-    MprJson     *config;
-
-    config = mprCreateJson(0);
-    mprSetJson(config, "name", app->appName, 0);
-    mprSetJson(config, "title", app->appName, 0);
-    mprSetJson(config, "description", app->appName, 0);
-    mprSetJson(config, "version", "0.0.0", 0);
-    mprSetJsonObj(config, "dependencies", mprCreateJson(0), 0);
-    mprSetJsonObj(config, "client-scripts", mprCreateJson(MPR_JSON_ARRAY), 0);
-    mprSetJsonObj(config, "dirs", mprCreateJson(0), 0);
-    return config;
+    return mprParseJson(sfmt("{ name: '%s', title: '%s', descript: '%s', version: '1.0.0', \
+        dependencies: {}, 'client-scripts': [], dirs: { client: 'client', paks: 'client/paks' }, \
+        esp: {server: {routes: 'esp-server'}}}",
+        app->appName, app->appName, app->appName));
 }
 
 

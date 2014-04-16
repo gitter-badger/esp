@@ -59,9 +59,8 @@
                 <li><a href="../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -71,10 +70,9 @@
             <h1>ESP Tech Overview</h1>
             <p>ESP is a web framework that makes it dramatically easier to create blazing fast,
             dynamic web applications. ESP uses the "C" language for server-side web programming which allows easy
-            access to low-level data for management user interfaces. </p>
-            <p>However, ESP is not a traditional low-level environment. Further, if web pages or controllers are 
-            modified during development, the code is transparently recompiled and reloaded. ESP uses garbage 
-            collection for safe memory management. This enables unparalleled performance with "script-like" 
+            access to system or hardware data to create fast, vibrant management user interfaces. </p>
+            <p>ESP is not a traditional low-level environment. It is a powerhouse MVC framework in a tiny footprint.Further, if web pages or controllers are modified during development, the code is transparently 
+            recompiled and reloaded. This enables unparalleled performance with "script-like"
             flexibility for web applications. </p>
             
             <p>The ESP web framework provides a complete set of components including</p>
@@ -121,7 +119,7 @@
             <a name="webservices"></a>
             <h2>Web Services</h2>
             <p>ESP is especially well suited for high performance web services. ESP permits the binding of URLs 
-            directly to C functions. When the URL is requested, the corresponding C function, often
+            directly to C functions. When the URL is requested, the corresponding C function, typically
             called an <em>"action"</em>, is executed to dynamically generate a response. 
             The actions are typically grouped into a loadable ESP controller file. For example:</p>
             <pre>

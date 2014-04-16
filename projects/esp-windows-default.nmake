@@ -741,7 +741,6 @@ $(CONFIG)\obj\espFramework.obj: \
 #   espHandler.obj
 #
 DEPS_28 = $(DEPS_28) $(CONFIG)\inc\me.h
-DEPS_28 = $(DEPS_28) $(CONFIG)\inc\http.h
 DEPS_28 = $(DEPS_28) $(CONFIG)\inc\esp.h
 DEPS_28 = $(DEPS_28) $(CONFIG)\inc\edi.h
 

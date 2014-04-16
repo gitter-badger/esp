@@ -51,9 +51,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -77,7 +76,6 @@ esp: 2: Started HTTP service on "127.0.0.1:4000"
 esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>ESP is now running and ready to serve documents from the "<em>test</em>" directory. ESP will display
             request errors and trace to the console.</p>
-
             <a id="hello"></a>
             <h2 class="section">Hello World</h2>
             <p>The first step is to create a dynamic "Hello World" web page. ESP pages have an <em>.esp</em>
@@ -87,17 +85,14 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
 &lt;h1&gt;Hello Bright World&lt;/h1&gt;
 &lt;h2&gt;Generated on <b>&lt;%= mprGetDate(0); %&gt;</b>&lt;/h2&gt;
 </pre>
-
             <p>This code blends HTML with embedded "C" language code inside a special ESP web page 
             directive. This code will be executed and converted to HTML before being sent to the client. 
             There are a variety of ESP page directives, the one you'll use first, is: </p>
             <p><em>&lt;%= expression %&gt;</em>.</p>
-
             <p>Now when you re-run the page, it will display the current date and time. If you refresh the page by
             pressing reload, the new date and time will be displayed.</p>
             
             <img src="../../../images/esp/tour/hello-dynamic.png" alt="hello" class= "bare-screen" /> 
-
             <h4>No Restart Required</h4>
             <p>Notice that you did not have to restart the web server, nor did you have to manually recompile the
             ESP code. Rather, ESP transparently recompiled the web page in the background. ESP noticed that the hello.esp

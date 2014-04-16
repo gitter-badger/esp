@@ -50,9 +50,8 @@
                 <li><a href="../../../guide/esp/users/config.html">Configuring ESP</a></li>
                 <li><a href="../../../guide/esp/users/pages.html">ESP Pages and Layouts</a></li>
                 <li><a href="../../../guide/esp/users/controllers.html">ESP Controllers</a></li>
-                <li><a href="../../../guide/esp/users/generator.html">ESP Generator</a></li>
+                <li><a href="../../../guide/esp/users/program.html">ESP Program</a></li>
                 <li><a href="../../../guide/esp/users/database.html">ESP Database Interface</a></li>
-                <li><a href="../../../guide/esp/users/caching.html">Caching Responses</a></li>
                 <li><a href="../../../guide/esp/start/pages-tour.html">ESP Page Tour</a></li>
                 <li><a href="../../../guide/esp/start/mvc-tour.html">ESP MVC Tour</a></li>
               </ul>
@@ -98,7 +97,6 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>To view the "Hello" web page, type the following URL: 
             <em>http://localhost:4000/hello.esp</em> into your browser.</p>
             <img src="../../../images/esp/tour/hello.png" alt="hello" class="bare-screen" /> 
-
             <a id="dynamic"></a>
             <h2 class="section">Dynamic Content</h2>
             <p>While that was fun, the output is static and boring, so let's add some dynamic content. You can embed
@@ -149,7 +147,6 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <p>To create more complex ESP applications than a simple hello-world, we will typically want a bit 
             more structure. The <em>esp</em> utility is a great aid to create a good structure for adding ESP pages, 
             controllers and to quickly assemble pieces of an application.</p>
-
             <h3>Installing Extension Paks</h3>
             <p>In the test directory we created above, we can install ESP extensions packs via <em>esp</em>.
             <p>For example to install the ESP server-side MVC framework:</p>
@@ -159,7 +156,6 @@ esp: 2:   HTTP/1.1 200 OK</pre>
    [Install] esp-mvc 1.0.0-rc0
    [Install] esp-server 1.0.0-rc0
 </pre>
-
             <h3>MVC Paks</h3>
             <p>ESP includes two MVC framework paks to get you started quickly. These frameworks provide
             the core structure of your application and include templates and scaffolds that are used to 
@@ -184,10 +180,8 @@ esp: 2:   HTTP/1.1 200 OK</pre>
                 <li>client/index.esp &mdash; Home page for your application.</li>
                 <li>client/paks &mdash; Installed Paks.</li>
             </ul>
-
             <p>Once installed, you can generate other assets such as controllers, database tables, migrations and 
                 MVC scaffolds.</p>
-
             <h3>Using the Pak Manager</h3>
             <p>ESP includes a set of common ESP extension packs, but by using the
             <a href="https://embedthis.com/products/pak/index.html">Pak</a> package manager, you can retrieve more
@@ -201,7 +195,6 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <p>This will download the jQuery pak and save it in the local Pak cache (typically in ~/.paks). It will
             then be installed in your local application directory.</p>
            
-
             <h3>Compiling</h3>
             <p>Your application will be automatically compiled by ESP as required, but you can pre-compile 
             using the esp utility.</p>
