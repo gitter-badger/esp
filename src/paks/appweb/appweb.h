@@ -38,10 +38,18 @@ extern "C" {
     #define ME_COM_DIR 0
 #endif
 #ifndef ME_COM_EJS
-    #define ME_COM_EJS 0
+    #if ME_EJS_PRODUCT
+        #define ME_COM_EJS 1
+    #else
+        #define ME_COM_EJS 0
+    #endif
 #endif
 #ifndef ME_COM_ESP
-    #define ME_COM_ESP 0
+    #if ME_ESP_PRODUCT
+        #define ME_COM_ESP 1
+    #else
+        #define ME_COM_ESP 0
+    #endif
 #endif
 #ifndef ME_COM_MDB
     #define ME_COM_MDB 0
@@ -124,8 +132,8 @@ PUBLIC int maApplyChangedUser(MaAppweb *appweb);
 /** 
     Create the Appweb object.
     @description Appweb uses a singleton Appweb object to manage multiple web servers instances.
-    @param Probe file to search for to locate the Appweb platform directory. Set to NULL for the default
-    of "bin/appweb".
+    @param probe file to search for to locate the Appweb platform directory. Set to NULL for the default
+        of "bin/appweb".
     @return A Http object. Use mprFree to close and release.
     @ingroup MaAppweb
     @stability Stable
