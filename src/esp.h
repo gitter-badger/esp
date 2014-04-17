@@ -238,7 +238,7 @@ PUBLIC void espAddHomeRoute(HttpRoute *route);
 PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set);
 
 //  MOB - DOC
-PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet);
+PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet, int loadApps);
 
 /**
     Add caching for response content.
