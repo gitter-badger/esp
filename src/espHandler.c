@@ -1064,9 +1064,6 @@ PUBLIC void espAddHomeRoute(HttpRoute *parent)
 
 PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
 {
-    EspRoute    *eroute;
-
-    eroute = route->eroute;
     if (set == 0 || *set == 0) {
         return;
     }
