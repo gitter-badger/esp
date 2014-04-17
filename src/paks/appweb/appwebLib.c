@@ -3341,7 +3341,7 @@ PUBLIC int maRunWebServer(cchar *configFile)
         if (mprStart() < 0) {
             mprError("Cannot start the web server runtime");
         } else {
-            if ((appweb = maCreateAppweb(NULL)) == 0) {
+            if ((appweb = maCreateAppweb()) == 0) {
                 mprError("Cannot create appweb object");
             } else {
                 mprAddRoot(appweb);
@@ -3390,7 +3390,7 @@ PUBLIC int maRunSimpleWebServer(cchar *ip, int port, cchar *home, cchar *documen
         if (mprStart(mpr) < 0) {
             mprError("Cannot start the web server runtime");
         } else {
-            if ((appweb = maCreateAppweb(NULL)) == 0) {
+            if ((appweb = maCreateAppweb()) == 0) {
                 mprError("Cannot create the web server http services");
             } else {
                 mprAddRoot(appweb);
@@ -22233,14 +22233,11 @@ static void manageAppweb(MaAppweb *appweb, int flags);
 /*
     Create the top level appweb control object. This is typically a singleton.
  */
-PUBLIC MaAppweb *maCreateAppweb(cchar *probe)
+PUBLIC MaAppweb *maCreateAppweb()
 {
     MaAppweb    *appweb;
     Http        *http;
 
-    if (!probe) {
-        probe = "bin/appweb" ME_EXE;
-    }
     if ((appweb = mprAllocObj(MaAppweb, manageAppweb)) == NULL) {
         return 0;
     }
@@ -22249,7 +22246,6 @@ PUBLIC MaAppweb *maCreateAppweb(cchar *probe)
     httpSetContext(http, appweb);
     appweb->servers = mprCreateList(-1, MPR_LIST_STABLE);
     appweb->localPlatform = slower(sfmt("%s-%s-%s", ME_OS, ME_CPU, ME_PROFILE));
-    maSetPlatform(NULL, probe);
     maGetUserGroup(appweb);
     maParseInit(appweb);
     /* 
@@ -22259,6 +22255,7 @@ PUBLIC MaAppweb *maCreateAppweb(cchar *probe)
     maOpenDirHandler(http);
 #endif
     maOpenFileHandler(http);
+    maSetPlatform(NULL, "bin/appweb" ME_EXE);
     return appweb; 
 }
 
