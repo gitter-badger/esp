@@ -1129,12 +1129,13 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     httpSetRouteVar(route, "PREFIX", prefix);
 #endif
     httpSetRouteTarget(route, "run", "$&");
-#if UNUSED
+    //  MOB - required for EspApp in appweb.conf
     httpAddRouteHandler(route, "espHandler", "");
+#if UNUSED
     httpAddRouteHandler(route, "espHandler", "esp");
-    httpAddRouteIndex(route, "index.esp");
     httpAddRouteIndex(route, "index.html");
 #endif
+    httpAddRouteIndex(route, "index.esp");
 
     if (loadConfig(route) < 0) {
         return MPR_ERR_CANT_LOAD;

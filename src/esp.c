@@ -368,7 +368,7 @@ static int parseArgs(int argc, char **argv)
                 if (!identifier(argv[++argind])) {
                     fail("Application name must be a valid C identifier");
                 } else {
-                    app->appName = argv[argind];
+                    app->appName = sclone(argv[argind]);
                     app->title = stitle(app->appName);
                 }
             }
@@ -483,13 +483,17 @@ static void parseCommand(int argc, char **argv)
         app->require = REQ_PACKAGE;
 
     } else if (smatch(cmd, "init")) {
-        app->appName = (argc >= 1) ? argv[0] : mprGetPathBase(mprGetCurrentPath());
+        if (!app->appName) {
+            app->appName = (argc >= 1) ? argv[0] : mprGetPathBase(mprGetCurrentPath());
+        }
         app->require = REQ_NAME;
 
     } else if (smatch(cmd, "install")) {
         app->require = 0;
         if (!mprPathExists("package.json", R_OK)) {
-            app->appName = mprGetPathBase(mprGetCurrentPath());
+            if (!app->appName) {
+                app->appName = mprGetPathBase(mprGetCurrentPath());
+            }
             app->require = REQ_NAME;
         }
 
@@ -559,7 +563,9 @@ static void setupRequirements(int argc, char **argv)
             fail("Cannot find %s", ME_ESP_PACKAGE);
             return;
         }
+#if UNUSED
         app->appName = mprGetPathBase(mprGetCurrentPath());
+#endif
         app->title = stitle(app->appName);
         app->config = createPackage();
     }
@@ -657,10 +663,10 @@ static void initialize(int argc, char **argv)
             app->eroute->update = 1;
             httpSetRouteShowErrors(app->route, 1);
             espSetDefaultDirs(app->route);
+            httpAddRouteIndex(app->route, "index.esp");
         }
         httpAddRouteHandler(app->route, "espHandler", "esp");
         httpAddRouteHandler(app->route, "fileHandler", "html gif jpeg jpg png pdf ico css js txt \"\"");
-        httpAddRouteIndex(app->route, "index.esp");
         httpAddRouteIndex(app->route, "index.html");
         
         /*
@@ -1447,7 +1453,7 @@ static MprList *getRoutes()
  */
 static cchar *findAppwebConfig()
 {
-    cchar   *name, *current, *parent, *path;
+    cchar   *name, *path;
 
     if (app->error || app->require & REQ_NO_CONFIG) {
         return 0;
@@ -1460,10 +1466,12 @@ static cchar *findAppwebConfig()
     mprLog(5, "Probe for \"%s\"", path);
     if (!mprPathExists(path, R_OK)) {
         if (app->appwebConfig) {
+            /* specified via --config */
             fail("Cannot open config file %s", path);
             return 0;
         }
         path = 0;
+#if UNUSED
         for (current = mprGetCurrentPath(); current; current = parent) {
             mprLog(5, "Probe for \"%s\"", current);
             if (mprPathExists(mprJoinPath(current, name), R_OK)) {
@@ -1475,6 +1483,7 @@ static cchar *findAppwebConfig()
                 break;
             }
         }
+#endif
         if (!path) {
             return 0;
         }
@@ -2788,7 +2797,17 @@ static cchar *getTemplate(cchar *key, MprHash *tokens)
     cchar   *pattern;
 
     if ((pattern = getConfigValue(sfmt("esp.server.generate.%s", key), 0)) != 0) {
-        return readTemplate(mprJoinPath("templates", pattern), tokens, NULL);
+        if (mprPathExists(app->eroute->generateDir, X_OK)) {
+            return readTemplate(mprJoinPath(app->eroute->generateDir, pattern), tokens, NULL);
+        }
+#if DEPECATE || 1
+        if (mprPathExists("generate", X_OK)) {
+            return readTemplate(mprJoinPath("generate", pattern), tokens, NULL);
+        }
+        if (mprPathExists("templates", X_OK)) {
+            return readTemplate(mprJoinPath("templates", pattern), tokens, NULL);
+        }
+#endif
     }
     return 0;
 }

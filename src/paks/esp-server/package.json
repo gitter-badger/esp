@@ -11,13 +11,15 @@
         "paks": "client/paks"
     },
     "export": [
-        "templates/**"
+        "generate/**"
     ],
     "esp": {
+        "logRoutes": false,
         "server": {
             "generate": {
                 "appweb": "esp-server/appweb.conf",
-            }
+            },
+            "routes": "esp-server",
         },
         "mode": "debug",
         "modes": {

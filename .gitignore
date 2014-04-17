@@ -23,3 +23,5 @@ macosx-*
 *.guid
 projects/esp-macosx-mine*
 pj.new
+project.xcworkspace
+xcuserdata
