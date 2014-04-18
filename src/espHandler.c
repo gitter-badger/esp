@@ -78,6 +78,8 @@ static int openEsp(HttpQueue *q)
     if (!route) {
         route = rx->route;
         eroute = initRoute(route);
+        //  MOB - is this really required?
+        assert(0);
         if (maParseFile(NULL, mprJoinPath(mprGetAppDir(), "esp.conf")) < 0) {
             httpError(conn, 0, "Cannot parse esp.conf");
             closeEsp(q);
@@ -1094,11 +1096,11 @@ PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
 /*
     Define an ESP Application
  */
-PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet, int loadApps)
+PUBLIC int espApp(MaState *state, HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet, int loadApps)
 {
     EspRoute    *eroute;
     MprJson     *preload, *item;
-    cchar       *path, *errMsg, *source;
+    cchar       *errMsg, *source;
     char        *kind;
     int         i;
 
@@ -1141,15 +1143,15 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
         return MPR_ERR_CANT_LOAD;
     }    
     espSetConfig(route, "esp.appPrefix", prefix);
-
-
+#if UNUSED
     if (!eroute->compile) {
         path = mprJoinPath(mprGetAppDir(), "esp.conf");
-        if (maParseFile(NULL, path) < 0) {
+        if (maParseFile(state, path) < 0) {
             mprError("Cannot find esp.conf at %s", path);
             return MPR_ERR_CANT_OPEN;
         }
     }
+#endif
     if (loadApps) {
         /*
             Note: the config parser pauses GC, so this will never yield
@@ -1173,7 +1175,9 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
         /* Want routes to inherit eroute->loaded */
         eroute->routeSet = sclone(routeSet);
         espAddRouteSet(route, eroute->routeSet);
+#if UNUSED
         httpFinalizeRoute(route);
+#endif
     }
     return 0;
 }
@@ -1248,16 +1252,16 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
     if (combined) {
         eroute->combined = scaselessmatch(combined, "true") || smatch(combined, "1");
     }
-    if (espApp(route, dir, name, prefix, routeSet, 1) < 0) {
-        return MPR_ERR_CANT_CREATE;
-    }
-    if (prefix) {
-        espSetConfig(route, "esp.appPrefix", prefix);
-    }
     if (database) {
         if (espDbDirective(state, key, database) < 0) {
             return MPR_ERR_BAD_STATE;
         }
+    }
+    if (espApp(state, route, dir, name, prefix, routeSet, 1) < 0) {
+        return MPR_ERR_CANT_CREATE;
+    }
+    if (prefix) {
+        espSetConfig(route, "esp.appPrefix", prefix);
     }
     return 0;
 }
@@ -1812,7 +1816,6 @@ static int espUpdateDirective(MaState *state, cchar *key, cchar *value)
     return 0;
 }
 
-
 /************************************ Init ************************************/
 /*
     Loadable module configuration
@@ -1879,6 +1882,10 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
 #if ME_COM_SQLITE
     sdbInit();
 #endif
+    if (maParseFile(NULL, mprJoinPath(mprGetAppDir(), "esp.conf")) < 0) {
+        mprError("Cannot find esp.conf at %s", mprGetAppDir());
+        return MPR_ERR_CANT_OPEN;
+    }
     return 0;
 }
 

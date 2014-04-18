@@ -658,7 +658,7 @@ static void initialize(int argc, char **argv)
         if (mprPathExists("package.json", R_OK) && mprGetJsonObj(app->config, "esp", 0) != 0) {
             
             loadApps = (app->require & REQ_SERVE);
-            if (espApp(app->route, ".", app->appName, 0, 0, loadApps) < 0) {
+            if (espApp(NULL, app->route, ".", app->appName, 0, 0, loadApps) < 0) {
                 fail("Cannot create ESP app");
                 return;
             }
@@ -671,8 +671,9 @@ static void initialize(int argc, char **argv)
             /*
                 Either no package.json or no "esp" definition
              */
-            app->eroute = mprAllocObj(EspRoute, espManageEspRoute);
-            app->route->eroute = app->eroute;
+            if ((app->eroute = app->route->eroute) == 0) {
+                app->route->eroute = app->eroute = mprAllocObj(EspRoute, espManageEspRoute);
+            }
             app->eroute->update = 1;
             httpSetRouteShowErrors(app->route, 1);
             espSetDefaultDirs(app->route);
@@ -680,18 +681,14 @@ static void initialize(int argc, char **argv)
             httpAddRouteHandler(app->route, "fileHandler", "");
             httpAddRouteIndex(app->route, "index.esp");
             httpAddRouteIndex(app->route, "index.html");
-
+#if UNUSED
             if (maParseFile(NULL, mprJoinPath(mprGetAppDir(), "esp.conf")) < 0) {
                 fail("Cannot parse esp.conf");
                 return;
             }
-        }
-        
-   
-        httpFinalizeRoute(app->route);
-#if KEEP
-        httpLogRoutes(app->server->defaultHost, 0);
 #endif
+        }
+        httpFinalizeRoute(app->route);
     }
     app->routes = getRoutes();
     if ((stage = httpLookupStage(http, "espHandler")) == 0) {
