@@ -1096,7 +1096,7 @@ PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set)
 /*
     Define an ESP Application
  */
-PUBLIC int espApp(MaState *state, HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet, int loadApps)
+PUBLIC int espApp(MaState *state, HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)
 {
     EspRoute    *eroute;
     MprJson     *preload, *item;
@@ -1152,7 +1152,7 @@ PUBLIC int espApp(MaState *state, HttpRoute *route, cchar *dir, cchar *name, cch
         }
     }
 #endif
-    if (loadApps) {
+    if (!eroute->skipApps) {
         /*
             Note: the config parser pauses GC, so this will never yield
          */
@@ -1257,7 +1257,7 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
             return MPR_ERR_BAD_STATE;
         }
     }
-    if (espApp(state, route, dir, name, prefix, routeSet, 1) < 0) {
+    if (espApp(state, route, dir, name, prefix, routeSet) < 0) {
         return MPR_ERR_CANT_CREATE;
     }
     if (prefix) {
@@ -1270,14 +1270,12 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
 static int finishEspAppDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpRoute   *route;
-    EspRoute    *eroute;
 
     /*
         The order of route finalization will be from the inside. Route finalization causes the route to be added
         to the enclosing host. This ensures that nested routes are defined BEFORE outer/enclosing routes.
      */
     route = state->route;
-    eroute = route->eroute;
 #if UNUSED
     espAddRouteSet(route, eroute->routeSet);
 #endif
