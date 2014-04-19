@@ -93,6 +93,7 @@ ifeq ($(ME_COM_EST),1)
     TARGETS           += $(CONFIG)/bin/libest.dylib
 endif
 TARGETS               += $(CONFIG)/bin/libmprssl.dylib
+TARGETS               += $(CONFIG)/bin/espman
 ifeq ($(ME_COM_SQLITE),1)
     TARGETS           += $(CONFIG)/bin/sqlite
 endif
@@ -141,6 +142,7 @@ clean:
 	rm -f "$(CONFIG)/obj/espTemplate.o"
 	rm -f "$(CONFIG)/obj/estLib.o"
 	rm -f "$(CONFIG)/obj/httpLib.o"
+	rm -f "$(CONFIG)/obj/manager.o"
 	rm -f "$(CONFIG)/obj/mdb.o"
 	rm -f "$(CONFIG)/obj/mprLib.o"
 	rm -f "$(CONFIG)/obj/mprSsl.o"
@@ -160,6 +162,7 @@ clean:
 	rm -f "$(CONFIG)/bin/libmprssl.dylib"
 	rm -f "$(CONFIG)/bin/libpcre.dylib"
 	rm -f "$(CONFIG)/bin/libsql.dylib"
+	rm -f "$(CONFIG)/bin/espman"
 	rm -f "$(CONFIG)/bin/sqlite"
 
 clobber: clean
@@ -210,7 +213,7 @@ DEPS_5 += $(CONFIG)/obj/mprLib.o
 
 $(CONFIG)/bin/libmpr.dylib: $(DEPS_5)
 	@echo '      [Link] $(CONFIG)/bin/libmpr.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libmpr.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libmpr.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/mprLib.o" $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libmpr.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libmpr.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/mprLib.o" $(LIBS) 
 
 #
 #   pcre.h
@@ -241,7 +244,7 @@ DEPS_8 += $(CONFIG)/obj/pcre.o
 
 $(CONFIG)/bin/libpcre.dylib: $(DEPS_8)
 	@echo '      [Link] $(CONFIG)/bin/libpcre.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libpcre.dylib -arch $(CC_ARCH) $(LDFLAGS) -compatibility_version 1.0.0 -current_version 1.0.0 $(LIBPATHS) -install_name @rpath/libpcre.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/pcre.o" $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libpcre.dylib -arch $(CC_ARCH) $(LDFLAGS) -compatibility_version 1.0 -current_version 1.0 $(LIBPATHS) -install_name @rpath/libpcre.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/pcre.o" $(LIBS) 
 endif
 
 #
@@ -288,7 +291,7 @@ endif
 
 $(CONFIG)/bin/libhttp.dylib: $(DEPS_11)
 	@echo '      [Link] $(CONFIG)/bin/libhttp.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libhttp.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libhttp.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/httpLib.o" $(LIBPATHS_11) $(LIBS_11) $(LIBS_11) $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libhttp.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libhttp.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/httpLib.o" $(LIBPATHS_11) $(LIBS_11) $(LIBS_11) $(LIBS) 
 endif
 
 #
@@ -345,7 +348,7 @@ endif
 
 $(CONFIG)/bin/libappweb.dylib: $(DEPS_14)
 	@echo '      [Link] $(CONFIG)/bin/libappweb.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libappweb.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libappweb.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/appwebLib.o" $(LIBPATHS_14) $(LIBS_14) $(LIBS_14) $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libappweb.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libappweb.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/appwebLib.o" $(LIBPATHS_14) $(LIBS_14) $(LIBS_14) $(LIBS) 
 endif
 
 #
@@ -618,7 +621,7 @@ DEPS_22 += $(CONFIG)/obj/sqlite3.o
 
 $(CONFIG)/bin/libsql.dylib: $(DEPS_22)
 	@echo '      [Link] $(CONFIG)/bin/libsql.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libsql.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libsql.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/sqlite3.o" $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libsql.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libsql.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/sqlite3.o" $(LIBS) 
 endif
 
 #
@@ -799,7 +802,7 @@ endif
 
 $(CONFIG)/bin/libmod_esp.dylib: $(DEPS_34)
 	@echo '      [Link] $(CONFIG)/bin/libmod_esp.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libmod_esp.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libmod_esp.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_34) $(LIBS_34) $(LIBS_34) $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libmod_esp.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libmod_esp.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_34) $(LIBS_34) $(LIBS_34) $(LIBS) 
 
 #
 #   esp.o
@@ -915,7 +918,7 @@ DEPS_40 += $(CONFIG)/obj/estLib.o
 
 $(CONFIG)/bin/libest.dylib: $(DEPS_40)
 	@echo '      [Link] $(CONFIG)/bin/libest.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libest.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libest.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/estLib.o" $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libest.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) -install_name @rpath/libest.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/estLib.o" $(LIBS) 
 endif
 
 #
@@ -968,16 +971,43 @@ endif
 
 $(CONFIG)/bin/libmprssl.dylib: $(DEPS_42)
 	@echo '      [Link] $(CONFIG)/bin/libmprssl.dylib'
-	$(CC) -dynamiclib -o $(CONFIG)/bin/libmprssl.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS)    -install_name @rpath/libmprssl.dylib -compatibility_version 1.0.0 -current_version 1.0.0 "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_42) $(LIBS_42) $(LIBS_42) $(LIBS) 
+	$(CC) -dynamiclib -o $(CONFIG)/bin/libmprssl.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS)    -install_name @rpath/libmprssl.dylib -compatibility_version 1.0 -current_version 1.0 "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_42) $(LIBS_42) $(LIBS_42) $(LIBS) 
+
+#
+#   manager.o
+#
+DEPS_43 += $(CONFIG)/inc/me.h
+DEPS_43 += $(CONFIG)/inc/mpr.h
+
+$(CONFIG)/obj/manager.o: \
+    src/paks/mpr/manager.c $(DEPS_43)
+	@echo '   [Compile] $(CONFIG)/obj/manager.o'
+	$(CC) -c $(DFLAGS) -o $(CONFIG)/obj/manager.o -arch $(CC_ARCH) $(CFLAGS) $(IFLAGS) src/paks/mpr/manager.c
+
+#
+#   manager
+#
+DEPS_44 += $(CONFIG)/inc/mpr.h
+DEPS_44 += $(CONFIG)/inc/me.h
+DEPS_44 += $(CONFIG)/inc/osdep.h
+DEPS_44 += $(CONFIG)/obj/mprLib.o
+DEPS_44 += $(CONFIG)/bin/libmpr.dylib
+DEPS_44 += $(CONFIG)/obj/manager.o
+
+LIBS_44 += -lmpr
+
+$(CONFIG)/bin/espman: $(DEPS_44)
+	@echo '      [Link] $(CONFIG)/bin/espman'
+	$(CC) -o $(CONFIG)/bin/espman -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) 
 
 #
 #   sqlite.o
 #
-DEPS_43 += $(CONFIG)/inc/me.h
-DEPS_43 += $(CONFIG)/inc/sqlite3.h
+DEPS_45 += $(CONFIG)/inc/me.h
+DEPS_45 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite.o: \
-    src/paks/sqlite/sqlite.c $(DEPS_43)
+    src/paks/sqlite/sqlite.c $(DEPS_45)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.o'
 	$(CC) -c $(DFLAGS) -o $(CONFIG)/obj/sqlite.o -arch $(CC_ARCH) $(CFLAGS) $(IFLAGS) src/paks/sqlite/sqlite.c
 
@@ -985,28 +1015,28 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   sqliteshell
 #
-DEPS_44 += $(CONFIG)/inc/sqlite3.h
-DEPS_44 += $(CONFIG)/inc/me.h
-DEPS_44 += $(CONFIG)/obj/sqlite3.o
-DEPS_44 += $(CONFIG)/bin/libsql.dylib
-DEPS_44 += $(CONFIG)/obj/sqlite.o
+DEPS_46 += $(CONFIG)/inc/sqlite3.h
+DEPS_46 += $(CONFIG)/inc/me.h
+DEPS_46 += $(CONFIG)/obj/sqlite3.o
+DEPS_46 += $(CONFIG)/bin/libsql.dylib
+DEPS_46 += $(CONFIG)/obj/sqlite.o
 
-LIBS_44 += -lsql
+LIBS_46 += -lsql
 
-$(CONFIG)/bin/sqlite: $(DEPS_44)
+$(CONFIG)/bin/sqlite: $(DEPS_46)
 	@echo '      [Link] $(CONFIG)/bin/sqlite'
-	$(CC) -o $(CONFIG)/bin/sqlite -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/sqlite -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_46) $(LIBS_46) $(LIBS_46) $(LIBS) 
 endif
 
 #
 #   stop
 #
-stop: $(DEPS_45)
+stop: $(DEPS_47)
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_46)
+installBinary: $(DEPS_48)
 	( \
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
@@ -1017,6 +1047,9 @@ installBinary: $(DEPS_46)
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
 	rm -f "$(ME_BIN_PREFIX)/esp" ; \
 	ln -s "$(ME_VAPP_PREFIX)/bin/esp" "$(ME_BIN_PREFIX)/esp" ; \
+	cp $(CONFIG)/bin/espman $(ME_VAPP_PREFIX)/bin/espman ; \
+	rm -f "$(ME_BIN_PREFIX)/espman" ; \
+	ln -s "$(ME_VAPP_PREFIX)/bin/espman" "$(ME_BIN_PREFIX)/espman" ; \
 	cp $(CONFIG)/bin/libappweb.dylib $(ME_VAPP_PREFIX)/bin/libappweb.dylib ; \
 	cp $(CONFIG)/bin/libhttp.dylib $(ME_VAPP_PREFIX)/bin/libhttp.dylib ; \
 	cp $(CONFIG)/bin/libmpr.dylib $(ME_VAPP_PREFIX)/bin/libmpr.dylib ; \
@@ -1075,30 +1108,30 @@ installBinary: $(DEPS_46)
 #
 #   start
 #
-start: $(DEPS_47)
+start: $(DEPS_49)
 
 #
 #   install
 #
-DEPS_48 += stop
-DEPS_48 += installBinary
-DEPS_48 += start
+DEPS_50 += stop
+DEPS_50 += installBinary
+DEPS_50 += start
 
-install: $(DEPS_48)
+install: $(DEPS_50)
 
 #
 #   run
 #
-DEPS_49 += comp
+DEPS_51 += comp
 
-run: $(DEPS_49)
+run: $(DEPS_51)
 	cd src/paks/esp-html-mvc; appweb -v ; cd ../../..
 #
 #   uninstall
 #
-DEPS_50 += stop
+DEPS_52 += stop
 
-uninstall: $(DEPS_50)
+uninstall: $(DEPS_52)
 	( \
 	cd .; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
@@ -1109,6 +1142,6 @@ uninstall: $(DEPS_50)
 #
 #   version
 #
-version: $(DEPS_51)
+version: $(DEPS_53)
 	echo 1.0.0-rc0
 

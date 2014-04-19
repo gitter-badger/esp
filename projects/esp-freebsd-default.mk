@@ -93,6 +93,7 @@ ifeq ($(ME_COM_EST),1)
     TARGETS           += $(CONFIG)/bin/libest.so
 endif
 TARGETS               += $(CONFIG)/bin/libmprssl.so
+TARGETS               += $(CONFIG)/bin/espman
 ifeq ($(ME_COM_SQLITE),1)
     TARGETS           += $(CONFIG)/bin/sqlite
 endif
@@ -141,6 +142,7 @@ clean:
 	rm -f "$(CONFIG)/obj/espTemplate.o"
 	rm -f "$(CONFIG)/obj/estLib.o"
 	rm -f "$(CONFIG)/obj/httpLib.o"
+	rm -f "$(CONFIG)/obj/manager.o"
 	rm -f "$(CONFIG)/obj/mdb.o"
 	rm -f "$(CONFIG)/obj/mprLib.o"
 	rm -f "$(CONFIG)/obj/mprSsl.o"
@@ -160,6 +162,7 @@ clean:
 	rm -f "$(CONFIG)/bin/libmprssl.so"
 	rm -f "$(CONFIG)/bin/libpcre.so"
 	rm -f "$(CONFIG)/bin/libsql.so"
+	rm -f "$(CONFIG)/bin/espman"
 	rm -f "$(CONFIG)/bin/sqlite"
 
 clobber: clean
@@ -971,13 +974,40 @@ $(CONFIG)/bin/libmprssl.so: $(DEPS_42)
 	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_42) $(LIBS_42) $(LIBS_42) $(LIBS) 
 
 #
-#   sqlite.o
+#   manager.o
 #
 DEPS_43 += $(CONFIG)/inc/me.h
-DEPS_43 += $(CONFIG)/inc/sqlite3.h
+DEPS_43 += $(CONFIG)/inc/mpr.h
+
+$(CONFIG)/obj/manager.o: \
+    src/paks/mpr/manager.c $(DEPS_43)
+	@echo '   [Compile] $(CONFIG)/obj/manager.o'
+	$(CC) -c -o $(CONFIG)/obj/manager.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/mpr/manager.c
+
+#
+#   manager
+#
+DEPS_44 += $(CONFIG)/inc/mpr.h
+DEPS_44 += $(CONFIG)/inc/me.h
+DEPS_44 += $(CONFIG)/inc/osdep.h
+DEPS_44 += $(CONFIG)/obj/mprLib.o
+DEPS_44 += $(CONFIG)/bin/libmpr.so
+DEPS_44 += $(CONFIG)/obj/manager.o
+
+LIBS_44 += -lmpr
+
+$(CONFIG)/bin/espman: $(DEPS_44)
+	@echo '      [Link] $(CONFIG)/bin/espman'
+	$(CC) -o $(CONFIG)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) $(LIBS) 
+
+#
+#   sqlite.o
+#
+DEPS_45 += $(CONFIG)/inc/me.h
+DEPS_45 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite.o: \
-    src/paks/sqlite/sqlite.c $(DEPS_43)
+    src/paks/sqlite/sqlite.c $(DEPS_45)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.o'
 	$(CC) -c -o $(CONFIG)/obj/sqlite.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/sqlite/sqlite.c
 
@@ -985,28 +1015,28 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   sqliteshell
 #
-DEPS_44 += $(CONFIG)/inc/sqlite3.h
-DEPS_44 += $(CONFIG)/inc/me.h
-DEPS_44 += $(CONFIG)/obj/sqlite3.o
-DEPS_44 += $(CONFIG)/bin/libsql.so
-DEPS_44 += $(CONFIG)/obj/sqlite.o
+DEPS_46 += $(CONFIG)/inc/sqlite3.h
+DEPS_46 += $(CONFIG)/inc/me.h
+DEPS_46 += $(CONFIG)/obj/sqlite3.o
+DEPS_46 += $(CONFIG)/bin/libsql.so
+DEPS_46 += $(CONFIG)/obj/sqlite.o
 
-LIBS_44 += -lsql
+LIBS_46 += -lsql
 
-$(CONFIG)/bin/sqlite: $(DEPS_44)
+$(CONFIG)/bin/sqlite: $(DEPS_46)
 	@echo '      [Link] $(CONFIG)/bin/sqlite'
-	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_46) $(LIBS_46) $(LIBS_46) $(LIBS) $(LIBS) 
 endif
 
 #
 #   stop
 #
-stop: $(DEPS_45)
+stop: $(DEPS_47)
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_46)
+installBinary: $(DEPS_48)
 	( \
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
@@ -1017,6 +1047,9 @@ installBinary: $(DEPS_46)
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
 	rm -f "$(ME_BIN_PREFIX)/esp" ; \
 	ln -s "$(ME_VAPP_PREFIX)/bin/esp" "$(ME_BIN_PREFIX)/esp" ; \
+	cp $(CONFIG)/bin/espman $(ME_VAPP_PREFIX)/bin/espman ; \
+	rm -f "$(ME_BIN_PREFIX)/espman" ; \
+	ln -s "$(ME_VAPP_PREFIX)/bin/espman" "$(ME_BIN_PREFIX)/espman" ; \
 	cp $(CONFIG)/bin/libappweb.so $(ME_VAPP_PREFIX)/bin/libappweb.so ; \
 	cp $(CONFIG)/bin/libhttp.so $(ME_VAPP_PREFIX)/bin/libhttp.so ; \
 	cp $(CONFIG)/bin/libmpr.so $(ME_VAPP_PREFIX)/bin/libmpr.so ; \
@@ -1075,30 +1108,30 @@ installBinary: $(DEPS_46)
 #
 #   start
 #
-start: $(DEPS_47)
+start: $(DEPS_49)
 
 #
 #   install
 #
-DEPS_48 += stop
-DEPS_48 += installBinary
-DEPS_48 += start
+DEPS_50 += stop
+DEPS_50 += installBinary
+DEPS_50 += start
 
-install: $(DEPS_48)
+install: $(DEPS_50)
 
 #
 #   run
 #
-DEPS_49 += comp
+DEPS_51 += comp
 
-run: $(DEPS_49)
+run: $(DEPS_51)
 	cd src/paks/esp-html-mvc; appweb -v ; cd ../../..
 #
 #   uninstall
 #
-DEPS_50 += stop
+DEPS_52 += stop
 
-uninstall: $(DEPS_50)
+uninstall: $(DEPS_52)
 	( \
 	cd .; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
@@ -1109,6 +1142,6 @@ uninstall: $(DEPS_50)
 #
 #   version
 #
-version: $(DEPS_51)
+version: $(DEPS_53)
 	echo 1.0.0-rc0
 

@@ -13,7 +13,7 @@
     #define ME_COMPANY "embedthis"
 #endif
 #ifndef ME_COMPATIBLE
-    #define ME_COMPATIBLE "1.0.0"
+    #define ME_COMPATIBLE "1.0"
 #endif
 #ifndef ME_COMPILER_HAS_ATOMIC
     #define ME_COMPILER_HAS_ATOMIC 0
@@ -95,6 +95,9 @@
 #endif
 #ifndef ME_MPR_LOGGING
     #define ME_MPR_LOGGING 1
+#endif
+#ifndef ME_MPR_MANAGER
+    #define ME_MPR_MANAGER "espman"
 #endif
 #ifndef ME_NAME
     #define ME_NAME "esp"
