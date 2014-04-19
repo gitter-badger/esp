@@ -1,5 +1,5 @@
 #!/bin/sh
-# 	postrm -- Post removal script for Pak
+# 	postrm -- Post removal script for ESP
 #
 #	Copyright (c) Embedthis Software LLC, 2003-2013. All Rights Reserved.
 #

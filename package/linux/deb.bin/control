@@ -10,7 +10,7 @@ Conflicts: pak
 Installed-Size: 10
 Maintainer: Embedthis Development <dev@embedthis.com>
 Description: Embedthis Bit
- Pak is a simple package manager for ESP/EJS.
+ ESP is a "C" language web framework that works at "thought-speed".
  .
- more information about Embedthis Pak can be found at:
+ more information about Embedthis ESP can be found at:
  <URL:http://embedthis.com>

@@ -1,5 +1,5 @@
 #!/bin/sh
-# 	prerm -- Pre removal script for Pak
+# 	prerm -- Pre removal script for ESP
 #
 #	Copyright (c) Embedthis Software LLC, 2003-2013. All Rights Reserved.
 #

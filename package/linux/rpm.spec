@@ -1,7 +1,7 @@
 #
 #	RPM spec file for ${settings.title}
 #
-Summary: ${settings.title} -- A simple package manager for ESP/EJS
+Summary: ${settings.title} -- The "C" language web framework 
 Name: ${settings.name}
 Version: ${settings.version}
 License: Dual GPL/commercial

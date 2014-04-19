@@ -45,6 +45,13 @@ Me.load({
                 linkin: '${bin}',
                 set:    'core',
 
+            },{ from:        [
+                    '${BIN}/espman${EXE}',
+                ],
+                to:         '${abin}/',
+                linkin:     '${bin}',
+                set:        'core',
+
             },{ from: [
                     '${BIN}/libappweb${SHOBJ}',
                     '${BIN}/libhttp${SHOBJ}',
