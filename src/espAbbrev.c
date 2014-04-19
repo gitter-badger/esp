@@ -589,7 +589,7 @@ PUBLIC void scripts(cchar *patterns)
     EspRoute    *eroute;
     MprList     *files;
     MprJson     *cscripts, *script;
-    cchar       *name, *uri, *path;
+    cchar       *uri, *path, *version;
     int         next, ci;
 
     conn = getConn();
@@ -599,8 +599,27 @@ PUBLIC void scripts(cchar *patterns)
     patterns = httpExpandRouteVars(route, patterns);
 
     if (!patterns || !*patterns) {
+#if FUTURE || 1
+        version = espGetConfig(route, "version", "1.0.0");
+        if (eroute->combineScript) {
+            scripts(eroute->combineScript);
+        } else if (espGetConfig(route, "content.js.combine", 0)) {
+            if (espGetConfig(route, "content.js.minify", 0)) {
+                eroute->combineScript = sfmt("all-%s.min.js", version);
+            } else {
+                eroute->combineScript = sfmt("all-%s.js", version);
+            }
+            scripts(eroute->combineScript);
+        } else {
+            if ((cscripts = mprGetJsonObj(eroute->config, "client-scripts", 0)) != 0) {
+                for (ITERATE_JSON(cscripts, script, ci)) {
+                    scripts(script->value);
+                }
+            }
+        }
+#else
         if (modeIs("release")) {
-            name = sfmt("all-%s.min.js.gz", espGetConfig(route, "version", "1.0.0"));
+            name = sfmt("all-%s.min.js", espGetConfig(route, "version", "1.0.0"));
             scripts(name);
         } else {
             if ((cscripts = mprGetJsonObj(eroute->config, "client-scripts", 0)) != 0) {
@@ -609,9 +628,11 @@ PUBLIC void scripts(cchar *patterns)
                 }
             }
         }
+#endif
         return;
     }
-    if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
+    if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
+            mprGetListLength(files) == 0) {
         files = mprCreateList(0, 0);
         mprAddItem(files, patterns);
     }
@@ -621,7 +642,7 @@ PUBLIC void scripts(cchar *patterns)
         }
         path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
         uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
-        espRender(conn, "    <script src='%s' type='text/javascript'></script>\n", uri);
+        espRender(conn, "<script src='%s' type='text/javascript'></script>\n", uri);
     }
 }
 
@@ -775,7 +796,7 @@ PUBLIC void stylesheets(cchar *patterns)
     HttpRoute   *route;
     EspRoute    *eroute;
     MprList     *files;
-    cchar       *uri, *path, *kind;
+    cchar       *uri, *path, *kind, *version;
     int         next;
 
     conn = getConn();
@@ -785,6 +806,30 @@ PUBLIC void stylesheets(cchar *patterns)
     patterns = httpExpandRouteVars(route, patterns);
 
     if (!patterns || !*patterns) {
+#if FUTURE || 1
+        version = espGetConfig(route, "version", "1.0.0");
+        if (eroute->combineSheet) {
+            scripts(eroute->combineSheet);
+        } else if (espGetConfig(route, "content.css.combine", 0)) {
+            if (espGetConfig(route, "content.css.minify", 0)) {
+                eroute->combineSheet = sfmt("all-%s.min.css", version);
+            } else {
+                eroute->combineSheet = sfmt("all-%s.css", version);
+            }
+            stylesheets(eroute->combineSheet);
+        } else {
+            path = mprJoinPath(eroute->clientDir, "css/all.css");
+            if (mprPathExists(path, R_OK)) {
+                stylesheets("css/all.css");
+            } else {
+                stylesheets("css/all.less");
+                path = mprJoinPath(eroute->clientDir, "css/fix.css");
+                if (mprPathExists(path, R_OK)) {
+                    stylesheets("css/fix.css");
+                }
+            }
+        }
+#else
         if (modeIs("release")) {
             stylesheets(sfmt("css/all-%s.min.css", espGetConfig(route, "version", "1.0.0")));
         } else {
@@ -799,6 +844,7 @@ PUBLIC void stylesheets(cchar *patterns)
                 }
             }
         }
+#endif
         return;
     }
     if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
@@ -810,9 +856,9 @@ PUBLIC void stylesheets(cchar *patterns)
         uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
         kind = mprGetPathExt(path);
         if (smatch(kind, "css")) {
-            espRender(conn, "    <link rel='stylesheet' type='text/css' href='%s' />\n", uri);
+            espRender(conn, "<link rel='stylesheet' type='text/css' href='%s' />\n", uri);
         } else {
-            espRender(conn, "    <link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
+            espRender(conn, "<link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
         }
     }
 }
