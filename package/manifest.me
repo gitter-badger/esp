@@ -107,6 +107,39 @@ Me.load({
                 enable: "me.platform.like == 'unix'",
 
             },{
+                name:        'Launch daemon script'
+                from:        'package/macosx/com.embedthis.esp.plist',
+                to:          '${root}/Library/LaunchDaemons/com.embedthis.esp.plist',
+                permissions: 0644,
+                user:        'root',
+                group:       'wheel',
+                set:         'service',
+                root:        true,
+                enable:      "me.platform.os == 'macosx'",
+
+            },{
+                name:        'Init script'
+                from:        'package/linux/${settings.name}.init',
+                to:          '${root}/etc/init.d/${settings.name}',
+                permissions: 0755,
+                user:        'root',
+                group:       'root',
+                set:         'service',
+                root:        true,
+                enable:      "me.platform.os == 'linux'",
+
+            },{
+                name:        'Upstart script'
+                from:        'package/linux/${settings.name}.upstart',
+                to:          '${root}/etc/init/${settings.name}.conf',
+                permissions: 0644,
+                user:        'root',
+                group:       'root',
+                set:         'service',
+                root:        true,
+                enable:      "false && me.platform.os == 'linux'",
+
+            },{
                 from:       [
                     '${INC}/me.h',
                     'src/esp.h',
