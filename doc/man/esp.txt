@@ -7,45 +7,45 @@ NAME
 
 SYNOPSIS
        esp
-         --apply
-         --config configFile
-         --database DB
-         --genlink slink.c
-         --home dir
-         --keep
-         --listen [ip:]port
-         --log logFile:level
-         --optimized
-         --overwrite
-         --quiet
-         --platform [path/]os-arch-profile
-         --rebuild
-         --routeName name
-         --routePrefix prefix
-         --single
-         --static
-         --symbols
-         --table name
-         --verbose
-         --why
-         commands ...
+           --apply
+           --config configFile
+           --database DB
+           --genlink slink.c
+           --home dir
+           --keep
+           --listen [ip:]port
+           --log logFile:level
+           --optimized
+           --overwrite
+           --quiet
+           --platform [path/]os-arch-profile
+           --rebuild
+           --routeName name
+           --routePrefix prefix
+           --single
+           --static
+           --symbols
+           --table name
+           --verbose
+           --why
+           commands ...
 
 
        Commands:
-        esp clean
-        esp compile
-        esp compile [pathFilters...]
-        esp edit key[=value]
-        esp generate controller name [action [, action] ...]
-        esp generate migration description model [field:type ...]
-        esp generate scaffold model [field:type ...]
-        esp generate table name model [field:type ...]
-        esp install paks...
-        esp migrate [forward|backward|NNN]
-        esp mode [debug|release|otherMode]
-        esp [run] [ip]:[port]
-        esp uninstall paks...
-        esp upgrade paks..
+           esp clean
+           esp compile
+           esp compile [pathFilters...]
+           esp edit key[=value]
+           esp generate controller name [action [, action] ...]
+           esp generate migration description model [field:type ...]
+           esp generate scaffold model [field:type ...]
+           esp generate table name model [field:type ...]
+           esp install paks...
+           esp migrate [forward|backward|NNN]
+           esp mode [debug|release|otherMode]
+           esp [run] [ip]:[port]
+           esp uninstall paks...
+           esp upgrade paks..
 
 DESCRIPTION
        The  esp  command  generates, manages and runs ESP web applications. It
