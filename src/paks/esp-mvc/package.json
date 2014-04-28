@@ -5,27 +5,26 @@
     "keywords": [
         "esp",
     ],
-    "precious": true,
     "dependencies": {
-        "esp-server": "~5.0",
+        "esp-server": "~1.0",
     },
     "dirs": {
-        "client": "client",
-        "paks": "client/paks"
+        "?client": "client",
+        "?paks": "client/paks"
     },
     "export": [
         "generate/**"
     ],
     "esp": {
-        "serverPrefix": "/do",
+        "?serverPrefix": "/do",
         "server": {
-            "database": "",
+            "?database": "",
             "generate": {
-                "appweb": "esp-mvc/appweb.conf",
-                "migration": "esp-mvc/migration.c",
-                "module": "esp-mvc/src/app.c",
-                "controller": "esp-mvc/controller.c",
-                "controller-singleton": "esp-mvc/controller.c",
+                "?appweb": "esp-mvc/appweb.conf",
+                "?migration": "esp-mvc/migration.c",
+                "?module": "esp-mvc/src/app.c",
+                "?controller": "esp-mvc/controller.c",
+                "?controller-singleton": "esp-mvc/controller.c",
             }
         }
     }

@@ -818,6 +818,9 @@ PUBLIC void stylesheets(cchar *patterns)
             }
             stylesheets(eroute->combineSheet);
         } else {
+            /*
+                Give priority to all.css over all.less
+             */
             path = mprJoinPath(eroute->clientDir, "css/all.css");
             if (mprPathExists(path, R_OK)) {
                 stylesheets("css/all.css");
