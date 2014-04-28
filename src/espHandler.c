@@ -492,14 +492,15 @@ static int loadConfig(HttpRoute *route)
                 mprError("The %s AuthStore is not available on this platform", value);
             }
         }
-
+#if DEPRECATE || 1
         if ((value = espGetConfig(route, "esp.cache", 0)) != 0) {
             clientLifespan = httpGetTicks(value);
             httpAddCache(route, NULL, NULL, "html,gif,jpeg,jpg,png,pdf,ico,js,txt,less", NULL, clientLifespan, 0, 
                 HTTP_CACHE_CLIENT | HTTP_CACHE_ALL);
         }
-        if ((value = espGetConfig(route, "esp.combine", 0)) != 0) {
-            eroute->combine = smatch(value, "true");
+#endif
+        if ((value = espGetConfig(route, "esp.content.combine[@ == c]", 0)) != 0) {
+            eroute->combine = 1;
             if (eroute->combine) {
                 mprLog(3, "esp: app %s configured for \"combine\" mode compilation", eroute->appName);
             }
@@ -519,9 +520,14 @@ static int loadConfig(HttpRoute *route)
                 eroute->compileMode = ESP_COMPILE_OPTIMIZED;
             }
         }
+        if ((value = espGetConfig(route, "esp.content.compress", 0)) != 0) {
+            httpAddRouteMapping(route, value, "${1}.gz, min.${1}.gz, min.${1}");
+        }
+#if DEPRECATE || 1
         if (espTestConfig(route, "esp.compressed", "true")) {
             httpAddRouteMapping(route, "css,html,js,less,txt,xml", "${1}.gz, min.${1}.gz, min.${1}");
         }
+#endif
         if ((value = espGetConfig(route, "esp.server.redirect", 0)) != 0) {
             /*
                 Disabling redirect may require a server reboot

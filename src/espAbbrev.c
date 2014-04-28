@@ -806,7 +806,6 @@ PUBLIC void stylesheets(cchar *patterns)
     patterns = httpExpandRouteVars(route, patterns);
 
     if (!patterns || !*patterns) {
-#if FUTURE || 1
         version = espGetConfig(route, "version", "1.0.0");
         if (eroute->combineSheet) {
             scripts(eroute->combineSheet);
@@ -832,36 +831,21 @@ PUBLIC void stylesheets(cchar *patterns)
                 }
             }
         }
-#else
-        if (modeIs("release")) {
-            stylesheets(sfmt("css/all-%s.min.css", espGetConfig(route, "version", "1.0.0")));
-        } else {
-            path = mprJoinPath(eroute->clientDir, "css/all.css");
-            if (mprPathExists(path, R_OK)) {
-                stylesheets("css/all.css");
-            } else {
-                stylesheets("css/all.less");
-                path = mprJoinPath(eroute->clientDir, "css/fix.css");
-                if (mprPathExists(path, R_OK)) {
-                    stylesheets("css/fix.css");
-                }
-            }
+    } else {
+        if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
+                mprGetListLength(files) == 0) {
+            files = mprCreateList(0, 0);
+            mprAddItem(files, patterns);
         }
-#endif
-        return;
-    }
-    if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
-        files = mprCreateList(0, 0);
-        mprAddItem(files, patterns);
-    }
-    for (ITERATE_ITEMS(files, path, next)) {
-        path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
-        uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
-        kind = mprGetPathExt(path);
-        if (smatch(kind, "css")) {
-            espRender(conn, "<link rel='stylesheet' type='text/css' href='%s' />\n", uri);
-        } else {
-            espRender(conn, "<link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
+        for (ITERATE_ITEMS(files, path, next)) {
+            path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
+            uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
+            kind = mprGetPathExt(path);
+            if (smatch(kind, "css")) {
+                espRender(conn, "<link rel='stylesheet' type='text/css' href='%s' />\n", uri);
+            } else {
+                espRender(conn, "<link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
+            }
         }
     }
 }
