@@ -818,17 +818,17 @@ PUBLIC void stylesheets(cchar *patterns)
             stylesheets(eroute->combineSheet);
         } else {
             /*
-                Give priority to all.css over all.less
+                Give priority to all.less over all.css
              */
-            path = mprJoinPath(eroute->clientDir, "css/all.css");
+            path = mprJoinPath(eroute->clientDir, "css/all.less");
             if (mprPathExists(path, R_OK)) {
-                stylesheets("css/all.css");
-            } else {
                 stylesheets("css/all.less");
                 path = mprJoinPath(eroute->clientDir, "css/fix.css");
                 if (mprPathExists(path, R_OK)) {
                     stylesheets("css/fix.css");
                 }
+            } else {
+                stylesheets("css/all.css");
             }
         }
     } else {
