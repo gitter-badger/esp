@@ -2532,7 +2532,7 @@ static bool blendSpec(cchar *name, cchar *version, MprJson *spec)
     EspRoute    *eroute;
     MprJson     *blend, *cp, *scripts;
     ssize       clen;
-    cchar       *script, *client, *libDir, *key, *lp;
+    cchar       *script, *client, *libDir, *key;
     char        *major, *minor, *patch;
     int         i;
 
