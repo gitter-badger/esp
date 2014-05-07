@@ -136,6 +136,7 @@ clean:
 	rm -f "$(CONFIG)/obj/edi.o"
 	rm -f "$(CONFIG)/obj/esp.o"
 	rm -f "$(CONFIG)/obj/espAbbrev.o"
+	rm -f "$(CONFIG)/obj/espConfig.o"
 	rm -f "$(CONFIG)/obj/espFramework.o"
 	rm -f "$(CONFIG)/obj/espHandler.o"
 	rm -f "$(CONFIG)/obj/espHtml.o"
@@ -469,6 +470,14 @@ DEPS_18 += src/paks/est/package.json
 DEPS_18 += src/paks/est/README.md
 DEPS_18 += src/paks/http
 DEPS_18 += src/paks/http/ca.crt
+DEPS_18 += src/paks/http/doc
+DEPS_18 += src/paks/http/doc/api
+DEPS_18 += src/paks/http/doc/api/http.dtags
+DEPS_18 += src/paks/http/doc/api/http.tags
+DEPS_18 += src/paks/http/doc/api/httpBare.html
+DEPS_18 += src/paks/http/doc/api/httpBare.tags
+DEPS_18 += src/paks/http/doc/man
+DEPS_18 += src/paks/http/doc/man/http.1
 DEPS_18 += src/paks/http/http.c
 DEPS_18 += src/paks/http/http.h
 DEPS_18 += src/paks/http/http.me
@@ -505,6 +514,15 @@ DEPS_18 += src/paks/me-ssl/package.json
 DEPS_18 += src/paks/me-ssl/README.md
 DEPS_18 += src/paks/me-ssl/ssl.me
 DEPS_18 += src/paks/mpr
+DEPS_18 += src/paks/mpr/doc
+DEPS_18 += src/paks/mpr/doc/api
+DEPS_18 += src/paks/mpr/doc/api/mpr.dtags
+DEPS_18 += src/paks/mpr/doc/api/mpr.tags
+DEPS_18 += src/paks/mpr/doc/api/mprBare.html
+DEPS_18 += src/paks/mpr/doc/api/mprBare.tags
+DEPS_18 += src/paks/mpr/doc/man
+DEPS_18 += src/paks/mpr/doc/man/makerom.1
+DEPS_18 += src/paks/mpr/doc/man/manager.1
 DEPS_18 += src/paks/mpr/LICENSE.md
 DEPS_18 += src/paks/mpr/makerom.c
 DEPS_18 += src/paks/mpr/manager.c
@@ -573,13 +591,13 @@ $(CONFIG)/esp: $(DEPS_18)
 	cp esp-mvc/LICENSE.md ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp esp-mvc/package.json ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/package.json ; \
 	cp esp-mvc/README.md ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/README.md ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/5.0.0-rc0" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/5.0.0-rc0/generate" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/5.0.0-rc0/generate/esp-server" ; \
-	cp esp-server/generate/esp-server/appweb.conf ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/generate/esp-server/appweb.conf ; \
-	cp esp-server/LICENSE.md ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/LICENSE.md ; \
-	cp esp-server/package.json ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/package.json ; \
-	cp esp-server/README.md ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/README.md ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0" ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate" ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate/esp-server" ; \
+	cp esp-server/generate/esp-server/appweb.conf ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate/esp-server/appweb.conf ; \
+	cp esp-server/LICENSE.md ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/LICENSE.md ; \
+	cp esp-server/package.json ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/package.json ; \
+	cp esp-server/README.md ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/README.md ; \
 	)
 
 #
@@ -675,214 +693,226 @@ $(CONFIG)/obj/espAbbrev.o: \
 	$(CC) -c -o $(CONFIG)/obj/espAbbrev.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espAbbrev.c
 
 #
-#   espFramework.o
+#   espConfig.o
 #
 DEPS_28 += $(CONFIG)/inc/me.h
 DEPS_28 += $(CONFIG)/inc/esp.h
 
+$(CONFIG)/obj/espConfig.o: \
+    src/espConfig.c $(DEPS_28)
+	@echo '   [Compile] $(CONFIG)/obj/espConfig.o'
+	$(CC) -c -o $(CONFIG)/obj/espConfig.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espConfig.c
+
+#
+#   espFramework.o
+#
+DEPS_29 += $(CONFIG)/inc/me.h
+DEPS_29 += $(CONFIG)/inc/esp.h
+
 $(CONFIG)/obj/espFramework.o: \
-    src/espFramework.c $(DEPS_28)
+    src/espFramework.c $(DEPS_29)
 	@echo '   [Compile] $(CONFIG)/obj/espFramework.o'
 	$(CC) -c -o $(CONFIG)/obj/espFramework.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espFramework.c
 
 #
 #   espHandler.o
 #
-DEPS_29 += $(CONFIG)/inc/me.h
-DEPS_29 += $(CONFIG)/inc/esp.h
-DEPS_29 += $(CONFIG)/inc/edi.h
+DEPS_30 += $(CONFIG)/inc/me.h
+DEPS_30 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espHandler.o: \
-    src/espHandler.c $(DEPS_29)
+    src/espHandler.c $(DEPS_30)
 	@echo '   [Compile] $(CONFIG)/obj/espHandler.o'
 	$(CC) -c -o $(CONFIG)/obj/espHandler.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHandler.c
 
 #
 #   espHtml.o
 #
-DEPS_30 += $(CONFIG)/inc/me.h
-DEPS_30 += $(CONFIG)/inc/esp.h
-DEPS_30 += $(CONFIG)/inc/edi.h
+DEPS_31 += $(CONFIG)/inc/me.h
+DEPS_31 += $(CONFIG)/inc/esp.h
+DEPS_31 += $(CONFIG)/inc/edi.h
 
 $(CONFIG)/obj/espHtml.o: \
-    src/espHtml.c $(DEPS_30)
+    src/espHtml.c $(DEPS_31)
 	@echo '   [Compile] $(CONFIG)/obj/espHtml.o'
 	$(CC) -c -o $(CONFIG)/obj/espHtml.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHtml.c
 
 #
 #   espTemplate.o
 #
-DEPS_31 += $(CONFIG)/inc/me.h
-DEPS_31 += $(CONFIG)/inc/esp.h
+DEPS_32 += $(CONFIG)/inc/me.h
+DEPS_32 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espTemplate.o: \
-    src/espTemplate.c $(DEPS_31)
+    src/espTemplate.c $(DEPS_32)
 	@echo '   [Compile] $(CONFIG)/obj/espTemplate.o'
 	$(CC) -c -o $(CONFIG)/obj/espTemplate.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espTemplate.c
 
 #
 #   mdb.o
 #
-DEPS_32 += $(CONFIG)/inc/me.h
-DEPS_32 += $(CONFIG)/inc/http.h
-DEPS_32 += $(CONFIG)/inc/edi.h
-DEPS_32 += $(CONFIG)/inc/mdb.h
-DEPS_32 += $(CONFIG)/inc/pcre.h
+DEPS_33 += $(CONFIG)/inc/me.h
+DEPS_33 += $(CONFIG)/inc/http.h
+DEPS_33 += $(CONFIG)/inc/edi.h
+DEPS_33 += $(CONFIG)/inc/mdb.h
+DEPS_33 += $(CONFIG)/inc/pcre.h
 
 $(CONFIG)/obj/mdb.o: \
-    src/mdb.c $(DEPS_32)
+    src/mdb.c $(DEPS_33)
 	@echo '   [Compile] $(CONFIG)/obj/mdb.o'
 	$(CC) -c -o $(CONFIG)/obj/mdb.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/mdb.c
 
 #
 #   sdb.o
 #
-DEPS_33 += $(CONFIG)/inc/me.h
-DEPS_33 += $(CONFIG)/inc/http.h
-DEPS_33 += $(CONFIG)/inc/edi.h
+DEPS_34 += $(CONFIG)/inc/me.h
+DEPS_34 += $(CONFIG)/inc/http.h
+DEPS_34 += $(CONFIG)/inc/edi.h
 
 $(CONFIG)/obj/sdb.o: \
-    src/sdb.c $(DEPS_33)
+    src/sdb.c $(DEPS_34)
 	@echo '   [Compile] $(CONFIG)/obj/sdb.o'
 	$(CC) -c -o $(CONFIG)/obj/sdb.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/sdb.c
 
 #
 #   libmod_esp
 #
-DEPS_34 += $(CONFIG)/inc/mpr.h
-DEPS_34 += $(CONFIG)/inc/me.h
-DEPS_34 += $(CONFIG)/inc/osdep.h
-DEPS_34 += $(CONFIG)/obj/mprLib.o
-DEPS_34 += $(CONFIG)/bin/libmpr.so
-DEPS_34 += $(CONFIG)/inc/pcre.h
-DEPS_34 += $(CONFIG)/obj/pcre.o
+DEPS_35 += $(CONFIG)/inc/mpr.h
+DEPS_35 += $(CONFIG)/inc/me.h
+DEPS_35 += $(CONFIG)/inc/osdep.h
+DEPS_35 += $(CONFIG)/obj/mprLib.o
+DEPS_35 += $(CONFIG)/bin/libmpr.so
+DEPS_35 += $(CONFIG)/inc/pcre.h
+DEPS_35 += $(CONFIG)/obj/pcre.o
 ifeq ($(ME_COM_PCRE),1)
-    DEPS_34 += $(CONFIG)/bin/libpcre.so
+    DEPS_35 += $(CONFIG)/bin/libpcre.so
 endif
-DEPS_34 += $(CONFIG)/inc/http.h
-DEPS_34 += $(CONFIG)/obj/httpLib.o
+DEPS_35 += $(CONFIG)/inc/http.h
+DEPS_35 += $(CONFIG)/obj/httpLib.o
 ifeq ($(ME_COM_HTTP),1)
-    DEPS_34 += $(CONFIG)/bin/libhttp.so
+    DEPS_35 += $(CONFIG)/bin/libhttp.so
 endif
-DEPS_34 += $(CONFIG)/inc/appweb.h
-DEPS_34 += $(CONFIG)/obj/appwebLib.o
+DEPS_35 += $(CONFIG)/inc/appweb.h
+DEPS_35 += $(CONFIG)/obj/appwebLib.o
 ifeq ($(ME_COM_APPWEB),1)
-    DEPS_34 += $(CONFIG)/bin/libappweb.so
+    DEPS_35 += $(CONFIG)/bin/libappweb.so
 endif
-DEPS_34 += $(CONFIG)/inc/sqlite3.h
-DEPS_34 += $(CONFIG)/obj/sqlite3.o
+DEPS_35 += $(CONFIG)/inc/sqlite3.h
+DEPS_35 += $(CONFIG)/obj/sqlite3.o
 ifeq ($(ME_COM_SQLITE),1)
-    DEPS_34 += $(CONFIG)/bin/libsql.so
+    DEPS_35 += $(CONFIG)/bin/libsql.so
 endif
-DEPS_34 += $(CONFIG)/inc/edi.h
-DEPS_34 += $(CONFIG)/inc/esp.h
-DEPS_34 += $(CONFIG)/inc/mdb.h
-DEPS_34 += $(CONFIG)/obj/edi.o
-DEPS_34 += $(CONFIG)/obj/espAbbrev.o
-DEPS_34 += $(CONFIG)/obj/espFramework.o
-DEPS_34 += $(CONFIG)/obj/espHandler.o
-DEPS_34 += $(CONFIG)/obj/espHtml.o
-DEPS_34 += $(CONFIG)/obj/espTemplate.o
-DEPS_34 += $(CONFIG)/obj/mdb.o
-DEPS_34 += $(CONFIG)/obj/sdb.o
+DEPS_35 += $(CONFIG)/inc/edi.h
+DEPS_35 += $(CONFIG)/inc/esp.h
+DEPS_35 += $(CONFIG)/inc/mdb.h
+DEPS_35 += $(CONFIG)/obj/edi.o
+DEPS_35 += $(CONFIG)/obj/espAbbrev.o
+DEPS_35 += $(CONFIG)/obj/espConfig.o
+DEPS_35 += $(CONFIG)/obj/espFramework.o
+DEPS_35 += $(CONFIG)/obj/espHandler.o
+DEPS_35 += $(CONFIG)/obj/espHtml.o
+DEPS_35 += $(CONFIG)/obj/espTemplate.o
+DEPS_35 += $(CONFIG)/obj/mdb.o
+DEPS_35 += $(CONFIG)/obj/sdb.o
 
 ifeq ($(ME_COM_APPWEB),1)
-    LIBS_34 += -lappweb
+    LIBS_35 += -lappweb
 endif
 ifeq ($(ME_COM_HTTP),1)
-    LIBS_34 += -lhttp
+    LIBS_35 += -lhttp
 endif
-LIBS_34 += -lmpr
+LIBS_35 += -lmpr
 ifeq ($(ME_COM_PCRE),1)
-    LIBS_34 += -lpcre
+    LIBS_35 += -lpcre
 endif
 ifeq ($(ME_COM_SQLITE),1)
-    LIBS_34 += -lsql
+    LIBS_35 += -lsql
 endif
 
-$(CONFIG)/bin/libmod_esp.so: $(DEPS_34)
+$(CONFIG)/bin/libmod_esp.so: $(DEPS_35)
 	@echo '      [Link] $(CONFIG)/bin/libmod_esp.so'
-	$(CC) -shared -o $(CONFIG)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_34) $(LIBS_34) $(LIBS_34) $(LIBS) 
+	$(CC) -shared -o $(CONFIG)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espConfig.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_35) $(LIBS_35) $(LIBS_35) $(LIBS) 
 
 #
 #   esp.o
 #
-DEPS_35 += $(CONFIG)/inc/me.h
-DEPS_35 += $(CONFIG)/inc/esp.h
+DEPS_36 += $(CONFIG)/inc/me.h
+DEPS_36 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/esp.o: \
-    src/esp.c $(DEPS_35)
+    src/esp.c $(DEPS_36)
 	@echo '   [Compile] $(CONFIG)/obj/esp.o'
 	$(CC) -c -o $(CONFIG)/obj/esp.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/esp.c
 
 #
 #   espcmd
 #
-DEPS_36 += $(CONFIG)/inc/mpr.h
-DEPS_36 += $(CONFIG)/inc/me.h
-DEPS_36 += $(CONFIG)/inc/osdep.h
-DEPS_36 += $(CONFIG)/obj/mprLib.o
-DEPS_36 += $(CONFIG)/bin/libmpr.so
-DEPS_36 += $(CONFIG)/inc/pcre.h
-DEPS_36 += $(CONFIG)/obj/pcre.o
+DEPS_37 += $(CONFIG)/inc/mpr.h
+DEPS_37 += $(CONFIG)/inc/me.h
+DEPS_37 += $(CONFIG)/inc/osdep.h
+DEPS_37 += $(CONFIG)/obj/mprLib.o
+DEPS_37 += $(CONFIG)/bin/libmpr.so
+DEPS_37 += $(CONFIG)/inc/pcre.h
+DEPS_37 += $(CONFIG)/obj/pcre.o
 ifeq ($(ME_COM_PCRE),1)
-    DEPS_36 += $(CONFIG)/bin/libpcre.so
+    DEPS_37 += $(CONFIG)/bin/libpcre.so
 endif
-DEPS_36 += $(CONFIG)/inc/http.h
-DEPS_36 += $(CONFIG)/obj/httpLib.o
+DEPS_37 += $(CONFIG)/inc/http.h
+DEPS_37 += $(CONFIG)/obj/httpLib.o
 ifeq ($(ME_COM_HTTP),1)
-    DEPS_36 += $(CONFIG)/bin/libhttp.so
+    DEPS_37 += $(CONFIG)/bin/libhttp.so
 endif
-DEPS_36 += $(CONFIG)/inc/appweb.h
-DEPS_36 += $(CONFIG)/obj/appwebLib.o
+DEPS_37 += $(CONFIG)/inc/appweb.h
+DEPS_37 += $(CONFIG)/obj/appwebLib.o
 ifeq ($(ME_COM_APPWEB),1)
-    DEPS_36 += $(CONFIG)/bin/libappweb.so
+    DEPS_37 += $(CONFIG)/bin/libappweb.so
 endif
-DEPS_36 += $(CONFIG)/inc/sqlite3.h
-DEPS_36 += $(CONFIG)/obj/sqlite3.o
+DEPS_37 += $(CONFIG)/inc/sqlite3.h
+DEPS_37 += $(CONFIG)/obj/sqlite3.o
 ifeq ($(ME_COM_SQLITE),1)
-    DEPS_36 += $(CONFIG)/bin/libsql.so
+    DEPS_37 += $(CONFIG)/bin/libsql.so
 endif
-DEPS_36 += $(CONFIG)/inc/edi.h
-DEPS_36 += $(CONFIG)/inc/esp.h
-DEPS_36 += $(CONFIG)/inc/mdb.h
-DEPS_36 += $(CONFIG)/obj/edi.o
-DEPS_36 += $(CONFIG)/obj/espAbbrev.o
-DEPS_36 += $(CONFIG)/obj/espFramework.o
-DEPS_36 += $(CONFIG)/obj/espHandler.o
-DEPS_36 += $(CONFIG)/obj/espHtml.o
-DEPS_36 += $(CONFIG)/obj/espTemplate.o
-DEPS_36 += $(CONFIG)/obj/mdb.o
-DEPS_36 += $(CONFIG)/obj/sdb.o
-DEPS_36 += $(CONFIG)/bin/libmod_esp.so
-DEPS_36 += $(CONFIG)/obj/esp.o
+DEPS_37 += $(CONFIG)/inc/edi.h
+DEPS_37 += $(CONFIG)/inc/esp.h
+DEPS_37 += $(CONFIG)/inc/mdb.h
+DEPS_37 += $(CONFIG)/obj/edi.o
+DEPS_37 += $(CONFIG)/obj/espAbbrev.o
+DEPS_37 += $(CONFIG)/obj/espConfig.o
+DEPS_37 += $(CONFIG)/obj/espFramework.o
+DEPS_37 += $(CONFIG)/obj/espHandler.o
+DEPS_37 += $(CONFIG)/obj/espHtml.o
+DEPS_37 += $(CONFIG)/obj/espTemplate.o
+DEPS_37 += $(CONFIG)/obj/mdb.o
+DEPS_37 += $(CONFIG)/obj/sdb.o
+DEPS_37 += $(CONFIG)/bin/libmod_esp.so
+DEPS_37 += $(CONFIG)/obj/esp.o
 
 ifeq ($(ME_COM_APPWEB),1)
-    LIBS_36 += -lappweb
+    LIBS_37 += -lappweb
 endif
 ifeq ($(ME_COM_HTTP),1)
-    LIBS_36 += -lhttp
+    LIBS_37 += -lhttp
 endif
-LIBS_36 += -lmpr
+LIBS_37 += -lmpr
 ifeq ($(ME_COM_PCRE),1)
-    LIBS_36 += -lpcre
+    LIBS_37 += -lpcre
 endif
 ifeq ($(ME_COM_SQLITE),1)
-    LIBS_36 += -lsql
+    LIBS_37 += -lsql
 endif
-LIBS_36 += -lmod_esp
+LIBS_37 += -lmod_esp
 
-$(CONFIG)/bin/esp: $(DEPS_36)
+$(CONFIG)/bin/esp: $(DEPS_37)
 	@echo '      [Link] $(CONFIG)/bin/esp'
-	$(CC) -o $(CONFIG)/bin/esp $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/esp.o" $(LIBPATHS_36) $(LIBS_36) $(LIBS_36) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/esp $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/esp.o" $(LIBPATHS_37) $(LIBS_37) $(LIBS_37) $(LIBS) $(LIBS) 
 
 
 #
 #   http-ca-crt
 #
-DEPS_37 += src/paks/http/ca.crt
+DEPS_38 += src/paks/http/ca.crt
 
-$(CONFIG)/bin/ca.crt: $(DEPS_37)
+$(CONFIG)/bin/ca.crt: $(DEPS_38)
 	@echo '      [Copy] $(CONFIG)/bin/ca.crt'
 	mkdir -p "$(CONFIG)/bin"
 	cp src/paks/http/ca.crt $(CONFIG)/bin/ca.crt
@@ -890,7 +920,7 @@ $(CONFIG)/bin/ca.crt: $(DEPS_37)
 #
 #   est.h
 #
-$(CONFIG)/inc/est.h: $(DEPS_38)
+$(CONFIG)/inc/est.h: $(DEPS_39)
 	@echo '      [Copy] $(CONFIG)/inc/est.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/paks/est/est.h $(CONFIG)/inc/est.h
@@ -898,12 +928,12 @@ $(CONFIG)/inc/est.h: $(DEPS_38)
 #
 #   estLib.o
 #
-DEPS_39 += $(CONFIG)/inc/me.h
-DEPS_39 += $(CONFIG)/inc/est.h
-DEPS_39 += $(CONFIG)/inc/osdep.h
+DEPS_40 += $(CONFIG)/inc/me.h
+DEPS_40 += $(CONFIG)/inc/est.h
+DEPS_40 += $(CONFIG)/inc/osdep.h
 
 $(CONFIG)/obj/estLib.o: \
-    src/paks/est/estLib.c $(DEPS_39)
+    src/paks/est/estLib.c $(DEPS_40)
 	@echo '   [Compile] $(CONFIG)/obj/estLib.o'
 	$(CC) -c -o $(CONFIG)/obj/estLib.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/est/estLib.c
 
@@ -911,12 +941,12 @@ ifeq ($(ME_COM_EST),1)
 #
 #   libest
 #
-DEPS_40 += $(CONFIG)/inc/est.h
-DEPS_40 += $(CONFIG)/inc/me.h
-DEPS_40 += $(CONFIG)/inc/osdep.h
-DEPS_40 += $(CONFIG)/obj/estLib.o
+DEPS_41 += $(CONFIG)/inc/est.h
+DEPS_41 += $(CONFIG)/inc/me.h
+DEPS_41 += $(CONFIG)/inc/osdep.h
+DEPS_41 += $(CONFIG)/obj/estLib.o
 
-$(CONFIG)/bin/libest.so: $(DEPS_40)
+$(CONFIG)/bin/libest.so: $(DEPS_41)
 	@echo '      [Link] $(CONFIG)/bin/libest.so'
 	$(CC) -shared -o $(CONFIG)/bin/libest.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/estLib.o" $(LIBS) 
 endif
@@ -924,90 +954,90 @@ endif
 #
 #   mprSsl.o
 #
-DEPS_41 += $(CONFIG)/inc/me.h
-DEPS_41 += $(CONFIG)/inc/mpr.h
-DEPS_41 += $(CONFIG)/inc/est.h
+DEPS_42 += $(CONFIG)/inc/me.h
+DEPS_42 += $(CONFIG)/inc/mpr.h
+DEPS_42 += $(CONFIG)/inc/est.h
 
 $(CONFIG)/obj/mprSsl.o: \
-    src/paks/mpr/mprSsl.c $(DEPS_41)
+    src/paks/mpr/mprSsl.c $(DEPS_42)
 	@echo '   [Compile] $(CONFIG)/obj/mprSsl.o'
 	$(CC) -c -o $(CONFIG)/obj/mprSsl.o $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_OPENSSL_PATH)/include" "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)/matrixssl" "-I$(ME_COM_NANOSSL_PATH)/src" src/paks/mpr/mprSsl.c
 
 #
 #   libmprssl
 #
-DEPS_42 += $(CONFIG)/inc/mpr.h
-DEPS_42 += $(CONFIG)/inc/me.h
-DEPS_42 += $(CONFIG)/inc/osdep.h
-DEPS_42 += $(CONFIG)/obj/mprLib.o
-DEPS_42 += $(CONFIG)/bin/libmpr.so
-DEPS_42 += $(CONFIG)/inc/est.h
-DEPS_42 += $(CONFIG)/obj/estLib.o
+DEPS_43 += $(CONFIG)/inc/mpr.h
+DEPS_43 += $(CONFIG)/inc/me.h
+DEPS_43 += $(CONFIG)/inc/osdep.h
+DEPS_43 += $(CONFIG)/obj/mprLib.o
+DEPS_43 += $(CONFIG)/bin/libmpr.so
+DEPS_43 += $(CONFIG)/inc/est.h
+DEPS_43 += $(CONFIG)/obj/estLib.o
 ifeq ($(ME_COM_EST),1)
-    DEPS_42 += $(CONFIG)/bin/libest.so
+    DEPS_43 += $(CONFIG)/bin/libest.so
 endif
-DEPS_42 += $(CONFIG)/obj/mprSsl.o
+DEPS_43 += $(CONFIG)/obj/mprSsl.o
 
-LIBS_42 += -lmpr
+LIBS_43 += -lmpr
 ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_42 += -lssl
-    LIBPATHS_42 += -L$(ME_COM_OPENSSL_PATH)
+    LIBS_43 += -lssl
+    LIBPATHS_43 += -L$(ME_COM_OPENSSL_PATH)
 endif
 ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_42 += -lcrypto
-    LIBPATHS_42 += -L$(ME_COM_OPENSSL_PATH)
+    LIBS_43 += -lcrypto
+    LIBPATHS_43 += -L$(ME_COM_OPENSSL_PATH)
 endif
 ifeq ($(ME_COM_EST),1)
-    LIBS_42 += -lest
+    LIBS_43 += -lest
 endif
 ifeq ($(ME_COM_MATRIXSSL),1)
-    LIBS_42 += -lmatrixssl
-    LIBPATHS_42 += -L$(ME_COM_MATRIXSSL_PATH)
+    LIBS_43 += -lmatrixssl
+    LIBPATHS_43 += -L$(ME_COM_MATRIXSSL_PATH)
 endif
 ifeq ($(ME_COM_NANOSSL),1)
-    LIBS_42 += -lssls
-    LIBPATHS_42 += -L$(ME_COM_NANOSSL_PATH)/bin
+    LIBS_43 += -lssls
+    LIBPATHS_43 += -L$(ME_COM_NANOSSL_PATH)/bin
 endif
 
-$(CONFIG)/bin/libmprssl.so: $(DEPS_42)
+$(CONFIG)/bin/libmprssl.so: $(DEPS_43)
 	@echo '      [Link] $(CONFIG)/bin/libmprssl.so'
-	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_42) $(LIBS_42) $(LIBS_42) $(LIBS) 
+	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_43) $(LIBS_43) $(LIBS_43) $(LIBS) 
 
 #
 #   manager.o
 #
-DEPS_43 += $(CONFIG)/inc/me.h
-DEPS_43 += $(CONFIG)/inc/mpr.h
+DEPS_44 += $(CONFIG)/inc/me.h
+DEPS_44 += $(CONFIG)/inc/mpr.h
 
 $(CONFIG)/obj/manager.o: \
-    src/paks/mpr/manager.c $(DEPS_43)
+    src/paks/mpr/manager.c $(DEPS_44)
 	@echo '   [Compile] $(CONFIG)/obj/manager.o'
 	$(CC) -c -o $(CONFIG)/obj/manager.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/mpr/manager.c
 
 #
 #   manager
 #
-DEPS_44 += $(CONFIG)/inc/mpr.h
-DEPS_44 += $(CONFIG)/inc/me.h
-DEPS_44 += $(CONFIG)/inc/osdep.h
-DEPS_44 += $(CONFIG)/obj/mprLib.o
-DEPS_44 += $(CONFIG)/bin/libmpr.so
-DEPS_44 += $(CONFIG)/obj/manager.o
+DEPS_45 += $(CONFIG)/inc/mpr.h
+DEPS_45 += $(CONFIG)/inc/me.h
+DEPS_45 += $(CONFIG)/inc/osdep.h
+DEPS_45 += $(CONFIG)/obj/mprLib.o
+DEPS_45 += $(CONFIG)/bin/libmpr.so
+DEPS_45 += $(CONFIG)/obj/manager.o
 
-LIBS_44 += -lmpr
+LIBS_45 += -lmpr
 
-$(CONFIG)/bin/espman: $(DEPS_44)
+$(CONFIG)/bin/espman: $(DEPS_45)
 	@echo '      [Link] $(CONFIG)/bin/espman'
-	$(CC) -o $(CONFIG)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_45) $(LIBS_45) $(LIBS_45) $(LIBS) $(LIBS) 
 
 #
 #   sqlite.o
 #
-DEPS_45 += $(CONFIG)/inc/me.h
-DEPS_45 += $(CONFIG)/inc/sqlite3.h
+DEPS_46 += $(CONFIG)/inc/me.h
+DEPS_46 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite.o: \
-    src/paks/sqlite/sqlite.c $(DEPS_45)
+    src/paks/sqlite/sqlite.c $(DEPS_46)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.o'
 	$(CC) -c -o $(CONFIG)/obj/sqlite.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/sqlite/sqlite.c
 
@@ -1015,28 +1045,28 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   sqliteshell
 #
-DEPS_46 += $(CONFIG)/inc/sqlite3.h
-DEPS_46 += $(CONFIG)/inc/me.h
-DEPS_46 += $(CONFIG)/obj/sqlite3.o
-DEPS_46 += $(CONFIG)/bin/libsql.so
-DEPS_46 += $(CONFIG)/obj/sqlite.o
+DEPS_47 += $(CONFIG)/inc/sqlite3.h
+DEPS_47 += $(CONFIG)/inc/me.h
+DEPS_47 += $(CONFIG)/obj/sqlite3.o
+DEPS_47 += $(CONFIG)/bin/libsql.so
+DEPS_47 += $(CONFIG)/obj/sqlite.o
 
-LIBS_46 += -lsql
+LIBS_47 += -lsql
 
-$(CONFIG)/bin/sqlite: $(DEPS_46)
+$(CONFIG)/bin/sqlite: $(DEPS_47)
 	@echo '      [Link] $(CONFIG)/bin/sqlite'
-	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_46) $(LIBS_46) $(LIBS_46) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_47) $(LIBS_47) $(LIBS_47) $(LIBS) $(LIBS) 
 endif
 
 #
 #   stop
 #
-stop: $(DEPS_47)
+stop: $(DEPS_48)
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_48)
+installBinary: $(DEPS_49)
 	( \
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
@@ -1099,13 +1129,13 @@ installBinary: $(DEPS_48)
 	cp src/paks/esp-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp src/paks/esp-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/package.json ; \
 	cp src/paks/esp-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/README.md ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/generate" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/generate/esp-server" ; \
-	cp src/paks/esp-server/generate/esp-server/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/generate/esp-server/appweb.conf ; \
-	cp src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/LICENSE.md ; \
-	cp src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/package.json ; \
-	cp src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/README.md ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate/esp-server" ; \
+	cp src/paks/esp-server/generate/esp-server/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate/esp-server/appweb.conf ; \
+	cp src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/LICENSE.md ; \
+	cp src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/package.json ; \
+	cp src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/README.md ; \
 	cp $(CONFIG)/bin/esp.conf $(ME_VAPP_PREFIX)/bin/esp.conf ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
 	cp doc/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
@@ -1149,30 +1179,30 @@ installBinary: $(DEPS_48)
 #
 #   start
 #
-start: $(DEPS_49)
+start: $(DEPS_50)
 
 #
 #   install
 #
-DEPS_50 += stop
-DEPS_50 += installBinary
-DEPS_50 += start
+DEPS_51 += stop
+DEPS_51 += installBinary
+DEPS_51 += start
 
-install: $(DEPS_50)
+install: $(DEPS_51)
 
 #
 #   run
 #
-DEPS_51 += comp
+DEPS_52 += comp
 
-run: $(DEPS_51)
+run: $(DEPS_52)
 	cd src/paks/esp-html-mvc; appweb -v ; cd ../../..
 #
 #   uninstall
 #
-DEPS_52 += stop
+DEPS_53 += stop
 
-uninstall: $(DEPS_52)
+uninstall: $(DEPS_53)
 	( \
 	cd .; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
@@ -1183,6 +1213,6 @@ uninstall: $(DEPS_52)
 #
 #   version
 #
-version: $(DEPS_53)
+version: $(DEPS_54)
 	echo 5.0.0-rc0
 

@@ -130,13 +130,13 @@ copy /Y esp-mvc\generate\esp-mvc\src\app.c \Users\mob\git\esp\windows-x86-defaul
 copy /Y esp-mvc\LICENSE.md \Users\mob\git\esp\windows-x86-default\esp\esp-mvc\5.0.0-rc0\LICENSE.md
 copy /Y esp-mvc\package.json \Users\mob\git\esp\windows-x86-default\esp\esp-mvc\5.0.0-rc0\package.json
 copy /Y esp-mvc\README.md \Users\mob\git\esp\windows-x86-default\esp\esp-mvc\5.0.0-rc0\README.md
-if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0"
-if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\generate" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\generate"
-if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\generate\esp-server" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\generate\esp-server"
-copy /Y esp-server\generate\esp-server\appweb.conf \Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\generate\esp-server\appweb.conf
-copy /Y esp-server\LICENSE.md \Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\LICENSE.md
-copy /Y esp-server\package.json \Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\package.json
-copy /Y esp-server\README.md \Users\mob\git\esp\windows-x86-default\esp\esp-server\5.0.0-rc0\README.md
+if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0"
+if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\generate" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\generate"
+if not exist "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\generate\esp-server" md "\Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\generate\esp-server"
+copy /Y esp-server\generate\esp-server\appweb.conf \Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\generate\esp-server\appweb.conf
+copy /Y esp-server\LICENSE.md \Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\LICENSE.md
+copy /Y esp-server\package.json \Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\package.json
+copy /Y esp-server\README.md \Users\mob\git\esp\windows-x86-default\esp\esp-server\1.0.0-rc0\README.md
 cd ..\..\projects\esp-windows-default</Command>
     <Outputs>..\..\$(Cfg)\esp</Outputs>
   </CustomBuildStep>
