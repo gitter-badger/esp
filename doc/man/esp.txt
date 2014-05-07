@@ -8,13 +8,14 @@ NAME
 SYNOPSIS
        esp
            --apply
-           --config configFile
+           --appweb configFile
            --database DB
            --genlink slink.c
            --home dir
            --keep
            --listen [ip:]port
            --log logFile:level
+           --nodeps
            --optimized
            --overwrite
            --quiet
@@ -261,18 +262,18 @@ COMMANDS
 
 
 OPTIONS
-       --config configFile
-             Use the specified config file instead of appweb.conf
+       --appweb configFile
+             Use the specified appweb config file to host the ESP application.
 
        --database Database provider
-             Use the specified database provider. Set to "mdb"  or  "sdb"  for
+             Use  the  specified  database provider. Set to "mdb" or "sdb" for
              SQLite.
 
        --genlink slink.c
-             Generate  a  static  link  initialization  file for ESP pages and
-             applications.  This is used with --static to generate  a  appweb-
-             StaticInitialize()  function  that will invoke all ESP initializ-
-             ers.   By  default,  appweb   expects   this   to   be   in   the
+             Generate a static link initialization  file  for  ESP  pages  and
+             applications.   This  is used with --static to generate a appweb-
+             StaticInitialize() function that will invoke all  ESP  initializ-
+             ers.    By   default,   appweb   expects   this   to  be  in  the
              src/server/slink.c file.
 
        --home dir
@@ -283,21 +284,24 @@ OPTIONS
              rides the EspKeepSource setting in the appweb.conf file.
 
        --listen [ip:]port
-             Define  the  listening  endpoint  address. This will be used when
-             generating an application. The value will  be  patched  into  the
+             Define the listening endpoint address. This  will  be  used  when
+             generating  an  application.  The  value will be patched into the
              generated appweb.conf configuration file.
 
        --log logFile:level
-             Specify  a  file  to  log  messages.   The syntax is: "--log log-
-             Name[,moduleName][:logLevel]".  Level 3 will  trace  the  request
+             Specify a file to log  messages.   The  syntax  is:  "--log  log-
+             Name[,moduleName][:logLevel]".   Level  3  will trace the request
              and response headers.
+
+       --nodeps
+             Do not install or upgrade dependencies.
 
        --optimize
              Compile optimized without debug symbols.
 
        --overwrite
-             Overwrite  existing  files.  Ejsweb  normally  will not overwrite
-             existing files. This is to preserve user  changes  to  previously
+             Overwrite existing files.  Ejsweb  normally  will  not  overwrite
+             existing  files.  This  is to preserve user changes to previously
              generated files.
 
        --quiet
@@ -305,27 +309,27 @@ OPTIONS
 
        --platform [path/]os-arch-profile
              Target platform configuration to build for and directory contain-
-             ing appweb objects and libraries for the target platform.   If  a
+             ing  appweb  objects and libraries for the target platform.  If a
              path is supplied, the specified platform directory is used.  Oth-
-             erwise, esp searches from the current  directory  upwards  for  a
+             erwise,  esp  searches  from  the current directory upwards for a
              parent platform directory.
 
        --rebuild
-             Force  a  recompile  of all items when used with the compile com-
-             mand.  When used with migrate, this will  recreate  the  database
+             Force a recompile of all items when used with  the  compile  com-
+             mand.   When  used  with migrate, this will recreate the database
              and apply all migrations.
 
        --routeName name
-             This  selects  the Appweb route by name that will be used for the
-             ESP configuration. Routes can be given an explicit name  via  the
+             This selects the Appweb route by name that will be used  for  the
+             ESP  configuration.  Routes can be given an explicit name via the
              "Name" appweb.conf directive. Otherwise routes are named by their
              route pattern.
 
        --routePrefix prefix
              This selects the Appweb route by prefix that will be used for the
              ESP configuration. Routes can be given an explicit prefix via the
-             "Prefix" appweb.conf directive. If  the  route  prefix  does  not
-             match,  the  first portion of the route pattern is tested against
+             "Prefix"  appweb.conf  directive.  If  the  route prefix does not
+             match, the first portion of the route pattern is  tested  against
              the requested prefix.
 
        --single
@@ -333,17 +337,17 @@ OPTIONS
              of resources. A singleton controller omits a list action.
 
        --static
-             Use  static  linking  when building ESP applications. This causes
+             Use static linking when building ESP  applications.  This  causes
              esp to create archive libraries instead of shared libraries.
 
        --symbols
              Compile for debug with symbols.
 
        --table name
-             Override the database table name when generating  tables,  migra-
+             Override  the  database table name when generating tables, migra-
              tions or scaffolds. This is useful to request a plural version of
              the model name. Alternatively, specify the model name when gener-
-             ating  the  scaffold,  table or migration with the desired plural
+             ating the scaffold, table or migration with  the  desired  plural
              suffix. For example: "-s" or "-ies".
 
        --verbose or -v
@@ -358,7 +362,7 @@ REPORTING BUGS
 
 
 COPYRIGHT
-       Copyright (C) 2004-2014 Embedthis Software. Embedthis ESP is  a  trade-
+       Copyright  (C)  2004-2014 Embedthis Software. Embedthis ESP is a trade-
        mark of Embedthis Software.
 
 
