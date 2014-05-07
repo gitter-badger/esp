@@ -1,5 +1,5 @@
 /*
-    espTemplate.c -- Templated web pages with embedded C code.
+    espTemplate.c -- ESP templated web pages with embedded C code.
 
     Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
  */
@@ -80,18 +80,18 @@ static bool matchToken(cchar **str, cchar *token);
 PUBLIC char *espExpandCommand(HttpRoute *route, cchar *command, cchar *source, cchar *module)
 {
     MprBuf      *buf;
-    MaAppweb    *appweb;
+    Http        *http;
     EspRoute    *eroute;
-    cchar       *cp, *outputModule, *os, *arch, *profile;
+    cchar       *cp, *outputModule, *os, *arch, *profile, *srcDir;
     char        *tmp;
     
     if (command == 0) {
         return 0;
     }
-    appweb = MPR->appwebService;
+    http = MPR->httpService;
     eroute = route->eroute;
     outputModule = mprTrimPathExt(module);
-    maParsePlatform(appweb->platform, &os, &arch, &profile);
+    httpParsePlatform(http->platform, &os, &arch, &profile);
     buf = mprCreateBuf(-1, -1);
 
     for (cp = command; *cp; ) {
@@ -110,15 +110,18 @@ PUBLIC char *espExpandCommand(HttpRoute *route, cchar *command, cchar *source, c
 
             } else if (matchToken(&cp, "${APPINC}")) {
                 /* Application src include directory */
-                mprPutStringToBuf(buf, eroute->srcDir ? eroute->srcDir : ".");
+                if ((srcDir = httpGetDir(route, "src")) == 0) {
+                    srcDir = ".";
+                }
+                mprPutStringToBuf(buf, srcDir);
 
             } else if (matchToken(&cp, "${INC}")) {
                 /* Include directory for the configuration */
-                mprPutStringToBuf(buf, mprJoinPath(appweb->platformDir, "inc")); 
+                mprPutStringToBuf(buf, mprJoinPath(http->platformDir, "inc")); 
 
             } else if (matchToken(&cp, "${LIBPATH}")) {
                 /* Library directory for Appweb libraries for the target */
-                mprPutStringToBuf(buf, mprJoinPath(appweb->platformDir, "bin")); 
+                mprPutStringToBuf(buf, mprJoinPath(http->platformDir, "bin")); 
 
             } else if (matchToken(&cp, "${LIBS}")) {
                 /* Required libraries to link. These may have nested ${TOKENS} */
@@ -292,7 +295,7 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
 {
     MprFile     *fp;
     EspRoute    *eroute;
-    cchar       *csource;
+    cchar       *csource, *layoutsDir;
     char        *layout, *script, *page, *err;
     ssize       len;
 
@@ -306,8 +309,8 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
             *errMsg = sfmt("Cannot read %s", source);
             return 0;
         }
-        if (eroute->layoutsDir) {
-            layout = mprJoinPath(eroute->layoutsDir, "default.esp");
+        if ((layoutsDir = httpGetDir(route, "layouts")) != 0) {
+            layout = mprJoinPath(layoutsDir, "default.esp");
         }
         if ((script = espBuildScript(route, page, source, cacheName, layout, NULL, &err)) == 0) {
             *errMsg = sfmt("Cannot build: %s, error: %s", source, err);
@@ -379,7 +382,7 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
         }
     }
 #endif
-    if (!eroute->keepSource && isView) {
+    if (!route->keepSource && isView) {
         mprDeletePath(csource);
     }
     return 1;
@@ -500,6 +503,7 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
     EspState    top;
     EspParse    parse;
     MprBuf      *body;
+    cchar       *layoutsDir;
     char        *control, *incText, *where, *layoutCode, *bodyCode;
     char        *rest, *include, *line, *fmt, *layoutPage, *incCode, *token;
     ssize       len;
@@ -587,7 +591,11 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
                     if (token[0] == '/') {
                         layout = sclone(token);
                     } else {
-                        layout = mprJoinPath(eroute->layoutsDir ? eroute->layoutsDir : mprGetPathDir(path), token);
+                        if ((layoutsDir = httpGetDir(route, "layouts")) != 0) {
+                            layout = mprJoinPath(layoutsDir, token);
+                        } else {
+                            layout = mprJoinPath(mprGetPathDir(path), token);
+                        }
                     }
                     if (!mprPathExists(layout, F_OK)) {
                         *err = sfmt("Cannot access layout page %s", layout);
@@ -1021,11 +1029,11 @@ static cchar *getVxCPU(cchar *arch)
 
 static cchar *getDebug(EspRoute *eroute)
 {
-    MaAppweb    *appweb;
+    Http        *http;
     Esp         *esp;
     int         symbols;
 
-    appweb = MPR->appwebService;
+    http = MPR->httpService;
     esp = MPR->espService;
     symbols = 0;
     if (esp->compileMode == ESP_COMPILE_SYMBOLS) {
@@ -1037,10 +1045,10 @@ static cchar *getDebug(EspRoute *eroute)
     } else if (eroute->compileMode == ESP_COMPILE_OPTIMIZED) {
         symbols = 0;
     } else {
-        symbols = sends(appweb->platform, "-debug") || sends(appweb->platform, "-xcode") || 
-            sends(appweb->platform, "-mine") || sends(appweb->platform, "-vsdebug");
+        symbols = sends(http->platform, "-debug") || sends(http->platform, "-xcode") || 
+            sends(http->platform, "-mine") || sends(http->platform, "-vsdebug");
     }
-    if (scontains(appweb->platform, "windows-")) {
+    if (scontains(http->platform, "windows-")) {
         return (symbols) ? "-DME_DEBUG -Zi -Od" : "-Os";
     }
     return (symbols) ? "-DME_DEBUG -g" : "-O2";
@@ -1215,9 +1223,9 @@ static cchar *getArPath(cchar *os, cchar *arch)
     /* 
         Get the real system architecture (32 or 64 bit)
      */
-    MaAppweb *appweb = MPR->appwebService;
+    Http *http = MPR->httpService;
     cchar *path = getVisualStudio();
-    if (scontains(appweb->platform, "-x64-")) {
+    if (scontains(http->platform, "-x64-")) {
         int is64BitSystem = smatch(getenv("PROCESSOR_ARCHITECTURE"), "AMD64") || getenv("PROCESSOR_ARCHITEW6432");
         if (is64BitSystem) {
             path = mprJoinPath(path, "VC/bin/amd64/lib.exe");
@@ -1241,9 +1249,9 @@ static cchar *getCompilerPath(cchar *os, cchar *arch)
     /* 
         Get the real system architecture (32 or 64 bit)
      */
-    MaAppweb *appweb = MPR->appwebService;
+    Http *http = MPR->httpService;
     cchar *path = getVisualStudio();
-    if (scontains(appweb->platform, "-x64-")) {
+    if (scontains(http->platform, "-x64-")) {
         int is64BitSystem = smatch(getenv("PROCESSOR_ARCHITECTURE"), "AMD64") || getenv("PROCESSOR_ARCHITEW6432");
         if (is64BitSystem) {
             path = mprJoinPath(path, "VC/bin/amd64/cl.exe");

@@ -1,5 +1,5 @@
 /*
-    mdb.c -- In-Memory Embedded Database (MDB)
+    mdb.c -- ESP In-Memory Embedded Database (MDB)
 
     WARNING: This is prototype code
 

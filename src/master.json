@@ -1,0 +1,22 @@
+{
+    esp: {
+        compile:  'symbols',
+
+        generate: {
+            'appweb': 'esp-server/appweb.conf',
+            'migration': 'esp-server/migration.c',
+            'controller': 'esp-server/controller.c',
+            //  MOB - was controller-singleton
+            'controllerSingleton': 'esp-server/controller.c',
+            'clientModel': 'esp-angular-mvc/model.js',
+            'clientController': 'esp-angular-mvc/controller.js',
+            'clientList': 'esp-angular-mvc/list.html',
+            'clientEdit': 'esp-angular-mvc/edit.html',
+            'module': 'esp-mvc/src/app.c'
+        },
+
+        preload:    [ 'auth.c' ],
+
+        routes: 'esp-html-mvc',
+    },
+}

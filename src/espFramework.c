@@ -12,13 +12,10 @@
 
 PUBLIC void espAddPak(HttpRoute *route, cchar *name, cchar *version)
 {
-    EspRoute    *eroute;
-
-    eroute = route->eroute;
     if (!version || !*version || smatch(version, "0.0.0")) {
         version = "*";
     }
-    mprSetJson(eroute->config, sfmt("dependencies.%s", name), version, 0);
+    mprSetJson(route->config, sfmt("dependencies.%s", name), version);
 }
 
 
@@ -123,7 +120,7 @@ PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
     esp = MPR->espService;
     if (target) {
         eroute = route->eroute;
-        mprAddKey(esp->actions, mprJoinPath(eroute->controllersDir, target), action);
+        mprAddKey(esp->actions, mprJoinPath(httpGetDir(route, "controllers"), target), action);
     }
 }
 
@@ -139,8 +136,10 @@ PUBLIC void espDefineBase(HttpRoute *route, EspProc baseProc)
 
     eroute = route->eroute;
     for (ITERATE_ITEMS(route->host->routes, rp, next)) {
-        if ((er = route->eroute) != 0 && smatch(er->controllersDir, eroute->controllersDir)) {
-            er->commonController = baseProc;
+        if ((er = route->eroute) != 0) {
+            if (smatch(httpGetDir(rp, "controllers"), httpGetDir(route, "controllers"))) {
+                er->commonController = baseProc;
+            }
         }
     }
 }
@@ -186,11 +185,9 @@ PUBLIC void espFlush(HttpConn *conn)
 
 PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue)
 {
-    EspRoute    *eroute;
     cchar       *value;
 
-    eroute = route->eroute;
-    if ((value = mprGetJson(eroute->config, key, 0)) != 0) {
+    if ((value = mprGetJson(route->config, key)) != 0) {
         return value;
     }
     return defaultValue;
@@ -418,10 +415,7 @@ PUBLIC cchar *espGetUri(HttpConn *conn)
 
 PUBLIC bool espHasPak(HttpRoute *route, cchar *name)
 {
-    EspRoute    *eroute;
-
-    eroute = route->eroute;
-    return mprGetJsonObj(eroute->config, sfmt("dependencies.%s", name), 0) != 0;
+    return mprGetJsonObj(route->config, sfmt("dependencies.%s", name)) != 0;
 }
 
 
@@ -679,15 +673,13 @@ PUBLIC void espRemoveSessionVar(HttpConn *conn, cchar *var)
 
 PUBLIC int espSaveConfig(HttpRoute *route)
 {
-    EspRoute    *eroute;
     cchar       *path;
 
-    eroute = route->eroute;
     path = mprJoinPath(route->documents, ME_ESP_PACKAGE);
 #if KEEP
     mprBackupLog(path, 3);
 #endif
-    return mprSaveJson(eroute->config, path, MPR_JSON_PRETTY | MPR_JSON_QUOTES);
+    return mprSaveJson(route->config, path, MPR_JSON_PRETTY | MPR_JSON_QUOTES);
 }
 
 
@@ -744,10 +736,7 @@ PUBLIC bool espSetAutoFinalizing(HttpConn *conn, bool on)
 
 PUBLIC int espSetConfig(HttpRoute *route, cchar *key, cchar *value)
 {
-    EspRoute    *eroute;
-
-    eroute = route->eroute;
-    return mprSetJson(eroute->config, key, value, 0);
+    return mprSetJson(route->config, key, value);
 }
 
 
@@ -968,11 +957,9 @@ PUBLIC void espShowRequest(HttpConn *conn)
 
 PUBLIC bool espTestConfig(HttpRoute *route, cchar *key, cchar *desired)
 {
-    EspRoute    *eroute;
     cchar       *value;
 
-    eroute = route->eroute;
-    if ((value = mprGetJson(eroute->config, key, 0)) != 0) {
+    if ((value = mprGetJson(route->config, key)) != 0) {
         return smatch(value, desired);
     }
     return 0;

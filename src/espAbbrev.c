@@ -280,11 +280,11 @@ PUBLIC cchar *getSessionVar(cchar *key)
 
 PUBLIC cchar *getConfig(cchar *field)
 {
-    EspRoute    *eroute;
+    HttpRoute   *route;
     cchar       *value;
 
-    eroute = getConn()->rx->route->eroute;
-    if ((value = mprGetJson(eroute->config, "value", 0)) == 0) {
+    route = getConn()->rx->route;
+    if ((value = mprGetJson(route->config, field)) == 0) {
         return "";
     }
     return value;
@@ -377,10 +377,10 @@ PUBLIC cchar *makeUri(cchar *target)
 
 PUBLIC bool modeIs(cchar *kind)
 {
-    EspRoute    *eroute;
+    HttpRoute   *route;
 
-    eroute = getConn()->rx->route->eroute;
-    return smatch(eroute->mode, kind);
+    route = getConn()->rx->route;
+    return smatch(route->mode, kind);
 }
 
 
@@ -493,17 +493,12 @@ PUBLIC ssize renderCached()
 PUBLIC ssize renderConfig()
 {
     HttpConn    *conn;
-    EspRoute    *eroute;
-    MprJson     *obj;
+    HttpRoute   *route;
 
     conn = getConn();
-    eroute = conn->rx->route->eroute;
-    obj = mprLookupJsonObj(eroute->config, "esp");
-    if (obj) {
-        //  TODO OPT
-        obj = mprCloneJson(obj);
-        mprRemoveJson(obj, "server");
-        return renderString(mprJsonToString(obj, MPR_JSON_QUOTES));
+    route = conn->rx->route;
+    if (route->client) {
+        return renderString(route->client);
     }
     return 0;
 }
@@ -599,46 +594,33 @@ PUBLIC void scripts(cchar *patterns)
     patterns = httpExpandRouteVars(route, patterns);
 
     if (!patterns || !*patterns) {
-#if FUTURE || 1
         version = espGetConfig(route, "version", "1.0.0");
         if (eroute->combineScript) {
             scripts(eroute->combineScript);
-        } else if (espGetConfig(route, "content.js.combine", 0)) {
-            if (espGetConfig(route, "content.js.minify", 0)) {
+        } else if (espGetConfig(route, "app.http.content.combine[@=js]", 0)) {
+            if (espGetConfig(route, "app.http.content.minify[@=js]", 0)) {
                 eroute->combineScript = sfmt("all-%s.min.js", version);
             } else {
                 eroute->combineScript = sfmt("all-%s.js", version);
             }
             scripts(eroute->combineScript);
         } else {
-            if ((cscripts = mprGetJsonObj(eroute->config, "client-scripts", 0)) != 0) {
+            if ((cscripts = mprGetJsonObj(route->config, "app.client.scripts")) != 0) {
                 for (ITERATE_JSON(cscripts, script, ci)) {
                     scripts(script->value);
                 }
             }
         }
-#else
-        if (modeIs("release")) {
-            name = sfmt("all-%s.min.js", espGetConfig(route, "version", "1.0.0"));
-            scripts(name);
-        } else {
-            if ((cscripts = mprGetJsonObj(eroute->config, "client-scripts", 0)) != 0) {
-                for (ITERATE_JSON(cscripts, script, ci)) {
-                    scripts(script->value);
-                }
-            }
-        }
-#endif
         return;
     }
-    if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
+    if ((files = mprGlobPathFiles(httpGetDir(route, "client"), patterns, MPR_PATH_RELATIVE)) == 0 || 
             mprGetListLength(files) == 0) {
         files = mprCreateList(0, 0);
         mprAddItem(files, patterns);
     }
     for (ITERATE_ITEMS(files, path, next)) {
         if (schr(path, '$')) {
-            path = stemplateJson(path, eroute->config);
+            path = stemplateJson(path, route->config);
         }
         path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
         uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
@@ -796,7 +778,7 @@ PUBLIC void stylesheets(cchar *patterns)
     HttpRoute   *route;
     EspRoute    *eroute;
     MprList     *files;
-    cchar       *uri, *path, *kind, *version;
+    cchar       *filename, *ext, *uri, *path, *kind, *version, *clientDir;
     int         next;
 
     conn = getConn();
@@ -804,13 +786,14 @@ PUBLIC void stylesheets(cchar *patterns)
     route = rx->route;
     eroute = route->eroute;
     patterns = httpExpandRouteVars(route, patterns);
+    clientDir = httpGetDir(route, "client");
 
     if (!patterns || !*patterns) {
         version = espGetConfig(route, "version", "1.0.0");
         if (eroute->combineSheet) {
             scripts(eroute->combineSheet);
-        } else if (espGetConfig(route, "content.css.combine", 0)) {
-            if (espGetConfig(route, "content.css.minify", 0)) {
+        } else if (espGetConfig(route, "app.http.content.combine[@=css]", 0)) {
+            if (espGetConfig(route, "app.http.content.minify[@=css]", 0)) {
                 eroute->combineSheet = sfmt("all-%s.min.css", version);
             } else {
                 eroute->combineSheet = sfmt("all-%s.css", version);
@@ -820,19 +803,20 @@ PUBLIC void stylesheets(cchar *patterns)
             /*
                 Give priority to all.less over all.css
              */
-            path = mprJoinPath(eroute->clientDir, "css/all.less");
+            ext = espGetConfig(route, "app.http.content.stylesheets", "css");
+            filename = mprJoinPathExt("css/all", ext);
+            path = mprJoinPath(clientDir, filename);
             if (mprPathExists(path, R_OK)) {
-                stylesheets("css/all.less");
-                path = mprJoinPath(eroute->clientDir, "css/fix.css");
+                stylesheets(filename);
+            } else if (!smatch(ext, "less")) {
+                path = mprJoinPath(clientDir, "css/all.less");
                 if (mprPathExists(path, R_OK)) {
-                    stylesheets("css/fix.css");
+                    stylesheets("css/all.less");
                 }
-            } else {
-                stylesheets("css/all.css");
             }
         }
     } else {
-        if ((files = mprGlobPathFiles(eroute->clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
+        if ((files = mprGlobPathFiles(clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
                 mprGetListLength(files) == 0) {
             files = mprCreateList(0, 0);
             mprAddItem(files, patterns);

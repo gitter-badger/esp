@@ -1,5 +1,5 @@
 /*
-    sdb.c -- SQLite Database (SDB)
+    sdb.c -- ESP SQLite Database (SDB)
 
     Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
  */

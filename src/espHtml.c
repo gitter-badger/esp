@@ -1,5 +1,5 @@
 /*
-    espHtml.c -- HTML controls 
+    espHtml.c -- ESP HTML controls 
 
     Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
  */
