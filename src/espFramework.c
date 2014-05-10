@@ -110,8 +110,7 @@ PUBLIC cchar *espCreateSession(HttpConn *conn)
 
 PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
 {
-    EspRoute    *eroute;
-    Esp         *esp;
+    Esp     *esp;
 
     assert(route);
     assert(target && *target);
@@ -119,7 +118,6 @@ PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
 
     esp = MPR->espService;
     if (target) {
-        eroute = route->eroute;
         mprAddKey(esp->actions, mprJoinPath(httpGetDir(route, "controllers"), target), action);
     }
 }
@@ -131,10 +129,9 @@ PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
 PUBLIC void espDefineBase(HttpRoute *route, EspProc baseProc)
 {
     HttpRoute   *rp;
-    EspRoute    *eroute, *er;
+    EspRoute    *er;
     int         next;
 
-    eroute = route->eroute;
     for (ITERATE_ITEMS(route->host->routes, rp, next)) {
         if ((er = route->eroute) != 0) {
             if (smatch(httpGetDir(rp, "controllers"), httpGetDir(route, "controllers"))) {

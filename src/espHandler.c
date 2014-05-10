@@ -349,13 +349,11 @@ PUBLIC void espRenderView(HttpConn *conn, cchar *name)
 {
     HttpRx      *rx;
     HttpRoute   *route;
-    EspRoute    *eroute;
     EspViewProc viewProc;
     cchar       *source;
     
     rx = conn->rx;
     route = rx->route;
-    eroute = route->eroute;
     
     if (name) {
         source = mprJoinPathExt(mprJoinPath(httpGetDir(route, "views"), name), ".esp");
@@ -930,7 +928,6 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
 static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpRoute   *route;
-    EspRoute    *eroute;
     cchar       *auth, *database, *name, *prefix, *dir, *routeSet, *combine;
     char        *option, *ovalue, *tok;
 
@@ -978,7 +975,6 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
         route = httpCreateInheritedRoute(state->route);
     }
     state->route = route;
-    eroute = route->eroute;
     if (auth) {
         if (httpSetAuthStore(route->auth, auth) < 0) {
             mprError("The %s AuthStore is not available on this platform", auth);

@@ -499,7 +499,6 @@ static char *joinLine(cchar *str, ssize *lenp)
 PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *cacheName, cchar *layout, 
         EspState *state, char **err)
 {
-    EspRoute    *eroute;
     EspState    top;
     EspParse    parse;
     MprBuf      *body;
@@ -512,7 +511,6 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
     assert(page);
 
     *err = 0;
-    eroute = route->eroute;
     if (!state) {
         assert(cacheName);
         state = &top;
