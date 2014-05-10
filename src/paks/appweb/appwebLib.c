@@ -1849,12 +1849,16 @@ static int nameDirective(MaState *state, cchar *key, cchar *value)
  */
 static int nameVirtualHostDirective(MaState *state, cchar *key, cchar *value)
 {
+#if DEPRECATED
     char    *ip;
     int     port;
 
     mprTrace(4, "NameVirtual Host: %s ", value);
     mprParseSocketAddress(value, &ip, &port, NULL, -1);
     httpConfigureNamedVirtualEndpoints(state->http, ip, port);
+#else
+    mprError("The NameVirtualHost directive is no longer needed");
+#endif
     return 0;
 }
 
@@ -2563,11 +2567,15 @@ static int virtualHostDirective(MaState *state, cchar *key, cchar *value)
         httpSetHostDefaultRoute(state->host, state->route);
 
         /* Set a default host and route name */
-        httpSetHostName(state->host, stok(sclone(value), " \t,", NULL));
-        httpSetRouteName(state->route, sfmt("default-%s", state->host->name));
-
-        /* Save the endpoints until the close of the vhost. Do this so the vhost block can do the Listen */
-        state->endpoints = sclone(value);
+        if (value) {
+            httpSetHostName(state->host, stok(sclone(value), " \t,", NULL));
+            httpSetRouteName(state->route, sfmt("default-%s", state->host->name));
+            /*
+                Save the endpoints until the close of the VirtualHost to closeVirtualHostDirective can
+                add the virtual host to the specified endpoints.
+             */
+            state->endpoints = sclone(value);
+        }
     }
     return 0;
 }
@@ -2582,17 +2590,21 @@ static int closeVirtualHostDirective(MaState *state, cchar *key, cchar *value)
     char            *address, *ip, *addresses, *tok;
     int             port;
 
-    if (state->enabled && state->endpoints) {
-        addresses = state->endpoints;
-        while ((address = stok(addresses, " \t,", &tok)) != 0) {
-            addresses = 0;
-            mprParseSocketAddress(address, &ip, &port, NULL, -1);
-            if ((endpoint = httpLookupEndpoint(state->http, ip, port)) == 0) {
-                mprError("Cannot find listen directive for virtual host %s", address);
-                return MPR_ERR_BAD_SYNTAX;
-            } else {
-                httpAddHostToEndpoint(endpoint, state->host);
+    if (state->enabled) { 
+        if (state->endpoints && *state->endpoints) {
+            addresses = state->endpoints;
+            while ((address = stok(addresses, " \t,", &tok)) != 0) {
+                addresses = 0;
+                mprParseSocketAddress(address, &ip, &port, NULL, -1);
+                if ((endpoint = httpLookupEndpoint(state->http, ip, port)) == 0) {
+                    mprError("Cannot find listen directive for virtual host %s", address);
+                    return MPR_ERR_BAD_SYNTAX;
+                } else {
+                    httpAddHostToEndpoint(endpoint, state->host);
+                }
             }
+        } else {
+            httpAddHostToEndpoints(state->host);
         }
     }
     closeDirective(state, key, value);
@@ -3188,7 +3200,9 @@ PUBLIC int maParseInit(MaAppweb *appweb)
     maAddDirective(appweb, "MinWorkers", minWorkersDirective);
     maAddDirective(appweb, "Monitor", monitorDirective);
     maAddDirective(appweb, "Name", nameDirective);
+#if DEPRECATED || 1
     maAddDirective(appweb, "NameVirtualHost", nameVirtualHostDirective);
+#endif
     maAddDirective(appweb, "Order", orderDirective);
     maAddDirective(appweb, "Param", paramDirective);
     maAddDirective(appweb, "Prefix", prefixDirective);
@@ -4723,13 +4737,13 @@ static int manageDir(HttpConn *conn)
         httpRedirect(conn, HTTP_CODE_MOVED_PERMANENTLY, uri);
         return HTTP_ROUTE_OK;
     }
-    if (route->indicies) {
+    if (route->indexes) {
         /*
             Ends with a "/" so do internal redirection to an index file
          */
-        for (ITERATE_ITEMS(route->indicies, index, next)) {
+        for (ITERATE_ITEMS(route->indexes, index, next)) {
             /*
-                Internal directory redirections. Transparently append index. Test indicies in order.
+                Internal directory redirections. Transparently append index. Test indexes in order.
              */
             path = mprJoinPath(tx->filename, index);
             if (mprPathExists(path, R_OK)) {
@@ -22248,10 +22262,6 @@ PUBLIC MaAppweb *maCreateAppweb()
     appweb->http = http = httpCreate(HTTP_CLIENT_SIDE | HTTP_SERVER_SIDE);
     httpSetContext(http, appweb);
     appweb->servers = mprCreateList(-1, MPR_LIST_STABLE);
-#if UNUSED
-    appweb->localPlatform = slower(sfmt("%s-%s-%s", ME_OS, ME_CPU, ME_PROFILE));
-    maGetUserGroup(appweb);
-#endif
     maParseInit(appweb);
     /* 
        Open the builtin handlers 
@@ -22260,9 +22270,6 @@ PUBLIC MaAppweb *maCreateAppweb()
     maOpenDirHandler(http);
 #endif
     maOpenFileHandler(http);
-#if UNUSED
-    httpSetPlatform(NULL, "bin/appweb" ME_EXE);
-#endif
     return appweb; 
 }
 
@@ -22274,13 +22281,6 @@ static void manageAppweb(MaAppweb *appweb, int flags)
         mprMark(appweb->servers);
         mprMark(appweb->directives);
         mprMark(appweb->http);
-#if UNUSED
-        mprMark(appweb->user);
-        mprMark(appweb->group);
-        mprMark(appweb->localPlatform);
-        mprMark(appweb->platform);
-        mprMark(appweb->platformDir);
-#endif
     }
 }
 
@@ -22313,18 +22313,7 @@ PUBLIC MaServer *maLookupServer(MaAppweb *appweb, cchar *name)
 
 PUBLIC int maStartAppweb(MaAppweb *appweb)
 {
-#if UNUSED
-    MaServer    *server;
-    int         next;
-
-    for (next = 0; (server = mprGetNextItem(appweb->servers, &next)) != 0; ) {
-        if (maStartServer(server) < 0) {
-            return MPR_ERR_CANT_INITIALIZE;
-        }
-    }
-#else
     httpStartEndpoints();
-#endif
     mprLog(1, "Started at %s", mprGetDate(0));
     return 0;
 }
@@ -22332,17 +22321,8 @@ PUBLIC int maStartAppweb(MaAppweb *appweb)
 
 PUBLIC int maStopAppweb(MaAppweb *appweb)
 {
-#if UNUSED
-    MaServer  *server;
-    int     next;
-
-    for (next = 0; (server = mprGetNextItem(appweb->servers, &next)) != 0; ) {
-        maStopServer(server);
-    }
-#else
     httpStopConnections(0);
     httpStopEndpoints();
-#endif
     return 0;
 }
 
@@ -22480,9 +22460,6 @@ PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, c
 #endif
             httpAddRouteHandler(route, "fileHandler", "");
         }
-#if UNUSED
-        httpFinalizeRoute(route);
-#endif
     }
     return 0;
 }
