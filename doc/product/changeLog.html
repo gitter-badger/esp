@@ -66,17 +66,21 @@
             <ul>
                 <li>ESP extracted from Appweb as a stand-alone product
                     <a href="https://github.com/embedthis/esp/issues/2">[issue 2]</a>.</li>
-                <li>Simplified ESP serving. Use "esp" to serve in any directory.
+                <li>Simplified ESP serving. ESP can serve applications without requiring an appweb.conf.
                     <a href="https://github.com/embedthis/esp/issues/3">[issue 3]</a>.</li>
-                <li>Support sans-configuration usage
-                    <a href="https://github.com/embedthis/esp/issues/4">[issue 4]</a>.</li>
-                <li>Configuration via package.json.
+                <li>ESP and HTTP can be fully Configured via package.json.
                     <a href="https://github.com/embedthis/esp/issues/5">[issue 5]</a>.</li>
-                <li>Enhanced ESP to support progressive install via Pak packages
+                <li>Enhanced ESP to support progressive install via Pak packages.
                     <a href="https://github.com/embedthis/esp/issues/6">[issue 6]</a>.</li>
                 <li>Enhanced ESP to install, manage and uninstall Pak packages
                     <a href="https://github.com/embedthis/esp/issues/1">[issue 1]</a>.</li>
+            </ul>
+            <h3>Incompatible Changes</h3>
             <ul>
+               <li>ESP Package.json format is changed for many properties. Regenerate the application to get 
+                    a new package.json file.</li>
+               <li>ESP Angular applications have a different Esp.config property layout. Upgrade all relevant paks.</li>
+           </ul>
         </div>
     </div>
 <!-- BeginDsi "dsi/bottom.html" -->
