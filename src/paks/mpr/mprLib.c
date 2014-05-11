@@ -23839,8 +23839,6 @@ PUBLIC char *slower(cchar *str)
 {
     char    *cp, *s;
 
-    assert(str);
-
     if (str) {
         s = sclone(str);
         for (cp = s; *cp; cp++) {
@@ -24398,7 +24396,6 @@ PUBLIC char *supper(cchar *str)
 {
     char    *cp, *s;
 
-    assert(str);
     if (str) {
         s = sclone(str);
         for (cp = s; *cp; cp++) {
