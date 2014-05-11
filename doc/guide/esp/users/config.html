@@ -466,9 +466,10 @@ or
 
             <a name="http"></a>
             <h3>Http Configuration &mdash; app.http.*</h3>
-            <p>All properties in the <em>app.http</em> collection with the exception of the <em>app.http.server</em> collection 
-            apply per-route. This means these properties they may be nested in routes defined under
-            <em>app.http.routes</em>.</p>
+            <p>All properties in the <em>app.http</em> collection with the exception of the <em>app.http.server</em> 
+            collection apply per-route. This means these properties they may be nested in routes defined under
+            <em>app.http.routes</em>. The <em>app.htt.server</em> collection is ignored if ESP is hosted in a web server
+            such as Appweb.</p>
             <table title="http" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -697,6 +698,13 @@ routes [ {
                         to HTTPS.</td>
                     </tr>
                     <tr>
+                        <td><a href="#server">server</a></td>
+                        <td>Collection of properties that apply to the whole server and not per-route. The
+                        <em>server</em> collection is special in that it is only parsed when ESP is not hosted in
+                        a web server such as Appweb. If hosted, it is expected that the web server will define
+                        these attributes externally.</td>
+                    </tr>
+                    <tr>
                         <td>serverPrefix</td>
                         <td>URI prefix to communicate with server-side controllers for the application.</td>
                     </tr>
@@ -745,6 +753,10 @@ routes [ {
 
             <a name="server"></a>
             <h3>Http Server Configuration &mdash; app.http.server.*</h3>
+            <p>The <em>server</em> collection is special in that it is only parsed when ESP is not hosted in
+                a web server such as Appweb. If hosted, it is expected that the web server will define
+                these attributes externally. All <em>server</em> properties apply to the whole server and are not
+                modifiable per-route.</p>
             <table title="server" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
