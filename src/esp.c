@@ -764,7 +764,6 @@ static void clean(int argc, char **argv)
 {
     MprList         *files;
     MprDirEntry     *dp;
-    EspRoute        *eroute;
     HttpRoute       *route;
     cchar           *cacheDir, *path;
     int             next, nextFile;
@@ -773,7 +772,6 @@ static void clean(int argc, char **argv)
         return;
     }
     for (ITERATE_ITEMS(app->routes, route, next)) {
-        eroute = route->eroute;
         cacheDir = httpGetDir(route, "cache");
         if (cacheDir) {
             trace("clean", "Route \"%s\" at %s", route->name, route->documents);
@@ -1323,11 +1321,6 @@ static MprHash *getTargets(int argc, char **argv)
 
 static bool similarRoute(HttpRoute *r1, HttpRoute *r2)
 {
-    EspRoute    *e1, *e2;
-
-    e1 = r1->eroute;
-    e2 = r2->eroute;
-
     if (!smatch(r1->documents, r2->documents)) {
         return 0;
     }
@@ -1338,6 +1331,10 @@ static bool similarRoute(HttpRoute *r1, HttpRoute *r2)
         return 0;
     }
 #if UNUSED
+    EspRoute    *e1, *e2;
+    e1 = r1->eroute;
+    e2 = r2->eroute;
+
     for (dp = dirs; dp; dp++) {
         if (!smatch(httpGetDir(r1, dir), httpGetDir(r2, dir))) {
             return 0;
@@ -1697,7 +1694,6 @@ static void compileFile(HttpRoute *route, cchar *source, int kind)
  */
 static void compile(int argc, char **argv)
 {
-    EspRoute    *eroute;
     HttpRoute   *route;
     MprFile     *file;
     MprKey      *kp;
@@ -1714,7 +1710,6 @@ static void compile(int argc, char **argv)
         app->slink = mprCreateList(0, MPR_LIST_STABLE);
     }
     for (ITERATE_ITEMS(app->routes, route, next)) {
-        eroute = route->eroute;
         mprMakeDir(httpGetDir(route, "cache"), 0755, -1, -1, 1);
         mprTrace(2, "Build with route \"%s\" at %s", route->name, route->documents);
         if (app->combine) {
@@ -1741,7 +1736,6 @@ static void compile(int argc, char **argv)
         mprWriteFileFmt(file, "#include \"mpr.h\"\n\n");
         mprWriteFileFmt(file, "#include \"esp.h\"\n\n");
         for (ITERATE_ITEMS(app->slink, route, next)) {
-            eroute = route->eroute;
             name = app->appName ? app->appName : mprGetPathBase(route->documents);
             mprWriteFileFmt(file, "extern int esp_app_%s_combine(HttpRoute *route, MprModule *module);", name);
             mprWriteFileFmt(file, "    /* SOURCE %s */\n",
@@ -1764,7 +1758,6 @@ static void compile(int argc, char **argv)
  */
 static bool requiredRoute(HttpRoute *route)
 {
-    EspRoute    *eroute;
     MprKey      *kp;
     cchar       *source;
 
@@ -1777,7 +1770,6 @@ static bool requiredRoute(HttpRoute *route)
             return 1;
         }
         if (route->sourceName) {
-            eroute = route->eroute;
             source = mprJoinPath(httpGetDir(route, "controllers"), route->sourceName);
             if (mprIsPathContained(kp->key, source)) {
                 kp->type = ESP_FOUND_TARGET;
@@ -1819,13 +1811,9 @@ static bool selectResource(cchar *path, cchar *kind)
  */
 static void compileItems(HttpRoute *route)
 {
-    EspRoute    *eroute;
     MprDirEntry *dp;
     cchar       *path, *clientDir;
     int         next;
-
-    eroute = route->eroute;
-    assert(eroute);
 
     app->files = mprGetPathFiles(httpGetDir(route, "controllers"), MPR_PATH_DESCEND);
     for (next = 0; (dp = mprGetNextItem(app->files, &next)) != 0 && !app->error; ) {
@@ -2477,13 +2465,11 @@ static void blendJson(MprJson *dest, cchar *toKey, MprJson *from, cchar *fromKey
 
 static bool blendSpec(cchar *name, cchar *version, MprJson *spec)
 {
-    EspRoute    *eroute;
     MprJson     *blend, *cp, *scripts;
     cchar       *script, *key;
     char        *major, *minor, *patch;
     int         i;
 
-    eroute = app->eroute;
     /*
         Before blending, expand ${var} references
      */
