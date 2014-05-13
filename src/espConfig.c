@@ -44,6 +44,7 @@ static void angularRouteSet(HttpRoute *route, cchar *set)
 
 static void htmlRouteSet(HttpRoute *route, cchar *set)
 {
+    httpDefineRoute(route, sfmt("%s/*", route->serverPrefix), "GET", sfmt("^%s/{controller}$", route->serverPrefix), "$1", "${controller}.c");
     httpAddRestfulRoute(route, route->serverPrefix, "delete", "POST", "/{id=[0-9]+}/delete$", "delete", "{controller}");
     httpAddResourceGroup(route, route->serverPrefix, "{controller}");
     httpAddClientRoute(route, "", "/public");
