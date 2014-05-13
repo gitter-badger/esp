@@ -1,44 +1,37 @@
 {
     "name": "esp-server",
     "description": "ESP Server-Side Configuration",
-    "version": "1.0.0-rc0",
+    "version": "5.0.0-rc0",
+    "licenses": [
+        {
+            "type": "GPL",
+            "url": "http://www.gnu.org/licenses/gpl-2.0.html"
+        }, {
+            "type": "Commercial",
+            "url": "http://embedthis.com/licensing/"
+        }
+    ],
     "keywords": [
         "esp",
     ],
-    "precious": true,
-    "dirs": {
-        "client": "client",
-        "paks": "client/paks"
-    },
-    "export": [
-        "generate/**"
-    ],
-    "esp": {
-        "logRoutes": false,
-        "server": {
+    "app": {
+        "esp": {
             "generate": {
-                "appweb": "esp-server/appweb.conf",
+                "?appweb": "esp-server/generate/appweb.conf",
             },
-            "routes": "esp-server",
         },
-        "mode": "debug",
+        "http": {
+            "?routes": "esp-server",
+        },
+        "?mode": "debug",
         "modes": {
             "debug": {
-                "combined": false,
-                "compile": "symbols",
-                "showErrors": true,
-                "keepSource": true,
-                "update": true,
+                "http": {
+                    "content": {
+                        "?keep": [ "c" ],
+                    },
+                },
             },
-            "release": {
-                "combined": true,
-                "cache": 86400,
-                "compile": "optimized",
-                "compressed": true,
-                "showErrors": false,
-                "update": false,
-                "keepSource": false,
-            }
-        }
-    }
+        },
+    },
 }
