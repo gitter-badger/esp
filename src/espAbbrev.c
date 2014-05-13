@@ -801,6 +801,7 @@ PUBLIC void stylesheets(cchar *patterns)
                 eroute->combineSheet = sfmt("css/all-%s.css", version);
             }
             stylesheets(eroute->combineSheet);
+
         } else {
             /*
                 Not combining into a single stylesheet, so give priority to all.less over all.css if present
@@ -825,8 +826,7 @@ PUBLIC void stylesheets(cchar *patterns)
             }
         }
     } else {
-        if ((files = mprGlobPathFiles(clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || 
-                mprGetListLength(files) == 0) {
+        if ((files = mprGlobPathFiles(clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
             files = mprCreateList(0, 0);
             mprAddItem(files, patterns);
         }

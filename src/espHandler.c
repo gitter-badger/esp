@@ -309,7 +309,7 @@ static int runAction(HttpConn *conn)
             key = sfmt("%s/missing", mprGetPathDir(source));
             if ((action = mprLookupKey(esp->actions, key)) == 0) {
                 if ((action = mprLookupKey(esp->actions, "missing")) == 0) {
-                    httpError(conn, HTTP_CODE_NOT_FOUND, "Missing action for %s in %s", rx->target, source);
+                    httpError(conn, HTTP_CODE_NOT_FOUND, "Missing action for \"%s\"", rx->target);
                     return 0;
                 }
             }
