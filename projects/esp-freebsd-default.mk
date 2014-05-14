@@ -404,157 +404,149 @@ $(CONFIG)/bin/authpass: $(DEPS_16)
 	$(CC) -o $(CONFIG)/bin/authpass $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/authpass.o" $(LIBPATHS_16) $(LIBS_16) $(LIBS_16) $(LIBS) $(LIBS) 
 
 #
-#   comp
-#
-comp: $(DEPS_17)
-	cd src/paks/esp-html-mvc; esp -r -q compile ; cd ../../..
-#
 #   esp-paks
 #
-DEPS_18 += src/paks/appweb
-DEPS_18 += src/paks/appweb/appweb.h
-DEPS_18 += src/paks/appweb/appweb.me
-DEPS_18 += src/paks/appweb/appwebLib.c
-DEPS_18 += src/paks/appweb/authpass.c
-DEPS_18 += src/paks/appweb/LICENSE.md
-DEPS_18 += src/paks/appweb/package.json
-DEPS_18 += src/paks/appweb/README.md
-DEPS_18 += src/paks/esp-html-mvc
-DEPS_18 += src/paks/esp-html-mvc/client
-DEPS_18 += src/paks/esp-html-mvc/client/assets
-DEPS_18 += src/paks/esp-html-mvc/client/assets/favicon.ico
-DEPS_18 += src/paks/esp-html-mvc/client/css
-DEPS_18 += src/paks/esp-html-mvc/client/css/all.css
-DEPS_18 += src/paks/esp-html-mvc/client/css/all.less
-DEPS_18 += src/paks/esp-html-mvc/client/css/app.less
-DEPS_18 += src/paks/esp-html-mvc/client/css/theme.less
-DEPS_18 += src/paks/esp-html-mvc/client/index.esp
-DEPS_18 += src/paks/esp-html-mvc/generate
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc/appweb.conf
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc/controller-singleton.c
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc/controller.c
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc/edit.esp
-DEPS_18 += src/paks/esp-html-mvc/generate/esp-html-mvc/list.esp
-DEPS_18 += src/paks/esp-html-mvc/layouts
-DEPS_18 += src/paks/esp-html-mvc/layouts/default.esp
-DEPS_18 += src/paks/esp-html-mvc/LICENSE.md
-DEPS_18 += src/paks/esp-html-mvc/package.json
-DEPS_18 += src/paks/esp-html-mvc/README.md
-DEPS_18 += src/paks/esp-html-mvc/start.me
-DEPS_18 += src/paks/esp-mvc
-DEPS_18 += src/paks/esp-mvc/generate
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc/appweb.conf
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc/controller.c
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc/migration.c
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc/src
-DEPS_18 += src/paks/esp-mvc/generate/esp-mvc/src/app.c
-DEPS_18 += src/paks/esp-mvc/LICENSE.md
-DEPS_18 += src/paks/esp-mvc/package.json
-DEPS_18 += src/paks/esp-mvc/README.md
-DEPS_18 += src/paks/esp-server
-DEPS_18 += src/paks/esp-server/generate
-DEPS_18 += src/paks/esp-server/generate/esp-server
-DEPS_18 += src/paks/esp-server/generate/esp-server/appweb.conf
-DEPS_18 += src/paks/esp-server/LICENSE.md
-DEPS_18 += src/paks/esp-server/package.json
-DEPS_18 += src/paks/esp-server/README.md
-DEPS_18 += src/paks/est
-DEPS_18 += src/paks/est/ca.crt
-DEPS_18 += src/paks/est/est.h
-DEPS_18 += src/paks/est/est.me
-DEPS_18 += src/paks/est/estLib.c
-DEPS_18 += src/paks/est/LICENSE.md
-DEPS_18 += src/paks/est/package.json
-DEPS_18 += src/paks/est/README.md
-DEPS_18 += src/paks/http
-DEPS_18 += src/paks/http/ca.crt
-DEPS_18 += src/paks/http/doc
-DEPS_18 += src/paks/http/doc/api
-DEPS_18 += src/paks/http/doc/api/http.dtags
-DEPS_18 += src/paks/http/doc/api/http.tags
-DEPS_18 += src/paks/http/doc/api/httpBare.html
-DEPS_18 += src/paks/http/doc/api/httpBare.tags
-DEPS_18 += src/paks/http/doc/man
-DEPS_18 += src/paks/http/doc/man/http.1
-DEPS_18 += src/paks/http/http.c
-DEPS_18 += src/paks/http/http.h
-DEPS_18 += src/paks/http/http.me
-DEPS_18 += src/paks/http/httpLib.c
-DEPS_18 += src/paks/http/LICENSE.md
-DEPS_18 += src/paks/http/package.json
-DEPS_18 += src/paks/http/README.md
-DEPS_18 += src/paks/me-dev
-DEPS_18 += src/paks/me-dev/dev.es
-DEPS_18 += src/paks/me-dev/dev.me
-DEPS_18 += src/paks/me-dev/LICENSE.md
-DEPS_18 += src/paks/me-dev/package.json
-DEPS_18 += src/paks/me-dev/README.md
-DEPS_18 += src/paks/me-doc
-DEPS_18 += src/paks/me-doc/doc.es
-DEPS_18 += src/paks/me-doc/doc.me
-DEPS_18 += src/paks/me-doc/gendoc.es
-DEPS_18 += src/paks/me-doc/LICENSE.md
-DEPS_18 += src/paks/me-doc/package.json
-DEPS_18 += src/paks/me-doc/README.md
-DEPS_18 += src/paks/me-package
-DEPS_18 += src/paks/me-package/LICENSE.md
-DEPS_18 += src/paks/me-package/manifest.me
-DEPS_18 += src/paks/me-package/package.es
-DEPS_18 += src/paks/me-package/package.json
-DEPS_18 += src/paks/me-package/package.me
-DEPS_18 += src/paks/me-package/README.md
-DEPS_18 += src/paks/me-ssl
-DEPS_18 += src/paks/me-ssl/LICENSE.md
-DEPS_18 += src/paks/me-ssl/matrixssl.me
-DEPS_18 += src/paks/me-ssl/nanossl.me
-DEPS_18 += src/paks/me-ssl/openssl.me
-DEPS_18 += src/paks/me-ssl/package.json
-DEPS_18 += src/paks/me-ssl/README.md
-DEPS_18 += src/paks/me-ssl/ssl.me
-DEPS_18 += src/paks/mpr
-DEPS_18 += src/paks/mpr/doc
-DEPS_18 += src/paks/mpr/doc/api
-DEPS_18 += src/paks/mpr/doc/api/mpr.dtags
-DEPS_18 += src/paks/mpr/doc/api/mpr.tags
-DEPS_18 += src/paks/mpr/doc/api/mprBare.html
-DEPS_18 += src/paks/mpr/doc/api/mprBare.tags
-DEPS_18 += src/paks/mpr/doc/man
-DEPS_18 += src/paks/mpr/doc/man/makerom.1
-DEPS_18 += src/paks/mpr/doc/man/manager.1
-DEPS_18 += src/paks/mpr/LICENSE.md
-DEPS_18 += src/paks/mpr/makerom.c
-DEPS_18 += src/paks/mpr/manager.c
-DEPS_18 += src/paks/mpr/mpr.h
-DEPS_18 += src/paks/mpr/mpr.me
-DEPS_18 += src/paks/mpr/mprLib.c
-DEPS_18 += src/paks/mpr/mprSsl.c
-DEPS_18 += src/paks/mpr/package.json
-DEPS_18 += src/paks/mpr/README.md
-DEPS_18 += src/paks/osdep
-DEPS_18 += src/paks/osdep/LICENSE.md
-DEPS_18 += src/paks/osdep/osdep.h
-DEPS_18 += src/paks/osdep/osdep.me
-DEPS_18 += src/paks/osdep/package.json
-DEPS_18 += src/paks/osdep/README.md
-DEPS_18 += src/paks/pcre
-DEPS_18 += src/paks/pcre/LICENSE.md
-DEPS_18 += src/paks/pcre/package.json
-DEPS_18 += src/paks/pcre/pcre.c
-DEPS_18 += src/paks/pcre/pcre.h
-DEPS_18 += src/paks/pcre/pcre.me
-DEPS_18 += src/paks/pcre/README.md
-DEPS_18 += src/paks/sqlite
-DEPS_18 += src/paks/sqlite/LICENSE.md
-DEPS_18 += src/paks/sqlite/package.json
-DEPS_18 += src/paks/sqlite/README.md
-DEPS_18 += src/paks/sqlite/sqlite.c
-DEPS_18 += src/paks/sqlite/sqlite.me
-DEPS_18 += src/paks/sqlite/sqlite3.c
-DEPS_18 += src/paks/sqlite/sqlite3.h
+DEPS_17 += src/paks/appweb
+DEPS_17 += src/paks/appweb/appweb.h
+DEPS_17 += src/paks/appweb/appweb.me
+DEPS_17 += src/paks/appweb/appwebLib.c
+DEPS_17 += src/paks/appweb/authpass.c
+DEPS_17 += src/paks/appweb/LICENSE.md
+DEPS_17 += src/paks/appweb/package.json
+DEPS_17 += src/paks/appweb/README.md
+DEPS_17 += src/paks/esp-html-mvc
+DEPS_17 += src/paks/esp-html-mvc/client
+DEPS_17 += src/paks/esp-html-mvc/client/assets
+DEPS_17 += src/paks/esp-html-mvc/client/assets/favicon.ico
+DEPS_17 += src/paks/esp-html-mvc/client/css
+DEPS_17 += src/paks/esp-html-mvc/client/css/all.css
+DEPS_17 += src/paks/esp-html-mvc/client/css/all.less
+DEPS_17 += src/paks/esp-html-mvc/client/index.esp
+DEPS_17 += src/paks/esp-html-mvc/css
+DEPS_17 += src/paks/esp-html-mvc/css/app.less
+DEPS_17 += src/paks/esp-html-mvc/css/theme.less
+DEPS_17 += src/paks/esp-html-mvc/generate
+DEPS_17 += src/paks/esp-html-mvc/generate/appweb.conf
+DEPS_17 += src/paks/esp-html-mvc/generate/controller.c
+DEPS_17 += src/paks/esp-html-mvc/generate/controllerSingleton.c
+DEPS_17 += src/paks/esp-html-mvc/generate/edit.esp
+DEPS_17 += src/paks/esp-html-mvc/generate/list.esp
+DEPS_17 += src/paks/esp-html-mvc/layouts
+DEPS_17 += src/paks/esp-html-mvc/layouts/default.esp
+DEPS_17 += src/paks/esp-html-mvc/LICENSE.md
+DEPS_17 += src/paks/esp-html-mvc/package.json
+DEPS_17 += src/paks/esp-html-mvc/README.md
+DEPS_17 += src/paks/esp-mvc
+DEPS_17 += src/paks/esp-mvc/generate
+DEPS_17 += src/paks/esp-mvc/generate/appweb.conf
+DEPS_17 += src/paks/esp-mvc/generate/controller.c
+DEPS_17 += src/paks/esp-mvc/generate/migration.c
+DEPS_17 += src/paks/esp-mvc/generate/src
+DEPS_17 += src/paks/esp-mvc/generate/src/app.c
+DEPS_17 += src/paks/esp-mvc/LICENSE.md
+DEPS_17 += src/paks/esp-mvc/package.json
+DEPS_17 += src/paks/esp-mvc/README.md
+DEPS_17 += src/paks/esp-server
+DEPS_17 += src/paks/esp-server/generate
+DEPS_17 += src/paks/esp-server/generate/appweb.conf
+DEPS_17 += src/paks/esp-server/LICENSE.md
+DEPS_17 += src/paks/esp-server/package.json
+DEPS_17 += src/paks/esp-server/README.md
+DEPS_17 += src/paks/est
+DEPS_17 += src/paks/est/ca.crt
+DEPS_17 += src/paks/est/est.h
+DEPS_17 += src/paks/est/est.me
+DEPS_17 += src/paks/est/estLib.c
+DEPS_17 += src/paks/est/LICENSE.md
+DEPS_17 += src/paks/est/package.json
+DEPS_17 += src/paks/est/README.md
+DEPS_17 += src/paks/http
+DEPS_17 += src/paks/http/ca.crt
+DEPS_17 += src/paks/http/doc
+DEPS_17 += src/paks/http/doc/api
+DEPS_17 += src/paks/http/doc/api/http.dtags
+DEPS_17 += src/paks/http/doc/api/http.tags
+DEPS_17 += src/paks/http/doc/api/httpBare.html
+DEPS_17 += src/paks/http/doc/api/httpBare.tags
+DEPS_17 += src/paks/http/doc/man
+DEPS_17 += src/paks/http/doc/man/http.1
+DEPS_17 += src/paks/http/http.c
+DEPS_17 += src/paks/http/http.h
+DEPS_17 += src/paks/http/http.me
+DEPS_17 += src/paks/http/httpLib.c
+DEPS_17 += src/paks/http/LICENSE.md
+DEPS_17 += src/paks/http/package.json
+DEPS_17 += src/paks/http/README.md
+DEPS_17 += src/paks/me-dev
+DEPS_17 += src/paks/me-dev/dev.es
+DEPS_17 += src/paks/me-dev/dev.me
+DEPS_17 += src/paks/me-dev/LICENSE.md
+DEPS_17 += src/paks/me-dev/package.json
+DEPS_17 += src/paks/me-dev/README.md
+DEPS_17 += src/paks/me-doc
+DEPS_17 += src/paks/me-doc/doc.es
+DEPS_17 += src/paks/me-doc/doc.me
+DEPS_17 += src/paks/me-doc/gendoc.es
+DEPS_17 += src/paks/me-doc/LICENSE.md
+DEPS_17 += src/paks/me-doc/package.json
+DEPS_17 += src/paks/me-doc/README.md
+DEPS_17 += src/paks/me-package
+DEPS_17 += src/paks/me-package/LICENSE.md
+DEPS_17 += src/paks/me-package/manifest.me
+DEPS_17 += src/paks/me-package/package.es
+DEPS_17 += src/paks/me-package/package.json
+DEPS_17 += src/paks/me-package/package.me
+DEPS_17 += src/paks/me-package/README.md
+DEPS_17 += src/paks/me-ssl
+DEPS_17 += src/paks/me-ssl/LICENSE.md
+DEPS_17 += src/paks/me-ssl/matrixssl.me
+DEPS_17 += src/paks/me-ssl/nanossl.me
+DEPS_17 += src/paks/me-ssl/openssl.me
+DEPS_17 += src/paks/me-ssl/package.json
+DEPS_17 += src/paks/me-ssl/README.md
+DEPS_17 += src/paks/me-ssl/ssl.me
+DEPS_17 += src/paks/mpr
+DEPS_17 += src/paks/mpr/doc
+DEPS_17 += src/paks/mpr/doc/api
+DEPS_17 += src/paks/mpr/doc/api/mpr.dtags
+DEPS_17 += src/paks/mpr/doc/api/mpr.tags
+DEPS_17 += src/paks/mpr/doc/api/mprBare.html
+DEPS_17 += src/paks/mpr/doc/api/mprBare.tags
+DEPS_17 += src/paks/mpr/doc/man
+DEPS_17 += src/paks/mpr/doc/man/makerom.1
+DEPS_17 += src/paks/mpr/doc/man/manager.1
+DEPS_17 += src/paks/mpr/LICENSE.md
+DEPS_17 += src/paks/mpr/makerom.c
+DEPS_17 += src/paks/mpr/manager.c
+DEPS_17 += src/paks/mpr/mpr.h
+DEPS_17 += src/paks/mpr/mpr.me
+DEPS_17 += src/paks/mpr/mprLib.c
+DEPS_17 += src/paks/mpr/mprSsl.c
+DEPS_17 += src/paks/mpr/package.json
+DEPS_17 += src/paks/mpr/README.md
+DEPS_17 += src/paks/osdep
+DEPS_17 += src/paks/osdep/LICENSE.md
+DEPS_17 += src/paks/osdep/osdep.h
+DEPS_17 += src/paks/osdep/osdep.me
+DEPS_17 += src/paks/osdep/package.json
+DEPS_17 += src/paks/osdep/README.md
+DEPS_17 += src/paks/pcre
+DEPS_17 += src/paks/pcre/LICENSE.md
+DEPS_17 += src/paks/pcre/package.json
+DEPS_17 += src/paks/pcre/pcre.c
+DEPS_17 += src/paks/pcre/pcre.h
+DEPS_17 += src/paks/pcre/pcre.me
+DEPS_17 += src/paks/pcre/README.md
+DEPS_17 += src/paks/sqlite
+DEPS_17 += src/paks/sqlite/LICENSE.md
+DEPS_17 += src/paks/sqlite/package.json
+DEPS_17 += src/paks/sqlite/README.md
+DEPS_17 += src/paks/sqlite/sqlite.c
+DEPS_17 += src/paks/sqlite/sqlite.me
+DEPS_17 += src/paks/sqlite/sqlite3.c
+DEPS_17 += src/paks/sqlite/sqlite3.h
 
-$(CONFIG)/esp: $(DEPS_18)
+$(CONFIG)/esp: $(DEPS_17)
 	( \
 	cd src/paks; \
 	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0" ; \
@@ -564,48 +556,45 @@ $(CONFIG)/esp: $(DEPS_18)
 	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/css" ; \
 	cp esp-html-mvc/client/css/all.css ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/css/all.css ; \
 	cp esp-html-mvc/client/css/all.less ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/css/all.less ; \
-	cp esp-html-mvc/client/css/app.less ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/css/app.less ; \
-	cp esp-html-mvc/client/css/theme.less ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/css/theme.less ; \
 	cp esp-html-mvc/client/index.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/client/index.esp ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/css" ; \
+	cp esp-html-mvc/css/app.less ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/css/app.less ; \
+	cp esp-html-mvc/css/theme.less ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/css/theme.less ; \
 	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc" ; \
-	cp esp-html-mvc/generate/esp-html-mvc/appweb.conf ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/appweb.conf ; \
-	cp esp-html-mvc/generate/esp-html-mvc/controller-singleton.c ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/controller-singleton.c ; \
-	cp esp-html-mvc/generate/esp-html-mvc/controller.c ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/controller.c ; \
-	cp esp-html-mvc/generate/esp-html-mvc/edit.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/edit.esp ; \
-	cp esp-html-mvc/generate/esp-html-mvc/list.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/list.esp ; \
+	cp esp-html-mvc/generate/appweb.conf ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/appweb.conf ; \
+	cp esp-html-mvc/generate/controller.c ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/controller.c ; \
+	cp esp-html-mvc/generate/controllerSingleton.c ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/controllerSingleton.c ; \
+	cp esp-html-mvc/generate/edit.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/edit.esp ; \
+	cp esp-html-mvc/generate/list.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/generate/list.esp ; \
 	mkdir -p "../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/layouts" ; \
 	cp esp-html-mvc/layouts/default.esp ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/layouts/default.esp ; \
 	cp esp-html-mvc/LICENSE.md ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp esp-html-mvc/package.json ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/package.json ; \
 	cp esp-html-mvc/README.md ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/README.md ; \
-	cp esp-html-mvc/start.me ../../$(CONFIG)/esp/esp-html-mvc/5.0.0-rc0/start.me ; \
 	mkdir -p "../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0" ; \
 	mkdir -p "../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc" ; \
-	cp esp-mvc/generate/esp-mvc/appweb.conf ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/appweb.conf ; \
-	cp esp-mvc/generate/esp-mvc/controller.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/controller.c ; \
-	cp esp-mvc/generate/esp-mvc/migration.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/migration.c ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/src" ; \
-	cp esp-mvc/generate/esp-mvc/src/app.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/src/app.c ; \
+	cp esp-mvc/generate/appweb.conf ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/appweb.conf ; \
+	cp esp-mvc/generate/controller.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/controller.c ; \
+	cp esp-mvc/generate/migration.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/migration.c ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/src" ; \
+	cp esp-mvc/generate/src/app.c ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/generate/src/app.c ; \
 	cp esp-mvc/LICENSE.md ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp esp-mvc/package.json ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/package.json ; \
 	cp esp-mvc/README.md ../../$(CONFIG)/esp/esp-mvc/5.0.0-rc0/README.md ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate" ; \
-	mkdir -p "../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate/esp-server" ; \
-	cp esp-server/generate/esp-server/appweb.conf ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/generate/esp-server/appweb.conf ; \
-	cp esp-server/LICENSE.md ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/LICENSE.md ; \
-	cp esp-server/package.json ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/package.json ; \
-	cp esp-server/README.md ../../$(CONFIG)/esp/esp-server/1.0.0-rc0/README.md ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-server/5.0.0-rc0" ; \
+	mkdir -p "../../$(CONFIG)/esp/esp-server/5.0.0-rc0/generate" ; \
+	cp esp-server/generate/appweb.conf ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/generate/appweb.conf ; \
+	cp esp-server/LICENSE.md ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/LICENSE.md ; \
+	cp esp-server/package.json ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/package.json ; \
+	cp esp-server/README.md ../../$(CONFIG)/esp/esp-server/5.0.0-rc0/README.md ; \
 	)
 
 #
 #   esp.conf
 #
-DEPS_19 += src/esp.conf
+DEPS_18 += src/esp.conf
 
-$(CONFIG)/bin/esp.conf: $(DEPS_19)
+$(CONFIG)/bin/esp.conf: $(DEPS_18)
 	@echo '      [Copy] $(CONFIG)/bin/esp.conf'
 	mkdir -p "$(CONFIG)/bin"
 	cp src/esp.conf $(CONFIG)/bin/esp.conf
@@ -613,7 +602,7 @@ $(CONFIG)/bin/esp.conf: $(DEPS_19)
 #
 #   sqlite3.h
 #
-$(CONFIG)/inc/sqlite3.h: $(DEPS_20)
+$(CONFIG)/inc/sqlite3.h: $(DEPS_19)
 	@echo '      [Copy] $(CONFIG)/inc/sqlite3.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/paks/sqlite/sqlite3.h $(CONFIG)/inc/sqlite3.h
@@ -621,11 +610,11 @@ $(CONFIG)/inc/sqlite3.h: $(DEPS_20)
 #
 #   sqlite3.o
 #
-DEPS_21 += $(CONFIG)/inc/me.h
-DEPS_21 += $(CONFIG)/inc/sqlite3.h
+DEPS_20 += $(CONFIG)/inc/me.h
+DEPS_20 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite3.o: \
-    src/paks/sqlite/sqlite3.c $(DEPS_21)
+    src/paks/sqlite/sqlite3.c $(DEPS_20)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite3.o'
 	$(CC) -c -o $(CONFIG)/obj/sqlite3.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/sqlite/sqlite3.c
 
@@ -633,11 +622,11 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   libsql
 #
-DEPS_22 += $(CONFIG)/inc/sqlite3.h
-DEPS_22 += $(CONFIG)/inc/me.h
-DEPS_22 += $(CONFIG)/obj/sqlite3.o
+DEPS_21 += $(CONFIG)/inc/sqlite3.h
+DEPS_21 += $(CONFIG)/inc/me.h
+DEPS_21 += $(CONFIG)/obj/sqlite3.o
 
-$(CONFIG)/bin/libsql.so: $(DEPS_22)
+$(CONFIG)/bin/libsql.so: $(DEPS_21)
 	@echo '      [Link] $(CONFIG)/bin/libsql.so'
 	$(CC) -shared -o $(CONFIG)/bin/libsql.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite3.o" $(LIBS) 
 endif
@@ -645,7 +634,7 @@ endif
 #
 #   edi.h
 #
-$(CONFIG)/inc/edi.h: $(DEPS_23)
+$(CONFIG)/inc/edi.h: $(DEPS_22)
 	@echo '      [Copy] $(CONFIG)/inc/edi.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/edi.h $(CONFIG)/inc/edi.h
@@ -653,7 +642,7 @@ $(CONFIG)/inc/edi.h: $(DEPS_23)
 #
 #   esp.h
 #
-$(CONFIG)/inc/esp.h: $(DEPS_24)
+$(CONFIG)/inc/esp.h: $(DEPS_23)
 	@echo '      [Copy] $(CONFIG)/inc/esp.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/esp.h $(CONFIG)/inc/esp.h
@@ -661,7 +650,7 @@ $(CONFIG)/inc/esp.h: $(DEPS_24)
 #
 #   mdb.h
 #
-$(CONFIG)/inc/mdb.h: $(DEPS_25)
+$(CONFIG)/inc/mdb.h: $(DEPS_24)
 	@echo '      [Copy] $(CONFIG)/inc/mdb.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/mdb.h $(CONFIG)/inc/mdb.h
@@ -669,250 +658,250 @@ $(CONFIG)/inc/mdb.h: $(DEPS_25)
 #
 #   edi.o
 #
-DEPS_26 += $(CONFIG)/inc/me.h
-DEPS_26 += $(CONFIG)/inc/edi.h
-DEPS_26 += $(CONFIG)/inc/pcre.h
-DEPS_26 += $(CONFIG)/inc/http.h
+DEPS_25 += $(CONFIG)/inc/me.h
+DEPS_25 += $(CONFIG)/inc/edi.h
+DEPS_25 += $(CONFIG)/inc/pcre.h
+DEPS_25 += $(CONFIG)/inc/http.h
 
 $(CONFIG)/obj/edi.o: \
-    src/edi.c $(DEPS_26)
+    src/edi.c $(DEPS_25)
 	@echo '   [Compile] $(CONFIG)/obj/edi.o'
 	$(CC) -c -o $(CONFIG)/obj/edi.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/edi.c
 
 #
 #   espAbbrev.o
 #
-DEPS_27 += $(CONFIG)/inc/me.h
-DEPS_27 += $(CONFIG)/inc/esp.h
-DEPS_27 += $(CONFIG)/inc/appweb.h
-DEPS_27 += $(CONFIG)/inc/edi.h
+DEPS_26 += $(CONFIG)/inc/me.h
+DEPS_26 += $(CONFIG)/inc/esp.h
+DEPS_26 += $(CONFIG)/inc/appweb.h
+DEPS_26 += $(CONFIG)/inc/edi.h
 
 $(CONFIG)/obj/espAbbrev.o: \
-    src/espAbbrev.c $(DEPS_27)
+    src/espAbbrev.c $(DEPS_26)
 	@echo '   [Compile] $(CONFIG)/obj/espAbbrev.o'
 	$(CC) -c -o $(CONFIG)/obj/espAbbrev.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espAbbrev.c
 
 #
 #   espConfig.o
 #
-DEPS_28 += $(CONFIG)/inc/me.h
-DEPS_28 += $(CONFIG)/inc/esp.h
+DEPS_27 += $(CONFIG)/inc/me.h
+DEPS_27 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espConfig.o: \
-    src/espConfig.c $(DEPS_28)
+    src/espConfig.c $(DEPS_27)
 	@echo '   [Compile] $(CONFIG)/obj/espConfig.o'
 	$(CC) -c -o $(CONFIG)/obj/espConfig.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espConfig.c
 
 #
 #   espFramework.o
 #
-DEPS_29 += $(CONFIG)/inc/me.h
-DEPS_29 += $(CONFIG)/inc/esp.h
+DEPS_28 += $(CONFIG)/inc/me.h
+DEPS_28 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espFramework.o: \
-    src/espFramework.c $(DEPS_29)
+    src/espFramework.c $(DEPS_28)
 	@echo '   [Compile] $(CONFIG)/obj/espFramework.o'
 	$(CC) -c -o $(CONFIG)/obj/espFramework.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espFramework.c
 
 #
 #   espHandler.o
 #
-DEPS_30 += $(CONFIG)/inc/me.h
-DEPS_30 += $(CONFIG)/inc/esp.h
+DEPS_29 += $(CONFIG)/inc/me.h
+DEPS_29 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espHandler.o: \
-    src/espHandler.c $(DEPS_30)
+    src/espHandler.c $(DEPS_29)
 	@echo '   [Compile] $(CONFIG)/obj/espHandler.o'
 	$(CC) -c -o $(CONFIG)/obj/espHandler.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHandler.c
 
 #
 #   espHtml.o
 #
-DEPS_31 += $(CONFIG)/inc/me.h
-DEPS_31 += $(CONFIG)/inc/esp.h
-DEPS_31 += $(CONFIG)/inc/edi.h
+DEPS_30 += $(CONFIG)/inc/me.h
+DEPS_30 += $(CONFIG)/inc/esp.h
+DEPS_30 += $(CONFIG)/inc/edi.h
 
 $(CONFIG)/obj/espHtml.o: \
-    src/espHtml.c $(DEPS_31)
+    src/espHtml.c $(DEPS_30)
 	@echo '   [Compile] $(CONFIG)/obj/espHtml.o'
 	$(CC) -c -o $(CONFIG)/obj/espHtml.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHtml.c
 
 #
 #   espTemplate.o
 #
-DEPS_32 += $(CONFIG)/inc/me.h
-DEPS_32 += $(CONFIG)/inc/esp.h
+DEPS_31 += $(CONFIG)/inc/me.h
+DEPS_31 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/espTemplate.o: \
-    src/espTemplate.c $(DEPS_32)
+    src/espTemplate.c $(DEPS_31)
 	@echo '   [Compile] $(CONFIG)/obj/espTemplate.o'
 	$(CC) -c -o $(CONFIG)/obj/espTemplate.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espTemplate.c
 
 #
 #   mdb.o
 #
-DEPS_33 += $(CONFIG)/inc/me.h
-DEPS_33 += $(CONFIG)/inc/http.h
-DEPS_33 += $(CONFIG)/inc/edi.h
-DEPS_33 += $(CONFIG)/inc/mdb.h
-DEPS_33 += $(CONFIG)/inc/pcre.h
+DEPS_32 += $(CONFIG)/inc/me.h
+DEPS_32 += $(CONFIG)/inc/http.h
+DEPS_32 += $(CONFIG)/inc/edi.h
+DEPS_32 += $(CONFIG)/inc/mdb.h
+DEPS_32 += $(CONFIG)/inc/pcre.h
 
 $(CONFIG)/obj/mdb.o: \
-    src/mdb.c $(DEPS_33)
+    src/mdb.c $(DEPS_32)
 	@echo '   [Compile] $(CONFIG)/obj/mdb.o'
 	$(CC) -c -o $(CONFIG)/obj/mdb.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/mdb.c
 
 #
 #   sdb.o
 #
-DEPS_34 += $(CONFIG)/inc/me.h
-DEPS_34 += $(CONFIG)/inc/http.h
-DEPS_34 += $(CONFIG)/inc/edi.h
+DEPS_33 += $(CONFIG)/inc/me.h
+DEPS_33 += $(CONFIG)/inc/http.h
+DEPS_33 += $(CONFIG)/inc/edi.h
 
 $(CONFIG)/obj/sdb.o: \
-    src/sdb.c $(DEPS_34)
+    src/sdb.c $(DEPS_33)
 	@echo '   [Compile] $(CONFIG)/obj/sdb.o'
 	$(CC) -c -o $(CONFIG)/obj/sdb.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/sdb.c
 
 #
 #   libmod_esp
 #
-DEPS_35 += $(CONFIG)/inc/mpr.h
-DEPS_35 += $(CONFIG)/inc/me.h
-DEPS_35 += $(CONFIG)/inc/osdep.h
-DEPS_35 += $(CONFIG)/obj/mprLib.o
-DEPS_35 += $(CONFIG)/bin/libmpr.so
-DEPS_35 += $(CONFIG)/inc/pcre.h
-DEPS_35 += $(CONFIG)/obj/pcre.o
+DEPS_34 += $(CONFIG)/inc/mpr.h
+DEPS_34 += $(CONFIG)/inc/me.h
+DEPS_34 += $(CONFIG)/inc/osdep.h
+DEPS_34 += $(CONFIG)/obj/mprLib.o
+DEPS_34 += $(CONFIG)/bin/libmpr.so
+DEPS_34 += $(CONFIG)/inc/pcre.h
+DEPS_34 += $(CONFIG)/obj/pcre.o
 ifeq ($(ME_COM_PCRE),1)
-    DEPS_35 += $(CONFIG)/bin/libpcre.so
+    DEPS_34 += $(CONFIG)/bin/libpcre.so
 endif
-DEPS_35 += $(CONFIG)/inc/http.h
-DEPS_35 += $(CONFIG)/obj/httpLib.o
+DEPS_34 += $(CONFIG)/inc/http.h
+DEPS_34 += $(CONFIG)/obj/httpLib.o
 ifeq ($(ME_COM_HTTP),1)
-    DEPS_35 += $(CONFIG)/bin/libhttp.so
+    DEPS_34 += $(CONFIG)/bin/libhttp.so
 endif
-DEPS_35 += $(CONFIG)/inc/appweb.h
-DEPS_35 += $(CONFIG)/obj/appwebLib.o
+DEPS_34 += $(CONFIG)/inc/appweb.h
+DEPS_34 += $(CONFIG)/obj/appwebLib.o
 ifeq ($(ME_COM_APPWEB),1)
-    DEPS_35 += $(CONFIG)/bin/libappweb.so
+    DEPS_34 += $(CONFIG)/bin/libappweb.so
 endif
-DEPS_35 += $(CONFIG)/inc/sqlite3.h
-DEPS_35 += $(CONFIG)/obj/sqlite3.o
+DEPS_34 += $(CONFIG)/inc/sqlite3.h
+DEPS_34 += $(CONFIG)/obj/sqlite3.o
 ifeq ($(ME_COM_SQLITE),1)
-    DEPS_35 += $(CONFIG)/bin/libsql.so
+    DEPS_34 += $(CONFIG)/bin/libsql.so
 endif
-DEPS_35 += $(CONFIG)/inc/edi.h
-DEPS_35 += $(CONFIG)/inc/esp.h
-DEPS_35 += $(CONFIG)/inc/mdb.h
-DEPS_35 += $(CONFIG)/obj/edi.o
-DEPS_35 += $(CONFIG)/obj/espAbbrev.o
-DEPS_35 += $(CONFIG)/obj/espConfig.o
-DEPS_35 += $(CONFIG)/obj/espFramework.o
-DEPS_35 += $(CONFIG)/obj/espHandler.o
-DEPS_35 += $(CONFIG)/obj/espHtml.o
-DEPS_35 += $(CONFIG)/obj/espTemplate.o
-DEPS_35 += $(CONFIG)/obj/mdb.o
-DEPS_35 += $(CONFIG)/obj/sdb.o
+DEPS_34 += $(CONFIG)/inc/edi.h
+DEPS_34 += $(CONFIG)/inc/esp.h
+DEPS_34 += $(CONFIG)/inc/mdb.h
+DEPS_34 += $(CONFIG)/obj/edi.o
+DEPS_34 += $(CONFIG)/obj/espAbbrev.o
+DEPS_34 += $(CONFIG)/obj/espConfig.o
+DEPS_34 += $(CONFIG)/obj/espFramework.o
+DEPS_34 += $(CONFIG)/obj/espHandler.o
+DEPS_34 += $(CONFIG)/obj/espHtml.o
+DEPS_34 += $(CONFIG)/obj/espTemplate.o
+DEPS_34 += $(CONFIG)/obj/mdb.o
+DEPS_34 += $(CONFIG)/obj/sdb.o
 
 ifeq ($(ME_COM_APPWEB),1)
-    LIBS_35 += -lappweb
+    LIBS_34 += -lappweb
 endif
 ifeq ($(ME_COM_HTTP),1)
-    LIBS_35 += -lhttp
+    LIBS_34 += -lhttp
 endif
-LIBS_35 += -lmpr
+LIBS_34 += -lmpr
 ifeq ($(ME_COM_PCRE),1)
-    LIBS_35 += -lpcre
+    LIBS_34 += -lpcre
 endif
 ifeq ($(ME_COM_SQLITE),1)
-    LIBS_35 += -lsql
+    LIBS_34 += -lsql
 endif
 
-$(CONFIG)/bin/libmod_esp.so: $(DEPS_35)
+$(CONFIG)/bin/libmod_esp.so: $(DEPS_34)
 	@echo '      [Link] $(CONFIG)/bin/libmod_esp.so'
-	$(CC) -shared -o $(CONFIG)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espConfig.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_35) $(LIBS_35) $(LIBS_35) $(LIBS) 
+	$(CC) -shared -o $(CONFIG)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/edi.o" "$(CONFIG)/obj/espAbbrev.o" "$(CONFIG)/obj/espConfig.o" "$(CONFIG)/obj/espFramework.o" "$(CONFIG)/obj/espHandler.o" "$(CONFIG)/obj/espHtml.o" "$(CONFIG)/obj/espTemplate.o" "$(CONFIG)/obj/mdb.o" "$(CONFIG)/obj/sdb.o" $(LIBPATHS_34) $(LIBS_34) $(LIBS_34) $(LIBS) 
 
 #
 #   esp.o
 #
-DEPS_36 += $(CONFIG)/inc/me.h
-DEPS_36 += $(CONFIG)/inc/esp.h
+DEPS_35 += $(CONFIG)/inc/me.h
+DEPS_35 += $(CONFIG)/inc/esp.h
 
 $(CONFIG)/obj/esp.o: \
-    src/esp.c $(DEPS_36)
+    src/esp.c $(DEPS_35)
 	@echo '   [Compile] $(CONFIG)/obj/esp.o'
 	$(CC) -c -o $(CONFIG)/obj/esp.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/esp.c
 
 #
 #   espcmd
 #
-DEPS_37 += $(CONFIG)/inc/mpr.h
-DEPS_37 += $(CONFIG)/inc/me.h
-DEPS_37 += $(CONFIG)/inc/osdep.h
-DEPS_37 += $(CONFIG)/obj/mprLib.o
-DEPS_37 += $(CONFIG)/bin/libmpr.so
-DEPS_37 += $(CONFIG)/inc/pcre.h
-DEPS_37 += $(CONFIG)/obj/pcre.o
+DEPS_36 += $(CONFIG)/inc/mpr.h
+DEPS_36 += $(CONFIG)/inc/me.h
+DEPS_36 += $(CONFIG)/inc/osdep.h
+DEPS_36 += $(CONFIG)/obj/mprLib.o
+DEPS_36 += $(CONFIG)/bin/libmpr.so
+DEPS_36 += $(CONFIG)/inc/pcre.h
+DEPS_36 += $(CONFIG)/obj/pcre.o
 ifeq ($(ME_COM_PCRE),1)
-    DEPS_37 += $(CONFIG)/bin/libpcre.so
+    DEPS_36 += $(CONFIG)/bin/libpcre.so
 endif
-DEPS_37 += $(CONFIG)/inc/http.h
-DEPS_37 += $(CONFIG)/obj/httpLib.o
+DEPS_36 += $(CONFIG)/inc/http.h
+DEPS_36 += $(CONFIG)/obj/httpLib.o
 ifeq ($(ME_COM_HTTP),1)
-    DEPS_37 += $(CONFIG)/bin/libhttp.so
+    DEPS_36 += $(CONFIG)/bin/libhttp.so
 endif
-DEPS_37 += $(CONFIG)/inc/appweb.h
-DEPS_37 += $(CONFIG)/obj/appwebLib.o
+DEPS_36 += $(CONFIG)/inc/appweb.h
+DEPS_36 += $(CONFIG)/obj/appwebLib.o
 ifeq ($(ME_COM_APPWEB),1)
-    DEPS_37 += $(CONFIG)/bin/libappweb.so
+    DEPS_36 += $(CONFIG)/bin/libappweb.so
 endif
-DEPS_37 += $(CONFIG)/inc/sqlite3.h
-DEPS_37 += $(CONFIG)/obj/sqlite3.o
+DEPS_36 += $(CONFIG)/inc/sqlite3.h
+DEPS_36 += $(CONFIG)/obj/sqlite3.o
 ifeq ($(ME_COM_SQLITE),1)
-    DEPS_37 += $(CONFIG)/bin/libsql.so
+    DEPS_36 += $(CONFIG)/bin/libsql.so
 endif
-DEPS_37 += $(CONFIG)/inc/edi.h
-DEPS_37 += $(CONFIG)/inc/esp.h
-DEPS_37 += $(CONFIG)/inc/mdb.h
-DEPS_37 += $(CONFIG)/obj/edi.o
-DEPS_37 += $(CONFIG)/obj/espAbbrev.o
-DEPS_37 += $(CONFIG)/obj/espConfig.o
-DEPS_37 += $(CONFIG)/obj/espFramework.o
-DEPS_37 += $(CONFIG)/obj/espHandler.o
-DEPS_37 += $(CONFIG)/obj/espHtml.o
-DEPS_37 += $(CONFIG)/obj/espTemplate.o
-DEPS_37 += $(CONFIG)/obj/mdb.o
-DEPS_37 += $(CONFIG)/obj/sdb.o
-DEPS_37 += $(CONFIG)/bin/libmod_esp.so
-DEPS_37 += $(CONFIG)/obj/esp.o
+DEPS_36 += $(CONFIG)/inc/edi.h
+DEPS_36 += $(CONFIG)/inc/esp.h
+DEPS_36 += $(CONFIG)/inc/mdb.h
+DEPS_36 += $(CONFIG)/obj/edi.o
+DEPS_36 += $(CONFIG)/obj/espAbbrev.o
+DEPS_36 += $(CONFIG)/obj/espConfig.o
+DEPS_36 += $(CONFIG)/obj/espFramework.o
+DEPS_36 += $(CONFIG)/obj/espHandler.o
+DEPS_36 += $(CONFIG)/obj/espHtml.o
+DEPS_36 += $(CONFIG)/obj/espTemplate.o
+DEPS_36 += $(CONFIG)/obj/mdb.o
+DEPS_36 += $(CONFIG)/obj/sdb.o
+DEPS_36 += $(CONFIG)/bin/libmod_esp.so
+DEPS_36 += $(CONFIG)/obj/esp.o
 
 ifeq ($(ME_COM_APPWEB),1)
-    LIBS_37 += -lappweb
+    LIBS_36 += -lappweb
 endif
 ifeq ($(ME_COM_HTTP),1)
-    LIBS_37 += -lhttp
+    LIBS_36 += -lhttp
 endif
-LIBS_37 += -lmpr
+LIBS_36 += -lmpr
 ifeq ($(ME_COM_PCRE),1)
-    LIBS_37 += -lpcre
+    LIBS_36 += -lpcre
 endif
 ifeq ($(ME_COM_SQLITE),1)
-    LIBS_37 += -lsql
+    LIBS_36 += -lsql
 endif
-LIBS_37 += -lmod_esp
+LIBS_36 += -lmod_esp
 
-$(CONFIG)/bin/esp: $(DEPS_37)
+$(CONFIG)/bin/esp: $(DEPS_36)
 	@echo '      [Link] $(CONFIG)/bin/esp'
-	$(CC) -o $(CONFIG)/bin/esp $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/esp.o" $(LIBPATHS_37) $(LIBS_37) $(LIBS_37) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/esp $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/esp.o" $(LIBPATHS_36) $(LIBS_36) $(LIBS_36) $(LIBS) $(LIBS) 
 
 
 #
 #   http-ca-crt
 #
-DEPS_38 += src/paks/http/ca.crt
+DEPS_37 += src/paks/http/ca.crt
 
-$(CONFIG)/bin/ca.crt: $(DEPS_38)
+$(CONFIG)/bin/ca.crt: $(DEPS_37)
 	@echo '      [Copy] $(CONFIG)/bin/ca.crt'
 	mkdir -p "$(CONFIG)/bin"
 	cp src/paks/http/ca.crt $(CONFIG)/bin/ca.crt
@@ -920,7 +909,7 @@ $(CONFIG)/bin/ca.crt: $(DEPS_38)
 #
 #   est.h
 #
-$(CONFIG)/inc/est.h: $(DEPS_39)
+$(CONFIG)/inc/est.h: $(DEPS_38)
 	@echo '      [Copy] $(CONFIG)/inc/est.h'
 	mkdir -p "$(CONFIG)/inc"
 	cp src/paks/est/est.h $(CONFIG)/inc/est.h
@@ -928,12 +917,12 @@ $(CONFIG)/inc/est.h: $(DEPS_39)
 #
 #   estLib.o
 #
-DEPS_40 += $(CONFIG)/inc/me.h
-DEPS_40 += $(CONFIG)/inc/est.h
-DEPS_40 += $(CONFIG)/inc/osdep.h
+DEPS_39 += $(CONFIG)/inc/me.h
+DEPS_39 += $(CONFIG)/inc/est.h
+DEPS_39 += $(CONFIG)/inc/osdep.h
 
 $(CONFIG)/obj/estLib.o: \
-    src/paks/est/estLib.c $(DEPS_40)
+    src/paks/est/estLib.c $(DEPS_39)
 	@echo '   [Compile] $(CONFIG)/obj/estLib.o'
 	$(CC) -c -o $(CONFIG)/obj/estLib.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/est/estLib.c
 
@@ -941,12 +930,12 @@ ifeq ($(ME_COM_EST),1)
 #
 #   libest
 #
-DEPS_41 += $(CONFIG)/inc/est.h
-DEPS_41 += $(CONFIG)/inc/me.h
-DEPS_41 += $(CONFIG)/inc/osdep.h
-DEPS_41 += $(CONFIG)/obj/estLib.o
+DEPS_40 += $(CONFIG)/inc/est.h
+DEPS_40 += $(CONFIG)/inc/me.h
+DEPS_40 += $(CONFIG)/inc/osdep.h
+DEPS_40 += $(CONFIG)/obj/estLib.o
 
-$(CONFIG)/bin/libest.so: $(DEPS_41)
+$(CONFIG)/bin/libest.so: $(DEPS_40)
 	@echo '      [Link] $(CONFIG)/bin/libest.so'
 	$(CC) -shared -o $(CONFIG)/bin/libest.so $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/estLib.o" $(LIBS) 
 endif
@@ -954,90 +943,90 @@ endif
 #
 #   mprSsl.o
 #
-DEPS_42 += $(CONFIG)/inc/me.h
-DEPS_42 += $(CONFIG)/inc/mpr.h
-DEPS_42 += $(CONFIG)/inc/est.h
+DEPS_41 += $(CONFIG)/inc/me.h
+DEPS_41 += $(CONFIG)/inc/mpr.h
+DEPS_41 += $(CONFIG)/inc/est.h
 
 $(CONFIG)/obj/mprSsl.o: \
-    src/paks/mpr/mprSsl.c $(DEPS_42)
+    src/paks/mpr/mprSsl.c $(DEPS_41)
 	@echo '   [Compile] $(CONFIG)/obj/mprSsl.o'
 	$(CC) -c -o $(CONFIG)/obj/mprSsl.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) "-I$(ME_COM_OPENSSL_PATH)/include" "-I$(ME_COM_MATRIXSSL_PATH)" "-I$(ME_COM_MATRIXSSL_PATH)/matrixssl" "-I$(ME_COM_NANOSSL_PATH)/src" src/paks/mpr/mprSsl.c
 
 #
 #   libmprssl
 #
-DEPS_43 += $(CONFIG)/inc/mpr.h
-DEPS_43 += $(CONFIG)/inc/me.h
-DEPS_43 += $(CONFIG)/inc/osdep.h
-DEPS_43 += $(CONFIG)/obj/mprLib.o
-DEPS_43 += $(CONFIG)/bin/libmpr.so
-DEPS_43 += $(CONFIG)/inc/est.h
-DEPS_43 += $(CONFIG)/obj/estLib.o
+DEPS_42 += $(CONFIG)/inc/mpr.h
+DEPS_42 += $(CONFIG)/inc/me.h
+DEPS_42 += $(CONFIG)/inc/osdep.h
+DEPS_42 += $(CONFIG)/obj/mprLib.o
+DEPS_42 += $(CONFIG)/bin/libmpr.so
+DEPS_42 += $(CONFIG)/inc/est.h
+DEPS_42 += $(CONFIG)/obj/estLib.o
 ifeq ($(ME_COM_EST),1)
-    DEPS_43 += $(CONFIG)/bin/libest.so
+    DEPS_42 += $(CONFIG)/bin/libest.so
 endif
-DEPS_43 += $(CONFIG)/obj/mprSsl.o
+DEPS_42 += $(CONFIG)/obj/mprSsl.o
 
-LIBS_43 += -lmpr
+LIBS_42 += -lmpr
 ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_43 += -lssl
-    LIBPATHS_43 += -L$(ME_COM_OPENSSL_PATH)
+    LIBS_42 += -lssl
+    LIBPATHS_42 += -L$(ME_COM_OPENSSL_PATH)
 endif
 ifeq ($(ME_COM_OPENSSL),1)
-    LIBS_43 += -lcrypto
-    LIBPATHS_43 += -L$(ME_COM_OPENSSL_PATH)
+    LIBS_42 += -lcrypto
+    LIBPATHS_42 += -L$(ME_COM_OPENSSL_PATH)
 endif
 ifeq ($(ME_COM_EST),1)
-    LIBS_43 += -lest
+    LIBS_42 += -lest
 endif
 ifeq ($(ME_COM_MATRIXSSL),1)
-    LIBS_43 += -lmatrixssl
-    LIBPATHS_43 += -L$(ME_COM_MATRIXSSL_PATH)
+    LIBS_42 += -lmatrixssl
+    LIBPATHS_42 += -L$(ME_COM_MATRIXSSL_PATH)
 endif
 ifeq ($(ME_COM_NANOSSL),1)
-    LIBS_43 += -lssls
-    LIBPATHS_43 += -L$(ME_COM_NANOSSL_PATH)/bin
+    LIBS_42 += -lssls
+    LIBPATHS_42 += -L$(ME_COM_NANOSSL_PATH)/bin
 endif
 
-$(CONFIG)/bin/libmprssl.so: $(DEPS_43)
+$(CONFIG)/bin/libmprssl.so: $(DEPS_42)
 	@echo '      [Link] $(CONFIG)/bin/libmprssl.so'
-	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_43) $(LIBS_43) $(LIBS_43) $(LIBS) 
+	$(CC) -shared -o $(CONFIG)/bin/libmprssl.so $(LDFLAGS) $(LIBPATHS)    "$(CONFIG)/obj/mprSsl.o" $(LIBPATHS_42) $(LIBS_42) $(LIBS_42) $(LIBS) 
 
 #
 #   manager.o
 #
-DEPS_44 += $(CONFIG)/inc/me.h
-DEPS_44 += $(CONFIG)/inc/mpr.h
+DEPS_43 += $(CONFIG)/inc/me.h
+DEPS_43 += $(CONFIG)/inc/mpr.h
 
 $(CONFIG)/obj/manager.o: \
-    src/paks/mpr/manager.c $(DEPS_44)
+    src/paks/mpr/manager.c $(DEPS_43)
 	@echo '   [Compile] $(CONFIG)/obj/manager.o'
 	$(CC) -c -o $(CONFIG)/obj/manager.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/mpr/manager.c
 
 #
 #   manager
 #
-DEPS_45 += $(CONFIG)/inc/mpr.h
-DEPS_45 += $(CONFIG)/inc/me.h
-DEPS_45 += $(CONFIG)/inc/osdep.h
-DEPS_45 += $(CONFIG)/obj/mprLib.o
-DEPS_45 += $(CONFIG)/bin/libmpr.so
-DEPS_45 += $(CONFIG)/obj/manager.o
+DEPS_44 += $(CONFIG)/inc/mpr.h
+DEPS_44 += $(CONFIG)/inc/me.h
+DEPS_44 += $(CONFIG)/inc/osdep.h
+DEPS_44 += $(CONFIG)/obj/mprLib.o
+DEPS_44 += $(CONFIG)/bin/libmpr.so
+DEPS_44 += $(CONFIG)/obj/manager.o
 
-LIBS_45 += -lmpr
+LIBS_44 += -lmpr
 
-$(CONFIG)/bin/espman: $(DEPS_45)
+$(CONFIG)/bin/espman: $(DEPS_44)
 	@echo '      [Link] $(CONFIG)/bin/espman'
-	$(CC) -o $(CONFIG)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_45) $(LIBS_45) $(LIBS_45) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/manager.o" $(LIBPATHS_44) $(LIBS_44) $(LIBS_44) $(LIBS) $(LIBS) 
 
 #
 #   sqlite.o
 #
-DEPS_46 += $(CONFIG)/inc/me.h
-DEPS_46 += $(CONFIG)/inc/sqlite3.h
+DEPS_45 += $(CONFIG)/inc/me.h
+DEPS_45 += $(CONFIG)/inc/sqlite3.h
 
 $(CONFIG)/obj/sqlite.o: \
-    src/paks/sqlite/sqlite.c $(DEPS_46)
+    src/paks/sqlite/sqlite.c $(DEPS_45)
 	@echo '   [Compile] $(CONFIG)/obj/sqlite.o'
 	$(CC) -c -o $(CONFIG)/obj/sqlite.o $(LDFLAGS) $(CFLAGS) $(DFLAGS) $(IFLAGS) src/paks/sqlite/sqlite.c
 
@@ -1045,28 +1034,28 @@ ifeq ($(ME_COM_SQLITE),1)
 #
 #   sqliteshell
 #
-DEPS_47 += $(CONFIG)/inc/sqlite3.h
-DEPS_47 += $(CONFIG)/inc/me.h
-DEPS_47 += $(CONFIG)/obj/sqlite3.o
-DEPS_47 += $(CONFIG)/bin/libsql.so
-DEPS_47 += $(CONFIG)/obj/sqlite.o
+DEPS_46 += $(CONFIG)/inc/sqlite3.h
+DEPS_46 += $(CONFIG)/inc/me.h
+DEPS_46 += $(CONFIG)/obj/sqlite3.o
+DEPS_46 += $(CONFIG)/bin/libsql.so
+DEPS_46 += $(CONFIG)/obj/sqlite.o
 
-LIBS_47 += -lsql
+LIBS_46 += -lsql
 
-$(CONFIG)/bin/sqlite: $(DEPS_47)
+$(CONFIG)/bin/sqlite: $(DEPS_46)
 	@echo '      [Link] $(CONFIG)/bin/sqlite'
-	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_47) $(LIBS_47) $(LIBS_47) $(LIBS) $(LIBS) 
+	$(CC) -o $(CONFIG)/bin/sqlite $(LDFLAGS) $(LIBPATHS) "$(CONFIG)/obj/sqlite.o" $(LIBPATHS_46) $(LIBS_46) $(LIBS_46) $(LIBS) $(LIBS) 
 endif
 
 #
 #   stop
 #
-stop: $(DEPS_48)
+stop: $(DEPS_47)
 
 #
 #   installBinary
 #
-installBinary: $(DEPS_49)
+installBinary: $(DEPS_48)
 	( \
 	cd .; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
@@ -1102,40 +1091,37 @@ installBinary: $(DEPS_49)
 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/css" ; \
 	cp src/paks/esp-html-mvc/client/css/all.css $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/css/all.css ; \
 	cp src/paks/esp-html-mvc/client/css/all.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/css/all.less ; \
-	cp src/paks/esp-html-mvc/client/css/app.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/css/app.less ; \
-	cp src/paks/esp-html-mvc/client/css/theme.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/css/theme.less ; \
 	cp src/paks/esp-html-mvc/client/index.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/client/index.esp ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/css" ; \
+	cp src/paks/esp-html-mvc/css/app.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/css/app.less ; \
+	cp src/paks/esp-html-mvc/css/theme.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/css/theme.less ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc" ; \
-	cp src/paks/esp-html-mvc/generate/esp-html-mvc/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/appweb.conf ; \
-	cp src/paks/esp-html-mvc/generate/esp-html-mvc/controller-singleton.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/controller-singleton.c ; \
-	cp src/paks/esp-html-mvc/generate/esp-html-mvc/controller.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/controller.c ; \
-	cp src/paks/esp-html-mvc/generate/esp-html-mvc/edit.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/edit.esp ; \
-	cp src/paks/esp-html-mvc/generate/esp-html-mvc/list.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/esp-html-mvc/list.esp ; \
+	cp src/paks/esp-html-mvc/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/appweb.conf ; \
+	cp src/paks/esp-html-mvc/generate/controller.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/controller.c ; \
+	cp src/paks/esp-html-mvc/generate/controllerSingleton.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/controllerSingleton.c ; \
+	cp src/paks/esp-html-mvc/generate/edit.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/edit.esp ; \
+	cp src/paks/esp-html-mvc/generate/list.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/generate/list.esp ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/layouts" ; \
 	cp src/paks/esp-html-mvc/layouts/default.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/layouts/default.esp ; \
 	cp src/paks/esp-html-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp src/paks/esp-html-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/package.json ; \
 	cp src/paks/esp-html-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/README.md ; \
-	cp src/paks/esp-html-mvc/start.me $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.0.0-rc0/start.me ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0" ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc" ; \
-	cp src/paks/esp-mvc/generate/esp-mvc/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/appweb.conf ; \
-	cp src/paks/esp-mvc/generate/esp-mvc/controller.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/controller.c ; \
-	cp src/paks/esp-mvc/generate/esp-mvc/migration.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/migration.c ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/src" ; \
-	cp src/paks/esp-mvc/generate/esp-mvc/src/app.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/esp-mvc/src/app.c ; \
+	cp src/paks/esp-mvc/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/appweb.conf ; \
+	cp src/paks/esp-mvc/generate/controller.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/controller.c ; \
+	cp src/paks/esp-mvc/generate/migration.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/migration.c ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/src" ; \
+	cp src/paks/esp-mvc/generate/src/app.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/generate/src/app.c ; \
 	cp src/paks/esp-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/LICENSE.md ; \
 	cp src/paks/esp-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/package.json ; \
 	cp src/paks/esp-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.0.0-rc0/README.md ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate/esp-server" ; \
-	cp src/paks/esp-server/generate/esp-server/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/generate/esp-server/appweb.conf ; \
-	cp src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/LICENSE.md ; \
-	cp src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/package.json ; \
-	cp src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/1.0.0-rc0/README.md ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/generate" ; \
+	cp src/paks/esp-server/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/generate/appweb.conf ; \
+	cp src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/LICENSE.md ; \
+	cp src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/package.json ; \
+	cp src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/5.0.0-rc0/README.md ; \
 	cp $(CONFIG)/bin/esp.conf $(ME_VAPP_PREFIX)/bin/esp.conf ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
 	cp doc/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
@@ -1179,30 +1165,23 @@ installBinary: $(DEPS_49)
 #
 #   start
 #
-start: $(DEPS_50)
+start: $(DEPS_49)
 
 #
 #   install
 #
-DEPS_51 += stop
-DEPS_51 += installBinary
-DEPS_51 += start
+DEPS_50 += stop
+DEPS_50 += installBinary
+DEPS_50 += start
 
-install: $(DEPS_51)
+install: $(DEPS_50)
 
-#
-#   run
-#
-DEPS_52 += comp
-
-run: $(DEPS_52)
-	cd src/paks/esp-html-mvc; appweb -v ; cd ../../..
 #
 #   uninstall
 #
-DEPS_53 += stop
+DEPS_51 += stop
 
-uninstall: $(DEPS_53)
+uninstall: $(DEPS_51)
 	( \
 	cd .; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
@@ -1213,6 +1192,6 @@ uninstall: $(DEPS_53)
 #
 #   version
 #
-version: $(DEPS_54)
+version: $(DEPS_52)
 	echo 5.0.0-rc0
 

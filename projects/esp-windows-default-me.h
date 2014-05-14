@@ -87,11 +87,11 @@
 #ifndef ME_HTTP_WEB_SOCKETS
     #define ME_HTTP_WEB_SOCKETS 1
 #endif
-#ifndef ME_MAKEME
-    #define ME_MAKEME "0.8.0"
-#endif
 #ifndef ME_MANIFEST
     #define ME_MANIFEST "package/manifest.me"
+#endif
+#ifndef ME_ME
+    #define ME_ME "0.8.0"
 #endif
 #ifndef ME_MPR_LOGGING
     #define ME_MPR_LOGGING 1
