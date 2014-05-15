@@ -95,6 +95,14 @@ Me.load({
                 to:     '${abin}/',
                 set:    'core',
 
+           }, {
+                from:       [ 'package/uninstall.sh' ],
+                to:         '${abin}/uninstall',
+                expand:     true,
+                permissions: 0755,
+                set:        'core',
+                enable:     "!me.generating",
+
             },{
                 set:        'core',
                 copy:       `
