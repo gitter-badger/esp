@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Embedthis ESP 5.0.0-rc0 Documentation</title>
+    <title>Embedthis ESP 5.0.0-rc1 Documentation</title>
     <meta name="keywords" content="web framework, embedded web server, application web server, 
         embedded server, small web server, HTTP server, node, nginx, appweb" />
     <meta name="description" content="Embedthis Sofware provides commercial and open source embedded web 
@@ -22,7 +22,7 @@
         <div class="topRight">
             <div class="search">
                 <div id="cse-search-form"></div>
-                <div class="version">Embedthis ESP 5.0.0-rc0</div>
+                <div class="version">Embedthis ESP 5.0.0-rc1</div>
             </div>
         </div>
         <div class="crumbs">
@@ -259,7 +259,6 @@ or
                     </tr>
                 </tbody>
             </table>
-
             <a name="dependencies"></a>
             <h3>Dependency Expressions</h3>
             <p>Dependent packs may be specified in the <em>dependencies</em> property. This is an object 
@@ -292,7 +291,6 @@ or
     "jquery": "^1.9.1",    /* Version 1.9.1 and not prereleases */
     "less": "1.3.x",       /* Version 1.3.x and prereleases /
 }</pre>
-
             <a name="directories"></a>
             <h3>Directory Configuration &mdash; directories.*</h3>
             <table title="directory" class="full">
@@ -359,7 +357,6 @@ or
                     </tr>
                 </tbody>
             </table>
-
             <a name="app"></a>
             <h3>Application Specific Configuration &mdash; app.*</h3>
             <table title="app" class="full">
@@ -391,7 +388,6 @@ or
                     </tr>
                 </tbody>
             </table>
-
             <a name="client"></a>
             <h3>Client Configuration &mdash; app.client.*</h3>
             <table title="client" class="full">
@@ -434,7 +430,6 @@ or
                     </tr>
                 </tbody>
             </table>
-
             <a name="esp"></a>
             <h3>ESP Collection &mdash; app.esp.*</h3>
             <table title="esp" class="full">
@@ -463,7 +458,6 @@ or
                     </tr>
                 </tbody>
             </table>
-
             <a name="http"></a>
             <h3>Http Configuration &mdash; app.http.*</h3>
             <p>All properties in the <em>app.http</em> collection with the exception of the <em>app.http.server</em> 
@@ -750,7 +744,6 @@ routes [ {
                     </tr>
                 </tbody>
             </table>
-
             <a name="server"></a>
             <h3>Http Server Configuration &mdash; app.http.server.*</h3>
             <p>The <em>server</em> collection is special in that it is only parsed when ESP is not hosted in
@@ -830,7 +823,6 @@ server: {
                     </tr>
                 </tbody>
             </table>
-
             <a name="auth"></a>
             <h3>Authentication Configuration &mdash; app.http.auth.*</h3>
             <table title="auth" class="full">
@@ -896,7 +888,6 @@ server: {
                     </tr>
                 </tbody>
             </table>
-
             <a name="#cache"></a>
             <h3>Cache Collection &mdash; app.http.cache.*</h3>
             <p>The cache property contains a list of cache records. For example:
@@ -908,7 +899,6 @@ server: {
     extensions: [ 'css', 'html', 'js' ],
 }],</pre>
             </p>
-
             <table title="cache" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -950,7 +940,6 @@ server: {
                     </tr>
                 </tbody>
             </table>
-
             <a name="#content"></a>
             <h3>Content Collection &mdash; app.http.content.*</h3>
             <p>The content property describes how web content should be built and processed.</p>
@@ -961,7 +950,6 @@ server: {
     minify:   [ 'css', 'html', 'js' ],
     stylesheets: "css",
 },</pre>
-
             <table title="cache" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -992,7 +980,6 @@ server: {
                         <td>Set to the exension to use for stylesheets. Set to "css" or "less".</td>
                 </tbody>
             </table>
-
             <a name="#ssl"></a>
             <h3>SSL Collection &mdash; app.http.ssl.*</h3>
             <p>The content property describes how web content should be built and processed.
@@ -1013,7 +1000,6 @@ server: {
         issuer:     true,
     },
 },</pre>
-
             <table title="ssl" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -1050,7 +1036,6 @@ server: {
                         specified <em>authority</em> certificate.</td>
                     </tr>
             </table>
-
             <a name="#timeouts"></a>
             <h3>Timeouts Collection &mdash; app.http.timeouts.*</h3>
             <p>The timeouts property specifies the various request and connection timeouts.</p>
