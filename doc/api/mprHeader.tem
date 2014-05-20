@@ -26,7 +26,7 @@
         </div>
         <div class="crumbs">
             <a href="../index.html">Home</a>
-            &gt; <a href="../ref/appweb/index.html">Programmers Reference</a> 
+            &gt; <a href="../ref/esp/index.html">Programmers Reference</a> 
             &gt; <a href="native.html">Native APIs</a> 
             &gt; <b>MPR</b> 
         </div>
@@ -38,7 +38,7 @@
             <!-- BeginDsi "dsi/see.html" -->
             <h2>See Also</h2>
             <ul>
-                <li><a href="../ref/appweb/index.html">Programmers Reference</a></li>
+                <li><a href="../ref/esp/index.html">Programmers Reference</a></li>
                 <li><a href="native.html">Native APIs</a></li>
             </ul>
             <!-- EndDsi -->
