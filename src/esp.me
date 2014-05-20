@@ -24,6 +24,11 @@ Me.load({
             depends: [ 'libappweb', 'sqlite', 'libmod_esp' ],
             sources: [ 'esp.c' ]
             platforms: [ 'local' ],
+            postblend: function (target) {
+                if (target.static && me.targets.ssl.enable) {
+                    target.depends += ['libmprssl']
+                }
+            },
         },
 
         'esp.conf': {

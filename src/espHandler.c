@@ -841,10 +841,6 @@ PUBLIC void espAddHomeRoute(HttpRoute *parent)
 PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)
 {
     EspRoute    *eroute;
-    MprJson     *preload, *item;
-    cchar       *errMsg, *source;
-    char        *kind;
-    int         i;
 
     if ((eroute = getEroute(route)) == 0) {
         return MPR_ERR_MEMORY;
@@ -884,7 +880,13 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
             return MPR_ERR_CANT_LOAD;
         }
     }
+#if !ME_STATIC
     if (!eroute->skipApps) {
+        MprJson     *preload, *item;
+        cchar       *errMsg, *source;
+        char        *kind;
+        int         i;
+
         /*
             Note: the config parser pauses GC, so this will never yield
          */
@@ -903,7 +905,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
             }
         }
     }
-
+#endif
     if (routeSet) {
         httpAddRouteSet(route, routeSet);
     }
