@@ -902,7 +902,13 @@ static void install(int argc, char **argv)
         mprAddKey(app->topDeps, dep->name, dep->value);
     }
     for (i = 0; i < argc; i++) {
-        installPak(argv[i], 0);
+        name = argv[i];
+        if (smatch(name, "esp-server") || smatch(name, "esp-mvc") || smatch(name, "esp-html-mvc")) {
+            criteria = ESP_VERSION;
+        } else {
+            criteria = 0;
+        }
+        installPak(argv[i], criteria);
     }
 }
 
