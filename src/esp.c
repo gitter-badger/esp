@@ -698,12 +698,14 @@ static void process(int argc, char **argv)
     if (app->error) {
         return;
     }
-    cmd = argv[0];
 
     if (argc == 0) {
         run(argc, argv);
+        return;
+    }
+    cmd = argv[0];
 
-    } else if (smatch(cmd, "config")) {
+    if (smatch(cmd, "config")) {
         config();
 
     } else if (smatch(cmd, "clean")) {
@@ -879,6 +881,7 @@ static void init(int argc, char **argv)
 static void install(int argc, char **argv)
 {
     MprJson     *deps, *dep;
+    cchar       *criteria, *name;
     int         i;
 
     if (argc < 1) {
@@ -886,9 +889,6 @@ static void install(int argc, char **argv)
         return;
     }
     if (!mprPathExists("package.json", R_OK)) {
-#if UNUSED
-        app->appName = mprGetPathBase(mprGetCurrentPath());
-#endif
         if (!identifier(app->appName)) {
             fail("Directory name is used as application name and must be a valid C identifier");
             return;
@@ -2772,6 +2772,9 @@ static cchar *readTemplate(cchar *path, MprHash *tokens, ssize *len)
     cchar   *cp, *data;
     ssize   size;
 
+    if (!path || *path == '\0') {
+        return 0;
+    }
     if ((data = mprReadPathContents(path, &size)) == 0) {
         fail("Cannot open template file \"%s\"", path);
         return 0;
@@ -2831,10 +2834,9 @@ static MprHash *makeTokens(cchar *path, MprHash *other)
         "{ APP: '%s', APPDIR: '%s', BINDIR: '%s', DATABASE: '%s', DOCUMENTS: '%s', FILENAME: '%s', HOME: '%s', "
         "LIST: '%s', LISTEN: '%s', CONTROLLER: '%s', UCONTROLLER: '%s', MODEL: '%s', UMODEL: '%s', ROUTES: '%s', "
         "SERVER: '%s', TABLE: '%s', UAPP: '%s', ACTIONS: '', DEFINE_ACTIONS: '', VIEWSDIR: '%s' }",
-        app->appName, httpGetDir(route, "app"), app->binDir, app->database, route->documents, 
-        filename, route->home, list, app->listen, app->controller, stitle(app->controller), 
-        app->controller, stitle(app->controller), app->routeSet, route->serverPrefix, app->table, 
-        app->title, httpGetDir(route, "views")));
+        app->appName, httpGetDir(route, "app"), app->binDir, app->database, route->documents, filename, route->home, 
+        list, app->listen, app->controller, stitle(app->controller), app->controller, stitle(app->controller), app->routeSet, 
+        route->serverPrefix, app->table, app->title, httpGetDir(route, "views")));
     if (other) {
         mprBlendHash(tokens, other);
     }
