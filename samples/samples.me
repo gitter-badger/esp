@@ -1,0 +1,13 @@
+/*
+    samples.me -- MakeMe file to clean the samples
+ */
+
+Me.load({
+    targets: {
+        'clean-samples': {
+            action: function () {
+                rm('*/cache/*')
+            }
+        }
+    }
+})
