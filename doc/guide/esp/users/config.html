@@ -106,15 +106,17 @@
     "dependencies": {
         "esp-server": "1.x",
     },
-    "client-scripts": [
-        "app/**.js*",
-    ],
     <b>app: {
+        client: {
+            scripts: [
+                "app/**.js*",
+            ],
+        },
         http: {
             database: "mdb://blog.mdb",
             serverPrefix: "/do",
             auth: {
-                type: "app",
+                store: "app",
             },
             routes: "esp-html-mvc",
         },
@@ -872,13 +874,18 @@ server: {
 },</pre>
                     </tr>
                     <tr>
+                        <td>store</td>
+                        <td>Authentication store. Set to "app", "config", or "system".</td>
+                    </tr>
+                    <tr>
                         <td>type</td>
-                        <td>Authentication type. Set to "basic", digest", or "app" for web form authentication.</td>
+                        <td>Authentication type. Set to "basic" or "digest". No need to define if
+                            using the "app" authentication store.</td>
                     </tr>
                     <tr>
                         <td>users</td>
-                        <td>Definition of users, their passwords and roles.
-                        For example:
+                        <td>Definition of users, their passwords and roles if using the "config" authentication
+                            store.  For example:
                         <pre>users: {
     ralph: {
         password: 'BF1:00128:bWFC5x45BYfuf2GW:w+zzIU0wTZQYaNae0sPecWyry8Z9GrKH',
@@ -892,10 +899,7 @@ server: {
             <h3>Cache Collection &mdash; app.http.cache.*</h3>
             <p>The cache property contains a list of cache records. For example:
 <pre>cache: [{
-    lifespan: {
-        client: '1day',
-        server: '1hour',
-    }
+    client: '1day',
     extensions: [ 'css', 'html', 'js' ],
 }],</pre>
             </p>
@@ -909,11 +913,12 @@ server: {
                         <td>List of exensions to cache</td>
                     </tr>
                     <tr>
-                        <td>lifespan</td>
-                        <td>Define the lifespan of cached content. The <em>lifespan.client</em> specifies the lifespan for
-                        content cached in the client's browser, the <em>lifespan.server</em> specifies the lifespan for
-                        content cached server-side in the ESP cache. Lifespans are defined in seconds or may be natural 
-                        strings with suffixes like "secs".</td>
+                        <td>client</td>
+                        <td>Define the lifespan of content cached in the client's browser. For example: client="1hour</td>
+                    </tr>
+                    <tr>
+                        <td>server</td>
+                        <td>Define the lifespan of content cached in the server. For example: server="1hour</td>
                     </tr>
                     <tr>
                         <td>manual</td>
@@ -1036,9 +1041,11 @@ server: {
                         specified <em>authority</em> certificate.</td>
                     </tr>
             </table>
+
             <a name="#timeouts"></a>
             <h3>Timeouts Collection &mdash; app.http.timeouts.*</h3>
-            <p>The timeouts property specifies the various request and connection timeouts.</p>
+            <p>The timeouts property specifies the various request and connection timeouts.
+                Timeouts are expressed as strings with natural language suffixes like: "30mins".</p>
             <table title="ssl" class="full">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -1050,19 +1057,23 @@ server: {
                     </tr>
                     <tr>
                         <td>parse</td>
-                        <td>Maximum time to receive a the request headers.</td>
+                        <td>Maximum time to receive a the request headers. Default 5 seconds.</td>
                     </tr>
                     <tr>
                         <td>inactivity</td>
-                        <td>Maximum time a connection will be preserved in the absense of I/O activity.</td>
+                        <td>Maximum time a connection will be preserved in the absense of I/O activity. Default 30 seconds.</td>
                     </tr>
                     <tr>
                         <td>refresh</td>
                         <td>Default time to refresh pages with dynamic content.</td>
                     </tr>
                     <tr>
+                        <td>request</td>
+                        <td>Maximum time for a request to complete. Default infinite.</td>
+                    </tr>
+                    <tr>
                         <td>session</td>
-                        <td>Maximum time to preserve session state storage for a client.</td>
+                        <td>Maximum time to preserve session state storage for a client. Default 5 minutes.</td>
                     </tr>
             </table>
         </div>
