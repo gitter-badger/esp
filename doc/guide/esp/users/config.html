@@ -179,9 +179,9 @@
             your application at the source code level. When an ESP page is parsed, it is blended with a 
             layout page and then an intermediate C source file is generated. 
             This is normally removed after compilation. Setting the
-            <em>esp.keepSource</em> property to "<em>true</em>" will cause ESP to preserve this 
+            <em>http.keep</em> property to "<em>true</em>" will cause ESP to preserve this 
             intermediate source file in the <em>cache</em> directory.</p>
-            <pre>esp edit app.http.keepSource=true</pre>
+            <pre>esp edit app.http.keep=true</pre>
              <a id="database"></a>
             <h2 class="section">Databases</h2>
             <p>Databases can be specified and pre-opened via the <em>app.http.database</em> property 
@@ -547,6 +547,10 @@ or
     'index.html'
 ],</pre>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>keep</td>
+                        <td>Set to true to keep intermediate source files. Useful for debugging.</td>
                     </tr>
                     <tr>
                         <td>languages</td>
@@ -951,7 +955,6 @@ server: {
 <pre>content: {
     combine:  [ 'c', 'css', 'html', 'js' ],
     compress: [ 'css', 'html', 'js' ],
-    keep:     [ 'c' ],
     minify:   [ 'css', 'html', 'js' ],
     stylesheets: "css",
 },</pre>
@@ -970,10 +973,6 @@ server: {
                         <td>compress</td>
                         <td>List of exensions to compress using gzip. This optimizes network delivery for suitable clients. 
                         This is used for Kickstart applications and requires special build instructions.</td>
-                    </tr>
-                    <tr>
-                        <td>keep</td>
-                        <td>List of exensions to keep intermediate source files. Useful for debugging.</td>
                     </tr>
                     <tr>
                         <td>minify</td>
