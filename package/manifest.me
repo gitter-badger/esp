@@ -89,6 +89,26 @@ Me.load({
                 ifdef:      'est',
                 enable:     "!me.settings.static",
 
+            },{ from:        [
+                    /* Windows needs the libs to be able to compile esp programs */
+                    '${BIN}/libmod_esp${SHLIB}',
+                    '${BIN}/libappweb${SHLIB}',
+                    '${BIN}/libpcre${SHLIB}',
+                    '${BIN}/libhttp${SHLIB}',
+                    '${BIN}/libmpr${SHLIB}',
+                ],
+                to:         '${abin}/',
+                set:        'libs',
+                enable:     "me.platform.os == 'windows' && !me.settings.static",
+
+            },{ from:        [
+                    '${BIN}/libmprssl${SHLIB}',
+                ],
+                to:         '${abin}/',
+                set:        'libs',
+                ifdef:      'ssl',
+                enable:     "me.platform.os == 'windows' && !me.settings.static",
+
             },{ from: [
                     '${BIN}/ca.crt',
                 ],
