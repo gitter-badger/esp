@@ -2668,11 +2668,7 @@ static void postParse(HttpRoute *route)
     if ((mappings = mprGetJsonObj(route->config, "app.client.mappings")) != 0) {
         client = mprCreateJson(MPR_JSON_OBJ);
         clientCopy(route, client, mappings);
-#if UNUSED
-        mprSetJson(client, "prefix", route->prefix ? route->prefix : "");
-#else
         mprSetJson(client, "prefix", route->prefix);
-#endif
         route->client = mprJsonToString(client, MPR_JSON_QUOTES);
         mprTrace(6, "Client Config: for %s, %s", route->name, mprJsonToString(client, MPR_JSON_PRETTY));
     }
@@ -3335,21 +3331,16 @@ static void parsePrefix(HttpRoute *route, cchar *key, MprJson *prop)
 static void createRedirectAlias(HttpRoute *route, int status, cchar *from, cchar *to)
 {
     HttpRoute   *alias;
-    cchar       *pattern, *prefix;
+    cchar       *pattern;
 
     if (from == 0 || *from == '\0') {
         from = "/";
     }
-#if UNUSED
-    prefix = route->prefix ? route->prefix : "";
-#else
-    prefix = route->prefix;
-#endif
     if (sends(from, "/")) {
-        pattern = sfmt("^%s%s(.*)$", prefix, from);
+        pattern = sfmt("^%s%s(.*)$", route->prefix, from);
     } else {
         /* Add a non-capturing optional trailing "/" */
-        pattern = sfmt("^%s%s(?:/)*(.*)$", prefix, from);
+        pattern = sfmt("^%s%s(?:/)*(.*)$", route->prefix, from);
     }
     alias = httpCreateAliasRoute(route, pattern, 0, 0);
     httpSetRouteName(alias, sfmt("redirect-%s", route->name));
@@ -10490,13 +10481,8 @@ static int checkRoute(HttpConn *conn, HttpRoute *route)
             }
         }
     }
-#if UNUSED
-    if (route->prefix) {
-#endif
-        httpSetParam(conn, "prefix", route->prefix);
-#if UNUSED
-    }
-#endif
+    httpSetParam(conn, "prefix", route->prefix);
+
     if ((rc = selectHandler(conn, route)) != HTTP_ROUTE_OK) {
         return rc;
     }
@@ -11854,21 +11840,11 @@ PUBLIC char *httpTemplate(HttpConn *conn, cchar *template, MprHash *options)
     buf = mprCreateBuf(-1, -1);
     for (cp = template; *cp; cp++) {
         if (cp == template && *cp == '~') {
-#if UNUSED
-            mprPutStringToBuf(buf, route->prefix && route->prefix[0] ? route->prefix : "/");
-#else
             mprPutStringToBuf(buf, route->prefix);
-#endif
 
         } else if (cp == template && *cp == ME_SERVER_PREFIX_CHAR) {
-#if UNUSED
-            //  MOB - should not emit "/" if prefix not set. Should emit ""
-            mprPutStringToBuf(buf, route->prefix ? route->prefix : "/");
-            mprPutStringToBuf(buf, route->serverPrefix ? route->serverPrefix : "/");
-#else
             mprPutStringToBuf(buf, route->prefix);
             mprPutStringToBuf(buf, route->serverPrefix);
-#endif
 
         } else if (*cp == '$' && cp[1] == '{' && (cp == template || cp[-1] != '\\')) {
             cp += 2;
@@ -12415,15 +12391,10 @@ PUBLIC HttpRoute *httpAddRestfulRoute(HttpRoute *parent, cchar *uprefix, cchar *
 {
     cchar       *name, *nameResource, *source, *routePrefix;
 
-#if UNUSED
-    routePrefix = parent->prefix ? parent->prefix : "";
-    prefix = prefix ? prefix : "";
-#else
     routePrefix = parent->prefix;
     if (!uprefix) {
         uprefix = parent->serverPrefix;
     }
-#endif
     nameResource = smatch(resource, "{controller}") ? "*" : resource;
     name = sfmt("%s%s/%s/%s", routePrefix, uprefix, nameResource, action);
     if (*resource == '{') {
@@ -12502,9 +12473,6 @@ PUBLIC void httpAddHomeRoute(HttpRoute *parent)
 {
     cchar   *source, *name, *path, *pattern;
 
-#if UNUSED
-    prefix = parent->prefix ? parent->prefix : "";
-#endif
     source = parent->sourceName;
     name = sjoin(parent->prefix, "/home", NULL);
     path = stemplate("${CLIENT_DIR}/index.esp", parent->vars);
@@ -20354,15 +20322,7 @@ static cchar *expandRouteName(HttpConn *conn, cchar *routeName)
         return sjoin(route->prefix, &routeName[6], NULL);
     }
     if (routeName[0] == ME_SERVER_PREFIX_CHAR) {
-#if UNUSED
-        if (route->serverPrefix) {
-            //  MOB - not right to add "/" before server prefix
-            return sjoin(route->prefix, "/", route->serverPrefix, &routeName[1], NULL);
-        }
-        return sjoin(route->prefix, &routeName[1], NULL);
-#else
         return sjoin(route->prefix, route->serverPrefix, &routeName[1], NULL);
-#endif
     }
     return routeName;
 }
@@ -20375,9 +20335,6 @@ static char *actionRoute(HttpRoute *route, cchar *controller, cchar *action)
 {
     cchar   *controllerPrefix;
 
-#if UNUSED
-    prefix = route->prefix ? route->prefix : "";
-#endif
     if (action == 0 || *action == '\0') {
         action = "default";
     }
