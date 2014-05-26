@@ -1,12 +1,12 @@
 {
-    "name": "test",
-    "title": "test",
-    "description": "test",
+    "name": "login",
+    "description": "login",
     "version": "1.0.0",
     "app": {
         "http": {
             "auth": {
                 "store": "config",
+                "realm": "example.com",
                 "roles": {
                     user: [ "view" ],
                     administrator: [ "view"],
@@ -14,17 +14,24 @@
                 "users": {
                     joshua: {
                         /* Password is pass1 */
-                        password: "2fd6e47ff9bb70c0465fd2f5c8e5305e",
+                        password: "BF1:00128:unPN1t1wcSH5n9yD:cI5eugh8+RHArLYeraHPyRcG212Q3rEx",
                         roles: [ "user", "administrator" ],
                     },
                 },
             },
-            "serverPrefix": "/do",
+            "server": {
+                "listen": [
+                    "http://*:4000",
+                    "https://127.0.0.1:4443",
+                ],
+            },
+            "redirect": "https://",
+            "routes": "esp-server",
+            "--serverPrefix": "/do",
             "ssl": {
                 "certificate": "self.crt",
                 "key": "self.key",
             },
-            "routes": "esp-html-mvc"
         }
     }
 }
