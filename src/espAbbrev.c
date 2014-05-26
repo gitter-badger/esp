@@ -631,7 +631,6 @@ PUBLIC void scripts(cchar *patterns)
 
 /*
     Add a security token to the response. The token is generated as a HTTP header and session cookie.
-    Note that views will automatically add security tokens to views.
  */
 PUBLIC void securityToken()
 {

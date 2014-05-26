@@ -1064,7 +1064,7 @@ PUBLIC void espClearCurrentSession(HttpConn *conn)
 
 
 /*
-    Remember this connections session as the current session. Use for single login tracking
+    Remember this connections session as the current session. Use for single login tracking.
  */
 PUBLIC void espSetCurrentSession(HttpConn *conn)
 {

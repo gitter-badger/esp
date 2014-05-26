@@ -869,9 +869,10 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     /* This messes up file handler */
     httpSetRouteTarget(route, "run", "$&");
 #endif
-    httpAddRouteHandler(route, "espHandler", "");
     httpAddRouteHandler(route, "espHandler", "esp");
     httpAddRouteIndex(route, "index.esp");
+    httpAddRouteIndex(route, "index.html");
+
     httpSetRouteVar(route, "APP", name);
     httpSetRouteVar(route, "UAPP", stitle(name));
 
