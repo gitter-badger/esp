@@ -48,7 +48,7 @@ Code:
 * [package.json](package.json) - ESP configuration file
 * [self.crt](self.crt) - Self-signed test certificate
 * [self.key](self.key) - Test private key
-* [cache](cache) - Directory for cached ESP pages
+* cache - Directory for cached ESP pages
 
 Documentation:
 ---
