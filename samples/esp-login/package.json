@@ -5,33 +5,30 @@
     "app": {
         "http": {
             "auth": {
+                "type": "form",
                 "store": "config",
-                "realm": "example.com",
                 "roles": {
-                    user: [ "view" ],
-                    administrator: [ "view"],
+                    "user": [ "view" ],
                 },
                 "users": {
-                    joshua: {
-                        /* Password is pass1 */
-                        password: "BF1:00128:unPN1t1wcSH5n9yD:cI5eugh8+RHArLYeraHPyRcG212Q3rEx",
-                        roles: [ "user", "administrator" ],
-                    },
-                },
+                    "joshua": {
+                        "password": "754705c7880f669cf4f804f0b5138e4b",
+                        "roles": [ "user" ]
+                    }
+                }
             },
             "server": {
                 "listen": [
                     "http://*:4000",
-                    "https://127.0.0.1:4443",
-                ],
+                    "https://127.0.0.1:4443"
+                ]
             },
             "redirect": "https://",
             "routes": "esp-server",
-            "--serverPrefix": "/do",
             "ssl": {
-                "certificate": "self.crt",
-                "key": "self.key",
-            },
+                "certificate": "../crt/self.crt",
+                "key": "../crt/self.key"
+            }
         }
     }
 }
