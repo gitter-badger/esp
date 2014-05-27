@@ -18,6 +18,8 @@ The following samples are available:
 * [esp-session](esp-session/README.md)              Using ESP session state storage.
 * [esp-upload](esp-upload/README.md)                ESP file upload.
 
+The "crt" directory contains scripts to create test certificatest.
+
 ### Building
 
 To build the samples, see the per-sample README instructions.

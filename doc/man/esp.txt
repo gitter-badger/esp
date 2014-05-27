@@ -9,12 +9,14 @@ SYNOPSIS
        esp
            --apply
            --appweb configFile
+           --cipher cipher DB
            --database DB
            --genlink slink.c
            --home dir
            --keep
            --listen [ip:]port
            --log logFile:level
+           --noupdate
            --nodeps
            --optimized
            --overwrite
@@ -34,19 +36,24 @@ SYNOPSIS
 
        Commands:
            esp clean
-           esp compile
            esp compile [pathFilters...]
+           esp config
            esp edit key[=value]
            esp generate controller name [action [, action] ...]
            esp generate migration description model [field:type ...]
            esp generate scaffold model [field:type ...]
            esp generate table name model [field:type ...]
+           esp init
            esp install paks...
+           esp list
            esp migrate [forward|backward|NNN]
            esp mode [debug|release|otherMode]
+           esp role [add|remove] rolename
            esp [run] [ip]:[port]
            esp uninstall paks...
            esp upgrade paks..
+           esp user [add|compute] username password roles...
+           esp user [remove|show] username
 
 DESCRIPTION
        The  esp  command  generates, manages and runs ESP web applications. It
@@ -209,6 +216,18 @@ COMPILING
        library file, set the "esp.combo" to true in the package.json file.
 
 
+AUTHENTICATION
+       ESP can use the system password database or it can define passwords  in
+       the package.json or in an application database.  To define passwords in
+       the package.json, use:
+
+        esp user add username password roles...
+
+       To define authentication roles, use:
+
+         esp role add abilities...
+
+
 CROSS-COMPILING
        To compile for a target system of a different  architecture,  you  must
        specify  the  target.   To do this, use the -platform switch to specify
@@ -295,6 +314,9 @@ OPTIONS
 
        --nodeps
              Do not install or upgrade dependencies.
+
+       --noupdate
+             Do not update package.json.
 
        --optimize
              Compile optimized without debug symbols.

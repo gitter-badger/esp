@@ -8,12 +8,14 @@ ESP(1)                           User Commands                          ESP(1)
        <B>esp</B>
            <B>--apply</B>
            <B>--appweb configFile</B>
+           <B>--cipher cipher DB</B>
            <B>--database DB</B>
            <B>--genlink slink.c</B>
            <B>--home dir</B>
            <B>--keep</B>
            <B>--listen [ip:]port</B>
            <B>--log logFile:level</B>
+           <B>--noupdate</B>
            <B>--nodeps</B>
            <B>--optimized</B>
            <B>--overwrite</B>
@@ -32,19 +34,24 @@ ESP(1)                           User Commands                          ESP(1)
 
        <B>Commands:</B>
            esp clean
-           esp compile
            esp compile [pathFilters...]
+           esp config
            esp edit key[=value]
            esp generate controller name [action [, action] ...]
            esp generate migration description model [field:type ...]
            esp generate scaffold model [field:type ...]
            esp generate table name model [field:type ...]
+           esp init
            esp install paks...
+           esp list
            esp migrate [forward|backward|NNN]
            esp mode [debug|release|otherMode]
+           esp role [add|remove] rolename
            esp [run] [ip]:[port]
            esp uninstall paks...
            esp upgrade paks..
+           esp user [add|compute] username password roles...
+           esp user [remove|show] username
 
 <B>DESCRIPTION</B>
        The  <B>esp  </B>command  generates, manages and runs ESP web applications. It
@@ -197,6 +204,17 @@ ESP(1)                           User Commands                          ESP(1)
        To  compile the entire application and produce a single combined shared
        library file, set the "esp.combo" to true in the package.json file.
 
+<B>AUTHENTICATION</B>
+       ESP can use the system password database or it can define passwords  in
+       the package.json or in an application database.  To define passwords in
+       the package.json, use:
+
+        <B>esp user add username password roles...</B>
+
+       To define authentication roles, use:
+
+         <B>esp role add abilities...</B>
+
 <B>CROSS-COMPILING</B>
        To compile for a target system of a different  architecture,  you  must
        specify  the  target.   To do this, use the -platform switch to specify
@@ -278,6 +296,9 @@ ESP(1)                           User Commands                          ESP(1)
 
        <B>--nodeps</B>
              Do not install or upgrade dependencies.
+
+       <B>--noupdate</B>
+             Do not update package.json.
 
        <B>--optimize</B>
              Compile optimized without debug symbols.
