@@ -111,6 +111,7 @@ static int       nextMigration;         /* Sequence number for next migration */
 
 #define ESP_FOUND_TARGET 1
 
+#define MAX_PASS        64
 #define MAX_VER         1000000000
 #define VER_FACTOR      1000
 #define VER_FACTOR_MAX  "999"
