@@ -78,7 +78,19 @@
             <h3>Incompatible Changes</h3>
             <ul>
                <li>ESP Package.json format is changed for many properties. Regenerate the application to get 
-                    a new package.json file.</li>
+                    a new package.json file. The following package.json properties have been moved or modified:</p>
+                    <ul>
+                        <li>A top level <em>app</em> collection contains all non-<a
+                            href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS</a> properties.</li>
+                        <li><em>client-scripts</em> has been renamed to <em>app.client.scripts</em>.</li>
+                        <li>Most properties under <em>esp</em> have been moved to the <em>app.http</em> collection.</li>
+                        <li>The <em>esp</em> property has been renamed <em>app.esp</em>.</li>
+                        <li>The <em>mode</em> and <em>modes</em> properties have been moved under the <em>app</em>
+                            collection.</li>
+                        <li>The <em>auth</em> property is renamed <em>app.http.auth.store</em>.</li>
+                    </ul>
+                    <p>See the <a href="https://github.com/embedthis/esp/blob/dev/samples/esp-configuration/package.json">esp-configuration Sample</a> for details of all supported configuration file properties.</a>
+                </li>
                <li>ESP Angular applications have a different Esp.config property layout. Upgrade all relevant paks.</li>
             </ul>
             <h3>Fixes since rc0</h3>
