@@ -25,3 +25,4 @@ projects/esp-macosx-mine*
 pj.new
 project.xcworkspace
 xcuserdata
+samples/esp-login/cache
