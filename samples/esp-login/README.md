@@ -53,10 +53,4 @@ Code:
 Documentation:
 ---
 * [ESP Documentation](http://embedthis.com/products/esp/doc/index.html)
-* [ESP Configuration](http://embedthis.com/products/esp/doc/guide/esp/users/configuration.html#directives)
-* [Sandbox Limits](http://embedthis.com/products/esp/doc/guide/esp/users/dir/sandbox.html)
-* [Security Considerations](http://embedthis.com/products/esp/doc/guide/esp/users/security.html)
-* [User Authentication](http://embedthis.com/products/esp/doc/guide/esp/users/authentication.html)
-
-See Also:
----
+* [ESP Configuration](http://embedthis.com/products/esp/doc/guide/esp/users/config.html)
