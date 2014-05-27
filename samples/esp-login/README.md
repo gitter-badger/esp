@@ -15,7 +15,7 @@ This sample uses:
 Notes:
 * This sample keeps the passwords in the package.json. The test password was created via:
 
-    esp --password pass1 user add joshua user
+    esp user add joshua pass1 user
 
 * The sample is setup to use the "config" auth store which keeps the passwords in the package.json.
 * The sample uses the "form" auth type by default. 
