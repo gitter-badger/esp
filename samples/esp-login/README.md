@@ -18,7 +18,6 @@ Notes:
     esp --password pass1 user add joshua user
 
 * The sample is setup to use the "config" auth store which keeps the passwords in the package.json.
-    If you wish to store passwords in a database, you will need to ........ 
 * The sample uses the "form" auth type by default. 
     It can be configured to use the "basic" or "digest" authentication protocol by setting the
     app.http.auth.type to "basic" or "digest".
