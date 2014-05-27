@@ -28,6 +28,7 @@ static void serverRouteSet(HttpRoute *parent, cchar *set)
     HttpRoute   *route;
 
     /* Simple controller/action route */
+    httpSetRouteXsrf(parent, 1);
     route = httpAddRestfulRoute(parent, parent->serverPrefix, "action", "GET,POST","/{action}(/)*$",
         "${action}", "{controller}");
     httpAddRouteHandler(route, "espHandler", "");
@@ -36,6 +37,7 @@ static void serverRouteSet(HttpRoute *parent, cchar *set)
 
 static void angularRouteSet(HttpRoute *parent, cchar *set)
 {
+    httpSetRouteXsrf(parent, 1);
     httpAddRouteHandler(parent, "espHandler", "");
     httpAddWebSocketsRoute(parent, 0, "/*/stream");
     httpAddResourceGroup(parent, 0, "{controller}");
@@ -46,6 +48,7 @@ static void angularRouteSet(HttpRoute *parent, cchar *set)
 
 static void htmlRouteSet(HttpRoute *parent, cchar *set)
 {
+    httpSetRouteXsrf(parent, 1);
     httpAddRouteHandler(parent, "espHandler", "");
     httpDefineRoute(parent,
         sfmt("%s%s/*", parent->prefix, parent->serverPrefix), 
