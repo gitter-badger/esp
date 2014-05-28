@@ -2626,7 +2626,8 @@ PUBLIC int httpLoadConfig(HttpRoute *route, cchar *name)
 
 static void clientCopy(HttpRoute *route, MprJson *dest, MprJson *obj)
 {
-    MprJson     *child, *job, *value;
+    MprJson     *child, *job, *jvalue;
+    cchar       *key, *value;
     int         ji;
 
     for (ITERATE_CONFIG(route, obj, child, ji)) {
@@ -2635,8 +2636,16 @@ static void clientCopy(HttpRoute *route, MprJson *dest, MprJson *obj)
             clientCopy(route, job, child);
             mprSetJsonObj(dest, child->name, job);
         } else {
-            if ((value = mprGetJsonObj(route->config, child->value)) != 0) {
-                mprSetJsonObj(dest, child->name, mprCloneJson(value));
+            key = child->value;
+            if (sends(key, "|time")) {
+                key = stok(sclone(key), " \t|", NULL);
+                if ((value = mprGetJson(route->config, key)) != 0) {
+                    mprSetJson(dest, child->name, itos(httpGetTicks(value)));
+                }
+            } else {
+                if ((jvalue = mprGetJsonObj(route->config, key)) != 0) {
+                    mprSetJsonObj(dest, child->name, mprCloneJson(jvalue));
+                }
             }
         }
     }
