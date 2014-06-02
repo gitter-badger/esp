@@ -74,6 +74,8 @@
                     <a href="https://github.com/embedthis/esp/issues/6">[issue 6]</a>.</li>
                 <li>Enhanced ESP to install, manage and uninstall Pak packages
                     <a href="https://github.com/embedthis/esp/issues/1">[issue 1]</a>.</li>
+                <li>Split error log and request log
+                    <a href="https://github.com/embedthis/appweb/issues/14">[issue 14]</a>.</li>
             </ul>
             <h3>Incompatible Changes</h3>
             <ul>
@@ -92,6 +94,10 @@
                     <p>See the <a href="https://github.com/embedthis/esp/blob/dev/samples/esp-configuration/package.json">esp-configuration Sample</a> for details of all supported configuration file properties.</a>
                 </li>
                <li>ESP Angular applications have a different Esp.config property layout. Upgrade all relevant paks.</li>
+               <li>With separating the error log and request log, the
+                <a href="../api/mpr.html#group___mpr_log_1ga13660aa56e0e5945b6de8f2708aed520">mprLog</a>
+                and <a href="../api/mpr.html#group___mpr_log_1gaa29ca2fc7ccd5dc2314b1c0c53f5f788">mprError</a>
+                APIs have revised signatures.</li>
             </ul>
             <h3>Fixes since rc0</h3>
             <ul>
@@ -103,6 +109,10 @@
                     <a href="https://github.com/embedthis/esp/issues/10">[issue 10]</a>.</li>
                 <li>Enhanced ESP to create and manage users and roles
                     <a href="https://github.com/embedthis/esp/issues/11">[issue 11]</a>.</li>
+                <li>Update ESP to fix client.mappings timeouts
+                    <a href="https://github.com/embedthis/appweb/issues/12">[issue 12]</a>.</li>
+                <li>ESP upgrade should not overwrite overwrite files by default.
+                    <a href="https://github.com/embedthis/appweb/issues/13">[issue 13]</a>.</li>
             </ul>
         </div>
     </div>

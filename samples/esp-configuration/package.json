@@ -11,28 +11,28 @@
     /*
         Single word application name. Must be a C identifier
      */
-    "name": "blog",
+    name: "blog",
 
     /*
         Multi-word title for the application. Used for display.
      */
-    "title": "My Blog"
+    title: "My Blog"
 
     /*
         One-line description for the application. Used in the Pak catalog.
      */
-    "description": "My Blog detailing adventures in the Artic",
+    description: "My Blog detailing adventures in the Artic",
 
     /*
         SemVer compatible version string
      */
-    "version": "1.0.0",
+    version: "1.0.0",
 
     /*
         List of dependent paks. Uses SemVer version expressions. 
         See Pak http://embedthis.com/products/pak/doc/index.html for details.
      */
-    "dependencies": {
+    dependencies: {
         "angular": "~1.2",
         "angular-bootstrap": "~0.7",
         "bootstrap": ">=3.0.0",
@@ -52,7 +52,7 @@
     /*
         Opportunity to remap directories
      */
-    "directories": {
+    directories: {
         "app": "",
         "cache": "cache",
         "client": "client",
@@ -72,12 +72,12 @@
     /*
         Application configuration
      */
-    "app": {
+    app: {
 
         /*
             Client-side configurationf
          */
-        "client": {
+        client: {
             /*
                 Selection of properties to send to the client
              */
@@ -99,7 +99,7 @@
                 List of browser scripts to serve to the client via the scripts() API
                 Also used when building the app to create a single, combined, minified, compressed JS file.
              */
-            "scripts": [
+            scripts: [
                 "paks/angular/angular.js",
                 "paks/angular/angular-animate.js",
                 "paks/angular/angular-route.js",
@@ -113,11 +113,11 @@
                 "paks/respond/respond.js"
             ],
         },
-        "esp": {
+        esp: {
             /*
                 Templates used for "esp generate"
              */
-            "generate": {
+            generate: {
                 "appweb": "esp-best/appweb.conf",
                 "clientController": "esp-angular-mvc/controller.js",
                 "clientEdit": "esp-angular-mvc/edit.html",
@@ -133,40 +133,40 @@
         /*
             HTTP related configuration
          */
-        "http": {
+        http: {
             /*
                 Server related configuration that applies globally
                 Ignored if hosted in Appweb, when server configuration comes from appweb.conf.
              */
-            "server": {
+            server: {
                 /*
                     Account execution 
                  */
-                "account": {
+                account: {
                     /*
                         Run as user
                      */
-                    "user": "name",
+                    user: "name",
 
                     /*
                         Run as member of group
                      */
-                    "group": "name",
+                    group: "name",
                 },
 
                 /*
                     Change the file system root. Unix only.
                  */
-                "chroot": "/path",
+                chroot: "/path",
 
                 /*
                     Defensive counter-measures. These are referenced by "monitors"
                  */
-                "defenses": {
+                defenses: {
                     /*
                         Name of defense and collection of properties for the remedy
                      */
-                    "block": {
+                    block: {
                         "remedy": "ban",
                         "status": 406,
                         "message": "Client temporarily banned due to monitored limit exceeded",
@@ -177,7 +177,7 @@
                 /*
                     Listening endpoints. Ignored if hosted.
                  */
-                "listen": [
+                listen: [
                     "http://*:4000",
                     "http://127.0.0.1:4000",
                     "https://127.0.0.1:4443",
@@ -186,46 +186,46 @@
                 /*
                     Log file configuration
                  */
-                "log": {
+                log: {
                     /*
                         Log filename or destination
                      */
-                    "location": "stdout",
+                    location: "stdout",
 
                     /*
-                        Verbosity level (0-9)
+                        Verbosity level (0-5)
                      */
-                    "level": "2",
+                    level: "2",
 
                     /*
                         Keep up to 5 log files 
                      */
-                    "backup": 5,
+                    backup: 5,
 
                     /*
                         Start a new log file on restart
                      */
-                    "anew": true,
+                    anew: true,
 
                     /*
                         Maximum log file size before starting a new log file
                      */
-                    "size": "10MB",
+                    size: "10MB",
 
                     /*
                         Add a timestamp to the log file
                      */
-                    "timestamp": "1hr",
+                    timestamp: "1hr",
                 },
 
                 /*
                     Defensive counter-measure monitor policies
                  */
-                "monitors": {
+                monitors: {
                     /*  
                         Name of monitor 
                      */
-                    "missing": {
+                    missing: {
                         /*
                             Monitor expression to evaluate
                          */
@@ -257,50 +257,50 @@
             /*
                 Authentication configuration
              */
-            "auth": {
+            auth: {
                 /*
                     Login configuration
                  */
-                "login": {
+                login: {
                     /*
                         Automatically login as this username
                      */
-                    "name": "",
+                    name: "",
 
                     /*
                         Give the automatically logged in user these roles and abilities
                      */
-                    "roles": [ "*" ],
+                    roles: [ "*" ],
 
                     /*
                         URL for the application login dialog
                      */
-                    "url": "",
+                    url: "",
                 }
 
                 /*
-                    Basic/Digest authentication realm
+                    Authentication realm
                  */
-                "realm": "example.com",
+                realm: "example.com",
 
                 /*
                     Required usernames or roles for user to posses before authorizing
                  */
-                "require": {
+                require: {
                     /*
                         List of roles a user must posess before authorizing
                      */
-                    "roles": [],
+                    roles: [],
                     /*
                         List of users to authorizing. Set to true or ["*"] for any valid user
                      */
-                    "users": ["*"]
+                    users: ["*"]
                 },
 
                 /*
                     Defined roles for users with abilities that comprise the roles.
                  */
-                "roles": {
+                roles: {
                     "executive":     ["manage", "direct"],
                     "user":          ["view"],
                     "administrator": ["view", "edit"],
@@ -320,107 +320,107 @@
                     Auth Store to use, "app" means user credentials are stored in a server-side application database
                     Set to "app", "config" or "system".
                  */
-                "store": "app",
+                store: "app",
             },
             
             /*
                 Response caching directives
              */
-            "cache": [ {
+            cache: [ {
                 /*
                     Cache at the client 
                  */ 
-                "client": "1day",
+                client: "1day",
 
                 /*
                     Cache at the server
                  */
-                "server": "1hour"
+                server: "1hour"
                 
                 /*
                     File extensions to cache
                  */
-                "extensions": [ "css", "gif", "ico", "jpeg", "jpg", "js", "html", "less", "png", "pdf", "txt" ] 
+                extensions: [ "css", "gif", "ico", "jpeg", "jpg", "js", "html", "less", "png", "pdf", "txt" ] 
 
                 /*
                     URIs to cache. If the URI has a query, then only that exact request will be cached.
                     The query should be in sorted urlencoded form. If omitted, defaults to "/"
                  */
-                "uris": [ "/" ],
+                uris: [ "/" ],
 
                 /*
                     Request methods eligible for caching. If omitted, defaults to all methods.
                  */
-                "methods": [ "*" ],
+                methods: [ "*" ],
 
                 /*
                     Responses to cache based on mime type for the response document. If omitted, defaults to all mime types.
                  */
-                "mime": [ "*" ],
+                mime: [ "*" ],
 
                 /*
                     Caching of responses will be handled manually. Automatic response caching is disabled. Defaults to false.
                  */
-                "manual": true,
+                manual: true,
 
                 /*
                     Uniquely cache requests with different parameters (query and post data). Defaults to false.
                  */
-                "unique": true,
+                unique: true,
             } ],
 
             /*
                 Content processing instructions
              */ 
-            "content": {
+            content: {
                 /*
                     Combine multiple files into a single file
                  */
-                "combine": [ "c", "css", "html", "js" ],
+                combine: [ "c", "css", "html", "js" ],
 
                 /*
                     Compress using gzip
                  */
-                "compress": [ "css", "html", "js" ],
+                compress: [ "css", "html", "js" ],
 
                 /*
                     Minify using language-specific minification
                  */
-                "minify": [ "css", "html", "js" ],
+                minify: [ "css", "html", "js" ],
 
                 /*
                     Kind of style sheets to serve (css, less, sass)
                  */
-                "stylesheets": "css"
+                stylesheets: "css"
             },
 
             /*
                 Database specification. Supported providers: sdb for SQLite and mdb for Memory Database.
              */
-            "database": "mdb://blog.mdb",
+            database: "mdb://blog.mdb",
 
             /*
                 Delete file uploads after the request completes
              */
-            "deleteUploads": true,
+            deleteUploads: true,
 
             /*
                 Domain to service. This supports virtual hosting. If the name contains "*", it tests if the
                 request Host header contains the substring.
              */
-            "domain": "*embedthis",
+            domain: "*embedthis",
 
             /*
                 Error pages to serve for specific error response codes
              */
-            "errors": {
+            errors: {
                 "404": "/notFound.html",
             },
 
             /*
                 Default presentation formats for various types
              */
-            "formats": {
+            formats: {
                 "date": "yyyy-MM-dd",
                 "float": 2,
                 /*
@@ -432,11 +432,11 @@
             /*
                 Response header management
              */
-            "headers": {
+            headers: {
                 /*
                     Headers to add if not already defined
                  */
-                "add": {
+                add: {
                     "Content-Security-Policy":   "allow \"self\"; unsafe-inline; img-src \"self\"",
                     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
                     "CrossOrigin":               "origin=* credentials=yes headers=X-CORS-HEADER age=3000",
@@ -444,13 +444,12 @@
                 /*
                     Headers to remove
                  */
-                "remove": [],
+                remove: [],
 
                 /*
                     Headers to set and overwrite any existing headers
                  */
-                "set": {
-                },
+                set: { },
             },
 
             /*
@@ -464,12 +463,12 @@
             /*
                 Keep intermediate forms
              */
-            "keep": true,
+            keep: true,
 
             /*
                 Per-language content
              */
-            "languages": {
+            languages: {
                 /*
                     Language code
                  */
@@ -528,12 +527,12 @@
             /*
                 Supported request methods for this route. Use "*" for all methods, or omit definition.
              */
-            "methods": [ "get", "post" ],
+            methods: [ "get", "post" ],
 
             /*
                 Required request parameters before this route will match a request
              */
-            "params": [ {
+            params: [ {
                 "name":   "name",
                 "value":  "john",
                 "equals": true,
@@ -542,25 +541,25 @@
             /*
                 Regular expression used to match the route with the request URI
              */
-            "pattern":    "^/route/auth",
+            pattern:    "^/route/auth",
 
             /*
                 Request pipeline construction
              */
-            "pipeline": {
+            pipeline: {
                 /*
                     Ordered list of filters with extensions for which the filter will apply
                  */
-                "filters": [{
-                    "name": "uploadFilter",
-                    "extensions": [ "txt", "*" ],
+                filters: [{
+                    name: "uploadFilter",
+                    extensions: [ "txt", "*" ],
                 }],
                 /*
                     Defined request handlers and the extensions for which they apply
                  */
-                "handlers": {
-                    "fileHandler": [ "html", "gif", "jpeg", "jpg", "png", "pdf", "ico", "css", "js", "txt" ],
-                    "espHandler":  [ "*" ],
+                handlers: {
+                    fileHandler: [ "html", "gif", "jpeg", "jpg", "png", "pdf", "ico", "css", "js", "txt" ],
+                    espHandler:  [ "*" ],
                 },
             },
 
@@ -572,214 +571,238 @@
             /*
                 Redirections
              */
-            "redirect": [ {
+            redirect: [ {
                     /* Redirect all traffic over SSL */
-                    "status": 302,
-                    "to":     "https://"
+                    status: 302,
+                    to:     "https://"
                 }, {
                     /* Redirect a specific document */
-                    "from": "/pressRelease",
-                    "status": 301,
-                    "to": "${request.scheme}://${request:host}/fixedPressRelease.html"
+                    from: "/pressRelease",
+                    status: 301,
+                    to: "${request.scheme}://${request:host}/fixedPressRelease.html"
                 }
             ],
 
             /*
                 Descriptive name for route
              */
-            "routeName":  "",
+            routeName:  "",
 
             /*
                 List of routes. This can be a route-set name, or an array of routes.
              */
-            "routes": [ ],
+            routes: [ ],
 
             /*
                 Supported scheme for this route. Set to https to require SSL.
              */
-            "scheme": "https",
+            scheme: "https",
 
             /*
                 URL prefix for server-side URIs
              */
-            "serverPrefix": "/do",
+            serverPrefix: "/do",
 
             /*
                 Display server-side errors in the browser
              */
-            "showErrors": true,
+            showErrors: true,
 
             /*
                 Source file responsible for responding to the request.
              */
-            "source": "filename",
+            source: "filename",
 
             /*
                 SSL configuration
              */
-            "ssl": {
+            ssl: {
                 /*
                     Certificate authority of root certificates to verify peers
                  */
-                "authority": {
+                authority: {
                     /*
                         File of catentated certificates
                      */
-                    "file": "",
+                    file: "",
 
                     /*
                         Directory of certificates
                      */
-                    "directory":  "",
+                    directory:  "",
                 },
                 /*
                     Server's own certificate filename
                  */
-                "certificate": "server.crt",
+                certificate: "server.crt",
 
                 /*
                     Ordered list of preferred ciphers
                  */
-                "ciphers": [
+                ciphers: [
                     "TLS_RSA_WITH_AES_256_CBC_SHA",
                     "TLS_RSA_WITH_RC4_128_SHA"
                 ],
                 /*
                     Server private key file
                  */
-                "key": "server.key",
+                key: "server.key",
 
                 /*
                     Verification options
                  */
-                "verify": {
+                verify: {
                     /*
                         Verification the client certificate. Self-signed certificates permitted.
                      */
-                    "client": true,
+                    client: true,
                     /*
                         Verification the client certificate issuer. Self-signed certificates not permitted.
                      */
-                    "issuer": true,
+                    issuer: true,
                 },
             },
 
             /*
                 Stealth mode operates a quietly as possible
              */
-            "stealth": true,
+            stealth: true,
 
             /*
                 Target rule to process the request
              */
-            "target": {
-                "operation": "run",
-                "args": "greetings-$1",
+            target: {
+                operation: "run",
+                args: "greetings-$1",
             },
 
             /*
                 Default timeouts. Use strings with unit suffixes. "5mins"
              */
-            "timeouts": {
+            timeouts: {
                 /*
                     Maximum time for application to exit when waiting for requests to complete 
                  */
-                "exit":       "30secs",
+                exit:       "30secs",
 
                 /*
                     Maximum time to receive request headers
                  */
-                "parse":      "20secs",
+                parse:      "20secs",
 
                 /*
                     Maximum time to of I/O inactivity for a request
                  */
-                "inactivity": "300secs",
+                inactivity: "300secs",
 
                 /*
                     Default refresh period to use for dynamic data polling
                  */
-                "refresh": "1sec",
+                refresh: "1sec",
 
                 /*
                     Maximum request duration
                  */
-                "request":    "infinite",
+                request:    "infinite",
     
                 /*
                     Maximum user session duration
                  */
-                "session": "30mins",
+                session: "30mins",
             },
 
             /*
-                Log trace control
+                Request trace control
              */
-            "trace": {
+            trace: {
                 /*
-                    Receive direction logging
+                    Trace output type (common, detail)
                  */
-                "rx": {
-                    /*
-                        Extensions to include in logging
-                     */
-                    "include": ['*'],
-                    /*
-                        Extensions to exclude from logging
-                     */
-                    "exclude": [ 'jpg', 'gif', 'png', 'ico', 'css', 'js' ],
-                    /*
-                        Trace level to emit for connection, first request line, request headers and body events.
-                     */
-                    "levels": {
-                        "conn": 5,
+                type: "detail",
+
+                /*
+                    Common log format
+                 */
+                format: "%h %l %u %t \"%r\" %>s %b %n",
+
+                /*
+                    Request trace log filename or destination
+                 */
+                location: "stdout",
+
+                /*
+                    Current verbosity level (0-5)
+                 */
+                level: "2",
+
+                /*
+                    Levels at which to emit trace items
+                 */
+                levels: {
+                    conn: 4,
+                    errors: 2,
+                    info: 4,
+                    rx: {
                         "first": 2,
-                        "headers": 4,
-                        "body": 4,
-                    },
-                    /*
-                        Maximum request body size to trace
-                     */
-                    "size": 1024
-                },
-                "tx": {
-                    "include": ['*'],
-                    "exclude": [ 'jpg', 'gif', 'png', 'ico', 'css' ],
-                    "levels": {
-                        "headers": 4,
+                        "headers": 3,
                         "body": 5,
                     },
-                    "size": 10240
-                }
+                    tx: {
+                        "first": 3,
+                        "headers": 3,
+                        "body": 5,
+                    },
+                    complete: 4,
+                },
+
+                /*
+                    Keep up to 5 log files 
+                 */
+                backup: 5,
+
+                /*
+                    Start a new trace log file on restart
+                 */
+                anew: true,
+
+                /*
+                    Maximum file size before starting a new trace log file
+                 */
+                size: "10MB",
+
+                /*
+                    Maximum request body size to trace
+                 */
+                body: "1K",
             },
 
             /*
                 Transparently recompile updated views, controllers and source
              */
-            "update": true,
+            update: true,
 
             /*
                 Set to include a XSRF token to minimize CSRF vulnerabilies
              */
-            "xsrf": true,
+            xsrf: true,
 
         },
 
         /*
             Application mode. This selects a set of properties below and copies them to esp
          */
-        "mode": "debug",
+        mode: "debug",
 
         /*
             Mode specific property collections. The designated mode collection is copied to "app".
          */
-        "modes": {
-            "debug": { 
+        modes: {
+            debug: { 
                 /*
                     Collection of properties that are copied to "app" if in debug mode
                  */
             },
-            "release": {
+            release: {
                 /*
                     Collection of properties that are copied to "app" if in release mode
                  */
@@ -790,5 +813,5 @@
     /*
         List of files to include. Files are textually included at the location of the include.
      */
-    "include": [],
+    include: [],
 }

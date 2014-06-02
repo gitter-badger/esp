@@ -525,7 +525,7 @@ static int mdbLookupField(Edi *edi, cchar *tableName, cchar *fieldName)
 
 static EdiGrid *mdbQuery(Edi *edi, cchar *cmd, int argc, cchar **argv, va_list vargs)
 {
-    mprError("MDB does not implement ediQuery");
+    mprError("esp mdb", "MDB does not implement ediQuery");
     return 0;
 }
 
@@ -1123,7 +1123,7 @@ static int mdbSave(Edi *edi)
     }
     path = mdb->edi.path;
     if (path == 0) {
-        mprError("No database path specified");
+        mprError("esp mdb", "No database path specified");
         return MPR_ERR_BAD_ARGS;
     }
     npath = mprReplacePathExt(path, "new");

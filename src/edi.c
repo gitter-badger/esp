@@ -216,8 +216,8 @@ PUBLIC int ediDelete(Edi *edi, cchar *path)
 //  FUTURE - rename edi
 PUBLIC void espDumpGrid(EdiGrid *grid)
 {
-    mprLog(0, "Grid: %s\nschema: %s,\ndata: %s", grid->tableName, ediGetTableSchemaAsJson(grid->edi, grid->tableName),
-        ediGridAsJson(grid, MPR_JSON_PRETTY));
+    mprDebug("esp edi", 0, "Grid: %s\nschema: %s,\ndata: %s", grid->tableName, 
+        ediGetTableSchemaAsJson(grid->edi, grid->tableName), ediGridAsJson(grid, MPR_JSON_PRETTY));
 }
 
 
@@ -886,7 +886,7 @@ PUBLIC cchar *ediFormatField(cchar *fmt, EdiField *fp)
         return sfmt(fmt, fp->value);
 
     default:
-        mprError("Unknown field type %d", fp->type);
+        mprDebug("esp edi", 0, "Unknown field type %d", fp->type);
     }
     return 0;
 }
@@ -928,7 +928,7 @@ static void formatFieldForJson(MprBuf *buf, EdiField *fp)
         return;
 
     default:
-        mprError("Unknown field type %d", fp->type);
+        mprDebug("esp edi", 0, "Unknown field type %d", fp->type);
         mprPutStringToBuf(buf, "null");
     }
 }

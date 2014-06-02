@@ -136,10 +136,9 @@ PUBLIC HttpConn *getConn()
 
     conn = mprGetThreadData(((Esp*) MPR->espService)->local);
     if (conn == 0) {
-        mprError("Connection is not defined in thread local storage.\n"
+        mprDebug("esp", 0, "Connection is not defined in thread local storage.\n"
         "If using a callback, make sure you invoke espSetConn with the connection before using the ESP abbreviated API");
     }
-    assert(conn);
     return conn;
 }
 
