@@ -3877,6 +3877,7 @@ static void parseTrace(HttpRoute *route, cchar *key, MprJson *prop)
     httpSetTraceType(route->trace, type);
     httpSetTraceLogFile(route->trace, location, size, backup, format, anew ? MPR_LOG_ANEW : 0);
     httpSetTraceFormat(route->trace, format);
+    httpSetTraceLevel(level);
     httpSetTraceLevels(route->trace, tlevels, size);
 }
 
@@ -17666,7 +17667,12 @@ static int backupTraceLogFile(HttpTrace *trace)
 {
     MprPath     info;
 
-    if (trace->backupCount > 0) {
+    assert(trace->path);
+
+    if (trace->file == MPR->logFile) {
+        return 0;
+    }
+    if (trace->backupCount > 0 || (trace->flags & MPR_LOG_ANEW)) {
         lock(trace);
         if (trace->parent && trace->parent->file == trace->file) {
             unlock(trace);
@@ -17679,7 +17685,6 @@ static int backupTraceLogFile(HttpTrace *trace)
                 trace->file = 0;
             }
             mprBackupLog(trace->path, trace->backupCount);
-            trace->flags &= ~MPR_LOG_ANEW;
         }
         unlock(trace);
     }
@@ -17696,17 +17701,25 @@ PUBLIC int httpOpenTraceLogFile(HttpTrace *trace)
     int         mode;
 
     if (!trace->file && trace->path) {
-        backupTraceLogFile(trace);
-        mode = O_CREAT | O_WRONLY | O_TEXT;
-        if (smatch(trace->path, "stdout")) {
-            file = MPR->stdOutput;
-        } else if (smatch(trace->path, "stderr")) {
-            file = MPR->stdError;
-        } else if ((file = mprOpenFile(trace->path, mode, 0664)) == 0) {
-            mprError("Cannot open log file %s", trace->path);
-            return MPR_ERR_CANT_OPEN;
+        if (smatch(trace->path, "-")) {
+            file = MPR->logFile;
+        } else {
+            backupTraceLogFile(trace);
+            mode = O_CREAT | O_WRONLY | O_TEXT;
+            if (trace->flags & MPR_LOG_ANEW) {
+                mode |= O_TRUNC;
+            }
+            if (smatch(trace->path, "stdout")) {
+                file = MPR->stdOutput;
+            } else if (smatch(trace->path, "stderr")) {
+                file = MPR->stdError;
+            } else if ((file = mprOpenFile(trace->path, mode, 0664)) == 0) {
+                mprError("Cannot open log file %s", trace->path);
+                return MPR_ERR_CANT_OPEN;
+            }
         }
         trace->file = file;
+        trace->flags &= ~MPR_LOG_ANEW;
     }
     return 0;
 }
