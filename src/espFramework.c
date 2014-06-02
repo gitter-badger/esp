@@ -152,12 +152,10 @@ PUBLIC void espDefineView(HttpRoute *route, cchar *path, void *view)
     assert(path && *path);
     assert(view);
 
-    if (!route) {
-        mprError("Route not defined for view %s", path);
-        return;
-    }
     esp = MPR->espService;
-    path = mprGetPortablePath(mprJoinPath(route->documents, path));
+    if (route) {
+        path = mprGetPortablePath(mprJoinPath(route->documents, path));
+    }
     mprAddKey(esp->views, path, view);
 }
 
@@ -531,7 +529,7 @@ PUBLIC ssize espRenderError(HttpConn *conn, int status, cchar *fmt, ...)
             httpSetHeader(conn, "Content-Type", "text/html");
             written += espRenderString(conn, text);
             espFinalize(conn);
-            mprTrace(4, "Request error (%d) for: \"%s\"", status, rx->pathInfo);
+            httpTrace(conn, HTTP_TRACE_ERROR, "Request error (%d) for: \"%s\"", status, rx->pathInfo);
         }
     }
     va_end(args);    
@@ -1033,31 +1031,32 @@ PUBLIC int espEmail(HttpConn *conn, cchar *to, cchar *from, cchar *subject, MprT
     mprAddItem(lines, sfmt("%s--", boundary));
 
     body = mprListToString(lines, "\n");
-    mprTrace(4, "Password reset message:\n%s\n", body);
+    httpTraceContent(conn, HTTP_TRACE_INFO, body, slen(body), "email");
 
     cmd = mprCreateCmd(conn->dispatcher);
     if (mprRunCmd(cmd, "sendmail -t", NULL, body, &out, &err, 0, 0) < 0) {
         return MPR_ERR_CANT_OPEN;
     }
     if (mprWaitForCmd(cmd, ME_ESP_EMAIL_TIMEOUT) < 0) {
-        mprError("Timeout %d msec waiting for command to complete: %s", ME_ESP_EMAIL_TIMEOUT, cmd->argv[0]);
+        httpTrace(conn, HTTP_TRACE_ERROR, "Timeout %d msec waiting for command to complete: %s", ME_ESP_EMAIL_TIMEOUT, cmd->argv[0]);
         return MPR_ERR_CANT_COMPLETE;
     }
     if ((status = mprGetCmdExitStatus(cmd)) != 0) {
-        mprError("Send mail failed status %d, error %s", status, err);
+        httpTrace(conn, HTTP_TRACE_ERROR, "Send mail failed status %d, error %s", status, err);
         return MPR_ERR_CANT_WRITE;
     }
     return 0;
 }
    
 
+//  TODO - rename clearSingleLogin (and trace)
 PUBLIC void espClearCurrentSession(HttpConn *conn)
 {
     EspRoute    *eroute;
 
     eroute = conn->rx->route->eroute;
     if (eroute->currentSession) {
-        mprLog(4, "esp: clear current session %s", eroute->currentSession);
+        httpTrace(conn, HTTP_TRACE_INFO, "esp clear current session %s", eroute->currentSession);
     }
     eroute->currentSession = 0;
 }
@@ -1072,7 +1071,7 @@ PUBLIC void espSetCurrentSession(HttpConn *conn)
 
     eroute = conn->rx->route->eroute;
     eroute->currentSession = httpGetSessionID(conn);
-    mprLog(4, "esp: set current session %s", eroute->currentSession);
+    httpTrace(conn, HTTP_TRACE_INFO, "set esp current session %s", eroute->currentSession);
 }
 
 

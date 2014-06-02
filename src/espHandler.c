@@ -319,7 +319,7 @@ static int runAction(HttpConn *conn)
         if (!httpCheckSecurityToken(conn)) {
             httpSetStatus(conn, HTTP_CODE_UNAUTHORIZED);
             if (smatch(route->responseFormat, "json")) {
-                mprLog(2, "esp: Stale security token.");
+                httpTrace(conn, HTTP_TRACE_INFO, "Stale esp security token");
                 espRenderString(conn, 
                     "{\"retry\": true, \"success\": 0, \"feedback\": {\"error\": \"Security token is stale. Please retry.\"}}");
                 espFinalize(conn);
@@ -517,8 +517,6 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
                 mprReleaseBlocks(source, module, cacheName, NULL);
             }
         }
-    } else {
-        mprTrace(4, "EspUpdate is disabled for this route: %s", route->name);
     }
     if (mprLookupModule(source) == 0) {
         entry = getModuleEntry(eroute, kind, source, cacheName);
@@ -527,7 +525,6 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
             unlock(esp);
             return MPR_ERR_MEMORY;
         }
-        mprLog(3, "espLoadModule: \"%s\", %s", kind, source);
         if (mprLoadModule(mp) < 0) {
             *errMsg = "Cannot load compiled esp module";
             unlock(esp);
@@ -591,29 +588,29 @@ PUBLIC bool espModuleIsStale(cchar *source, cchar *module, int *recompile)
             }
         }
         *recompile = 1;
-        mprLog(4, "esp: %s is newer than module %s, recompiling ...", source, module);
+        mprLog("esp", 4, "esp source %s is newer than module %s, recompiling ...", source, module);
         return 1;
     }
     mprGetPathInfo(source, &sinfo);
     if (sinfo.valid && sinfo.mtime > minfo.mtime) {
         if ((mp = mprLookupModule(source)) != 0) {
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprError("Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
                 return 0;
             }
         }
         *recompile = 1;
-        mprLog(4, "esp: %s is newer than module %s, recompiling ...", source, module);
+        mprLog("esp", 4, "esp source %s is newer than module %s, recompiling ...", source, module);
         return 1;
     }
     if ((mp = mprLookupModule(source)) != 0) {
         if (minfo.mtime > mp->modified) {
             /* Module file has been updated */
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprError("Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
                 return 0;
             }
-            mprLog(4, "esp: module %s has been externally updated, reloading ...", module);
+            mprLog("esp", 4, "esp module %s has been externally updated, reloading ...", module);
             return 1;
         }
     }
@@ -648,7 +645,7 @@ static bool layoutIsStale(EspRoute *eroute, cchar *source, cchar *module)
         if (layout) {
             stale = espModuleIsStale(layout, module, &recompile);
             if (stale) {
-                mprLog(4, "esp: layout %s is newer than module %s", layout, module);
+                mprLog("esp", 4, "esp layout %s is newer than module %s", layout, module);
             }
         }
     }
@@ -855,7 +852,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     espSetDefaultDirs(route);
     if (prefix) {
         if (*prefix != '/') {
-            mprError("Prefix name should start with a \"/\"");
+            mprError("esp", "Prefix name should start with a \"/\"");
             prefix = sjoin("/", prefix, NULL);
         }
         prefix = stemplate(prefix, route->vars);
@@ -865,10 +862,6 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     } else {
         httpSetRouteName(route, sfmt("/%s", name));
     }
-#if UNUSED
-    /* This messes up file handler */
-    httpSetRouteTarget(route, "run", "$&");
-#endif
     httpAddRouteHandler(route, "espHandler", "esp");
     httpAddRouteIndex(route, "index.esp");
     httpAddRouteIndex(route, "index.html");
@@ -1146,7 +1139,7 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
     /*  Client relative LIB for client.scripts */
     httpSetRouteVar(route, "LIB", "lib");
 
-#if MOB
+#if TODO
     //  missing upload
     httpSetRouteUploadDir(route, httpMakePath(route, 0, value));
 #endif
