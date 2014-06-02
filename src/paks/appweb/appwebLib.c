@@ -2701,7 +2701,7 @@ PUBLIC bool maValidateServer(MaServer *server)
     for (nextHost = 0; (host = mprGetNextItem(http->hosts, &nextHost)) != 0; ) {
         for (nextRoute = 0; (route = mprGetNextItem(host->routes, &nextRoute)) != 0; ) {
             if (!mprLookupKey(route->extensions, "")) {
-                mprError("appweb config" "Route %s in host %s is missing a catch-all handler. "
+                mprError("appweb config", "Route %s in host %s is missing a catch-all handler. "
                     "Adding: AddHandler fileHandler \"\"", route->name, host->name);
                 httpAddRouteHandler(route, "fileHandler", "");
                 httpAddRouteIndex(route, "index.html");
