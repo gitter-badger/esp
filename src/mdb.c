@@ -243,7 +243,7 @@ static int mdbAddColumn(Edi *edi, cchar *tableName, cchar *columnName, int type,
     col->flags = flags;
     if (flags & EDI_INDEX) {
         if (table->index) {
-            mprError("Index already specified in table %s, replacing.", tableName);
+            mprLog("esp mdb", 0, "Index already specified in table %s, replacing.", tableName);
         }
         if ((table->index = mprCreateHash(0, MPR_HASH_STATIC_VALUES | MPR_HASH_STABLE)) != 0) {
             table->indexCol = col;
@@ -525,7 +525,7 @@ static int mdbLookupField(Edi *edi, cchar *tableName, cchar *fieldName)
 
 static EdiGrid *mdbQuery(Edi *edi, cchar *cmd, int argc, cchar **argv, va_list vargs)
 {
-    mprError("esp mdb", "MDB does not implement ediQuery");
+    mprLog("esp mdb", 0, "MDB does not implement ediQuery");
     return 0;
 }
 
@@ -1096,7 +1096,7 @@ static void autoSave(Mdb *mdb, MdbTable *table)
     }
     if (mdb->edi.flags & EDI_AUTO_SAVE && !(mdb->edi.flags & EDI_SUPPRESS_SAVE)) {
         if (mdbSave((Edi*) mdb) < 0) {
-            mprError("Cannot save database %s", mdb->edi.path);
+            mprLog("esp mdb", 0, "Cannot save database %s", mdb->edi.path);
         }
     }
 }
@@ -1123,12 +1123,12 @@ static int mdbSave(Edi *edi)
     }
     path = mdb->edi.path;
     if (path == 0) {
-        mprError("esp mdb", "No database path specified");
+        mprLog("esp mdb", 0, "No database path specified");
         return MPR_ERR_BAD_ARGS;
     }
     npath = mprReplacePathExt(path, "new");
     if ((out = mprOpenFile(npath, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0664)) == 0) {
-        mprError("Cannot open database %s", npath);
+        mprLog("esp mdb", 0, "Cannot open database %s", npath);
         return 0;
     }
     mprEnableFileBuffering(out, 0, 0);
@@ -1208,11 +1208,11 @@ static int mdbSave(Edi *edi)
     bak = mprReplacePathExt(path, "bak");
     mprDeletePath(bak);
     if (mprPathExists(path, R_OK) && rename(path, bak) < 0) {
-        mprError("Cannot rename %s to %s", path, bak);
+        mprLog("esp mdb", 0, "Cannot rename %s to %s", path, bak);
         return MPR_ERR_CANT_WRITE;
     }
     if (rename(npath, path) < 0) {
-        mprError("Cannot rename %s to %s", npath, path);
+        mprLog("esp mdb", 0, "Cannot rename %s to %s", npath, path);
         /* Restore backup */
         rename(bak, path);
         return MPR_ERR_CANT_WRITE;
@@ -1529,7 +1529,7 @@ static int parseOperation(cchar *operation)
             return OP_GTE;
         }
     }
-    mprError("Unknown read operation '%s'", operation);
+    mprLog("esp mdb", 0, "Unknown read operation '%s'", operation);
     return OP_ERR;
 }
 

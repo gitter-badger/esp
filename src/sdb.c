@@ -249,7 +249,7 @@ static Edi *sdbOpen(cchar *path, int flags)
     }
     if (mprPathExists(path, R_OK) || (flags & EDI_CREATE)) {
         if (sqlite3_open(path, &sdb->db) != SQLITE_OK) {
-            mprError("esp sdb", "Cannot open database %s", path);
+            mprLog("esp sdb", 0, "Cannot open database %s", path);
             return 0;
         }
         sqlite3_soft_heap_limit(ME_MAX_SQLITE_MEM);
@@ -321,7 +321,7 @@ static int sdbAddTable(Edi *edi, cchar *tableName)
 
 static int sdbChangeColumn(Edi *edi, cchar *tableName, cchar *columnName, int type, int flags)
 {
-    mprError("esp sdb", "SDB does not support changing columns");
+    mprLog("esp sdb", 0, "SDB does not support changing columns");
     return MPR_ERR_BAD_STATE;
 }
 
@@ -531,7 +531,7 @@ static EdiGrid *sdbReadWhere(Edi *edi, cchar *tableName, cchar *columnName, ccha
 
 static int sdbRemoveColumn(Edi *edi, cchar *tableName, cchar *columnName)
 {
-    mprError("esp sdb", "SDB does not support removing columns");
+    mprLog("esp sdb", 0, "SDB does not support removing columns");
     return MPR_ERR_BAD_STATE;
 }
 
@@ -580,7 +580,7 @@ static int sdbRenameTable(Edi *edi, cchar *tableName, cchar *newTableName)
 
 static int sdbRenameColumn(Edi *edi, cchar *tableName, cchar *columnName, cchar *newColumnName)
 {
-    mprError("esp sdb", "SQLite does not support renaming columns");
+    mprLog("esp sdb", 0, "SQLite does not support renaming columns");
     return MPR_ERR_BAD_STATE;
 }
 
@@ -952,7 +952,7 @@ static int mapToEdiType(cchar *type)
             return i;
         }
     }
-    mprError("esp sdb", "Cannot find type %s", type);
+    mprLog("esp sdb", 0, "Cannot find type %s", type);
     assert(0);
     return 0;
 }
@@ -971,7 +971,7 @@ static int mapSqliteTypeToEdiType(int type)
     } else if (type == SQLITE_NULL) {
         return EDI_TYPE_TEXT;
     }
-    mprError("esp sdb", "Cannot find query type %d", type);
+    mprLog("esp sdb", 0, "Cannot find query type %d", type);
     assert(0);
     return 0;
 }
@@ -999,7 +999,7 @@ static void sdbError(Edi *edi, cchar *fmt, ...)
     va_start(args, fmt);
     edi->errMsg = sfmtv(fmt, args);
     va_end(args);
-    mprError("esp sdb", edi->errMsg);
+    mprLog("esp sdb", 0, edi->errMsg);
 }
 
 
@@ -1023,7 +1023,7 @@ static void initSqlite()
         sqlite3_config(SQLITE_CONFIG_MALLOC, &mem);
         sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
         if (sqlite3_initialize() != SQLITE_OK) {
-            mprError("esp sdb", "Cannot initialize SQLite");
+            mprLog("esp sdb", 0, "Cannot initialize SQLite");
             return;
         }
         sqliteInitialized = 1;
