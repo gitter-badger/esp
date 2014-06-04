@@ -200,10 +200,12 @@ static int parseFileInner(MaState *state, cchar *path)
  */
 static int traceLogDirective(MaState *state, cchar *key, cchar *value)
 {
+    HttpRoute   *route;
     char        *format, *option, *ovalue, *tok, *path, *type;
     ssize       size;
     int         flags, backup, level;
 
+    route = state->route;
     size = MAXINT;
     backup = 0;
     flags = 0;
@@ -211,7 +213,11 @@ static int traceLogDirective(MaState *state, cchar *key, cchar *value)
     format = ME_HTTP_LOG_FORMAT;
     type = "detail";
     level = 0;
-    
+
+    if (route->trace->flags & MPR_LOG_CMDLINE) {
+        mprLog("appweb config", 4, "Already tracing. Ignoring TraceLog directive");
+        return 0;
+    }
     for (option = maGetNextArg(sclone(value), &tok); option; option = maGetNextArg(tok, &tok)) {
         if (!path) {
             path = sclone(option);
@@ -249,14 +255,17 @@ static int traceLogDirective(MaState *state, cchar *key, cchar *value)
         return MPR_ERR_BAD_SYNTAX;
     }
     if (type) {
-        httpSetTraceType(state->route->trace, type);
+        httpSetTraceType(route->trace, type);
     }
     if (!smatch(path, "stdout") && !smatch(path, "stderr")) {
-        path = httpMakePath(state->route, state->configDir, path);
+        path = httpMakePath(route, state->configDir, path);
     }
-    state->route->trace = httpCreateTrace(state->route->trace);
+    route->trace = httpCreateTrace(route->trace);
+    if (httpSetTraceLogFile(route->trace, path, size, backup, format, flags) < 0) {
+        return MPR_ERR_CANT_OPEN;
+    }
     httpSetTraceLevel(level);
-    return httpSetTraceLogFile(state->route->trace, path, size, backup, format, flags);
+    return 0;
 }
 #endif
 
