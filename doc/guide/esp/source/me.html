@@ -495,12 +495,13 @@ me install    # Install the built software locally
 me help       # Show MakeMe usage</pre>
             <a name="static"></a>
             <h2 class="section">Static Linking</h2>
-            <p>On some platforms, it is desirable to statically link ESP. The default ESP MakeMe files
+            <p>The default ESP MakeMe files
             will build ESP using shared libraries. This is so that appweb can dynamically load modules at run-time.
-            It is best to use dynamic linking if using ESP so that it can dynamically reload applications to update them.
+            It is recommended to use dynamic linking so that ESP can dynamically reload applications to update them.
             This is ideal when developing so that you can quickly reload applications by simply clicking reload in your
             browser.</p>
-            <p>However, if you want to statically link ESP and the modules together, run configure with the
+            <p>It is not recommended to use static linking with ESP as it is considerably more complex. 
+            However, if you must link ESP using static linking, run configure with the
             <i>--static</i> option and then rebuild.</p>
 <pre>
 ./configure --static
@@ -515,7 +516,7 @@ me
             <h3>Pre-compile ESP</h3>
             <p>You can pre-compile ESP pages and applications for static linking and create a static library that
             can be linked with appweb when rebuilding appweb. Use the following command to compile all ESP pages and
-            applications that are defined in the appweb.conf file.
+            applications that are defined in the appweb.conf file in the src/server directory.
             <pre>cd src/server
 esp --static --genlink slink.c compile</pre>
             <p>This will create a static library in the cache directory for each ESP application and in the 
@@ -524,6 +525,7 @@ esp --static --genlink slink.c compile</pre>
             function <em>appwebStaticInitialize()</em> that will invoke the
             ESP initializers for the ESP pages and applications. ESP contains a reference to this function in 
             src/server/appweb.c. When rebuilt, it will then resolve and link with the ESP static libraries.</p>
+
             <a name="rom"></a>
             <h2 class="section">Serving from ROM</h2>
             <p>ESP supports systems without a file system where web documents are compiled into C code and served from

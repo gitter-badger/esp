@@ -44,7 +44,7 @@
                 <li><a href="#vxworks">Building for VxWorks</a></li>
                 <li><a href="#openssl">Supporting OpenSSL</a></li>
                 <li><a href="#ejs">Supporting Ejscript</a></li>
-                <li><a href="me.html">Building with MakeMe`</a></li>
+                <li><a href="me.html">Building with MakeMe</a></li>
                 <li><a href="ide.html">Building with an IDE</a></li>
             </ul>
 <!-- BeginDsi "dsi/userGuideSeeAlso.html" -->
@@ -106,7 +106,7 @@ nmake -f projects\appweb-windows.nmake
 usage: make [clean, compile, install, run, uninstall]
 The default configuration can be modified by setting make variables
 Set to 0 to disable and 1 to enable:
-  PROFILE          # Select default or static for static linking
+  PROFILE          # Select default or static
   ME_EJS_DB        # Enable database support, ejs.db
   ME_EJS_MAIL      # Enable mail support, ejs.mail
   ME_EJS_MAPPER    # Enable database mapper support, ejs.mapper
@@ -213,9 +213,9 @@ make CC=/opt/bin/ccarm.exe LD=/opt/bin/ccarm.exe ARCH=arm PROFILE=release
             <a name="static"></a>
             <h2>Static Building</h2>
             <p>If you require a static build without the ability to dynamically load modules, use the <em>static</em>
-                makefile profile. For example:</p>
+            makefile profile. Note: this is not recommended as ESP has reduced functionality in this mode.
+            For example:</p>
                 <pre>make PROFILE=static</pre>
-            <p>Some web frameworks such as ESP and Ejscript may have reduced functionality in static builds.</p>
             <a name="vxworks"></a>
             <h2>Building for VxWorks</h2>
             <p>Before building for VxWorks, you must define the WIND_* environment variables via the 
@@ -226,8 +226,6 @@ make CC=/opt/bin/ccarm.exe LD=/opt/bin/ccarm.exe ARCH=arm PROFILE=release
             <pre>eval `/WindRiver/wrenv.sh -p vxworks-6.8 -o print_env -f sh`</pre>
             <p>Once defined, you can invoke make.</p>
             <pre>make OS=vxworks</pre>
-            <p>If you require a static build, set the profile to "static".</p>
-<pre>make OS=vxworks PROFILE=static</pre>
             <a name="ejs"></a>
             <h2>Supporting Ejscript</h2>
             <p>If Ejscript is required, you must also build Appweb for the local system as the Ejscript compiler 
