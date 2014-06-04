@@ -16024,7 +16024,6 @@ PUBLIC void mprSetLogLevel(int level)
 }
 
 
-#if UNUSED
 PUBLIC bool mprSetCmdlineLogging(bool on)
 {
     bool    wasLogging;
@@ -16036,7 +16035,6 @@ PUBLIC bool mprSetCmdlineLogging(bool on)
     }
     return wasLogging;
 }
-#endif
 
 
 PUBLIC bool mprGetCmdlineLogging()
@@ -28556,7 +28554,7 @@ PUBLIC void mprSleep(MprTicks timeout)
 }
 
 
-PUBLIC void mprWriteToOsLog(cchar *message, int flags, int level)
+PUBLIC void mprWriteToOsLog(cchar *message, int level)
 {
 }
 
