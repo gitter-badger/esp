@@ -44,8 +44,12 @@ Me.load({
             'generate-capture': true,
             build: `
                 trace('Copy', me.dir.out.join('esp'))
+                let espVersion = me.dir.src.join('package.json').readJSON().version
                 for each (pak in Path('.').files('esp-*')) {
-                    let version = pak.join('package.json').readJSON().version || '0.0.0'
+                    let version = pak.join('package.json').readJSON().version
+                    if (espVersion != version) {
+                        throw 'Pak ' + pak + ' has different version ' + version + ' vs esp version of ' + espVersion
+                    }
                     makeDir(OUT.join('esp', pak, version))
                     for each (path in pak.files('**')) {
                         let stem = path.components.slice(1).join(path.separator)
