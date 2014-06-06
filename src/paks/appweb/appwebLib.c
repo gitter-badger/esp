@@ -50,7 +50,7 @@ PUBLIC int maOpenConfig(MaState *state, cchar *path)
 
     state->filename = sclone(path);
     state->configDir = mprGetAbsPath(mprGetPathDir(state->filename));
-    mprLog("http", 3, "Open \"%s\"", mprGetAbsPath(state->filename));
+    mprLog("http", 3, "Parse \"%s\"", mprGetAbsPath(state->filename));
     if ((state->file = mprOpenFile(mprGetRelPath(path, NULL), O_RDONLY | O_TEXT, 0444)) == 0) {
         mprLog("appweb config", 0, "Cannot open %s for config directives", path);
         return MPR_ERR_CANT_OPEN;
@@ -201,7 +201,7 @@ static int parseFileInner(MaState *state, cchar *path)
 static int traceLogDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpRoute   *route;
-    char        *format, *option, *ovalue, *tok, *path, *type;
+    char        *format, *option, *ovalue, *tok, *path, *formatter;
     ssize       size;
     int         flags, backup, level;
 
@@ -211,7 +211,7 @@ static int traceLogDirective(MaState *state, cchar *key, cchar *value)
     flags = 0;
     path = 0;
     format = ME_HTTP_LOG_FORMAT;
-    type = "detail";
+    formatter = "detail";
     level = 0;
 
     if (route->trace->flags & MPR_LOG_CMDLINE) {
@@ -239,8 +239,8 @@ static int traceLogDirective(MaState *state, cchar *key, cchar *value)
             } else if (smatch(option, "size")) {
                 size = (ssize) getnum(ovalue);
 
-            } else if (smatch(option, "type")) {
-                type = ovalue;
+            } else if (smatch(option, "formatter")) {
+                formatter = ovalue;
 
             } else {
                 mprLog("appweb config", 0, "Unknown TraceLog option %s", option);
@@ -254,8 +254,8 @@ static int traceLogDirective(MaState *state, cchar *key, cchar *value)
         mprLog("appweb config", 0, "Missing TraceLog filename");
         return MPR_ERR_BAD_SYNTAX;
     }
-    if (type) {
-        httpSetTraceType(route->trace, type);
+    if (formatter) {
+        httpSetTraceFormatterName(route->trace, formatter);
     }
     if (!smatch(path, "stdout") && !smatch(path, "stderr")) {
         path = httpMakePath(route, state->configDir, path);
@@ -2323,16 +2323,16 @@ static int threadStackDirective(MaState *state, cchar *key, cchar *value)
 /*
     Trace options
     Options:
-        conn=NN
+        connection=NN
         errors=NN
         info=NN
-        rx-first=NN
-        tx-first=NN
-        rx-header=NN
-        tx-header=NN
-        rx-body=NN
-        tx-body=NN
-        time=NN
+        rxFirst=NN
+        txFirst=NN
+        rxHeader=NN
+        txHeader=NN
+        rxBody=NN
+        txBody=NN
+        complete=NN
         size=NN
  */
 static int traceDirective(MaState *state, cchar *key, cchar *value)
@@ -2340,56 +2340,21 @@ static int traceDirective(MaState *state, cchar *key, cchar *value)
     HttpRoute   *route;
     char        *option, *ovalue, *tok;
     ssize       size;
-    char        levels[HTTP_TRACE_MAX_ITEM];
 
     size = MAXINT;
     route = state->route;
+    route->trace = httpCreateTrace(route->trace);
     
-    memset(levels, 0, sizeof(levels));
     for (option = stok(sclone(value), " \t", &tok); option; option = stok(0, " \t", &tok)) {
         option = stok(option, " =\t,", &ovalue);
         ovalue = strim(ovalue, "\"'", MPR_TRIM_BOTH);
 
-        if (smatch(option, "conn")) {
-            levels[HTTP_TRACE_CONN] = atoi(ovalue);
-
-        } else if (smatch(option, "complete")) {
-            levels[HTTP_TRACE_COMPLETE] = atoi(ovalue);
-
-        } else if (smatch(option, "errors")) {
-            levels[HTTP_TRACE_ERROR] = (ssize) getnum(ovalue);
-
-        } else if (smatch(option, "info")) {
-            levels[HTTP_TRACE_INFO] = (ssize) getnum(ovalue);
-
-        } else if (smatch(option, "rx-first")) {
-            levels[HTTP_TRACE_RX_FIRST] = atoi(ovalue);
-
-        } else if (smatch(option, "rx-headers")) {
-            levels[HTTP_TRACE_RX_HEADERS] = atoi(ovalue);
-
-        } else if (smatch(option, "rx-body")) {
-            levels[HTTP_TRACE_RX_BODY] = atoi(ovalue);
-
-        } else if (smatch(option, "size")) {
-            size = (ssize) getnum(ovalue);
-
-        } else if (smatch(option, "tx-first")) {
-            levels[HTTP_TRACE_TX_FIRST] = atoi(ovalue);
-
-        } else if (smatch(option, "tx-headers")) {
-            levels[HTTP_TRACE_TX_HEADERS] = atoi(ovalue);
-
-        } else if (smatch(option, "tx-body")) {
-            levels[HTTP_TRACE_TX_BODY] = atoi(ovalue);
-
+        if (smatch(option, "size")) {
+            httpSetTraceSize(route->trace, (ssize) getnum(ovalue));
         } else {
-            mprLog("appweb config", 0, "Unknown Cache option '%s'", option);
-            return MPR_ERR_BAD_SYNTAX;
+            httpSetTraceEventLevel(route->trace, option, atoi(ovalue));
         }
     }
-    route->trace = httpCreateTrace(route->trace);
-    httpSetTraceLevels(route->trace, levels, size);
     return 0;
 }
 
@@ -3532,7 +3497,7 @@ PUBLIC bool maRenderDirListing(HttpConn *conn)
         return 0;
     }
     if (dir->enabled && tx->fileInfo.isDir && sends(rx->pathInfo, "/")) {
-        conn->data = dir;
+        conn->reqData = dir;
         return 1;
     }
     return 0;
@@ -3557,7 +3522,7 @@ static void startDir(HttpQueue *q)
     conn = q->conn;
     rx = conn->rx;
     tx = conn->tx;
-    dir = conn->data;
+    dir = conn->reqData;
     assert(tx->filename);
 
     if (!(rx->flags & (HTTP_GET | HTTP_HEAD))) {
@@ -3604,7 +3569,7 @@ static void parseQuery(HttpConn *conn)
     char        *value, *query, *next, *tok;
 
     rx = conn->rx;
-    dir = conn->data;
+    dir = conn->reqData;
     
     query = sclone(rx->parsedUri->query);
     if (query == 0) {
@@ -3655,7 +3620,7 @@ static void sortList(HttpConn *conn, MprList *list)
     Dir         *dir;
     int         count, i, j, rc;
 
-    dir = conn->data;
+    dir = conn->reqData;
     
     if (dir->sortField == 0) {
         return;
@@ -3731,7 +3696,7 @@ static void outputHeader(HttpQueue *q, cchar *path, int nameSize)
     char    *parent, *parentSuffix;
     int     reverseOrder, fancy, isRootDir;
 
-    dir = q->conn->data;
+    dir = q->conn->reqData;
     fancy = 1;
     path = mprEscapeHtml(path);
 
@@ -3832,7 +3797,7 @@ static void outputLine(HttpQueue *q, MprDirEntry *ep, cchar *path, int nameSize)
     char        *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
     path = mprEscapeHtml(path);
-    dir = q->conn->data;
+    dir = q->conn->reqData;
     if (ep->size >= (1024 * 1024 * 1024)) {
         fmtNum(sizeBuf, sizeof(sizeBuf), (int) ep->size, 1024 * 1024 * 1024, "G");
 
@@ -3902,7 +3867,7 @@ static void outputFooter(HttpQueue *q)
     Dir         *dir;
     
     conn = q->conn;
-    dir = conn->data;
+    dir = conn->reqData;
     
     if (dir->fancyIndexing == 2) {
         httpWrite(q, "<tr><th colspan=\"5\"><hr /></th></tr>\r\n</table>\r\n");
@@ -3924,7 +3889,7 @@ static void filterDirList(HttpConn *conn, MprList *list)
     MprDirEntry     *dp;
     int             next;
 
-    dir = conn->data;
+    dir = conn->reqData;
     
     /*
         Do pattern matching. Entries that don't match, free the name to mark
@@ -4289,10 +4254,10 @@ static int openFileHandler(HttpQueue *q)
     if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
         if (!(info->valid || info->isDir)) {
             if (rx->referrer) {
-                httpTrace(conn, HTTP_TRACE_ERROR, "Cannot find file; filename=%s referrer=%s", 
+                httpTrace(conn, "error", "Cannot find document", "filename:%s, referrer:%s", 
                     tx->filename, rx->referrer);
             } else {
-                httpTrace(conn, HTTP_TRACE_ERROR, "Cannot find file; filename=%s", tx->filename);
+                httpTrace(conn, "error", "Cannot find document", "filename:%s", tx->filename);
             }
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
             return 0;
@@ -4318,7 +4283,7 @@ static int openFileHandler(HttpQueue *q)
             tx->length = -1;
         }
         if (!tx->fileInfo.isReg && !tx->fileInfo.isLink) {
-            httpTrace(conn, HTTP_TRACE_ERROR, "Document is not a regular file; filename=%s", tx->filename);
+            httpTrace(conn, "error", "Document is not a regular file", "filename:%s", tx->filename);
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot serve document");
             
         } else if (tx->fileInfo.size > conn->limits->transmissionBodySize) {
@@ -4335,12 +4300,12 @@ static int openFileHandler(HttpQueue *q)
                 tx->file = mprOpenFile(tx->filename, O_RDONLY | O_BINARY, 0);
                 if (tx->file == 0) {
                     if (rx->referrer) {
-                        httpTrace(conn, HTTP_TRACE_ERROR, "Cannot find file; filename=%s referrer=%s", 
+                        httpTrace(conn, "error", "Cannot open document", "filename=%s, referrer:%s", 
                             tx->filename, rx->referrer);
                     } else {
-                        httpTrace(conn, HTTP_TRACE_ERROR, "Cannot find file; filename=%s", tx->filename);
+                        httpTrace(conn, "error", "Cannot open document", "filename=%s", tx->filename);
                     }
-                    httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
+                    httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot open document");
                 }
             }
         }
@@ -4815,7 +4780,7 @@ static int openCgi(HttpQueue *q)
 
     conn = q->conn;
     if ((nproc = (int) httpMonitorEvent(conn, HTTP_COUNTER_ACTIVE_PROCESSES, 1)) >= conn->limits->processMax) {
-        httpTrace(conn, HTTP_TRACE_ERROR, "Too many concurrent processes; active=%d max=%d", 
+        httpTrace(conn, "error", "Too many concurrent processes", "activeProcesses:%d, maxProcesses:%d", 
             nproc, conn->limits->processMax);
         httpError(conn, HTTP_CODE_SERVICE_UNAVAILABLE, "Server overloaded");
         httpMonitorEvent(q->conn, HTTP_COUNTER_ACTIVE_PROCESSES, -1);
@@ -5032,8 +4997,7 @@ static void browserToCgiService(HttpQueue *q)
                 httpPutBackPacket(q, packet);
                 break;
             }
-            httpTrace(conn, HTTP_TRACE_ERROR, "Cannot write to CGI gateway; count=%d rc=%d errno=%d", 
-                len, rc, mprGetOsError());
+            httpTrace(conn, "error", "Cannot write to CGI gateway", "errno:%d", mprGetOsError());
             mprCloseCmdFd(cmd, MPR_CMD_STDIN);
             httpDiscardQueueData(q, 1);
             httpError(conn, HTTP_CODE_BAD_GATEWAY, "Cannot write body data to CGI gateway");

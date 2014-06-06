@@ -247,7 +247,6 @@
                         "enable": true,
                     },
                 },
-
             },
 
             /*
@@ -314,6 +313,18 @@
                         password: "BF1:00128:bWFG5x85BYfuf7GW:w+zzIU0WTZQYaNAe0sPecWyry8Z9GrKH",
                         roles:    ["user", "administrator", "purchase"],
                     },
+                },
+
+                session: {
+                    /*
+                        Define the session cookie prefix
+                     */
+                    cookie: "-esp-cookie-",
+
+                    /*
+                        Determine if the cookie is visible to browser scripts
+                     */
+                    visible: true,
                 },
 
                 /* 
@@ -696,11 +707,6 @@
                 inactivity: "300secs",
 
                 /*
-                    Default refresh period to use for dynamic data polling
-                 */
-                refresh: "1sec",
-
-                /*
                     Maximum request duration
                  */
                 request:    "infinite",
@@ -736,22 +742,18 @@
                 level: "2",
 
                 /*
-                    Levels at which to emit trace items
+                    Levels at which to trace request events
                  */
                 levels: {
-                    conn: 4,
+                    connection: 4,
                     errors: 2,
                     info: 4,
-                    rx: {
-                        "first": 2,
-                        "headers": 3,
-                        "body": 5,
-                    },
-                    tx: {
-                        "first": 3,
-                        "headers": 3,
-                        "body": 5,
-                    },
+                    rxFirst: 2,
+                    rxHeaders: 3,
+                    rxBody: 5,
+                    txFirst: 3,
+                    txHeaders: 3,
+                    txBody: 5,
                     complete: 4,
                 },
 

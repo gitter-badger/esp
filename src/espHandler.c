@@ -80,7 +80,7 @@ static int openEsp(HttpQueue *q)
         closeEsp(q);
         return MPR_ERR_CANT_OPEN;
     }
-    conn->data = req;
+    conn->reqData = req;
     req->esp = esp;
     req->route = route;
     req->autoFinalize = 1;
@@ -143,7 +143,7 @@ PUBLIC void espClearFlash(HttpConn *conn)
 {
     EspReq      *req;
 
-    req = conn->data;
+    req = conn->reqData;
     req->flash = 0;
 }
 
@@ -152,7 +152,7 @@ static void setupFlash(HttpConn *conn)
 {
     EspReq      *req;
 
-    req = conn->data;
+    req = conn->reqData;
     if (httpGetSession(conn, 0)) {
         req->flash = httpGetSessionObj(conn, ESP_FLASH_VAR);
         req->lastFlash = 0;
@@ -169,7 +169,7 @@ static void pruneFlash(HttpConn *conn)
     EspReq  *req;
     MprKey  *kp, *lp;
 
-    req = conn->data;
+    req = conn->reqData;
     if (req->flash && req->lastFlash) {
         for (ITERATE_KEYS(req->flash, kp)) {
             for (ITERATE_KEYS(req->lastFlash, lp)) {
@@ -186,9 +186,9 @@ static void finalizeFlash(HttpConn *conn)
 {
     EspReq  *req;
 
-    req = conn->data;
+    req = conn->reqData;
     if (req->flash && mprGetHashLength(req->flash) > 0) {
-        /*  
+        /*
             If the session does not exist, this will create one. However, must not have
             emitted the headers, otherwise cannot inform the client of the session cookie.
         */
@@ -198,7 +198,7 @@ static void finalizeFlash(HttpConn *conn)
 
 
 /*
-    Start the request. At this stage, body data may not have been fully received unless 
+    Start the request. At this stage, body data may not have been fully received unless
     the request is a form (POST method and Content-Type is application/x-www-form-urlencoded).
     Forms are a special case and delay invoking the start callback until all body data is received.
     WARNING: GC yield
@@ -214,7 +214,7 @@ static void startEsp(HttpQueue *q)
     conn = q->conn;
     route = conn->rx->route;
     eroute = route->eroute;
-    req = conn->data;
+    req = conn->reqData;
 
     if (req) {
         mprSetThreadData(req->esp->local, conn);
@@ -267,7 +267,7 @@ static int runAction(HttpConn *conn)
     char        *actionName, *key, *filename, *source;
 
     rx = conn->rx;
-    req = conn->data;
+    req = conn->reqData;
     route = rx->route;
     eroute = route->eroute;
     assert(eroute);
@@ -319,8 +319,8 @@ static int runAction(HttpConn *conn)
         if (!httpCheckSecurityToken(conn)) {
             httpSetStatus(conn, HTTP_CODE_UNAUTHORIZED);
             if (smatch(route->responseFormat, "json")) {
-                httpTrace(conn, HTTP_TRACE_INFO, "Stale esp security token");
-                espRenderString(conn, 
+                httpTrace(conn, "info", "Stale esp security token", 0);
+                espRenderString(conn,
                     "{\"retry\": true, \"success\": 0, \"feedback\": {\"error\": \"Security token is stale. Please retry.\"}}");
                 espFinalize(conn);
             } else {
@@ -349,10 +349,10 @@ PUBLIC void espRenderView(HttpConn *conn, cchar *name)
     HttpRoute   *route;
     EspViewProc viewProc;
     cchar       *source;
-    
+
     rx = conn->rx;
     route = rx->route;
-    
+
     if (name) {
         source = mprJoinPathExt(mprJoinPath(httpGetDir(route, "views"), name), ".esp");
     } else {
@@ -412,7 +412,7 @@ static int cloneDatabase(HttpConn *conn)
     EspReq      *req;
     cchar       *id;
 
-    req = conn->data;
+    req = conn->reqData;
     eroute = conn->rx->route->eroute;
     assert(eroute->edi);
     assert(eroute->edi->flags & EDI_PRIVATE);
@@ -443,7 +443,7 @@ static int cloneDatabase(HttpConn *conn)
 static char *getModuleEntry(EspRoute *eroute, cchar *kind, cchar *source, cchar *cacheName)
 {
     char    *cp, *entry;
-    
+
     if (smatch(kind, "view")) {
         entry = sfmt("esp_%s", cacheName);
 
@@ -484,7 +484,7 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
     *errMsg = "";
 
 #if VXWORKS
-    /* 
+    /*
         Trim the drive for VxWorks where simulated host drives only exist on the target
      */
     source = mprTrimPathDrive(source);
@@ -536,8 +536,8 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
 }
 
 
-/* 
-    WARNING: GC yield 
+/*
+    WARNING: GC yield
  */
 static bool loadApp(HttpRoute *route, MprDispatcher *dispatcher)
 {
@@ -667,7 +667,7 @@ static bool pageExists(HttpConn *conn)
 {
     HttpRx      *rx;
     cchar       *source, *dir;
-    
+
     rx = conn->rx;
     if ((dir = httpGetDir(rx->route, "views")) == 0) {
         dir = rx->route->documents;
@@ -701,7 +701,7 @@ PUBLIC void espManageEspRoute(EspRoute *eroute, int flags)
 PUBLIC EspRoute *espCreateRoute(HttpRoute *route)
 {
     EspRoute    *eroute;
-    
+
     if ((eroute = mprAllocObj(EspRoute, espManageEspRoute)) == 0) {
         return 0;
     }
@@ -719,7 +719,7 @@ PUBLIC EspRoute *espCreateRoute(HttpRoute *route)
 static EspRoute *initRoute(HttpRoute *route)
 {
     EspRoute    *eroute;
-    
+
     if (route->eroute) {
         eroute = route->eroute;
         return eroute;
@@ -731,7 +731,7 @@ static EspRoute *initRoute(HttpRoute *route)
 static EspRoute *cloneEspRoute(HttpRoute *route, EspRoute *parent)
 {
     EspRoute      *eroute;
-    
+
     assert(parent);
     assert(route);
 
@@ -794,7 +794,7 @@ static void manageEsp(Esp *esp, int flags)
 
 
 /*
-    Get a dedicated EspRoute for an HttpRoute. Allocate if required. 
+    Get a dedicated EspRoute for an HttpRoute. Allocate if required.
     It is expected that the caller will modify the EspRoute.
  */
 static EspRoute *getEroute(HttpRoute *route)
@@ -871,7 +871,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
 
     if (httpLoadConfig(route, ME_ESP_PACKAGE) < 0) {
         return MPR_ERR_CANT_LOAD;
-    }    
+    }
     if (route->database && !eroute->edi) {
         if (espOpenDatabase(route, route->database) < 0) {
             mprLog("esp", 0, "Cannot open database %s", route->database);
@@ -912,16 +912,16 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
 
 
 /*
-    <EspApp 
-  or 
-    <EspApp 
-        auth=STORE 
-        database=DATABASE 
-        dir=DIR 
+    <EspApp
+  or
+    <EspApp
+        auth=STORE
+        database=DATABASE
+        dir=DIR
         combine=true|false
-        name=NAME 
-        prefix=PREFIX 
-        routes=ROUTES 
+        name=NAME
+        prefix=PREFIX
+        routes=ROUTES
  */
 static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
 {
@@ -965,8 +965,8 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
         }
     }
     if (mprSamePath(state->route->documents, dir)) {
-        /* 
-            Can use existing route as it has the same prefix and documents directory. 
+        /*
+            Can use existing route as it has the same prefix and documents directory.
          */
         route = state->route;
     } else {
@@ -1163,7 +1163,7 @@ static int espDirDirective(MaState *state, cchar *key, cchar *value)
 #if DEPRECATED || 1
     if (smatch(name, "mvc")) {
         espSetDefaultDirs(state->route);
-    } else 
+    } else
 #endif
     {
         path = stemplate(path, state->route->vars);
@@ -1190,16 +1190,16 @@ static void defineVisualStudioEnv(MaState *state)
     }
     if (scontains(http->platform, "-x64-")) {
         is64BitSystem = smatch(getenv("PROCESSOR_ARCHITECTURE"), "AMD64") || getenv("PROCESSOR_ARCHITEW6432");
-        espEnvDirective(state, "EspEnv", 
+        espEnvDirective(state, "EspEnv",
             "LIB \"${WINSDK}\\LIB\\${WINVER}\\um\\x64;${WINSDK}\\LIB\\x64;${VS}\\VC\\lib\\amd64\"");
         if (is64BitSystem) {
-            espEnvDirective(state, "EspEnv", 
+            espEnvDirective(state, "EspEnv",
                 "PATH \"${VS}\\Common7\\IDE;${VS}\\VC\\bin\\amd64;${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;"
                 "${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x64\"");
 
         } else {
             /* Cross building on x86 for 64-bit */
-            espEnvDirective(state, "EspEnv", 
+            espEnvDirective(state, "EspEnv",
                 "PATH \"${VS}\\Common7\\IDE;${VS}\\VC\\bin\\x86_amd64;"
                 "${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x86\"");
         }
@@ -1362,10 +1362,10 @@ static int espResourceGroupDirective(MaState *state, cchar *key, cchar *value)
 
 
 /*
-    EspRoute 
+    EspRoute
         methods=METHODS
-        name=NAME 
-        prefix=PREFIX 
+        name=NAME
+        prefix=PREFIX
         source=SOURCE
         target=TARGET
  */
@@ -1486,9 +1486,9 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
         return MPR_ERR_CANT_CREATE;
     }
     http->espHandler = handler;
-    handler->open = openEsp; 
-    handler->close = closeEsp; 
-    handler->start = startEsp; 
+    handler->open = openEsp;
+    handler->close = closeEsp;
+    handler->start = startEsp;
     if ((esp = mprAllocObj(Esp, manageEsp)) == 0) {
         return MPR_ERR_MEMORY;
     }
@@ -1575,7 +1575,7 @@ static int unloadEsp(MprModule *mp)
     Copyright (c) Embedthis Software LLC, 2003-2014. All Rights Reserved.
 
     This software is distributed under commercial and open source licenses.
-    You may use the Embedthis Open Source license or you may acquire a 
+    You may use the Embedthis Open Source license or you may acquire a
     commercial license from Embedthis Software. You agree to be fully bound
     by the terms of either license. Consult the LICENSE.md distributed with
     this software for full details and other copyrights.
