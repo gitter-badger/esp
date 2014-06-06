@@ -746,7 +746,13 @@ routes [ {
                     </tr>
                     <tr>
                         <td>xsrf</td>
-                        <td>Control if an XSRF anti-forgery token is used on forms.</td>
+                        <td>Control if an XSRF anti-forgery token is used on forms.
+                            Server side esp form pages should use the following to
+                            generate a hidden input field that contains the XSRF token. 
+                            <pre>&lt;% inputSecurityToken(); %&gt;</pre> 
+                            Ajax requests should use the following to add the security token to the Ajax request payload.
+                            <pre>"-xsrf-": "&lt;%= httpGetSecurityToken(conn, 0); %&gt;"</pre> 
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -876,6 +882,24 @@ server: {
     user:           ['view'],
     administrator:  ['view', 'edit'],
 },</pre>
+                    </tr>
+                    <tr>
+                        <td>session</td>
+                        <td>Configure the user session details. 
+                            The <em>cookie</em> property can define a unique prefix to use for the session cookie.
+                            The default session cookie prefix is: "-http-session-".
+                            The <em>visible</em>propery specifies whether the cookie is readable by scripts in the browser.
+                            By default, the session cookie is not visible to Javascript. It is desirable to keep the 
+                            session cookie invisible to minimize XSS security vulnerabilities.</p>
+                            <p>ESP implements this by adding the <i>"httpOnly"</i> option on the "Set-Cookie" 
+                            response header.
+<pre>
+session: {
+    cookie: "-esp-cookie-",
+    visible: true,
+},
+</pre>
+                        </td>
                     </tr>
                     <tr>
                         <td>store</td>
