@@ -4254,10 +4254,10 @@ static int openFileHandler(HttpQueue *q)
     if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
         if (!(info->valid || info->isDir)) {
             if (rx->referrer) {
-                httpTrace(conn, "error", "Cannot find document", "filename:%s, referrer:%s", 
+                httpTrace(conn, "error", "Cannot find document", "filename=%s, referrer=%s", 
                     tx->filename, rx->referrer);
             } else {
-                httpTrace(conn, "error", "Cannot find document", "filename:%s", tx->filename);
+                httpTrace(conn, "error", "Cannot find document", "filename=%s", tx->filename);
             }
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
             return 0;
@@ -4283,7 +4283,7 @@ static int openFileHandler(HttpQueue *q)
             tx->length = -1;
         }
         if (!tx->fileInfo.isReg && !tx->fileInfo.isLink) {
-            httpTrace(conn, "error", "Document is not a regular file", "filename:%s", tx->filename);
+            httpTrace(conn, "error", "Document is not a regular file", "filename=%s", tx->filename);
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot serve document");
             
         } else if (tx->fileInfo.size > conn->limits->transmissionBodySize) {
@@ -4300,7 +4300,7 @@ static int openFileHandler(HttpQueue *q)
                 tx->file = mprOpenFile(tx->filename, O_RDONLY | O_BINARY, 0);
                 if (tx->file == 0) {
                     if (rx->referrer) {
-                        httpTrace(conn, "error", "Cannot open document", "filename=%s, referrer:%s", 
+                        httpTrace(conn, "error", "Cannot open document", "filename=%s, referrer=%s", 
                             tx->filename, rx->referrer);
                     } else {
                         httpTrace(conn, "error", "Cannot open document", "filename=%s", tx->filename);
@@ -4780,7 +4780,7 @@ static int openCgi(HttpQueue *q)
 
     conn = q->conn;
     if ((nproc = (int) httpMonitorEvent(conn, HTTP_COUNTER_ACTIVE_PROCESSES, 1)) >= conn->limits->processMax) {
-        httpTrace(conn, "error", "Too many concurrent processes", "activeProcesses:%d, maxProcesses:%d", 
+        httpTrace(conn, "error", "Too many concurrent processes", "activeProcesses=%d, maxProcesses=%d", 
             nproc, conn->limits->processMax);
         httpError(conn, HTTP_CODE_SERVICE_UNAVAILABLE, "Server overloaded");
         httpMonitorEvent(q->conn, HTTP_COUNTER_ACTIVE_PROCESSES, -1);
@@ -4997,7 +4997,7 @@ static void browserToCgiService(HttpQueue *q)
                 httpPutBackPacket(q, packet);
                 break;
             }
-            httpTrace(conn, "error", "Cannot write to CGI gateway", "errno:%d", mprGetOsError());
+            httpTrace(conn, "error", "Cannot write to CGI gateway", "errno=%d", mprGetOsError());
             mprCloseCmdFd(cmd, MPR_CMD_STDIN);
             httpDiscardQueueData(q, 1);
             httpError(conn, HTTP_CODE_BAD_GATEWAY, "Cannot write body data to CGI gateway");

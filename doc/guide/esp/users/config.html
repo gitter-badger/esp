@@ -746,12 +746,21 @@ routes [ {
                     </tr>
                     <tr>
                         <td>xsrf</td>
-                        <td>Control if an XSRF anti-forgery token is used on forms.
-                            Server side esp form pages should use the following to
+                        <td>Control if an XSRF anti-forgery token should be checked for POST forms.
+                            If enabled, server side ESP form pages should use the following to
                             generate a hidden input field that contains the XSRF token. 
                             <pre>&lt;% inputSecurityToken(); %&gt;</pre> 
                             Ajax requests should use the following to add the security token to the Ajax request payload.
-                            <pre>"-xsrf-": "&lt;%= httpGetSecurityToken(conn, 0); %&gt;"</pre> 
+                            Both mechanisms will add an XSRF HTTP header named <em>X-XSRF-TOKEN</em> to the response.
+                            For example, this code generates the token on the server and utilizes its value in
+                            client-side Javascript.
+<pre>
+&lt;script&gt;
+    var token = &lt;%= securityToken(); %&gt;;
+&lt;/script&gt;
+</pre>
+                            <p>Note: restarting the server or creating a new ESP session will invalidate XSRF tokens. In this
+                            case, the form will need to be reloaded to generate a new token.</p>
                         </td>
                     </tr>
                 </tbody>
