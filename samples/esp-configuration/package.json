@@ -737,7 +737,7 @@
                 location: "stdout",
 
                 /*
-                    Current verbosity level (0-5)
+                    Default verbosity level (0-5)
                  */
                 level: "2",
 
@@ -745,16 +745,16 @@
                     Levels at which to trace request events
                  */
                 levels: {
-                    connection: 4,
-                    errors: 2,
-                    info: 4,
                     rxFirst: 2,
-                    rxHeaders: 3,
-                    rxBody: 5,
+                    errors: 2,
                     txFirst: 3,
-                    txHeaders: 3,
-                    txBody: 5,
+                    rxHeaders: 4,
+                    txHeaders: 4,
+                    connection: 4,
+                    context: 4,
                     complete: 4,
+                    rxBody: 5,
+                    txBody: 5,
                 },
 
                 /*

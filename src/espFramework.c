@@ -1031,7 +1031,7 @@ PUBLIC int espEmail(HttpConn *conn, cchar *to, cchar *from, cchar *subject, MprT
     mprAddItem(lines, sfmt("%s--", boundary));
 
     body = mprListToString(lines, "\n");
-    httpTraceContent(conn, "info", body, slen(body), "email", 0);
+    httpTraceContent(conn, "context", body, slen(body), "email", 0);
 
     cmd = mprCreateCmd(conn->dispatcher);
     if (mprRunCmd(cmd, "sendmail -t", NULL, body, &out, &err, 0, 0) < 0) {
@@ -1057,7 +1057,7 @@ PUBLIC void espClearCurrentSession(HttpConn *conn)
 
     eroute = conn->rx->route->eroute;
     if (eroute->currentSession) {
-        httpTrace(conn, "info", "esp clear current session", "session=%s", eroute->currentSession);
+        httpTrace(conn, "context", "esp clear current session", "session=%s", eroute->currentSession);
     }
     eroute->currentSession = 0;
 }
@@ -1072,7 +1072,7 @@ PUBLIC void espSetCurrentSession(HttpConn *conn)
 
     eroute = conn->rx->route->eroute;
     eroute->currentSession = httpGetSessionID(conn);
-    httpTrace(conn, "info", "set current esp session", "session=%s", eroute->currentSession);
+    httpTrace(conn, "context", "set current esp session", "session=%s", eroute->currentSession);
 }
 
 

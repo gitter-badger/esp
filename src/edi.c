@@ -112,16 +112,16 @@ PUBLIC int ediAddValidation(Edi *edi, cchar *name, cchar *tableName, cchar *colu
     }
     vp->name = sclone(name);
     if ((vp->vfn = mprLookupKey(es->validations, name)) == 0) {
-        mprLog("esp edi", 0, "Cannot find validation '%s'", name);
+        mprLog("error esp edi", 0, "Cannot find validation '%s'", name);
         return MPR_ERR_CANT_FIND;
     }
     if (smatch(name, "format") || smatch(name, "banned")) {
         if (!data || ((char*) data)[0] == '\0') {
-            mprLog("esp edi", 0, "Bad validation format pattern for %s", name);
+            mprLog("error esp edi", 0, "Bad validation format pattern for %s", name);
             return MPR_ERR_BAD_SYNTAX;
         }
         if ((vp->mdata = pcre_compile2(data, 0, 0, &errMsg, &column, NULL)) == 0) {
-            mprLog("esp edi", 0, "Cannot compile validation pattern. Error %s at column %d", errMsg, column); 
+            mprLog("error esp edi", 0, "Cannot compile validation pattern. Error %s at column %d", errMsg, column); 
             return MPR_ERR_BAD_SYNTAX;
         }
         data = 0;
@@ -216,7 +216,7 @@ PUBLIC int ediDelete(Edi *edi, cchar *path)
 //  FUTURE - rename edi
 PUBLIC void espDumpGrid(EdiGrid *grid)
 {
-    mprDebug("esp edi", 0, "Grid: %s\nschema: %s,\ndata: %s", grid->tableName, 
+    mprLog("info esp edi", 0, "Grid: %s\nschema: %s,\ndata: %s", grid->tableName, 
         ediGetTableSchemaAsJson(grid->edi, grid->tableName), ediGridAsJson(grid, MPR_JSON_PRETTY));
 }
 
@@ -571,7 +571,7 @@ PUBLIC Edi *ediOpen(cchar *path, cchar *providerName, int flags)
     EdiProvider     *provider;
 
     if ((provider = lookupProvider(providerName)) == 0) {
-        mprLog("esp edi", 0, "Cannot find EDI provider '%s'", providerName);
+        mprLog("error esp edi", 0, "Cannot find EDI provider '%s'", providerName);
         return 0;
     }
     return provider->open(path, flags);
@@ -886,7 +886,7 @@ PUBLIC cchar *ediFormatField(cchar *fmt, EdiField *fp)
         return sfmt(fmt, fp->value);
 
     default:
-        mprDebug("esp edi", 0, "Unknown field type %d", fp->type);
+        mprLog("error esp edi", 0, "Unknown field type %d", fp->type);
     }
     return 0;
 }
@@ -928,7 +928,7 @@ static void formatFieldForJson(MprBuf *buf, EdiField *fp)
         return;
 
     default:
-        mprDebug("esp edi", 0, "Unknown field type %d", fp->type);
+        mprLog("error esp edi", 0, "Unknown field type %d", fp->type);
         mprPutStringToBuf(buf, "null");
     }
 }

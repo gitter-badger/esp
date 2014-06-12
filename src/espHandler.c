@@ -121,7 +121,7 @@ static bool espUnloadModule(cchar *module, MprTicks timeout)
             /* Own request will count as 1 */
             if (esp->inUse <= 1) {
                 if (mprUnloadModule(mp) < 0) {
-                    mprLog("esp", 0, "Cannot unload module %s", mp->name);
+                    mprLog("error esp", 0, "Cannot unload module %s", mp->name);
                     unlock(esp);
                 }
                 esp->reloading = 0;
@@ -319,7 +319,7 @@ static int runAction(HttpConn *conn)
         if (!httpCheckSecurityToken(conn)) {
             httpSetStatus(conn, HTTP_CODE_UNAUTHORIZED);
             if (smatch(route->responseFormat, "json")) {
-                httpTrace(conn, "info", "Stale esp security token", 0);
+                httpTrace(conn, "context", "Stale esp security token", 0);
                 espRenderString(conn,
                     "{\"retry\": true, \"success\": 0, \"feedback\": {\"error\": \"Security token is stale. Please retry.\"}}");
                 espFinalize(conn);
@@ -430,7 +430,7 @@ static int cloneDatabase(HttpConn *conn)
     id = httpGetSessionID(conn);
     if ((req->edi = mprLookupKey(esp->databases, id)) == 0) {
         if ((req->edi = ediClone(eroute->edi)) == 0) {
-            mprLog("esp", 0, "Cannot clone database: %s", eroute->edi->path);
+            mprLog("error esp", 0, "Cannot clone database: %s", eroute->edi->path);
             return MPR_ERR_CANT_OPEN;
         }
         mprAddKey(esp->databases, id, req->edi);
@@ -558,7 +558,7 @@ static bool loadApp(HttpRoute *route, MprDispatcher *dispatcher)
     }
     if (mprPathExists(source, R_OK)) {
         if (espLoadModule(route, dispatcher, "app", source, &errMsg) < 0) {
-            mprLog("esp", 0, "%s", errMsg);
+            mprLog("error esp", 0, "%s", errMsg);
             return 0;
         }
     }
@@ -583,34 +583,34 @@ PUBLIC bool espModuleIsStale(cchar *source, cchar *module, int *recompile)
     if (!minfo.valid) {
         if ((mp = mprLookupModule(source)) != 0) {
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("esp", 0, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("error esp", 0, "Cannot unload module %s. Connections still open. Continue using old version.", source);
                 return 0;
             }
         }
         *recompile = 1;
-        mprLog("esp", 4, "esp source %s is newer than module %s, recompiling ...", source, module);
+        mprLog("info esp", 4, "Source %s is newer than module %s, recompiling ...", source, module);
         return 1;
     }
     mprGetPathInfo(source, &sinfo);
     if (sinfo.valid && sinfo.mtime > minfo.mtime) {
         if ((mp = mprLookupModule(source)) != 0) {
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
                 return 0;
             }
         }
         *recompile = 1;
-        mprLog("esp", 4, "esp source %s is newer than module %s, recompiling ...", source, module);
+        mprLog("info esp", 4, "Source %s is newer than module %s, recompiling ...", source, module);
         return 1;
     }
     if ((mp = mprLookupModule(source)) != 0) {
         if (minfo.mtime > mp->modified) {
             /* Module file has been updated */
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
                 return 0;
             }
-            mprLog("esp", 4, "esp module %s has been externally updated, reloading ...", module);
+            mprLog("info esp", 4, "Module %s has been externally updated, reloading ...", module);
             return 1;
         }
     }
@@ -645,7 +645,7 @@ static bool layoutIsStale(EspRoute *eroute, cchar *source, cchar *module)
         if (layout) {
             stale = espModuleIsStale(layout, module, &recompile);
             if (stale) {
-                mprLog("esp", 4, "esp layout %s is newer than module %s", layout, module);
+                mprLog("info esp", 4, "esp layout %s is newer than module %s", layout, module);
             }
         }
     }
@@ -852,7 +852,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     espSetDefaultDirs(route);
     if (prefix) {
         if (*prefix != '/') {
-            mprLog("esp", 0, "Prefix name should start with a \"/\"");
+            mprLog("warn esp", 0, "Prefix name should start with a \"/\"");
             prefix = sjoin("/", prefix, NULL);
         }
         prefix = stemplate(prefix, route->vars);
@@ -874,7 +874,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     }
     if (route->database && !eroute->edi) {
         if (espOpenDatabase(route, route->database) < 0) {
-            mprLog("esp", 0, "Cannot open database %s", route->database);
+            mprLog("error esp", 0, "Cannot open database %s", route->database);
             return MPR_ERR_CANT_LOAD;
         }
     }
@@ -897,7 +897,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
                 if (!kind) kind = "controller";
                 source = mprJoinPath(httpGetDir(route, "controllers"), source);
                 if (espLoadModule(route, NULL, kind, source, &errMsg) < 0) {
-                    mprLog("esp", 0, "Cannot preload esp module %s. %s", source, errMsg);
+                    mprLog("error esp", 0, "Cannot preload esp module %s. %s", source, errMsg);
                     return MPR_ERR_CANT_LOAD;
                 }
             }
@@ -960,7 +960,7 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
             } else if (smatch(option, "routes")) {
                 routeSet = ovalue;
             } else {
-                mprLog("esp", 0, "Unknown EspApp option \"%s\"", option);
+                mprLog("error esp", 0, "Unknown EspApp option \"%s\"", option);
             }
         }
     }
@@ -975,7 +975,7 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
     state->route = route;
     if (auth) {
         if (httpSetAuthStore(route->auth, auth) < 0) {
-            mprLog("esp", 0, "The %s AuthStore is not available on this platform", auth);
+            mprLog("error esp", 0, "The %s AuthStore is not available on this platform", auth);
             return MPR_ERR_BAD_STATE;
         }
     }
@@ -1115,7 +1115,7 @@ static int espDbDirective(MaState *state, cchar *key, cchar *value)
     }
     if (espOpenDatabase(state->route, value) < 0) {
         if (!(state->flags & MA_PARSE_NON_SERVER)) {
-            mprLog("esp", 0, "Cannot open database '%s'. Use: provider://database", value);
+            mprLog("error esp", 0, "Cannot open database '%s'. Use: provider://database", value);
             return MPR_ERR_CANT_OPEN;
         }
     }
@@ -1295,7 +1295,7 @@ PUBLIC int espStaticInitialize(EspModuleEntry entry, cchar *appName, cchar *rout
     HttpRoute   *route;
 
     if ((route = httpLookupRoute(NULL, routeName)) == 0) {
-        mprLog("esp", 0, "Cannot find route %s", routeName);
+        mprLog("error esp", 0, "Cannot find route %s", routeName);
         return MPR_ERR_CANT_ACCESS;
     }
     return (entry)(route, NULL);
@@ -1397,7 +1397,7 @@ static int espRouteDirective(MaState *state, cchar *key, cchar *value)
             } else if (smatch(option, "target")) {
                 target = ovalue;
             } else {
-                mprLog("esp", 0, "Unknown EspRoute option \"%s\"", option);
+                mprLog("error esp", 0, "Unknown EspRoute option \"%s\"", option);
             }
         }
     }
@@ -1543,7 +1543,7 @@ PUBLIC int maEspHandlerInit(Http *http, MprModule *module)
     path = mprJoinPath(mprGetAppDir(), "esp.conf");
     if (mprPathExists(path, R_OK) && (http->platformDir || httpSetPlatformDir(0) == 0)) {
         if (maParseFile(NULL, mprJoinPath(mprGetAppDir(), "esp.conf")) < 0) {
-            mprLog("esp", 0, "Cannot parse %s", path);
+            mprLog("error esp", 0, "Cannot parse %s", path);
             return MPR_ERR_CANT_OPEN;
         }
         esp->canCompile = 1;

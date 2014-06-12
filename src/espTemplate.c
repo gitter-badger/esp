@@ -244,7 +244,7 @@ static int runCommand(HttpRoute *route, MprDispatcher *dispatcher, cchar *comman
         *errMsg = sfmt("Missing EspCompile directive for %s", csource);
         return MPR_ERR_CANT_READ;
     }
-    mprLog("esp", 4, "Run: %s", commandLine);
+    mprLog("info esp run", 4, "%s", commandLine);
     if (eroute->env) {
         elist = mprCreateList(0, MPR_LIST_STABLE);
         for (ITERATE_KEYS(eroute->env, var)) {
@@ -270,7 +270,7 @@ static int runCommand(HttpRoute *route, MprDispatcher *dispatcher, cchar *comman
             /* Windows puts errors to stdout Ugh! */
             err = out;
         }
-        mprLog("esp", 0, "Cannot run command: %s, error %s", commandLine, err);
+        mprLog("error esp", 0, "Cannot run command: %s, error %s", commandLine, err);
         if (route->flags & HTTP_ROUTE_SHOW_ERRORS) {
             *errMsg = sfmt("Cannot run command: %s, error %s", commandLine, err);
         } else {
@@ -303,7 +303,7 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
     layout = 0;
     *errMsg = 0;
 
-    mprLog("esp", 2, "compile %s", source);
+    mprLog("info esp", 2, "Compile %s", source);
     if (isView) {
         if ((page = mprReadPathContents(source, &len)) == 0) {
             *errMsg = sfmt("Cannot read %s", source);
@@ -1115,7 +1115,7 @@ static cchar *getWinSDK(HttpRoute *route)
 
     /*
         MS has made a huge mess of where and how the windows SDKs are installed. The registry key at 
-        HKLM/Software/Microsoft/Microsoft SDKs/Windows/CurrentInstallFolder can't be trusted and often
+        HKLM/Software/Microsoft/Microsoft SDKs/Windows/CurrentInstallFolder cannot be trusted and often
         points to the old 7.X SDKs even when 8.X is installed and active. MS have also moved the 8.X
         SDK to Windows Kits, while still using the old folder for some bits. So the old-reliable
         CurrentInstallFolder registry key is now unusable. So we must scan for explicit SDK versions 
@@ -1169,7 +1169,7 @@ static cchar *getWinSDK(HttpRoute *route)
     if (!path) {
         path = "${WINSDK}";
     }
-    mprLog("esp", 4, "Using Windows SDK at %s", path);
+    mprLog("info esp", 4, "Using Windows SDK at %s", path);
     eroute->winsdk = strim(path, "\\", MPR_TRIM_END);
     return eroute->winsdk;
 #else
