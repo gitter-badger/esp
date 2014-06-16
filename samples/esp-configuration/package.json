@@ -745,16 +745,15 @@
                     Levels at which to trace request events
                  */
                 levels: {
-                    rxFirst: 2,
-                    errors: 2,
-                    txFirst: 3,
-                    rxHeaders: 4,
-                    txHeaders: 4,
-                    connection: 4,
-                    context: 4,
-                    complete: 4,
-                    rxBody: 5,
-                    txBody: 5,
+                    first: 1,
+                    errors: 1,
+                    complete: 2,
+                    headers: 3,
+                    connection: 3,
+                    context: 3,
+                    close: 3,
+                    rx: 4,
+                    tx: 5,
                 },
 
                 /*
@@ -773,9 +772,9 @@
                 size: "10MB",
 
                 /*
-                    Maximum request body size to trace
+                    Maximum tx and rx content to trace
                  */
-                body: "1K",
+                content: "1K",
             },
 
             /*
