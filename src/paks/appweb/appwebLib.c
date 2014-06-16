@@ -2323,17 +2323,16 @@ static int threadStackDirective(MaState *state, cchar *key, cchar *value)
 /*
     Trace options
     Options:
-        connection=NN
+        first=NN
         errors=NN
-        info=NN
-        rxFirst=NN
-        txFirst=NN
-        rxHeader=NN
-        txHeader=NN
-        rxBody=NN
-        txBody=NN
         complete=NN
-        size=NN
+        connection=NN
+        headers=NN
+        context=NN
+        close=NN
+        rx=NN
+        tx=NN
+        content=MAX_SIZE
  */
 static int traceDirective(MaState *state, cchar *key, cchar *value)
 {
@@ -2349,8 +2348,8 @@ static int traceDirective(MaState *state, cchar *key, cchar *value)
         option = stok(option, " =\t,", &ovalue);
         ovalue = strim(ovalue, "\"'", MPR_TRIM_BOTH);
 
-        if (smatch(option, "size")) {
-            httpSetTraceSize(route->trace, (ssize) getnum(ovalue));
+        if (smatch(option, "content")) {
+            httpSetTraceContentSize(route->trace, (ssize) getnum(ovalue));
         } else {
             httpSetTraceEventLevel(route->trace, option, atoi(ovalue));
         }
@@ -5296,7 +5295,7 @@ static bool parseFirstCgiResponse(Cgi *cgi, HttpPacket *packet)
     }
     msg = getCgiToken(buf, "\n");
     mprNop(msg);
-    mprDebug("http cgi", 4, "CGI: Status line: %s %s %s", protocol, status, msg);
+    mprDebug("http cgi", 4, "CGI response status: %s %s %s", protocol, status, msg);
     return 1;
 }
 
