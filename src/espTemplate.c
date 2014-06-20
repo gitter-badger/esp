@@ -656,7 +656,7 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
 
         case ESP_TOK_LITERAL:
             line = joinLine(token, &len);
-            mprPutToBuf(body, "  espRenderBlock(conn, \"%s\", %d);\n", line, len);
+            mprPutToBuf(body, "  espRenderBlock(conn, \"%s\", %zd);\n", line, len);
             break;
 
         default:

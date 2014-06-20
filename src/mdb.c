@@ -987,7 +987,7 @@ static int checkMdbState(MprJsonParser *jp, cchar *name, bool leave)
         break;
 
     default:
-        mprSetJsonError(jp, "Potential corrupt data. Bad state '%d'");
+        mprSetJsonError(jp, "Potential corrupt data. Bad state");
         return MPR_ERR_BAD_FORMAT;
     }
     return 0;

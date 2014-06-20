@@ -997,7 +997,7 @@ static void sdbError(Edi *edi, cchar *fmt, ...)
     va_start(args, fmt);
     edi->errMsg = sfmtv(fmt, args);
     va_end(args);
-    mprLog("error esp sdb", 0, edi->errMsg);
+    mprLog("error esp sdb", 0, "%s", edi->errMsg);
 }
 
 
@@ -1008,7 +1008,7 @@ static void sdbDebug(Edi *edi, int level, cchar *fmt, ...)
     va_start(args, fmt);
     edi->errMsg = sfmtv(fmt, args);
     va_end(args);
-    mprDebug("debug esp sdb", level, edi->errMsg);
+    mprDebug("debug esp sdb", level, "%s", edi->errMsg);
 }
 
 

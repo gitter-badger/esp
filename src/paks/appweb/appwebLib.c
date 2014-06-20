@@ -1968,7 +1968,7 @@ static int requireDirective(MaState *state, cchar *key, cchar *value)
             option = stok(option, " =\t,", &ovalue);
             ovalue = strim(ovalue, "\"'", MPR_TRIM_BOTH);
             if (smatch(option, "age")) {
-                age = sfmt("%Ld", (int64) httpGetTicks(ovalue));
+                age = sfmt("%lld", (int64) httpGetTicks(ovalue));
             } else if (smatch(option, "domains")) {
                 domains = 1;
             }
@@ -2338,9 +2338,7 @@ static int traceDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpRoute   *route;
     char        *option, *ovalue, *tok;
-    ssize       size;
 
-    size = MAXINT;
     route = state->route;
     route->trace = httpCreateTrace(route->trace);
     
@@ -4265,7 +4263,7 @@ static int openFileHandler(HttpQueue *q)
         } 
         if (!tx->etag) {
             /* Set the etag for caching in the client */
-            tx->etag = sfmt("\"%Lx-%Lx-%Lx\"", (int64) info->inode, (int64) info->size, (int64) info->mtime);
+            tx->etag = sfmt("\"%llx-%llx-%llx\"", (int64) info->inode, (int64) info->size, (int64) info->mtime);
         }
         if (info->mtime) {
             dateCache = conn->http->dateCache;
@@ -4276,7 +4274,7 @@ static int openFileHandler(HttpQueue *q)
                 date = httpGetDateString(&tx->fileInfo);
                 mprAddKey(dateCache, itosbuf(dbuf, sizeof(dbuf), (int64) info->mtime, 10), date);
             }
-            httpSetHeader(conn, "Last-Modified", date);
+            httpSetHeaderString(conn, "Last-Modified", date);
         }
         if (httpContentNotModified(conn)) {
             httpSetStatus(conn, HTTP_CODE_NOT_MODIFIED);
@@ -4289,7 +4287,7 @@ static int openFileHandler(HttpQueue *q)
             
         } else if (tx->fileInfo.size > conn->limits->transmissionBodySize) {
             httpError(conn, HTTP_ABORT | HTTP_CODE_REQUEST_TOO_LARGE,
-                "Http transmission aborted. File size exceeds max body of %,Ld bytes", 
+                "Http transmission aborted. File size exceeds max body of %'zd bytes", 
                     conn->limits->transmissionBodySize);
             
         } else if (!(tx->connector == conn->http->sendConnector)) {
@@ -4514,7 +4512,7 @@ static void incomingFile(HttpQueue *q, HttpPacket *packet)
         if (!tx->etag) {
             /* Set the etag for caching in the client */
             mprGetPathInfo(tx->filename, &tx->fileInfo);
-            tx->etag = sfmt("\"%Lx-%Lx-%Lx\"", tx->fileInfo.inode, tx->fileInfo.size, tx->fileInfo.mtime);
+            tx->etag = sfmt("\"%llx-%llx-%llx\"", tx->fileInfo.inode, tx->fileInfo.size, tx->fileInfo.mtime);
         }
         return;
     }
@@ -4524,7 +4522,7 @@ static void incomingFile(HttpQueue *q, HttpPacket *packet)
 
     range = rx->inputRange;
     if (range && mprSeekFile(file, SEEK_SET, range->start) != range->start) {
-        httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot seek to range start to %d", range->start);
+        httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot seek to range start to %lld", range->start);
 
     } else if (mprWriteFile(file, mprGetBufStart(buf), len) != len) {
         httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot PUT to %s", tx->filename);
@@ -4569,7 +4567,7 @@ static void handlePutRequest(HttpQueue *q)
         }
     }
     if (!tx->fileInfo.isReg) {
-        httpSetHeader(conn, "Location", conn->rx->uri);
+        httpSetHeaderString(conn, "Location", conn->rx->uri);
     }
     httpSetStatus(conn, tx->fileInfo.isReg ? HTTP_CODE_NO_CONTENT : HTTP_CODE_CREATED);
     q->pair->queueData = (void*) file;

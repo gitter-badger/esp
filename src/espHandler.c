@@ -858,7 +858,7 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
         prefix = stemplate(prefix, route->vars);
         httpSetRouteName(route, prefix);
         httpSetRoutePrefix(route, prefix);
-        httpSetRoutePattern(route, sfmt("^%s%", prefix), 0);
+        httpSetRoutePattern(route, sfmt("^%s", prefix), 0);
     } else {
         httpSetRouteName(route, sfmt("/%s", name));
     }
