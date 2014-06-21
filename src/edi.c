@@ -358,7 +358,7 @@ PUBLIC cchar *ediGetTableSchemaAsJson(Edi *edi, cchar *tableName)
     for (c = 0; c < ncols; c++) {
         ediGetColumnSchema(edi, tableName, mprGetItem(columns, c), &type, &flags, &cid);
         mprPutToBuf(buf, "      \"%s\": {\n        \"type\": \"%s\"\n      },\n", 
-            mprGetItem(columns, c), ediGetTypeString(type));
+            (char*) mprGetItem(columns, c), ediGetTypeString(type));
     }
     if (ncols > 0) {
         mprAdjustBufEnd(buf, -2);
