@@ -779,7 +779,7 @@ static int crossOriginDirective(MaState *state, cchar *key, cchar *value)
             return MPR_ERR_BAD_SYNTAX;
         }
     }
-#if UNUSED
+#if KEEP
     if (smatch(route->corsOrigin, "*") && route->corsCredentials) {
         mprLog("error appweb config", 0, "CrossOrigin: Cannot use wildcard Origin if allowing credentials");
         return MPR_ERR_BAD_STATE;
@@ -4250,15 +4250,6 @@ static int openFileHandler(HttpQueue *q)
     }
     if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
         if (!(info->valid || info->isDir)) {
-#if UNUSED
-            if (rx->referrer) {
-                httpTrace(conn, "request.document.error", "error", "msg=\"Cannot find document\", filename=%s, referrer=%s", 
-                    tx->filename, rx->referrer);
-            } else {
-                httpTrace(conn, "request.document.error", "error", "msg=\"Cannot find document\", filename=%s", 
-                    tx->filename);
-            }
-#endif
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
             return 0;
         } 
