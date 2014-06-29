@@ -119,6 +119,12 @@ PUBLIC void flush()
 }
 
 
+PUBLIC HttpAuth *getAuth()
+{
+    return espGetAuth(getConn());
+}
+
+
 PUBLIC MprList *getColumns(EdiRec *rec)
 {
     if (rec == 0) {
@@ -259,6 +265,12 @@ PUBLIC cchar *getReferrer()
 PUBLIC EspReq *getReq()
 {
     return getConn()->data;
+}
+
+
+PUBLIC HttpRoute *getRoute()
+{
+    return espGetRoute(getConn());
 }
 
 

@@ -178,6 +178,12 @@ PUBLIC void espFlush(HttpConn *conn)
 }
 
 
+PUBLIC HttpAuth *espGetAuth(HttpConn *conn)
+{
+    return conn->rx->route->auth;
+}
+
+
 PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue)
 {
     cchar       *value;
@@ -294,7 +300,6 @@ PUBLIC cchar *espGetFeedback(HttpConn *conn, cchar *kind)
         }
     }
     return 0;
-
 }
 
 
@@ -358,6 +363,12 @@ PUBLIC char *espGetReferrer(HttpConn *conn)
         return conn->rx->referrer;
     }
     return httpLink(conn, "~");
+}
+
+
+PUBLIC HttpRoute *espGetRoute(HttpConn *conn)
+{
+    return conn->rx->route;
 }
 
 
