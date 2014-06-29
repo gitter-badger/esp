@@ -82,18 +82,14 @@
                 Selection of properties to send to the client
              */
             mappings: {
-                auth:       "http.auth",
-                prefix:     "http.prefix",
-                server:     "http.serverPrefix",
-                formats:    "http.formats",
-                login: {
-                    name:   "http.auth.login.name",
-                    url:    "http.auth.login.url",
+                auth: {
+                    login:    "app.http.auth.login",
+                    store:    "app.http.auth.store",
                 },
-                timeouts: {
-                    session: "http.timeouts.session",
-                    refresh: "http.timeouts.refresh",
-                }
+                formats:      "app.http.formats",
+                prefix:       "app.http.prefix",
+                serverPrefix: "app.http.serverPrefix",
+                timeouts:     "app.http.timeouts",
             },
             /*
                 List of browser scripts to serve to the client via the scripts() API
@@ -262,14 +258,14 @@
                  */
                 login: {
                     /*
+                        Give the auto-logged-in user these abilities
+                     */
+                    abilities: [ "*" ],
+
+                    /*
                         Automatically login as this username
                      */
                     name: "",
-
-                    /*
-                        Give the automatically logged in user these roles and abilities
-                     */
-                    roles: [ "*" ],
 
                     /*
                         URL for the application login dialog
@@ -287,11 +283,12 @@
                  */
                 require: {
                     /*
-                        List of roles a user must posess before authorizing
+                        List of roles a user must posess before authorized for access to documents in this route
                      */
                     roles: [],
+
                     /*
-                        List of users to authorizing. Set to true or ["*"] for any valid user
+                        List of users to authorize. Set to true or ["*"] for any valid user
                      */
                     users: ["*"]
                 },
