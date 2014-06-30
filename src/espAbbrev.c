@@ -470,7 +470,7 @@ PUBLIC bool removeRec(cchar *tableName, cchar *key)
         feedback("error", "Cannot delete %s", stitle(tableName));
         return 0;
     }
-    feedback("inform", "Deleted %s", stitle(tableName));
+    feedback("info", "Deleted %s", stitle(tableName));
     return 1;
 }
 
@@ -890,7 +890,7 @@ PUBLIC bool updateRec(EdiRec *rec)
         feedback("error", "Cannot save %s", stitle(rec->tableName));
         return 0;
     }
-    feedback("inform", "Saved %s", stitle(rec->tableName));
+    feedback("info", "Saved %s", stitle(rec->tableName));
     return 1;
 }
 
