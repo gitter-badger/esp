@@ -2,6 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "prep", "esp-windows-default\prep.vcxproj", "{C29B740D-1A14-47B8-8D2D-55B7CCD461B6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "css", "esp-windows-default\css.vcxproj", "{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C29B740D-1A14-47B8-8D2D-55B7CCD461B6} = {C29B740D-1A14-47B8-8D2D-55B7CCD461B6}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "esp-paks", "esp-windows-default\esp-paks.vcxproj", "{DD2B0EDF-0D07-4A36-8CBF-CC87F7AECADB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C29B740D-1A14-47B8-8D2D-55B7CCD461B6} = {C29B740D-1A14-47B8-8D2D-55B7CCD461B6}
@@ -127,6 +132,14 @@ Global
 {C29B740D-1A14-47B8-8D2D-55B7CCD461B6}.Release|Win32.Build.0 = Release|Win32
 {C29B740D-1A14-47B8-8D2D-55B7CCD461B6}.Release|x64.ActiveCfg = Release|x64
 {C29B740D-1A14-47B8-8D2D-55B7CCD461B6}.Release|x64.Build.0 = Release|x64
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Debug|Win32.ActiveCfg = Debug|Win32
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Debug|Win32.Build.0 = Debug|Win32
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Debug|x64.ActiveCfg = Debug|x64
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Debug|x64.Build.0 = Debug|x64
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Release|Win32.ActiveCfg = Release|Win32
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Release|Win32.Build.0 = Release|Win32
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Release|x64.ActiveCfg = Release|x64
+{B69F21A2-0EFD-42A1-B3C8-9440BB15B2CB}.Release|x64.Build.0 = Release|x64
 {DD2B0EDF-0D07-4A36-8CBF-CC87F7AECADB}.Debug|Win32.ActiveCfg = Debug|Win32
 {DD2B0EDF-0D07-4A36-8CBF-CC87F7AECADB}.Debug|Win32.Build.0 = Debug|Win32
 {DD2B0EDF-0D07-4A36-8CBF-CC87F7AECADB}.Debug|x64.ActiveCfg = Debug|x64

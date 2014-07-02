@@ -133,7 +133,7 @@
     #define ME_TUNE "speed"
 #endif
 #ifndef ME_VERSION
-    #define ME_VERSION "5.0.0-rc2"
+    #define ME_VERSION "5.0.0"
 #endif
 
 /* Prefixes */
@@ -186,7 +186,7 @@
     #define ME_VAPP_PREFIX "deploy"
 #endif
 #ifndef ME_SRC_PREFIX
-    #define ME_SRC_PREFIX "/usr/src/esp-5.0.0-rc2"
+    #define ME_SRC_PREFIX "/usr/src/esp-5.0.0"
 #endif
 
 /* Suffixes */
@@ -228,10 +228,10 @@
     #define ME_MINOR_VERSION 0
 #endif
 #ifndef ME_PATCH_VERSION
-    #define ME_PATCH_VERSION 0-rc2
+    #define ME_PATCH_VERSION 0
 #endif
 #ifndef ME_VNUM
-    #define ME_VNUM 500000000-rc2
+    #define ME_VNUM 500000000
 #endif
 
 /* Components */

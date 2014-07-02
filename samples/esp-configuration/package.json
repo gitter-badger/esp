@@ -288,7 +288,7 @@
                     roles: [],
 
                     /*
-                        List of users to authorize. Set to true or ["*"] for any valid user
+                        Restrict login to this set of users. Set to true or ["*"] for any valid user.
                      */
                     users: ["*"]
                 },
