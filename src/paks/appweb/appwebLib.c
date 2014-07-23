@@ -27,23 +27,93 @@
 
 #include    "pcre.h"
 
+/********************************** Locals *************************************/
+
+static MprHash *directives;
+
 /***************************** Forward Declarations ****************************/
 
 static int addCondition(MaState *state, cchar *name, cchar *condition, int flags);
 static int addUpdate(MaState *state, cchar *name, cchar *details, int flags);
 static bool conditionalDefinition(MaState *state, cchar *key);
 static int configError(MaState *state, cchar *key);
-static MaState *createState(MaServer *server, int flags);
+static MaState *createState(int flags);
 static char *getDirective(char *line, char **valuep);
 static int getint(cchar *value);
 static int64 getnum(cchar *value);
 static void manageState(MaState *state, int flags);
 static int parseFileInner(MaState *state, cchar *path);
+static int parseInit();
 static int setTarget(MaState *state, cchar *name, cchar *details);
 
 /******************************************************************************/
 
-PUBLIC int maOpenConfig(MaState *state, cchar *path)
+static int configureHandlers(HttpRoute *route)
+{
+#if ME_COM_CGI
+    maLoadModule("cgiHandler", "libmod_cgi");
+    if (httpLookupStage("cgiHandler")) {
+        char    *path;
+        httpAddRouteHandler(route, "cgiHandler", "cgi cgi-nph bat cmd pl py");
+        /*
+            Add cgi-bin with a route for the /cgi-bin URL prefix.
+         */
+        path = "cgi-bin";
+        if (mprPathExists(path, X_OK)) {
+            HttpRoute *cgiRoute;
+            cgiRoute = httpCreateAliasRoute(route, "/cgi-bin/", path, 0);
+            httpSetRouteHandler(cgiRoute, "cgiHandler");
+            httpFinalizeRoute(cgiRoute);
+        }
+    }
+#endif
+#if ME_COM_ESP || ME_ESP_PRODUCT
+    maLoadModule("espHandler", "libmod_esp");
+    if (httpLookupStage("espHandler")) {
+        httpAddRouteHandler(route, "espHandler", "esp");
+    }
+#endif
+#if ME_COM_EJS || ME_EJS_PRODUCT
+    maLoadModule("ejsHandler", "libmod_ejs");
+    if (httpLookupStage("ejsHandler")) {
+        httpAddRouteHandler(route, "ejsHandler", "ejs");
+    }
+#endif
+#if ME_COM_PHP
+    maLoadModule("phpHandler", "libmod_php");
+    if (httpLookupStage("phpHandler")) {
+        httpAddRouteHandler(route, "phpHandler", "php");
+    }
+#endif
+    httpAddRouteHandler(route, "fileHandler", "");
+    return 0;
+}
+
+
+PUBLIC int maConfigureServer(cchar *configFile, cchar *home, cchar *documents, cchar *ip, int port, int flags)
+{
+    HttpEndpoint    *endpoint;
+    HttpHost        *host;
+
+    if (configFile) {
+        if (maParseConfig(mprGetAbsPath(configFile), flags) < 0) {
+            return MPR_ERR_CANT_INITIALIZE;
+        }
+    } else {
+        if ((endpoint = httpCreateConfiguredEndpoint(NULL, home, documents, ip, port)) == 0) {
+            return MPR_ERR_CANT_OPEN;
+        }
+        if (!(flags & MA_NO_MODULES)) {
+            if ((host = httpLookupHostOnEndpoint(endpoint, 0)) != 0) {
+                configureHandlers(host->defaultRoute);
+            }
+        }
+    }
+    return 0;
+}
+
+
+static int openConfig(MaState *state, cchar *path)
 {
     assert(state);
     assert(path && *path);
@@ -55,22 +125,22 @@ PUBLIC int maOpenConfig(MaState *state, cchar *path)
         mprLog("error http", 0, "Cannot open %s for config directives", path);
         return MPR_ERR_CANT_OPEN;
     }
+    parseInit();
     return 0;
 }
 
 
-PUBLIC int maParseConfig(MaServer *server, cchar *path, int flags)
+PUBLIC int maParseConfig(cchar *path, int flags)
 {
     MaState     *state;
     HttpRoute   *route;
     cchar       *dir;
 
-    assert(server);
     assert(path && *path);
 
     mprLog("info appweb", 2, "Using config file: \"%s\"", mprGetRelPath(path, 0));
 
-    state = createState(server, flags);
+    state = createState(flags);
     mprAddRoot(state);
     route = state->route;
     dir = mprGetAbsPath(mprGetPathDir(path));
@@ -80,23 +150,14 @@ PUBLIC int maParseConfig(MaServer *server, cchar *path, int flags)
     httpSetRouteVar(route, "LOG_DIR", ".");
     httpSetRouteVar(route, "INC_DIR", ME_VAPP_PREFIX "/inc");
     httpSetRouteVar(route, "SPL_DIR", ME_SPOOL_PREFIX);
-    httpSetRouteVar(route, "BIN_DIR", mprJoinPath(server->http->platformDir, "bin"));
-
-#if DEPRECATED
-    httpSetRouteVar(route, "LIBDIR", mprJoinPath(server->http->platformDir, "bin"));
-    httpSetRouteVar(route, "BINDIR", mprJoinPath(server->http->platformDir, "bin"));
-#endif
+    httpSetRouteVar(route, "BIN_DIR", mprJoinPath(HTTP->platformDir, "bin"));
 
     if (maParseFile(state, path) < 0) {
         mprRemoveRoot(state);
         return MPR_ERR_BAD_SYNTAX;
     }
     mprRemoveRoot(state);
-
     httpFinalizeRoute(state->route);
-    if (!maValidateServer(server)) {
-        return MPR_ERR_BAD_ARGS;
-    }
     if (mprHasMemError()) {
         mprLog("error appweb memory", 0, "Memory allocation error when initializing");
         return MPR_ERR_MEMORY;
@@ -107,15 +168,13 @@ PUBLIC int maParseConfig(MaServer *server, cchar *path, int flags)
 
 PUBLIC int maParseFile(MaState *state, cchar *path)
 {
-    MaAppweb    *appweb;
     MaState     *topState;
     int         rc, lineNumber;
 
     assert(path && *path);
     if (!state) {
-        appweb = MPR->appwebService;
         lineNumber = 0;
-        topState = state = createState(appweb->defaultServer, 0);
+        topState = state = createState(0);
         mprAddRoot(state);
     } else {
         topState = 0;
@@ -141,7 +200,7 @@ static int parseFileInner(MaState *state, cchar *path)
     assert(state);
     assert(path && *path);
 
-    if (maOpenConfig(state, path) < 0) {
+    if (openConfig(state, path) < 0) {
         return MPR_ERR_CANT_OPEN;
     }
     for (state->lineNumber = 1; state->file && (line = mprReadLine(state->file, 0, NULL)) != 0; state->lineNumber++) {
@@ -156,7 +215,7 @@ static int parseFileInner(MaState *state, cchar *path)
                 continue;
             }
         }
-        if ((directive = mprLookupKey(state->appweb->directives, key)) == 0) {
+        if ((directive = mprLookupKey(directives, key)) == 0) {
             mprLog("error appweb config", 0, "Unknown directive \"%s\". At line %d in %s", 
                 key, state->lineNumber, state->filename);
             return MPR_ERR_BAD_SYNTAX;
@@ -653,7 +712,8 @@ static int chrootDirective(MaState *state, cchar *key, cchar *value)
         mprLog("error appweb config", 0, "Cannot change working directory to %s", home);
         return MPR_ERR_CANT_OPEN;
     }
-    if (state->http->flags & HTTP_UTILITY) {
+//  MOB API
+    if (HTTP->flags & HTTP_UTILITY) {
         /* Not running a web server but rather a utility like the "esp" generator program */
         mprLog("info appweb config", 2, "Change directory to: \"%s\"", home);
     } else {
@@ -1118,6 +1178,55 @@ static int includeDirective(MaState *state, cchar *key, cchar *value)
 
 
 /*
+    IndexOrder ascending|descending name|date|size 
+ */
+static int indexOrderDirective(MaState *state, cchar *key, cchar *value)
+{
+    HttpDir *dir;
+    char    *option;
+
+    dir = httpGetDirObj(state->route);
+    if (!maTokenize(state, value, "%S %S", &option, &dir->sortField)) {
+        return MPR_ERR_BAD_SYNTAX;
+    }
+    dir->sortField = 0;
+    if (scaselessmatch(option, "ascending")) {
+        dir->sortOrder = 1;
+    } else {
+        dir->sortOrder = -1;
+    }
+    if (dir->sortField) {
+        dir->sortField = sclone(dir->sortField);
+    }
+    return 0;
+}
+
+
+/*  
+    IndexOptions FancyIndexing|FoldersFirst ... (set of options) 
+ */
+static int indexOptionsDirective(MaState *state, cchar *key, cchar *value)
+{
+    HttpDir *dir;
+    char    *option, *tok;
+
+    dir = httpGetDirObj(state->route);
+    option = stok(sclone(value), " \t", &tok);
+    while (option) {
+        if (scaselessmatch(option, "FancyIndexing")) {
+            dir->fancyIndexing = 1;
+        } else if (scaselessmatch(option, "HTMLTable")) {
+            dir->fancyIndexing = 2;
+        } else if (scaselessmatch(option, "FoldersFirst")) {
+            dir->foldersFirst = 1;
+        }
+        option = stok(tok, " \t", &tok);
+    }
+    return 0;
+}
+
+
+/*
     <If DEFINITION>
  */
 static int ifDirective(MaState *state, cchar *key, cchar *value)
@@ -1384,7 +1493,6 @@ static int listenDirective(MaState *state, cchar *key, cchar *value)
         return -1;
     }
     endpoint = httpCreateEndpoint(ip, port, NULL);
-    mprAddItem(state->server->endpoints, endpoint);
     if (!state->host->defaultEndpoint) {
         httpSetHostDefaultEndpoint(state->host, endpoint);
     }
@@ -1393,7 +1501,7 @@ static int listenDirective(MaState *state, cchar *key, cchar *value)
         This is currently used by VxWorks and Windows versions prior to Vista (i.e. XP)
      */
     if (!schr(value, ':') && mprHasIPv6() && !mprHasDualNetworkStack()) {
-        mprAddItem(state->server->endpoints, httpCreateEndpoint("::", port, NULL));
+        httpCreateEndpoint("::", port, NULL);
     }
     return 0;
 }
@@ -1419,7 +1527,6 @@ static int listenSecureDirective(MaState *state, cchar *key, cchar *value)
         return -1;
     }
     endpoint = httpCreateEndpoint(ip, port, NULL);
-    mprAddItem(state->server->endpoints, endpoint);
     if (state->route->ssl == 0) {
         if (state->route->parent && state->route->parent->ssl) {
             state->route->ssl = mprCloneSsl(state->route->parent->ssl);
@@ -1437,7 +1544,6 @@ static int listenSecureDirective(MaState *state, cchar *key, cchar *value)
      */
     if (!schr(value, ':') && mprHasIPv6() && !mprHasDualNetworkStack()) {
         endpoint = httpCreateEndpoint("::", port, NULL);
-        mprAddItem(state->server->endpoints, endpoint);
         httpSecureEndpoint(endpoint, state->route->ssl);
     }
     return 0;
@@ -1506,7 +1612,7 @@ static int loadModuleDirective(MaState *state, cchar *key, cchar *value)
     if (!maTokenize(state, value, "%S %S", &name, &path)) {
         return MPR_ERR_BAD_SYNTAX;
     }
-    if (maLoadModule(state->appweb, name, path) < 0) {
+    if (maLoadModule(name, path) < 0) {
         /*  Error messages already done */
         return MPR_ERR_CANT_CREATE;
     }
@@ -1592,7 +1698,8 @@ static int makeDirDirective(MaState *state, cchar *key, cchar *value)
             if (snumber(owner)) {
                 uid = (int) stoi(owner);
             } else if (smatch(owner, "APPWEB")) {
-                uid = state->http->uid;
+//  MOB API
+                uid = HTTP->uid;
             } else {
                 uid = userToID(owner);
             }
@@ -1602,7 +1709,8 @@ static int makeDirDirective(MaState *state, cchar *key, cchar *value)
             if (snumber(group)) {
                 gid = (int) stoi(group);
             } else if (smatch(owner, "APPWEB")) {
-                gid = state->http->gid;
+//  MOB API
+                gid = HTTP->gid;
             } else {
                 gid = groupToID(group);
             }
@@ -1767,10 +1875,30 @@ static int nameVirtualHostDirective(MaState *state, cchar *key, cchar *value)
     int     port;
 
     mprParseSocketAddress(value, &ip, &port, NULL, -1);
-    httpConfigureNamedVirtualEndpoints(state->http, ip, port);
+    httpConfigureNamedVirtualEndpoints(ip, port);
 #else
     mprLog("warn appweb config", 0, "The NameVirtualHost directive is no longer needed");
 #endif
+    return 0;
+}
+
+
+/*
+    Options Indexes 
+ */
+static int optionsDirective(MaState *state, cchar *key, cchar *value)
+{
+    HttpDir *dir;
+    char    *option, *tok;
+
+    dir = httpGetDirObj(state->route);
+    option = stok(sclone(value), " \t", &tok);
+    while (option) {
+        if (scaselessmatch(option, "Indexes")) {
+            dir->enabled = 1;
+        }
+        option = stok(tok, " \t", &tok);
+    }
     return 0;
 }
 
@@ -2411,7 +2539,7 @@ static int unloadModuleDirective(MaState *state, cchar *key, cchar *value)
         mprLog("error appweb config", 0, "Cannot find module stage %s", name);
         return MPR_ERR_BAD_SYNTAX;
     }
-    if ((stage = httpLookupStage(state->http, module->name)) != 0 && stage->match) {
+    if ((stage = httpLookupStage(module->name)) != 0 && stage->match) {
         mprLog("error appweb config", 0, "Cannot unload module %s due to match routine", module->name);
         return MPR_ERR_BAD_SYNTAX;
     } else {
@@ -2540,7 +2668,7 @@ static int closeVirtualHostDirective(MaState *state, cchar *key, cchar *value)
             while ((address = stok(addresses, " \t,", &tok)) != 0) {
                 addresses = 0;
                 mprParseSocketAddress(address, &ip, &port, NULL, -1);
-                if ((endpoint = httpLookupEndpoint(state->http, ip, port)) == 0) {
+                if ((endpoint = httpLookupEndpoint(ip, port)) == 0) {
                     mprLog("error appweb config", 0, "Cannot find listen directive for virtual host %s", address);
                     return MPR_ERR_BAD_SYNTAX;
                 } else {
@@ -2617,60 +2745,19 @@ static int webSocketsPingDirective(MaState *state, cchar *key, cchar *value)
 }
 
 
-PUBLIC bool maValidateServer(MaServer *server)
-{
-    MaAppweb        *appweb;
-    Http            *http;
-    HttpHost        *host, *defaultHost;
-    HttpEndpoint    *endpoint;
-    HttpRoute       *route;
-    int             nextHost, nextEndpoint, nextRoute;
-
-    appweb = server->appweb;
-    http = appweb->http;
-    defaultHost = server->defaultHost;
-    assert(defaultHost);
-
-    /*
-        Add the default host to the unassigned endpoints
-     */
-    for (nextEndpoint = 0; (endpoint = mprGetNextItem(http->endpoints, &nextEndpoint)) != 0; ) {
-        if (mprGetListLength(endpoint->hosts) == 0) {
-            /* Add the defaultHost */
-            httpAddHostToEndpoint(endpoint, defaultHost);
-            if (!defaultHost->name) {
-                httpSetHostName(defaultHost, sfmt("%s:%d", endpoint->ip, endpoint->port));
-            }
-        }
-    }
-    /*
-        Ensure the host home directory is set and the file handler is defined
-     */
-    for (nextHost = 0; (host = mprGetNextItem(http->hosts, &nextHost)) != 0; ) {
-        for (nextRoute = 0; (route = mprGetNextItem(host->routes, &nextRoute)) != 0; ) {
-            if (!mprLookupKey(route->extensions, "")) {
-                mprLog("warn appweb config", 0, "Route %s in host %s is missing a catch-all handler. "
-                    "Adding: AddHandler fileHandler \"\"", route->name, host->name);
-                httpAddRouteHandler(route, "fileHandler", "");
-                httpAddRouteIndex(route, "index.html");
-            }
-        }
-    }
-    return 1;
-}
-
-
 static bool conditionalDefinition(MaState *state, cchar *key)
 {
-    cchar   *arch, *os, *profile;
+    cchar   *arch, *os, *platform, *profile;
     int     result, not;
 
+//  MOB API
+    platform = HTTP->platform;
     result = 0;
     not = (*key == '!') ? 1 : 0;
     if (not) {
         for (++key; isspace((uchar) *key); key++) {}
     }
-    httpParsePlatform(state->http->platform, &os, &arch, &profile);
+    httpParsePlatform(platform, &os, &arch, &profile);
 
     if (scaselessmatch(key, arch)) {
         result = 1;
@@ -2681,7 +2768,7 @@ static bool conditionalDefinition(MaState *state, cchar *key)
     } else if (scaselessmatch(key, profile)) {
         result = 1;
 
-    } else if (scaselessmatch(key, state->http->platform)) {
+    } else if (scaselessmatch(key, platform)) {
         result = 1;
 
 #if ME_DEBUG
@@ -2690,10 +2777,10 @@ static bool conditionalDefinition(MaState *state, cchar *key)
 #endif
 
     } else if (scaselessmatch(key, "dynamic")) {
-        result = !state->appweb->staticLink;
+        result = !HTTP->staticLink;
 
     } else if (scaselessmatch(key, "static")) {
-        result = state->appweb->staticLink;
+        result = HTTP->staticLink;
 
     } else if (scaselessmatch(key, "IPv6")) {
         result = mprHasIPv6();
@@ -2784,23 +2871,20 @@ static int setTarget(MaState *state, cchar *name, cchar *details)
 /*
     This is used to create the outermost state only
  */
-static MaState *createState(MaServer *server, int flags)
+static MaState *createState(int flags)
 {
     MaState     *state;
     HttpHost    *host;
     HttpRoute   *route;
 
-    host = server->defaultHost;
-    route = host->defaultRoute;
+    host = httpGetDefaultHost();
+    route = httpGetDefaultRoute(host);
 
     if ((state = mprAllocObj(MaState, manageState)) == 0) {
         return 0;
     }
     state->top = state;
     state->current = state;
-    state->server = server;
-    state->appweb = server->appweb;
-    state->http = server->http;
     state->host = host;
     state->route = route;
     state->enabled = 1;
@@ -2821,9 +2905,6 @@ PUBLIC MaState *maPushState(MaState *prev)
     state->top = prev->top;
     state->prev = prev;
     state->flags = prev->flags;
-    state->appweb = prev->appweb;
-    state->http = prev->http;
-    state->server = prev->server;
     state->host = prev->host;
     state->route = prev->route;
     state->lineNumber = prev->lineNumber;
@@ -2852,9 +2933,6 @@ PUBLIC MaState *maPopState(MaState *state)
 static void manageState(MaState *state, int flags)
 {
     if (flags & MPR_MANAGE_MARK) {
-        mprMark(state->appweb);
-        mprMark(state->http);
-        mprMark(state->server);
         mprMark(state->host);
         mprMark(state->auth);
         mprMark(state->route);
@@ -3026,194 +3104,231 @@ PUBLIC int maWriteAuthFile(HttpAuth *auth, char *path)
 }
 
 
-PUBLIC void maAddDirective(MaAppweb *appweb, cchar *directive, MaDirective proc)
+PUBLIC void maAddDirective(cchar *directive, MaDirective proc)
 {
-    mprAddKey(appweb->directives, directive, proc);
+    if (!directives) {
+        parseInit();
+    }
+    mprAddKey(directives, directive, proc);
 }
 
 
-PUBLIC int maParseInit(MaAppweb *appweb)
+static int parseInit()
 {
-    if ((appweb->directives = mprCreateHash(-1, MPR_HASH_STATIC_VALUES | MPR_HASH_CASELESS | MPR_HASH_STABLE)) == 0) {
-        return MPR_ERR_MEMORY;
+    if (directives) {
+        return 0;
     }
-    maAddDirective(appweb, "AddLanguageSuffix", addLanguageSuffixDirective);
-    maAddDirective(appweb, "AddLanguageDir", addLanguageDirDirective);
-    maAddDirective(appweb, "AddFilter", addFilterDirective);
-    maAddDirective(appweb, "AddInputFilter", addInputFilterDirective);
-    maAddDirective(appweb, "AddHandler", addHandlerDirective);
-    maAddDirective(appweb, "AddOutputFilter", addOutputFilterDirective);
-    maAddDirective(appweb, "AddType", addTypeDirective);
-    maAddDirective(appweb, "Alias", aliasDirective);
-    maAddDirective(appweb, "Allow", allowDirective);
-    maAddDirective(appweb, "AuthAutoLogin", authAutoLoginDirective);
-    maAddDirective(appweb, "AuthDigestQop", authDigestQopDirective);
-    maAddDirective(appweb, "AuthType", authTypeDirective);
-    maAddDirective(appweb, "AuthRealm", authRealmDirective);
-    maAddDirective(appweb, "AuthStore", authStoreDirective);
-    maAddDirective(appweb, "Cache", cacheDirective);
-    maAddDirective(appweb, "Chroot", chrootDirective);
-    maAddDirective(appweb, "Condition", conditionDirective);
-    maAddDirective(appweb, "CrossOrigin", crossOriginDirective);
-    maAddDirective(appweb, "DefaultLanguage", defaultLanguageDirective);
-    maAddDirective(appweb, "Defense", defenseDirective);
-    maAddDirective(appweb, "Deny", denyDirective);
-    maAddDirective(appweb, "DirectoryIndex", directoryIndexDirective);
-    maAddDirective(appweb, "Documents", documentsDirective);
-    maAddDirective(appweb, "<Directory", directoryDirective);
-    maAddDirective(appweb, "</Directory", closeDirective);
-    maAddDirective(appweb, "<else", elseDirective);
-    maAddDirective(appweb, "ErrorDocument", errorDocumentDirective);
-    maAddDirective(appweb, "ErrorLog", errorLogDirective);
-    maAddDirective(appweb, "ExitTimeout", exitTimeoutDirective);
-    maAddDirective(appweb, "GroupAccount", groupAccountDirective);
-    maAddDirective(appweb, "Header", headerDirective);
-    maAddDirective(appweb, "Home", homeDirective);
-    maAddDirective(appweb, "<If", ifDirective);
-    maAddDirective(appweb, "</If", closeDirective);
-    maAddDirective(appweb, "IgnoreEncodingErrors", ignoreEncodingErrorsDirective);
-    maAddDirective(appweb, "InactivityTimeout", inactivityTimeoutDirective);
-    maAddDirective(appweb, "Include", includeDirective);
-    maAddDirective(appweb, "LimitBuffer", limitBufferDirective);
-    maAddDirective(appweb, "LimitCache", limitCacheDirective);
-    maAddDirective(appweb, "LimitCacheItem", limitCacheItemDirective);
-    maAddDirective(appweb, "LimitChunk", limitChunkDirective);
-    maAddDirective(appweb, "LimitClients", limitClientsDirective);
-    maAddDirective(appweb, "LimitConnections", limitConnectionsDirective);
-    maAddDirective(appweb, "LimitFiles", limitFilesDirective);
-    maAddDirective(appweb, "LimitKeepAlive", limitKeepAliveDirective);
-    maAddDirective(appweb, "LimitMemory", limitMemoryDirective);
-    maAddDirective(appweb, "LimitProcesses", limitProcessesDirective);
-    maAddDirective(appweb, "LimitRequestsPerClient", limitRequestsPerClientDirective);
-    maAddDirective(appweb, "LimitRequestBody", limitRequestBodyDirective);
-    maAddDirective(appweb, "LimitRequestForm", limitRequestFormDirective);
-    maAddDirective(appweb, "LimitRequestHeaderLines", limitRequestHeaderLinesDirective);
-    maAddDirective(appweb, "LimitRequestHeader", limitRequestHeaderDirective);
-    maAddDirective(appweb, "LimitResponseBody", limitResponseBodyDirective);
-    maAddDirective(appweb, "LimitSessions", limitSessionDirective);
-    maAddDirective(appweb, "LimitUri", limitUriDirective);
-    maAddDirective(appweb, "LimitUpload", limitUploadDirective);
-    maAddDirective(appweb, "LimitWebSockets", limitWebSocketsDirective);
-    maAddDirective(appweb, "LimitWebSocketsMessage", limitWebSocketsMessageDirective);
-    maAddDirective(appweb, "LimitWebSocketsFrame", limitWebSocketsFrameDirective);
-    maAddDirective(appweb, "LimitWebSocketsPacket", limitWebSocketsPacketDirective);
-    maAddDirective(appweb, "LimitWorkers", limitWorkersDirective);
-    maAddDirective(appweb, "Listen", listenDirective);
-    maAddDirective(appweb, "ListenSecure", listenSecureDirective);
-    maAddDirective(appweb, "LogRoutes", logRoutesDirective);
-    maAddDirective(appweb, "LoadModulePath", loadModulePathDirective);
-    maAddDirective(appweb, "LoadModule", loadModuleDirective);
-    maAddDirective(appweb, "MakeDir", makeDirDirective);
-    maAddDirective(appweb, "Map", mapDirective);
-    maAddDirective(appweb, "MemoryPolicy", memoryPolicyDirective);
-    maAddDirective(appweb, "Methods", methodsDirective);
-    maAddDirective(appweb, "MinWorkers", minWorkersDirective);
-    maAddDirective(appweb, "Monitor", monitorDirective);
-    maAddDirective(appweb, "Name", nameDirective);
-    maAddDirective(appweb, "Order", orderDirective);
-    maAddDirective(appweb, "Param", paramDirective);
-    maAddDirective(appweb, "Prefix", prefixDirective);
-    maAddDirective(appweb, "PreserveFrames", preserveFramesDirective);
-    maAddDirective(appweb, "Redirect", redirectDirective);
-    maAddDirective(appweb, "RequestHeader", requestHeaderDirective);
-    maAddDirective(appweb, "RequestParseTimeout", requestParseTimeoutDirective);
-    maAddDirective(appweb, "RequestTimeout", requestTimeoutDirective);
-    maAddDirective(appweb, "Require", requireDirective);
-    maAddDirective(appweb, "<Reroute", rerouteDirective);
-    maAddDirective(appweb, "</Reroute", closeDirective);
-    maAddDirective(appweb, "Reset", resetDirective);
-    maAddDirective(appweb, "Role", roleDirective);
-    maAddDirective(appweb, "<Route", routeDirective);
-    maAddDirective(appweb, "</Route", closeDirective);
-    maAddDirective(appweb, "ServerName", serverNameDirective);
-    maAddDirective(appweb, "SessionCookie", sessionCookieDirective);
-    maAddDirective(appweb, "SessionTimeout", sessionTimeoutDirective);
-    maAddDirective(appweb, "Set", setDirective);
-    maAddDirective(appweb, "SetConnector", setConnectorDirective);
-    maAddDirective(appweb, "SetHandler", setHandlerDirective);
-    maAddDirective(appweb, "ShowErrors", showErrorsDirective);
-    maAddDirective(appweb, "Source", sourceDirective);
-    maAddDirective(appweb, "Stealth", stealthDirective);
-    maAddDirective(appweb, "StreamInput", streamInputDirective);
-    maAddDirective(appweb, "Target", targetDirective);
-    maAddDirective(appweb, "Template", templateDirective);
-    maAddDirective(appweb, "ThreadStack", threadStackDirective);
-    maAddDirective(appweb, "Trace", traceDirective);
-    maAddDirective(appweb, "TypesConfig", typesConfigDirective);
-    maAddDirective(appweb, "Update", updateDirective);
-    maAddDirective(appweb, "UnloadModule", unloadModuleDirective);
-    maAddDirective(appweb, "UploadAutoDelete", uploadAutoDeleteDirective);
-    maAddDirective(appweb, "UploadDir", uploadDirDirective);
-    maAddDirective(appweb, "User", userDirective);
-    maAddDirective(appweb, "UserAccount", userAccountDirective);
-    maAddDirective(appweb, "<VirtualHost", virtualHostDirective);
-    maAddDirective(appweb, "</VirtualHost", closeVirtualHostDirective);
-    maAddDirective(appweb, "WebSocketsProtocol", webSocketsProtocolDirective);
-    maAddDirective(appweb, "WebSocketsPing", webSocketsPingDirective);
+    directives = mprCreateHash(-1, MPR_HASH_STATIC_VALUES | MPR_HASH_CASELESS | MPR_HASH_STABLE);
+    mprAddRoot(directives);
+
+    maAddDirective("AddLanguageSuffix", addLanguageSuffixDirective);
+    maAddDirective("AddLanguageDir", addLanguageDirDirective);
+    maAddDirective("AddFilter", addFilterDirective);
+    maAddDirective("AddInputFilter", addInputFilterDirective);
+    maAddDirective("AddHandler", addHandlerDirective);
+    maAddDirective("AddOutputFilter", addOutputFilterDirective);
+    maAddDirective("AddType", addTypeDirective);
+    maAddDirective("Alias", aliasDirective);
+    maAddDirective("Allow", allowDirective);
+    maAddDirective("AuthAutoLogin", authAutoLoginDirective);
+    maAddDirective("AuthDigestQop", authDigestQopDirective);
+    maAddDirective("AuthType", authTypeDirective);
+    maAddDirective("AuthRealm", authRealmDirective);
+    maAddDirective("AuthStore", authStoreDirective);
+    maAddDirective("Cache", cacheDirective);
+    maAddDirective("Chroot", chrootDirective);
+    maAddDirective("Condition", conditionDirective);
+    maAddDirective("CrossOrigin", crossOriginDirective);
+    maAddDirective("DefaultLanguage", defaultLanguageDirective);
+    maAddDirective("Defense", defenseDirective);
+    maAddDirective("Deny", denyDirective);
+    maAddDirective("DirectoryIndex", directoryIndexDirective);
+    maAddDirective("Documents", documentsDirective);
+    maAddDirective("<Directory", directoryDirective);
+    maAddDirective("</Directory", closeDirective);
+    maAddDirective("<else", elseDirective);
+    maAddDirective("ErrorDocument", errorDocumentDirective);
+    maAddDirective("ErrorLog", errorLogDirective);
+    maAddDirective("ExitTimeout", exitTimeoutDirective);
+    maAddDirective("GroupAccount", groupAccountDirective);
+    maAddDirective("Header", headerDirective);
+    maAddDirective("Home", homeDirective);
+    maAddDirective("<If", ifDirective);
+    maAddDirective("</If", closeDirective);
+    maAddDirective("IgnoreEncodingErrors", ignoreEncodingErrorsDirective);
+    maAddDirective("InactivityTimeout", inactivityTimeoutDirective);
+    maAddDirective("Include", includeDirective);
+    maAddDirective("IndexOrder", indexOrderDirective);
+    maAddDirective("IndexOptions", indexOptionsDirective);
+    maAddDirective("LimitBuffer", limitBufferDirective);
+    maAddDirective("LimitCache", limitCacheDirective);
+    maAddDirective("LimitCacheItem", limitCacheItemDirective);
+    maAddDirective("LimitChunk", limitChunkDirective);
+    maAddDirective("LimitClients", limitClientsDirective);
+    maAddDirective("LimitConnections", limitConnectionsDirective);
+    maAddDirective("LimitFiles", limitFilesDirective);
+    maAddDirective("LimitKeepAlive", limitKeepAliveDirective);
+    maAddDirective("LimitMemory", limitMemoryDirective);
+    maAddDirective("LimitProcesses", limitProcessesDirective);
+    maAddDirective("LimitRequestsPerClient", limitRequestsPerClientDirective);
+    maAddDirective("LimitRequestBody", limitRequestBodyDirective);
+    maAddDirective("LimitRequestForm", limitRequestFormDirective);
+    maAddDirective("LimitRequestHeaderLines", limitRequestHeaderLinesDirective);
+    maAddDirective("LimitRequestHeader", limitRequestHeaderDirective);
+    maAddDirective("LimitResponseBody", limitResponseBodyDirective);
+    maAddDirective("LimitSessions", limitSessionDirective);
+    maAddDirective("LimitUri", limitUriDirective);
+    maAddDirective("LimitUpload", limitUploadDirective);
+    maAddDirective("LimitWebSockets", limitWebSocketsDirective);
+    maAddDirective("LimitWebSocketsMessage", limitWebSocketsMessageDirective);
+    maAddDirective("LimitWebSocketsFrame", limitWebSocketsFrameDirective);
+    maAddDirective("LimitWebSocketsPacket", limitWebSocketsPacketDirective);
+    maAddDirective("LimitWorkers", limitWorkersDirective);
+    maAddDirective("Listen", listenDirective);
+    maAddDirective("ListenSecure", listenSecureDirective);
+    maAddDirective("LogRoutes", logRoutesDirective);
+    maAddDirective("LoadModulePath", loadModulePathDirective);
+    maAddDirective("LoadModule", loadModuleDirective);
+    maAddDirective("MakeDir", makeDirDirective);
+    maAddDirective("Map", mapDirective);
+    maAddDirective("MemoryPolicy", memoryPolicyDirective);
+    maAddDirective("Methods", methodsDirective);
+    maAddDirective("MinWorkers", minWorkersDirective);
+    maAddDirective("Monitor", monitorDirective);
+    maAddDirective("Name", nameDirective);
+    maAddDirective("Options", optionsDirective);
+    maAddDirective("Order", orderDirective);
+    maAddDirective("Param", paramDirective);
+    maAddDirective("Prefix", prefixDirective);
+    maAddDirective("PreserveFrames", preserveFramesDirective);
+    maAddDirective("Redirect", redirectDirective);
+    maAddDirective("RequestHeader", requestHeaderDirective);
+    maAddDirective("RequestParseTimeout", requestParseTimeoutDirective);
+    maAddDirective("RequestTimeout", requestTimeoutDirective);
+    maAddDirective("Require", requireDirective);
+    maAddDirective("<Reroute", rerouteDirective);
+    maAddDirective("</Reroute", closeDirective);
+    maAddDirective("Reset", resetDirective);
+    maAddDirective("Role", roleDirective);
+    maAddDirective("<Route", routeDirective);
+    maAddDirective("</Route", closeDirective);
+    maAddDirective("ServerName", serverNameDirective);
+    maAddDirective("SessionCookie", sessionCookieDirective);
+    maAddDirective("SessionTimeout", sessionTimeoutDirective);
+    maAddDirective("Set", setDirective);
+    maAddDirective("SetConnector", setConnectorDirective);
+    maAddDirective("SetHandler", setHandlerDirective);
+    maAddDirective("ShowErrors", showErrorsDirective);
+    maAddDirective("Source", sourceDirective);
+    maAddDirective("Stealth", stealthDirective);
+    maAddDirective("StreamInput", streamInputDirective);
+    maAddDirective("Target", targetDirective);
+    maAddDirective("Template", templateDirective);
+    maAddDirective("ThreadStack", threadStackDirective);
+    maAddDirective("Trace", traceDirective);
+    maAddDirective("TypesConfig", typesConfigDirective);
+    maAddDirective("Update", updateDirective);
+    maAddDirective("UnloadModule", unloadModuleDirective);
+    maAddDirective("UploadAutoDelete", uploadAutoDeleteDirective);
+    maAddDirective("UploadDir", uploadDirDirective);
+    maAddDirective("User", userDirective);
+    maAddDirective("UserAccount", userAccountDirective);
+    maAddDirective("<VirtualHost", virtualHostDirective);
+    maAddDirective("</VirtualHost", closeVirtualHostDirective);
+    maAddDirective("WebSocketsProtocol", webSocketsProtocolDirective);
+    maAddDirective("WebSocketsPing", webSocketsPingDirective);
 
     /*
         Fixes
      */
-    maAddDirective(appweb, "FixDotNetDigestAuth", fixDotNetDigestAuth);
+    maAddDirective("FixDotNetDigestAuth", fixDotNetDigestAuth);
 
 #if !ME_ROM
-    maAddDirective(appweb, "TraceLog", traceLogDirective);
+    maAddDirective("TraceLog", traceLogDirective);
 #endif
 
 #if DEPRECATED
     /* Use TraceLog */
-    maAddDirective(appweb, "AccessLog", traceLogDirective);
+    maAddDirective("AccessLog", traceLogDirective);
     /* Use AuthStore */
-    maAddDirective(appweb, "AuthMethod", authStoreDirective);
-    maAddDirective(appweb, "AuthGroupFile", authGroupFileDirective);
-    maAddDirective(appweb, "AuthUserFile", authUserFileDirective);
+    maAddDirective("AuthMethod", authStoreDirective);
+    maAddDirective("AuthGroupFile", authGroupFileDirective);
+    maAddDirective("AuthUserFile", authUserFileDirective);
     /* Use AuthRealm */
-    maAddDirective(appweb, "AuthName", authRealmDirective);
+    maAddDirective("AuthName", authRealmDirective);
     /* Use Map */
-    maAddDirective(appweb, "Compress", compressDirective);
+    maAddDirective("Compress", compressDirective);
     /* Use Documents */
-    maAddDirective(appweb, "DocumentRoot", documentsDirective);
+    maAddDirective("DocumentRoot", documentsDirective);
     /* Use LimitConnections or LimitRequestsPerClient instead */
-    maAddDirective(appweb, "LimitRequests", limitRequestsDirective);
+    maAddDirective("LimitRequests", limitRequestsDirective);
     /* Use LimitBuffer */
-    maAddDirective(appweb, "LimitStageBuffer", limitBufferDirective);
+    maAddDirective("LimitStageBuffer", limitBufferDirective);
     /* Use LimitUri */
-    maAddDirective(appweb, "LimitUrl", limitUriDirective);
+    maAddDirective("LimitUrl", limitUriDirective);
     /* Use LimitKeepAlive */
-    maAddDirective(appweb, "MaxKeepAliveRequests", limitKeepAliveDirective);
+    maAddDirective("MaxKeepAliveRequests", limitKeepAliveDirective);
     /* Use Methods */
-    maAddDirective(appweb, "PutMethod", putMethodDirective);
-    maAddDirective(appweb, "ResetPipeline", resetPipelineDirective);
+    maAddDirective("PutMethod", putMethodDirective);
+    maAddDirective("ResetPipeline", resetPipelineDirective);
     /* Use MinWorkers */
-    maAddDirective(appweb, "StartWorkers", minWorkersDirective);
-    maAddDirective(appweb, "StartThreads", minWorkersDirective);
+    maAddDirective("StartWorkers", minWorkersDirective);
+    maAddDirective("StartThreads", minWorkersDirective);
     /* Use requestTimeout */
-    maAddDirective(appweb, "Timeout", requestTimeoutDirective);
-    maAddDirective(appweb, "ThreadLimit", limitWorkersDirective);
+    maAddDirective("Timeout", requestTimeoutDirective);
+    maAddDirective("ThreadLimit", limitWorkersDirective);
     /* Use Methods */
-    maAddDirective(appweb, "TraceMethod", traceMethodDirective);
-    maAddDirective(appweb, "WorkerLimit", limitWorkersDirective);
+    maAddDirective("TraceMethod", traceMethodDirective);
+    maAddDirective("WorkerLimit", limitWorkersDirective);
     /* Use LimitRequestHeaderLines */
-    maAddDirective(appweb, "LimitRequestFields", limitRequestHeaderLinesDirective);
+    maAddDirective("LimitRequestFields", limitRequestHeaderLinesDirective);
     /* Use LimitRequestHeader */
-    maAddDirective(appweb, "LimitRequestFieldSize", limitRequestHeaderDirective);
+    maAddDirective("LimitRequestFieldSize", limitRequestHeaderDirective);
     /* Use InactivityTimeout */
-    maAddDirective(appweb, "KeepAliveTimeout", inactivityTimeoutDirective);
+    maAddDirective("KeepAliveTimeout", inactivityTimeoutDirective);
     /* Use <Route> */
-    maAddDirective(appweb, "<Location", routeDirective);
-    maAddDirective(appweb, "</Location", closeDirective);
+    maAddDirective("<Location", routeDirective);
+    maAddDirective("</Location", closeDirective);
     /* Use Home */
-    maAddDirective(appweb, "ServerRoot", homeDirective);
+    maAddDirective("ServerRoot", homeDirective);
 #endif
 #if DEPRECATED || 1
     /* Not needed */
-    maAddDirective(appweb, "NameVirtualHost", nameVirtualHostDirective);
+    maAddDirective("NameVirtualHost", nameVirtualHostDirective);
     /* Use Trace */
-    maAddDirective(appweb, "Log", logDirective);
+    maAddDirective("Log", logDirective);
 #endif
     return 0;
 }
 
+
+/*
+    Load a module. Returns 0 if the modules is successfully loaded (may have already been loaded).
+ */
+PUBLIC int maLoadModule(cchar *name, cchar *libname)
+{
+    MprModule   *module;
+    char        entryPoint[ME_MAX_FNAME];
+    char        *path;
+
+    if ((module = mprLookupModule(name)) != 0) {
+#if ME_STATIC
+        mprLog("info appweb config", 2, "Activating module (Builtin) %s", name);
+#endif
+        return 0;
+    }
+    path = libname ? sclone(libname) : sjoin("mod_", name, ME_SHOBJ, NULL);
+    fmt(entryPoint, sizeof(entryPoint), "ma%sInit", stitle(name));
+    entryPoint[2] = toupper((uchar) entryPoint[2]);
+
+    if ((module = mprCreateModule(name, path, entryPoint, HTTP)) == 0) {
+        return 0;
+    }
+    if (mprLoadModule(module) < 0) {
+        return MPR_ERR_CANT_CREATE;
+    }
+    return 0;
+}
 
 /*
     @copy   default
@@ -3243,7 +3358,8 @@ PUBLIC int maParseInit(MaAppweb *appweb)
 
 /*
     convenience.c -- High level convenience API
-    This module provides simple, high-level APIs for creating servers.
+
+    This module provides simple high-level APIs.
     Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
  */
 
@@ -3255,44 +3371,29 @@ PUBLIC int maParseInit(MaAppweb *appweb)
 
 static int runServer(cchar *configFile, cchar *ip, int port, cchar *home, cchar *documents)
 {
-    MaAppweb    *appweb;
-    MaServer    *server;
-
     if (mprStart() < 0) {
         mprLog("error appweb", 0, "Cannot start the web server runtime");
         return MPR_ERR_CANT_CREATE;
     }
-    if ((appweb = maCreateAppweb()) == 0) {
-        mprLog("error appweb", 0, "Cannot create appweb object");
-        return MPR_ERR_CANT_CREATE;
-    }
-    mprAddRoot(appweb);
-    if ((server = maCreateServer(appweb, 0)) == 0) {
-        mprLog("error appweb", 0, "Cannot create the web server");
-        mprRemoveRoot(appweb);
+    if (httpCreate(HTTP_CLIENT_SIDE | HTTP_SERVER_SIDE) == 0) {
+        mprLog("error http", 0, "Cannot create http services");
         return MPR_ERR_CANT_CREATE;
     }
     if (home) {
-        if (maConfigureServer(server, 0, home, documents, ip, port, 0) < 0) {
+        if (maConfigureServer(0, home, documents, ip, port, 0) < 0) {
             mprLog("error appweb", 0, "Cannot create the web server");
-            mprRemoveRoot(appweb);
             return MPR_ERR_BAD_STATE;
         }
-    } else {
-        if (maParseConfig(server, configFile, 0) < 0) {
-            mprLog("error appweb", 0, "Cannot parse the config file %s", configFile);
-            mprRemoveRoot(appweb);
-            return MPR_ERR_CANT_READ;
-        }
+    } else if (maParseConfig(configFile, 0) < 0) {
+        mprLog("error appweb", 0, "Cannot parse the config file %s", configFile);
+        return MPR_ERR_CANT_READ;
     }
-    if (maStartServer(server) < 0) {
+    if (httpStartEndpoints() < 0) {
         mprLog("error appweb", 0, "Cannot start the web server");
-        mprRemoveRoot(appweb);
         return MPR_ERR_CANT_COMPLETE;
     }
     mprServiceEvents(-1, 0);
-    maStopServer(server);
-    mprRemoveRoot(appweb);
+    httpStopEndpoints();
     return 0;
 }
 
@@ -3315,7 +3416,6 @@ PUBLIC int maRunWebServer(cchar *configFile)
 }
 
 
-//  TODO: REFACTOR with an inner function
 /*
     Run a web server not based on a config file.
  */
@@ -3331,34 +3431,6 @@ PUBLIC int maRunSimpleWebServer(cchar *ip, int port, cchar *home, cchar *documen
     rc = runServer(0, ip, port, home, documents);
     mprDestroy();
     return rc;
-}
-
-
-/*
-    This will restart the default server on a new IP:PORT. It will stop listening on the default endpoint on 
-    the default server, optionally modify the IP:PORT and resume listening. NOTE: running requests will be
-    unaffected.  WARNING: this is demonstration code and has no error checking.
- */
-PUBLIC void maRestartServer(cchar *ip, int port)
-{
-    MaAppweb        *appweb;
-    MaServer        *server;
-    HttpEndpoint    *endpoint;
-
-    appweb = MPR->appwebService;
-    server = mprGetFirstItem(appweb->servers);
-    lock(appweb->servers);
-    endpoint = mprGetFirstItem(server->endpoints);
-    httpStopEndpoint(endpoint);
-
-    if (port) {
-        endpoint->port = port;
-    }
-    if (ip) {
-        endpoint->ip = sclone(ip);
-    }
-    httpStartEndpoint(endpoint);
-    unlock(appweb->servers);
 }
 
 
@@ -3388,8 +3460,14 @@ PUBLIC int maRunWebClient(cchar *method, cchar *uri, cchar *data, char **respons
         mprLog("error appweb", 0, "Cannot start the web server runtime");
         return MPR_ERR_CANT_INITIALIZE;
     }
-    httpCreate(HTTP_CLIENT_SIDE);
-    conn = httpRequest(method, uri, data, err);
+    if (httpCreate(HTTP_CLIENT_SIDE) < 0) {
+        mprLog("error appweb", 0, "Cannot create HTTP services");
+        return MPR_ERR_CANT_INITIALIZE;
+    }
+    if ((conn = httpRequest(method, uri, data, err)) == 0) {
+        mprLog("error appweb", 0, "Cannot create connection");
+        return MPR_ERR_CANT_INITIALIZE;
+    }
     status = httpGetStatus(conn);
     if (response) {
         *response = httpReadString(conn);
@@ -3397,1288 +3475,6 @@ PUBLIC int maRunWebClient(cchar *method, cchar *uri, cchar *data, char **respons
     mprDestroy();
     return status;
 }
-
-/*
-    @copy   default
-
-    Copyright (c) Embedthis Software LLC, 2003-2014. All Rights Reserved.
-
-    This software is distributed under commercial and open source licenses.
-    You may use the Embedthis Open Source license or you may acquire a 
-    commercial license from Embedthis Software. You agree to be fully bound
-    by the terms of either license. Consult the LICENSE.md distributed with
-    this software for full details and other copyrights.
-
-    Local variables:
-    tab-width: 4
-    c-basic-offset: 4
-    End:
-    vim: sw=4 ts=4 expandtab
-
-    @end
- */
-
-/************************************************************************/
-/*
-    Start of file "src/dirHandler.c"
- */
-/************************************************************************/
-
-/*
-    dirHandler.c - Directory listing handler
-
-    The dirHandler is unusual in that is is called (only) from the fileHandler.
-    The fileHandler tests if the request is for a directory and then examines if redirection
-    to an index, or rendering a directory listing is required. If a listing, the request is
-    relayed here.
-
-    Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
- */
-
-/********************************** Includes **********************************/
-
-
-
-#if ME_COM_DIR
-/********************************** Defines ***********************************/
-/*
-    Handler configuration
- */
-typedef struct Dir {
-#if KEEP
-    MprList         *dirList;
-    cchar           *defaultIcon;
-    MprList         *extList;
-    MprList         *ignoreList;
-#endif
-    bool            enabled;
-    int             fancyIndexing;
-    bool            foldersFirst;
-    cchar           *pattern;
-    char            *sortField;
-    int             sortOrder;              /* 1 == ascending, -1 descending */
-} Dir;
-
-#define DIR_NAME "dirHandler"
-
-/****************************** Forward Declarations **************************/
-
-static Dir *allocDir(HttpRoute *route);
-static Dir *cloneDir(Dir *parent, HttpRoute *route);
-static void filterDirList(HttpConn *conn, MprList *list);
-static Dir* getDirObj(MaState *state);
-static int  matchDirPattern(cchar *pattern, cchar *file);
-static void outputFooter(HttpQueue *q);
-static void outputHeader(HttpQueue *q, cchar *dir, int nameSize);
-static void outputLine(HttpQueue *q, MprDirEntry *ep, cchar *dir, int nameSize);
-static void parseQuery(HttpConn *conn);
-static void sortList(HttpConn *conn, MprList *list);
-
-/************************************* Code ***********************************/
-/*
-    Test if this request is for a directory listing. This routine is called directly by the fileHandler.
-    Directory listings are enabled in a route via "Options Indexes".
- */
-PUBLIC bool maRenderDirListing(HttpConn *conn)
-{
-    HttpRx      *rx;
-    HttpTx      *tx;
-    Dir         *dir;
-
-    tx = conn->tx;
-    rx = conn->rx;
-    assert(tx->filename);
-    assert(tx->fileInfo.checked);
-
-    if ((dir = httpGetRouteData(rx->route, DIR_NAME)) == 0) {
-        return 0;
-    }
-    if (dir->enabled && tx->fileInfo.isDir && sends(rx->pathInfo, "/")) {
-        conn->reqData = dir;
-        return 1;
-    }
-    return 0;
-}
-
-
-/*
-    Start the request (and complete it)
- */
-static void startDir(HttpQueue *q)
-{
-    HttpConn        *conn;
-    HttpTx          *tx;
-    HttpRx          *rx;
-    MprList         *list;
-    MprDirEntry     *dp;
-    Dir             *dir;
-    cchar           *path;
-    uint            nameSize;
-    int             next;
-
-    conn = q->conn;
-    rx = conn->rx;
-    tx = conn->tx;
-    dir = conn->reqData;
-    assert(tx->filename);
-
-    if (!(rx->flags & (HTTP_GET | HTTP_HEAD))) {
-        httpError(conn, HTTP_CODE_BAD_METHOD, "Bad method");
-        return;
-    }
-    httpSetHeaderString(conn, "Cache-Control", "no-cache");
-    httpSetHeaderString(conn, "Last-Modified", conn->http->currentDate);
-    httpSetHeaderString(conn, "Content-Type", "text/html");
-    parseQuery(conn);
-
-    if ((list = mprGetPathFiles(tx->filename, MPR_PATH_RELATIVE)) == 0) {
-        httpWrite(q, "<h2>Cannot get file list</h2>\r\n");
-        outputFooter(q);
-        return;
-    }
-    if (dir->pattern) {
-        filterDirList(conn, list);
-    }
-    sortList(conn, list);
-    /*
-        Get max filename size
-     */
-    nameSize = 0;
-    for (next = 0; (dp = mprGetNextItem(list, &next)) != 0; ) {
-        nameSize = max((int) strlen(dp->name), nameSize);
-    }
-    nameSize = max(nameSize, 22);
-
-    path = rx->route->prefix ? sjoin(rx->route->prefix, rx->pathInfo, NULL) : rx->pathInfo;
-    outputHeader(q, path, nameSize);
-    for (next = 0; (dp = mprGetNextItem(list, &next)) != 0; ) {
-        outputLine(q, dp, tx->filename, nameSize);
-    }
-    outputFooter(q);
-    httpFinalize(conn);
-}
- 
-
-static void parseQuery(HttpConn *conn)
-{
-    HttpRx      *rx;
-    Dir         *dir;
-    char        *value, *query, *next, *tok;
-
-    rx = conn->rx;
-    dir = conn->reqData;
-    
-    query = sclone(rx->parsedUri->query);
-    if (query == 0) {
-        return;
-    }
-    tok = stok(query, ";&", &next);
-    while (tok) {
-        if ((value = strchr(tok, '=')) != 0) {
-            *value++ = '\0';
-            if (*tok == 'C') {                  /* Sort column */
-                if (*value == 'N') {
-                    dir->sortField = "Name";
-                } else if (*value == 'M') {
-                    dir->sortField = "Date";
-                } else if (*value == 'S') {
-                    dir->sortField = "Size";
-                }
-                dir->sortField = sclone(dir->sortField);
-
-            } else if (*tok == 'O') {           /* Sort order */
-                if (*value == 'A') {
-                    dir->sortOrder = 1;
-                } else if (*value == 'D') {
-                    dir->sortOrder = -1;
-                }
-
-            } else if (*tok == 'F') {           /* Format */ 
-                if (*value == '0') {
-                    dir->fancyIndexing = 0;
-                } else if (*value == '1') {
-                    dir->fancyIndexing = 1;
-                } else if (*value == '2') {
-                    dir->fancyIndexing = 2;
-                }
-
-            } else if (*tok == 'P') {           /* Pattern */ 
-                dir->pattern = sclone(value);
-            }
-        }
-        tok = stok(next, ";&", &next);
-    }
-}
-
-
-static void sortList(HttpConn *conn, MprList *list)
-{
-    MprDirEntry *tmp, **items;
-    Dir         *dir;
-    int         count, i, j, rc;
-
-    dir = conn->reqData;
-    
-    if (dir->sortField == 0) {
-        return;
-    }
-    count = mprGetListLength(list);
-    items = (MprDirEntry**) list->items;
-    if (scaselessmatch(dir->sortField, "Name")) {
-        for (i = 1; i < count; i++) {
-            for (j = 0; j < i; j++) {
-                rc = strcmp(items[i]->name, items[j]->name);
-                if (dir->foldersFirst) {
-                    if (items[i]->isDir && !items[j]->isDir) {
-                        rc = -dir->sortOrder;
-                    } else if (items[j]->isDir && !items[i]->isDir) {
-                        rc = dir->sortOrder;
-                    } 
-                }
-                rc *= dir->sortOrder;
-                if (rc < 0) {
-                    tmp = items[i];
-                    items[i] = items[j];
-                    items[j] = tmp;
-                }
-            }
-        }
-
-    } else if (scaselessmatch(dir->sortField, "Size")) {
-        for (i = 1; i < count; i++) {
-            for (j = 0; j < i; j++) {
-                rc = (items[i]->size < items[j]->size) ? -1 : 1;
-                if (dir->foldersFirst) {
-                    if (items[i]->isDir && !items[j]->isDir) {
-                        rc = -dir->sortOrder;
-                    } else if (items[j]->isDir && !items[i]->isDir) {
-                        rc = dir->sortOrder;
-                    }
-                }
-                rc *= dir->sortOrder;
-                if (rc < 0) {
-                    tmp = items[i];
-                    items[i] = items[j];
-                    items[j] = tmp;
-                }
-            }
-        }
-
-    } else if (scaselessmatch(dir->sortField, "Date")) {
-        for (i = 1; i < count; i++) {
-            for (j = 0; j < i; j++) {
-                rc = (items[i]->lastModified < items[j]->lastModified) ? -1: 1;
-                if (dir->foldersFirst) {
-                    if (items[i]->isDir && !items[j]->isDir) {
-                        rc = -dir->sortOrder;
-                    } else if (items[j]->isDir && !items[i]->isDir) {
-                        rc = dir->sortOrder;
-                    }
-                }
-                rc *= dir->sortOrder;
-                if (rc < 0) {
-                    tmp = items[i];
-                    items[i] = items[j];
-                    items[j] = tmp;
-                }
-            }
-        }
-    }
-}
-
-
-static void outputHeader(HttpQueue *q, cchar *path, int nameSize)
-{
-    Dir     *dir;
-    char    *parent, *parentSuffix;
-    int     reverseOrder, fancy, isRootDir;
-
-    dir = q->conn->reqData;
-    fancy = 1;
-    path = mprEscapeHtml(path);
-
-    httpWrite(q, "<!DOCTYPE HTML PUBLIC \"-/*W3C//DTD HTML 3.2 Final//EN\">\r\n");
-    httpWrite(q, "<html>\r\n <head>\r\n  <title>Index of %s</title>\r\n", path);
-    httpWrite(q, " </head>\r\n");
-    httpWrite(q, "<body>\r\n");
-
-    httpWrite(q, "<h1>Index of %s</h1>\r\n", path);
-
-    if (dir->sortOrder > 0) {
-        reverseOrder = 'D';
-    } else {
-        reverseOrder = 'A';
-    }
-    if (dir->fancyIndexing == 0) {
-        fancy = '0';
-    } else if (dir->fancyIndexing == 1) {
-        fancy = '1';
-    } else if (dir->fancyIndexing == 2) {
-        fancy = '2';
-    }
-    parent = mprGetPathDir(path);
-    if (parent[strlen(parent) - 1] != '/') {
-        parentSuffix = "/";
-    } else {
-        parentSuffix = "";
-    }
-    isRootDir = (strcmp(path, "/") == 0);
-
-    if (dir->fancyIndexing == 2) {
-        httpWrite(q, "<table><tr><th><img src=\"/icons/blank.gif\" alt=\"[ICO]\" /></th>");
-
-        httpWrite(q, "<th><a href=\"?C=N;O=%c;F=%c\">Name</a></th>", reverseOrder, fancy);
-        httpWrite(q, "<th><a href=\"?C=M;O=%c;F=%c\">Last modified</a></th>", reverseOrder, fancy);
-        httpWrite(q, "<th><a href=\"?C=S;O=%c;F=%c\">Size</a></th>", reverseOrder, fancy);
-        httpWrite(q, "<th><a href=\"?C=D;O=%c;F=%c\">Description</a></th>\r\n", reverseOrder, fancy);
-
-        httpWrite(q, "</tr><tr><th colspan=\"5\"><hr /></th></tr>\r\n");
-
-        if (! isRootDir) {
-            httpWrite(q, "<tr><td valign=\"top\"><img src=\"/icons/back.gif\"");
-            httpWrite(q, "alt=\"[DIR]\" /></td><td><a href=\"%s%s\">", parent, parentSuffix);
-            httpWrite(q, "Parent Directory</a></td>");
-            httpWrite(q, "<td align=\"right\">  - </td></tr>\r\n");
-        }
-
-    } else if (dir->fancyIndexing == 1) {
-        httpWrite(q, "<pre><img src=\"/icons/space.gif\" alt=\"Icon\" /> ");
-
-        httpWrite(q, "<a href=\"?C=N;O=%c;F=%c\">Name</a>%*s", reverseOrder, fancy, nameSize - 3, " ");
-        httpWrite(q, "<a href=\"?C=M;O=%c;F=%c\">Last modified</a>       ", reverseOrder, fancy);
-        httpWrite(q, "<a href=\"?C=S;O=%c;F=%c\">Size</a>               ", reverseOrder, fancy);
-        httpWrite(q, "<a href=\"?C=D;O=%c;F=%c\">Description</a>\r\n", reverseOrder, fancy);
-
-        httpWrite(q, "<hr />");
-
-        if (! isRootDir) {
-            httpWrite(q, "<img src=\"/icons/parent.gif\" alt=\"[DIR]\" />");
-            httpWrite(q, " <a href=\"%s%s\">Parent Directory</a>\r\n", parent, parentSuffix);
-        }
-
-    } else {
-        httpWrite(q, "<ul>\n");
-        if (! isRootDir) {
-            httpWrite(q, "<li><a href=\"%s%s\"> Parent Directory</a></li>\r\n", parent, parentSuffix);
-        }
-    }
-}
-
-
-static void fmtNum(char *buf, int bufsize, int num, int divisor, char *suffix)
-{
-    int     whole, point;
-
-    whole = num / divisor;
-    point = (num % divisor) / (divisor / 10);
-
-    if (point == 0) {
-        fmt(buf, bufsize, "%6d%s", whole, suffix);
-    } else {
-        fmt(buf, bufsize, "%4d.%d%s", whole, point, suffix);
-    }
-}
-
-
-static void outputLine(HttpQueue *q, MprDirEntry *ep, cchar *path, int nameSize)
-{
-    MprPath     info;
-    MprTime     when;
-    Dir         *dir;
-    char        *newPath, sizeBuf[16], timeBuf[48], *icon;
-    struct tm   tm;
-    bool        isDir;
-    int         len;
-    cchar       *ext, *mimeType;
-    char        *dirSuffix;
-    char        *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
-    path = mprEscapeHtml(path);
-    dir = q->conn->reqData;
-    if (ep->size >= (1024 * 1024 * 1024)) {
-        fmtNum(sizeBuf, sizeof(sizeBuf), (int) ep->size, 1024 * 1024 * 1024, "G");
-
-    } else if (ep->size >= (1024 * 1024)) {
-        fmtNum(sizeBuf, sizeof(sizeBuf), (int) ep->size, 1024 * 1024, "M");
-
-    } else if (ep->size >= 1024) {
-        fmtNum(sizeBuf, sizeof(sizeBuf), (int) ep->size, 1024, "K");
-
-    } else {
-        fmt(sizeBuf, sizeof(sizeBuf), "%6d", (int) ep->size);
-    }
-    newPath = mprJoinPath(path, ep->name);
-
-    if (mprGetPathInfo(newPath, &info) < 0) {
-        when = mprGetTime();
-        isDir = 0;
-    } else {
-        isDir = info.isDir ? 1 : 0;
-        when = (MprTime) info.mtime * MPR_TICKS_PER_SEC;
-    }
-    if (isDir) {
-        icon = "folder";
-        dirSuffix = "/";
-    } else {
-        ext = mprGetPathExt(ep->name);
-        if (ext && (mimeType = mprLookupMime(q->conn->rx->route->mimeTypes, ext)) != 0) {
-            if (strcmp(ext, "es") == 0 || strcmp(ext, "ejs") == 0 || strcmp(ext, "php") == 0) {
-                icon = "text";
-            } else if (strstr(mimeType, "text") != 0) {
-                icon = "text";
-            } else {
-                icon = "compressed";
-            }
-        } else {
-            icon = "compressed";
-        }
-        dirSuffix = "";
-    }
-    mprDecodeLocalTime(&tm, when);
-
-    fmt(timeBuf, sizeof(timeBuf), "%02d-%3s-%4d %02d:%02d", tm.tm_mday, months[tm.tm_mon], tm.tm_year + 1900, 
-        tm.tm_hour,  tm.tm_min);
-    len = (int) strlen(ep->name) + (int) strlen(dirSuffix);
-
-    if (dir->fancyIndexing == 2) {
-        httpWrite(q, "<tr><td valign=\"top\">");
-        httpWrite(q, "<img src=\"/icons/%s.gif\" alt=\"[   ]\", /></td>", icon);
-        httpWrite(q, "<td><a href=\"%s%s\">%s%s</a></td>", ep->name, dirSuffix, ep->name, dirSuffix);
-        httpWrite(q, "<td>%s</td><td>%s</td></tr>\r\n", timeBuf, sizeBuf);
-
-    } else if (dir->fancyIndexing == 1) {
-        httpWrite(q, "<img src=\"/icons/%s.gif\" alt=\"[   ]\", /> ", icon);
-        httpWrite(q, "<a href=\"%s%s\">%s%s</a>%-*s %17s %4s\r\n", ep->name, dirSuffix, ep->name, dirSuffix, 
-            nameSize - len, "", timeBuf, sizeBuf);
-
-    } else {
-        httpWrite(q, "<li><a href=\"%s%s\"> %s%s</a></li>\r\n", ep->name, dirSuffix, ep->name, dirSuffix);
-    }
-}
-
-
-static void outputFooter(HttpQueue *q)
-{
-    HttpConn    *conn;
-    MprSocket   *sock;
-    Dir         *dir;
-    
-    conn = q->conn;
-    dir = conn->reqData;
-    
-    if (dir->fancyIndexing == 2) {
-        httpWrite(q, "<tr><th colspan=\"5\"><hr /></th></tr>\r\n</table>\r\n");
-        
-    } else if (dir->fancyIndexing == 1) {
-        httpWrite(q, "<hr /></pre>\r\n");
-    } else {
-        httpWrite(q, "</ul>\r\n");
-    }
-    sock = conn->sock->listenSock;
-    httpWrite(q, "<address>%s %s at %s Port %d</address>\r\n", ME_TITLE, ME_VERSION, sock->ip, sock->port);
-    httpWrite(q, "</body></html>\r\n");
-}
-
-
-static void filterDirList(HttpConn *conn, MprList *list)
-{
-    Dir             *dir;
-    MprDirEntry     *dp;
-    int             next;
-
-    dir = conn->reqData;
-    
-    /*
-        Do pattern matching. Entries that don't match, free the name to mark
-     */
-    for (ITERATE_ITEMS(list, dp, next)) {
-        if (!matchDirPattern(dir->pattern, dp->name)) {
-            mprRemoveItem(list, dp);
-            next--;
-        }
-    }
-}
-
-
-/*
-    Return true if the file matches the pattern. Supports '?' and '*'
- */
-static int matchDirPattern(cchar *pattern, cchar *file)
-{
-    cchar   *pp, *fp;
-
-    if (pattern == 0 || *pattern == '\0') {
-        return 1;
-    }
-    if (file == 0 || *file == '\0') {
-        return 0;
-    }
-    for (pp = pattern, fp = file; *pp; ) {
-        if (*fp == '\0') {
-            if (*pp == '*' && pp[1] == '\0') {
-                /* Trailing wild card */
-                return 1;
-            }
-            return 0;
-        }
-        if (*pp == '*') {
-            if (matchDirPattern(&pp[1], &fp[0])) {
-                return 1;
-            }
-            fp++;
-            continue;
-
-        } else if (*pp == '?' || *pp == *fp) {
-            fp++;
-
-        } else {
-            return 0;
-        }
-        pp++;
-    }
-    if (*fp == '\0') {
-        /* Match */
-        return 1;
-    }
-    return 0;
-}
-
-
-#if KEEP
-static int addIconDirective(MaState *state, cchar *key, cchar *value)
-{
-    if (!maTokenize(state, value, "%S %W", &path, &dir->extList)) {
-        return MPR_ERR_BAD_SYNTAX;
-    }
-    return 0;
-}
-
-
-static int defaultIconDirective(MaState *state, cchar *key, cchar *value)
-{
-    state->dir->defaultIcon = sclone(value);
-    return 0;
-}
-
-/*  
-    IndexIgnore pat ... 
- */
-static int indexIgnoreDirective(MaState *state, cchar *key, cchar *value)
-{
-    if (!maTokenize(state, value, "%W", &dir->ignoreList)) {
-        return MPR_ERR_BAD_SYNTAX;
-    }
-    return 0;
-}
-#endif
-
-
-/*  
-    IndexOrder ascending|descending name|date|size 
- */
-static int indexOrderDirective(MaState *state, cchar *key, cchar *value)
-{
-    Dir     *dir;
-    char    *option;
-
-    dir = getDirObj(state);
-
-    if (!maTokenize(state, value, "%S %S", &option, &dir->sortField)) {
-        return MPR_ERR_BAD_SYNTAX;
-    }
-    dir->sortField = 0;
-    if (scaselessmatch(option, "ascending")) {
-        dir->sortOrder = 1;
-    } else {
-        dir->sortOrder = -1;
-    }
-    if (dir->sortField) {
-        dir->sortField = sclone(dir->sortField);
-    }
-    return 0;
-}
-
-
-/*  
-    IndexOptions FancyIndexing|FoldersFirst ... (set of options) 
- */
-static int indexOptionsDirective(MaState *state, cchar *key, cchar *value)
-{
-    Dir     *dir;
-    char    *option, *tok;
-
-    dir = getDirObj(state);
-    option = stok(sclone(value), " \t", &tok);
-    while (option) {
-        if (scaselessmatch(option, "FancyIndexing")) {
-            dir->fancyIndexing = 1;
-        } else if (scaselessmatch(option, "HTMLTable")) {
-            dir->fancyIndexing = 2;
-        } else if (scaselessmatch(option, "FoldersFirst")) {
-            dir->foldersFirst = 1;
-        }
-        option = stok(tok, " \t", &tok);
-    }
-    return 0;
-}
-
-
-/*  
-    Options Indexes 
- */
-static int optionsDirective(MaState *state, cchar *key, cchar *value)
-{
-    Dir     *dir;
-    char    *option, *tok;
-
-    dir = getDirObj(state);
-    option = stok(sclone(value), " \t", &tok);
-    while (option) {
-        if (scaselessmatch(option, "Indexes")) {
-            dir->enabled = 1;
-        }
-        option = stok(tok, " \t", &tok);
-    }
-    return 0;
-}
-
-
-static void manageDir(Dir *dir, int flags)
-{
-    if (flags & MPR_MANAGE_MARK) {
-#if KEEP
-        mprMark(dir->dirList);
-        mprMark(dir->defaultIcon);
-        mprMark(dir->extList);
-        mprMark(dir->ignoreList);
-#endif
-        mprMark(dir->pattern);
-        mprMark(dir->sortField);
-    }
-}
-
-
-static Dir *getDirObj(MaState *state)
-{
-    HttpRoute   *route;
-    Dir         *dir, *parent;
-
-    route = state->route;
-    dir = httpGetRouteData(route, DIR_NAME);
-    if (route->parent) {
-        /*
-            If the parent route has the same route data, then force a clone so the parent route does not get modified
-         */ 
-        parent = httpGetRouteData(route->parent, DIR_NAME);
-        if (dir == parent) {
-            dir = 0;
-        }
-    }
-    if (dir == 0) {
-        if (route->parent && (parent = httpGetRouteData(route->parent, DIR_NAME)) != 0) {
-            dir = cloneDir(parent, route);
-        } else {
-            dir = allocDir(route);
-        }
-    }
-    assert(dir);
-    return dir;
-}
-
-
-static Dir *allocDir(HttpRoute *route)
-{
-    Dir     *dir;
-
-    if ((dir = mprAllocObj(Dir, manageDir)) == 0) {
-        return 0;
-    }
-    httpSetRouteData(route, DIR_NAME, dir);
-    return dir;
-}
-
-
-static Dir *cloneDir(Dir *parent, HttpRoute *route)
-{
-    Dir     *dir;
-
-    if ((dir = mprAllocObj(Dir, manageDir)) == 0) {
-        return 0;
-    }
-    dir->enabled = parent->enabled;
-    dir->fancyIndexing = parent->fancyIndexing;
-    dir->foldersFirst = parent->foldersFirst;
-    dir->pattern = parent->pattern;
-    dir->sortField = parent->sortField;
-    dir->sortOrder = parent->sortOrder;
-    httpSetRouteData(route, DIR_NAME, dir);
-    return dir;
-}
-
-
-/*
-    Loadable module initialization
- */
-PUBLIC int maOpenDirHandler(Http *http)
-{
-    HttpStage   *handler;
-    MaAppweb    *appweb;
-    Dir         *dir;
-
-    if ((handler = httpCreateHandler(http, "dirHandler", NULL)) == 0) {
-        return MPR_ERR_CANT_CREATE;
-    }
-    if ((handler->stageData = dir = mprAllocObj(Dir, manageDir)) == 0) {
-        return MPR_ERR_MEMORY;
-    }
-    handler->start = startDir; 
-    http->dirHandler = handler;
-    dir->sortOrder = 1;
-
-    /*
-        Declare configuration file directives
-     */
-    appweb = httpGetContext(http);
-    maAddDirective(appweb, "IndexOrder", indexOrderDirective);
-    maAddDirective(appweb, "indexOptions", indexOptionsDirective);
-    maAddDirective(appweb, "Options", optionsDirective);
-    return 0;
-}
-#endif /* ME_COM_DIR */
-
-
-/*
-    @copy   default
-
-    Copyright (c) Embedthis Software LLC, 2003-2014. All Rights Reserved.
-
-    This software is distributed under commercial and open source licenses.
-    You may use the Embedthis Open Source license or you may acquire a 
-    commercial license from Embedthis Software. You agree to be fully bound
-    by the terms of either license. Consult the LICENSE.md distributed with
-    this software for full details and other copyrights.
-
-    Local variables:
-    tab-width: 4
-    c-basic-offset: 4
-    End:
-    vim: sw=4 ts=4 expandtab
-
-    @end
- */
-
-/************************************************************************/
-/*
-    Start of file "src/fileHandler.c"
- */
-/************************************************************************/
-
-/*
-    fileHandler.c -- Static file content handler
-
-    This handler manages static file based content such as HTML, GIF /or JPEG pages. It supports all methods including:
-    GET, PUT, DELETE, OPTIONS and TRACE. It is event based and does not use worker threads.
-
-    The fileHandler also manages requests for directories that require redirection to an index or responding with
-    a directory listing. 
-
-    Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
- */
-
-/********************************* Includes ***********************************/
-
-
-
-/***************************** Forward Declarations ***************************/
-
-static void handleDeleteRequest(HttpQueue *q);
-static void handlePutRequest(HttpQueue *q);
-static int manageDir(HttpConn *conn);
-static ssize readFileData(HttpQueue *q, HttpPacket *packet, MprOff pos, ssize size);
-
-/*********************************** Code *************************************/
-/*
-    Rewrite the request for directories, indexes and compressed content. 
- */
-static int rewriteFileHandler(HttpConn *conn)
-{
-    HttpRx      *rx;
-    HttpTx      *tx;
-    MprPath     *info;
-
-    rx = conn->rx;
-    tx = conn->tx;
-    info = &tx->fileInfo;
-
-    httpMapFile(conn);
-    assert(info->checked);
-
-    if (rx->flags & (HTTP_DELETE | HTTP_PUT)) {
-        return HTTP_ROUTE_OK;
-    }
-    if (info->isDir) {
-        return manageDir(conn);
-    }
-    if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST) && info->valid && tx->length < 0) {
-        /*
-            The sendFile connector is optimized on some platforms to use the sendfile() system call.
-            Set the entity length for the sendFile connector to utilize.
-         */
-        httpSetEntityLength(conn, tx->fileInfo.size);
-    }
-    return HTTP_ROUTE_OK;
-}
-
-
-
-static int openFileHandler(HttpQueue *q)
-{
-    HttpRx      *rx;
-    HttpTx      *tx;
-    HttpConn    *conn;
-    MprPath     *info;
-    char        *date, dbuf[16];
-    MprHash     *dateCache;
-
-    conn = q->conn;
-    tx = conn->tx;
-    rx = conn->rx;
-    info = &tx->fileInfo;
-
-    if (conn->error) {
-        return MPR_ERR_CANT_OPEN;
-    }
-    if (rx->flags & (HTTP_GET | HTTP_HEAD | HTTP_POST)) {
-        if (!(info->valid || info->isDir)) {
-            httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot find document");
-            return 0;
-        } 
-        if (!tx->etag) {
-            /* Set the etag for caching in the client */
-            tx->etag = sfmt("\"%llx-%llx-%llx\"", (int64) info->inode, (int64) info->size, (int64) info->mtime);
-        }
-        if (info->mtime) {
-            dateCache = conn->http->dateCache;
-            if ((date = mprLookupKey(dateCache, itosbuf(dbuf, sizeof(dbuf), (int64) info->mtime, 10))) == 0) {
-                if (!dateCache || mprGetHashLength(dateCache) > 128) {
-                    conn->http->dateCache = dateCache = mprCreateHash(0, 0);
-                }
-                date = httpGetDateString(&tx->fileInfo);
-                mprAddKey(dateCache, itosbuf(dbuf, sizeof(dbuf), (int64) info->mtime, 10), date);
-            }
-            httpSetHeaderString(conn, "Last-Modified", date);
-        }
-        if (httpContentNotModified(conn)) {
-            httpSetStatus(conn, HTTP_CODE_NOT_MODIFIED);
-            httpOmitBody(conn);
-            tx->length = -1;
-        }
-        if (!tx->fileInfo.isReg && !tx->fileInfo.isLink) {
-            httpTrace(conn, "request.document.error", "error", "msg=\"Document is not a regular file\", filename=%s", 
-                tx->filename);
-            httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot serve document");
-            
-        } else if (tx->fileInfo.size > conn->limits->transmissionBodySize) {
-            httpError(conn, HTTP_ABORT | HTTP_CODE_REQUEST_TOO_LARGE,
-                "Http transmission aborted. File size exceeds max body of %'lld bytes",
-                    conn->limits->transmissionBodySize);
-            
-        } else if (!(tx->connector == conn->http->sendConnector)) {
-            /*
-                If using the net connector, open the file if a body must be sent with the response. The file will be
-                automatically closed when the request completes.
-             */
-            if (!(tx->flags & HTTP_TX_NO_BODY)) {
-                tx->file = mprOpenFile(tx->filename, O_RDONLY | O_BINARY, 0);
-                if (tx->file == 0) {
-                    if (rx->referrer) {
-                        httpTrace(conn, "request.document.error", "error", 
-                            "msg=\"Cannot open document\", filename=%s, referrer=%s", 
-                            tx->filename, rx->referrer);
-                    } else {
-                        httpTrace(conn, "request.document.error", "error", 
-                            "msg=\"Cannot open document\", filename=%s", tx->filename);
-                    }
-                    httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot open document");
-                }
-            }
-        }
-    } else if (rx->flags & (HTTP_DELETE | HTTP_OPTIONS | HTTP_PUT)) {
-        ;
-    } else {
-        httpError(conn, HTTP_CODE_BAD_METHOD, "Unsupported method");
-    }
-    return 0;
-}
-
-
-static void closeFileHandler(HttpQueue *q)
-{
-    HttpTx  *tx;
-
-    tx = q->conn->tx;
-    if (tx->file) {
-        mprCloseFile(tx->file);
-        tx->file = 0;
-    }
-}
-
-
-static void startFileHandler(HttpQueue *q)
-{
-    HttpConn    *conn;
-    HttpRx      *rx;
-    HttpTx      *tx;
-    HttpPacket  *packet;
-
-    conn = q->conn;
-    rx = conn->rx;
-    tx = conn->tx;
-    assert(!tx->finalized);
-    
-    if (rx->flags & HTTP_PUT) {
-        handlePutRequest(q);
-        
-    } else if (rx->flags & HTTP_DELETE) {
-        handleDeleteRequest(q);
-        
-    } else if (rx->flags & HTTP_OPTIONS) {
-        httpHandleOptions(q->conn);
-        
-    } else if (!(tx->flags & HTTP_TX_NO_BODY)) {
-        /* Create a single data packet based on the entity length */
-        packet = httpCreateEntityPacket(0, tx->entityLength, readFileData);
-        if (!tx->outputRanges) {
-            /* Can set a content length */
-            tx->length = tx->entityLength;
-        }
-        /* Add to the output service queue */
-        httpPutForService(q, packet, 0);
-    }
-}
-
-
-/*
-    The ready callback is invoked when all body data has been received
- */
-static void readyFileHandler(HttpQueue *q)
-{
-    /*
-        The queue already contains a single data packet representing all the output data.
-     */
-    httpFinalize(q->conn);
-}
-
-
-/*  
-    Populate a packet with file data. Return the number of bytes read or a negative error code. Will not return with
-    a short read.
- */
-static ssize readFileData(HttpQueue *q, HttpPacket *packet, MprOff pos, ssize size)
-{
-    HttpConn    *conn;
-    HttpTx      *tx;
-    ssize       nbytes;
-
-    conn = q->conn;
-    tx = conn->tx;
-
-    if (packet->content == 0 && (packet->content = mprCreateBuf(size, -1)) == 0) {
-        return MPR_ERR_MEMORY;
-    }
-    assert(size <= mprGetBufSpace(packet->content));    
-    if (pos >= 0) {
-        mprSeekFile(tx->file, SEEK_SET, pos);
-    }
-    if ((nbytes = mprReadFile(tx->file, mprGetBufStart(packet->content), size)) != size) {
-        /*  
-            As we may have sent some data already to the client, the only thing we can do is abort and hope the client 
-            notices the short data.
-         */
-        httpError(conn, HTTP_CODE_SERVICE_UNAVAILABLE, "Cannot read file %s", tx->filename);
-        return MPR_ERR_CANT_READ;
-    }
-    mprAdjustBufEnd(packet->content, nbytes);
-    packet->esize -= nbytes;
-    assert(packet->esize == 0);
-    return nbytes;
-}
-
-
-/*  
-    Prepare a data packet for sending downstream. This involves reading file data into a suitably sized packet. Return
-    the 1 if the packet was sent entirely, return zero if the packet could not be completely sent. Return a negative
-    error code for write errors. This may split the packet if it exceeds the downstreams maximum packet size.
- */
-static int prepPacket(HttpQueue *q, HttpPacket *packet)
-{
-    HttpQueue   *nextQ;
-    ssize       size, nbytes;
-
-    if (mprNeedYield()) {
-        httpScheduleQueue(q);
-        return 0;
-    }
-    nextQ = q->nextQ;
-    if (packet->esize > nextQ->packetSize) {
-        httpPutBackPacket(q, httpSplitPacket(packet, nextQ->packetSize));
-        size = nextQ->packetSize;
-    } else {
-        size = (ssize) packet->esize;
-    }
-    if ((size + nextQ->count) > nextQ->max) {
-        /*  
-            The downstream queue is full, so disable the queue and service downstream queue.
-            Will re-enable via a writable event on the connection.
-         */
-        httpSuspendQueue(q);
-        if (!(nextQ->flags & HTTP_QUEUE_SUSPENDED)) {
-            httpScheduleQueue(nextQ);
-        }
-        return 0;
-    }
-    if ((nbytes = readFileData(q, packet, q->ioPos, size)) != size) {
-        return MPR_ERR_CANT_READ;
-    }
-    q->ioPos += nbytes;
-    return 1;
-}
-
-
-/*  
-    The service callback will be invoked to service outgoing packets on the service queue. It will only be called 
-    once all incoming data has been received and then when the downstream queues drain sufficiently to absorb 
-    more data. This routine may flow control if the downstream stage cannot accept all the file data. It will
-    then be re-called as required to send more data.
- */
-static void outgoingFileService(HttpQueue *q)
-{
-    HttpConn    *conn;
-    HttpTx      *tx;
-    HttpPacket  *packet;
-    bool        usingSend;
-    int         rc;
-
-    conn = q->conn;
-    tx = conn->tx;
-    usingSend = (tx->connector == conn->http->sendConnector);
-    for (packet = httpGetPacket(q); packet; packet = httpGetPacket(q)) {
-        if (!usingSend && !tx->outputRanges && packet->esize) {
-            if ((rc = prepPacket(q, packet)) < 0) {
-                return;
-            } else if (rc == 0) {
-                httpPutBackPacket(q, packet);
-                return;
-            }
-        }
-        httpPutPacketToNext(q, packet);
-    }
-}
-
-
-/*
-    The incoming callback is invoked to receive body data 
- */
-static void incomingFile(HttpQueue *q, HttpPacket *packet)
-{
-    HttpConn    *conn;
-    HttpTx      *tx;
-    HttpRx      *rx;
-    HttpRange   *range;
-    MprBuf      *buf;
-    MprFile     *file;
-    ssize       len;
-
-    conn = q->conn;
-    tx = conn->tx;
-    rx = conn->rx;
-    file = (MprFile*) q->queueData;
-    
-    if (file == 0) {
-        /*  Not a PUT so just ignore the incoming data.  */
-        return;
-    }
-    if (httpGetPacketLength(packet) == 0) {
-        /* End of input */
-        if (file) {
-            mprCloseFile(file);
-        }
-        q->queueData = 0;
-        if (!tx->etag) {
-            /* Set the etag for caching in the client */
-            mprGetPathInfo(tx->filename, &tx->fileInfo);
-            tx->etag = sfmt("\"%llx-%llx-%llx\"", tx->fileInfo.inode, tx->fileInfo.size, tx->fileInfo.mtime);
-        }
-        return;
-    }
-    buf = packet->content;
-    len = mprGetBufLength(buf);
-    assert(len > 0);
-
-    range = rx->inputRange;
-    if (range && mprSeekFile(file, SEEK_SET, range->start) != range->start) {
-        httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot seek to range start to %lld", range->start);
-
-    } else if (mprWriteFile(file, mprGetBufStart(buf), len) != len) {
-        httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot PUT to %s", tx->filename);
-    }
-}
-
-
-/*  
-    This is called to setup for a HTTP PUT request. It is called before receiving the post data via incomingFileData
- */
-static void handlePutRequest(HttpQueue *q)
-{
-    HttpConn    *conn;
-    HttpTx      *tx;
-    MprFile     *file;
-    cchar       *path;
-
-    assert(q->pair->queueData == 0);
-
-    conn = q->conn;
-    tx = conn->tx;
-    assert(tx->filename);
-    assert(tx->fileInfo.checked);
-
-    path = tx->filename;
-    if (tx->outputRanges) {
-        /*  
-            Open an existing file with fall-back to create
-         */
-        if ((file = mprOpenFile(path, O_BINARY | O_WRONLY, 0644)) == 0) {
-            if ((file = mprOpenFile(path, O_CREAT | O_TRUNC | O_BINARY | O_WRONLY, 0644)) == 0) {
-                httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot create the put URI");
-                return;
-            }
-        } else {
-            mprSeekFile(file, SEEK_SET, 0);
-        }
-    } else {
-        if ((file = mprOpenFile(path, O_CREAT | O_TRUNC | O_BINARY | O_WRONLY, 0644)) == 0) {
-            httpError(conn, HTTP_CODE_INTERNAL_SERVER_ERROR, "Cannot create the put URI");
-            return;
-        }
-    }
-    if (!tx->fileInfo.isReg) {
-        httpSetHeaderString(conn, "Location", conn->rx->uri);
-    }
-    httpSetStatus(conn, tx->fileInfo.isReg ? HTTP_CODE_NO_CONTENT : HTTP_CODE_CREATED);
-    q->pair->queueData = (void*) file;
-}
-
-
-static void handleDeleteRequest(HttpQueue *q)
-{
-    HttpConn    *conn;
-    HttpTx      *tx;
-
-    conn = q->conn;
-    tx = conn->tx;
-    assert(tx->filename);
-    assert(tx->fileInfo.checked);
-
-    if (!tx->fileInfo.isReg) {
-        httpError(conn, HTTP_CODE_NOT_FOUND, "Document not found");
-        return;
-    }
-    if (mprDeletePath(tx->filename) < 0) {
-        httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot remove document");
-        return;
-    }
-    httpSetStatus(conn, HTTP_CODE_NO_CONTENT);
-}
-
-
-static int manageDir(HttpConn *conn)
-{
-    HttpRx      *rx;
-    HttpTx      *tx;
-    HttpRoute   *route;
-    HttpUri     *req;
-    MprPath     *info;
-    cchar       *index, *pathInfo, *uri;
-    char        *path;
-    int         next;
-
-    rx = conn->rx;
-    tx = conn->tx;
-    req = rx->parsedUri;
-    route = rx->route;
-    info = &tx->fileInfo;
-
-    /*
-        Manage requests for directories
-     */
-    if (!sends(req->path, "/")) {
-        /*
-           Append "/" and do an external redirect. Use the original request URI.
-         */
-        pathInfo = sjoin(req->path, "/", NULL);
-        uri = httpFormatUri(req->scheme, req->host, req->port, pathInfo, req->reference, req->query, 0);
-        httpRedirect(conn, HTTP_CODE_MOVED_PERMANENTLY, uri);
-        return HTTP_ROUTE_OK;
-    }
-    if (route->indexes) {
-        /*
-            Ends with a "/" so do internal redirection to an index file
-         */
-        for (ITERATE_ITEMS(route->indexes, index, next)) {
-            /*
-                Internal directory redirections. Transparently append index. Test indexes in order.
-             */
-            path = mprJoinPath(tx->filename, index);
-            if (mprPathExists(path, R_OK)) {
-                pathInfo = sjoin(rx->scriptName, rx->pathInfo, index, NULL);
-                uri = httpFormatUri(req->scheme, req->host, req->port, pathInfo, req->reference, req->query, 0);
-                httpSetUri(conn, uri);
-                tx->filename = path;
-                tx->ext = httpGetExt(conn);
-                mprGetPathInfo(tx->filename, info);
-                return HTTP_ROUTE_REROUTE;
-            }
-        }
-    }
-#if ME_COM_DIR
-    /*
-        Directory Listing. If a directory, test if a directory listing should be rendered. If so, delegate to the
-        dirHandler. Cannot use the sendFile handler and must use the netConnector.
-     */
-    if (info->isDir && maRenderDirListing(conn)) {
-        tx->handler = conn->http->dirHandler;
-        tx->connector = conn->http->netConnector;
-        return HTTP_ROUTE_OK;
-    }
-#endif
-    return HTTP_ROUTE_OK;
-}
-
-
-/*  
-    Loadable module initialization
- */
-PUBLIC int maOpenFileHandler(Http *http)
-{
-    HttpStage     *handler;
-
-    /* 
-        This handler serves requests without using thread workers.
-     */
-    if ((handler = httpCreateHandler(http, "fileHandler", NULL)) == 0) {
-        return MPR_ERR_CANT_CREATE;
-    }
-    handler->rewrite = rewriteFileHandler;
-    handler->open = openFileHandler;
-    handler->close = closeFileHandler;
-    handler->start = startFileHandler;
-    handler->ready = readyFileHandler;
-    handler->outgoingService = outgoingFileService;
-    handler->incoming = incomingFile;
-    http->fileHandler = handler;
-    return 0;
-}
-
 
 /*
     @copy   default
@@ -5722,9 +4518,8 @@ static int scriptAliasDirective(MaState *state, cchar *key, cchar *value)
 PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
 {
     HttpStage   *handler, *connector;
-    MaAppweb    *appweb;
 
-    if ((handler = httpCreateHandler(http, "cgiHandler", module)) == 0) {
+    if ((handler = httpCreateHandler("cgiHandler", module)) == 0) {
         return MPR_ERR_CANT_CREATE;
     }
     http->cgiHandler = handler;
@@ -5734,7 +4529,7 @@ PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
     handler->open = openCgi; 
     handler->start = startCgi; 
 
-    if ((connector = httpCreateConnector(http, "cgiConnector", module)) == 0) {
+    if ((connector = httpCreateConnector("cgiConnector", module)) == 0) {
         return MPR_ERR_CANT_CREATE;
     }
     http->cgiConnector = connector;
@@ -5744,11 +4539,10 @@ PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
     /*
         Add configuration file directives
      */
-    appweb = httpGetContext(http);
-    maAddDirective(appweb, "Action", actionDirective);
-    maAddDirective(appweb, "ScriptAlias", scriptAliasDirective);
-    maAddDirective(appweb, "CgiEscape", cgiEscapeDirective);
-    maAddDirective(appweb, "CgiPrefix", cgiPrefixDirective);
+    maAddDirective("Action", actionDirective);
+    maAddDirective("ScriptAlias", scriptAliasDirective);
+    maAddDirective("CgiEscape", cgiEscapeDirective);
+    maAddDirective("CgiPrefix", cgiPrefixDirective);
     return 0;
 }
 
@@ -5901,7 +4695,7 @@ static int ejsWorkersDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpStage   *stage;
 
-    if ((stage = httpLookupStage(state->http, "ejsHandler")) == 0) {
+    if ((stage = httpLookupStage("ejsHandler")) == 0) {
         mprLog("error ejs", 0, "Handler is not configured");
         return MPR_ERR_BAD_SYNTAX;
     }
@@ -5915,10 +4709,9 @@ static int ejsWorkersDirective(MaState *state, cchar *key, cchar *value)
  */
 PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
 {
-    MaAppweb    *appweb;
     HttpStage   *stage;
 
-    if ((stage = httpCreateHandler(http, "ejsHandler", module)) != 0) {
+    if ((stage = httpCreateHandler("ejsHandler", module)) != 0) {
         http->ejsHandler = stage;
         stage->open = openEjs;
         /*
@@ -5928,10 +4721,9 @@ PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
     /*
         Add configuration file directives
      */
-    appweb = httpGetContext(http);
-    maAddDirective(appweb, "EjsAlias", ejsAliasDirective);
-    maAddDirective(appweb, "EjsStartup", ejsStartupDirective);
-    maAddDirective(appweb, "EjsWorkers", ejsWorkersDirective);
+    maAddDirective("EjsAlias", ejsAliasDirective);
+    maAddDirective("EjsStartup", ejsStartupDirective);
+    maAddDirective("EjsWorkers", ejsWorkersDirective);
     return 0;
 }
 #else /* ME_COM_EJS */
@@ -6436,8 +5228,6 @@ static int startup(sapi_module_struct *sapi_module)
 
 static int initializePhp(Http *http)
 {
-    MaAppweb    *appweb;
-
     tsrm_startup(128, 1, 0, NULL);
     compiler_globals = (zend_compiler_globals*)  ts_resource(compiler_globals_id);
     executor_globals = (zend_executor_globals*)  ts_resource(executor_globals_id);
@@ -6445,11 +5235,10 @@ static int initializePhp(Http *http)
     sapi_globals = (sapi_globals_struct*) ts_resource(sapi_globals_id);
     tsrm_ls = (void***) ts_resource(0);
 
-    appweb = httpGetContext(http);
 #if defined(ME_COM_PHP_INI)
     phpSapiBlock.php_ini_path_override = ME_COM_PHP_INI;
 #else
-    phpSapiBlock.php_ini_path_override = appweb->defaultServer->defaultHost->defaultRoute->home;
+    phpSapiBlock.php_ini_path_override = httpGetDefaultRoute()->home;
 #endif
     if (phpSapiBlock.php_ini_path_override) {
         mprLog("info php", 2, "Look for php.ini at %s", phpSapiBlock.php_ini_path_override);
@@ -6511,7 +5300,7 @@ PUBLIC int maPhpHandlerInit(Http *http, MprModule *module)
     if (module) {
         mprSetModuleFinalizer(module, finalizePhp); 
     }
-    if ((handler = httpCreateHandler(http, "phpHandler", module)) == 0) {
+    if ((handler = httpCreateHandler("phpHandler", module)) == 0) {
         return MPR_ERR_CANT_CREATE;
     }
     handler->open = openPhp;
@@ -6802,23 +5591,21 @@ static int sslProtocolDirective(MaState *state, cchar *key, cchar *value)
 PUBLIC int maSslModuleInit(Http *http, MprModule *module)
 {
     HttpStage   *stage;
-    MaAppweb    *appweb;
 
-    if ((stage = httpCreateStage(http, "sslModule", HTTP_STAGE_MODULE, module)) == 0) {
+    if ((stage = httpCreateStage("sslModule", HTTP_STAGE_MODULE, module)) == 0) {
         return MPR_ERR_CANT_CREATE;
     }
-    appweb = httpGetContext(http);
-    maAddDirective(appweb, "SSLEngine", sslEngineDirective);
-    maAddDirective(appweb, "SSLCACertificateFile", sslCaCertificateFileDirective);
-    maAddDirective(appweb, "SSLCACertificatePath", sslCaCertificatePathDirective);
-    maAddDirective(appweb, "SSLCertificateFile", sslCertificateFileDirective);
-    maAddDirective(appweb, "SSLCertificateKeyFile", sslCertificateKeyFileDirective);
-    maAddDirective(appweb, "SSLCipherSuite", sslCipherSuiteDirective);
-    maAddDirective(appweb, "SSLProtocol", sslProtocolDirective);
-    maAddDirective(appweb, "SSLProvider", sslProviderDirective);
-    maAddDirective(appweb, "SSLVerifyClient", sslVerifyClientDirective);
-    maAddDirective(appweb, "SSLVerifyIssuer", sslVerifyIssuerDirective);
-    maAddDirective(appweb, "SSLVerifyDepth", sslVerifyDepthDirective);
+    maAddDirective("SSLEngine", sslEngineDirective);
+    maAddDirective("SSLCACertificateFile", sslCaCertificateFileDirective);
+    maAddDirective("SSLCACertificatePath", sslCaCertificatePathDirective);
+    maAddDirective("SSLCertificateFile", sslCertificateFileDirective);
+    maAddDirective("SSLCertificateKeyFile", sslCertificateKeyFileDirective);
+    maAddDirective("SSLCipherSuite", sslCipherSuiteDirective);
+    maAddDirective("SSLProtocol", sslProtocolDirective);
+    maAddDirective("SSLProvider", sslProviderDirective);
+    maAddDirective("SSLVerifyClient", sslVerifyClientDirective);
+    maAddDirective("SSLVerifyIssuer", sslVerifyIssuerDirective);
+    maAddDirective("SSLVerifyDepth", sslVerifyDepthDirective);
 #if ME_STATIC
     /*
         Pull in the libmprssl code at link time.
@@ -21900,375 +20687,6 @@ PUBLIC MprRomInode romFiles[] = {
     { 0, 0, 0, 0 },
 };
 #endif /* ME_ROM */
-
-/************************************************************************/
-/*
-    Start of file "src/server.c"
- */
-/************************************************************************/
-
-/*
-    server.c -- Manage a web server with one or more virtual hosts.
-
-    A server supports multiple endpoints and one or more (virtual) hosts.
-    Server Servers may be configured manually or via an "appweb.conf" configuration  file.
-
-    Copyright (c) All Rights Reserved. See copyright notice at the bottom of the file.
- */
-
-/********************************** Includes **********************************/
-
-
-
-/***************************** Forward Declarations ***************************/
-
-static void manageAppweb(MaAppweb *appweb, int flags);
-
-/************************************ Code ************************************/
-/*
-    Create the top level appweb control object. This is typically a singleton.
- */
-PUBLIC MaAppweb *maCreateAppweb()
-{
-    MaAppweb    *appweb;
-    Http        *http;
-
-    if ((appweb = mprAllocObj(MaAppweb, manageAppweb)) == NULL) {
-        return 0;
-    }
-    MPR->appwebService = appweb;
-    appweb->http = http = httpCreate(HTTP_CLIENT_SIDE | HTTP_SERVER_SIDE);
-    httpSetContext(http, appweb);
-    appweb->servers = mprCreateList(-1, MPR_LIST_STABLE);
-    maParseInit(appweb);
-    /* 
-       Open the builtin handlers 
-     */
-#if ME_COM_DIR
-    maOpenDirHandler(http);
-#endif
-    maOpenFileHandler(http);
-    return appweb; 
-}
-
-
-static void manageAppweb(MaAppweb *appweb, int flags)
-{
-    if (flags & MPR_MANAGE_MARK) {
-        mprMark(appweb->defaultServer);
-        mprMark(appweb->servers);
-        mprMark(appweb->directives);
-        mprMark(appweb->http);
-    }
-}
-
-
-PUBLIC void maAddServer(MaAppweb *appweb, MaServer *server)
-{
-    mprAddItem(appweb->servers, server);
-}
-
-
-PUBLIC void maSetDefaultServer(MaAppweb *appweb, MaServer *server)
-{
-    appweb->defaultServer = server;
-}
-
-
-PUBLIC MaServer *maLookupServer(MaAppweb *appweb, cchar *name)
-{
-    MaServer    *server;
-    int         next;
-
-    for (next = 0; (server = mprGetNextItem(appweb->servers, &next)) != 0; ) {
-        if (strcmp(server->name, name) == 0) {
-            return server;
-        }
-    }
-    return 0;
-}
-
-
-PUBLIC int maStartAppweb(MaAppweb *appweb)
-{
-    httpStartEndpoints();
-    return 0;
-}
-
-
-PUBLIC int maStopAppweb(MaAppweb *appweb)
-{
-    httpStopConnections(0);
-    httpStopEndpoints();
-    return 0;
-}
-
-
-static void manageServer(MaServer *server, int flags)
-{
-    if (flags & MPR_MANAGE_MARK) {
-        mprMark(server->name);
-        mprMark(server->appweb);
-        mprMark(server->http);
-        mprMark(server->defaultHost);
-        mprMark(server->limits);
-        mprMark(server->endpoints);
-    }
-}
-
-
-/*  
-    Create a new server. A server may manage may multiple servers and virtual hosts. 
-    If ip/port endpoint is supplied, this call will create a Server on that endpoint. Otherwise, 
-    maConfigureServer should be called later. A default route is created with the document root set to "."
- */
-PUBLIC MaServer *maCreateServer(MaAppweb *appweb, cchar *name)
-{
-    MaServer    *server;
-    HttpHost    *host;
-    HttpRoute   *route;
-
-    assert(appweb);
-
-    if ((server = mprAllocObj(MaServer, manageServer)) == NULL) {
-        return 0;
-    }
-    if (name == 0 || *name == '\0') {
-        name = "default";
-    }
-    server->name = sclone(name);
-    server->endpoints = mprCreateList(-1, MPR_LIST_STABLE);
-    server->limits = httpCreateLimits(1);
-    server->appweb = appweb;
-    server->http = appweb->http;
-
-    server->defaultHost = host = httpCreateHost();
-    if (!httpGetDefaultHost()) {
-        httpSetDefaultHost(host);
-    }
-    route = httpCreateRoute(host);
-    httpSetRouteName(route, "default");
-    httpSetHostDefaultRoute(host, route);
-    route->limits = server->limits;
-
-    maAddServer(appweb, server);
-    if (appweb->defaultServer == 0) {
-        maSetDefaultServer(appweb, server);
-    }
-    return server;
-}
-
-
-/*
-    Configure the server. If the configFile is defined, use it. If not, then consider home, documents, ip and port.
- */
-PUBLIC int maConfigureServer(MaServer *server, cchar *configFile, cchar *home, cchar *documents, cchar *ip, int port, int flags)
-{
-    MaAppweb        *appweb;
-    Http            *http;
-    HttpEndpoint    *endpoint;
-    HttpHost        *host;
-    HttpRoute       *route;
-    char            *path;
-
-    appweb = server->appweb;
-    http = appweb->http;
-
-    /* Suppress conditional compilation warnings */
-    mprNop(appweb);
-    mprNop(http);
-
-    if (configFile) {
-        path = mprGetAbsPath(configFile);
-        if (maParseConfig(server, path, 0) < 0) {
-            return MPR_ERR_CANT_INITIALIZE;
-        }
-        return 0;
-
-    } else {
-        if ((endpoint = httpCreateConfiguredEndpoint(server->defaultHost, home, documents, ip, port)) == 0) {
-            return MPR_ERR_CANT_OPEN;
-        }
-        maAddEndpoint(server, endpoint);
-        host = mprGetFirstItem(endpoint->hosts);
-        assert(host);
-        route = host->defaultRoute;
-        assert(route);
-
-        if (home) {
-            httpSetRouteHome(route, home);
-        }
-        if (!(flags & MA_NO_MODULES)) {
-#if ME_COM_CGI
-            maLoadModule(appweb, "cgiHandler", "libmod_cgi");
-            if (httpLookupStage(http, "cgiHandler")) {
-                httpAddRouteHandler(route, "cgiHandler", "cgi cgi-nph bat cmd pl py");
-                /*
-                    Add cgi-bin with a route for the /cgi-bin URL prefix.
-                 */
-                path = "cgi-bin";
-                if (mprPathExists(path, X_OK)) {
-                    HttpRoute *cgiRoute;
-                    cgiRoute = httpCreateAliasRoute(route, "/cgi-bin/", path, 0);
-                    httpSetRouteHandler(cgiRoute, "cgiHandler");
-                    httpFinalizeRoute(cgiRoute);
-                }
-            }
-#endif
-#if ME_COM_ESP || ME_ESP_PRODUCT
-            maLoadModule(appweb, "espHandler", "libmod_esp");
-            if (httpLookupStage(http, "espHandler")) {
-                httpAddRouteHandler(route, "espHandler", "esp");
-            }
-#endif
-#if ME_COM_EJS || ME_EJS_PRODUCT
-            maLoadModule(appweb, "ejsHandler", "libmod_ejs");
-            if (httpLookupStage(http, "ejsHandler")) {
-                httpAddRouteHandler(route, "ejsHandler", "ejs");
-            }
-#endif
-#if ME_COM_PHP
-            maLoadModule(appweb, "phpHandler", "libmod_php");
-            if (httpLookupStage(http, "phpHandler")) {
-                httpAddRouteHandler(route, "phpHandler", "php");
-            }
-#endif
-            httpAddRouteHandler(route, "fileHandler", "");
-        }
-    }
-    return 0;
-}
-
-
-PUBLIC int maStartServer(MaServer *server)
-{
-    HttpEndpoint    *endpoint;
-    int             next, count, warned;
-
-    warned = 0;
-    count = 0;
-    for (next = 0; (endpoint = mprGetNextItem(server->endpoints, &next)) != 0; ) {
-        if (httpStartEndpoint(endpoint) < 0) {
-            warned++;
-            break;
-        } else {
-            count++;
-        }
-    }
-    if (count == 0) {
-        if (!warned) {
-            mprLog("error appweb config", 0, "Server is not listening on any addresses");
-        }
-        return MPR_ERR_CANT_OPEN;
-    }
-    if (warned) {
-        return MPR_ERR_CANT_OPEN;        
-    }
-    return 0;
-}
-
-
-PUBLIC void maStopServer(MaServer *server)
-{
-    HttpEndpoint    *endpoint;
-    int             next;
-
-    for (next = 0; (endpoint = mprGetNextItem(server->endpoints, &next)) != 0; ) {
-        httpStopEndpoint(endpoint);
-    }
-}
-
-
-//  TODO - why does appweb need to keep per-server endpoint lists?
-PUBLIC void maAddEndpoint(MaServer *server, HttpEndpoint *endpoint)
-{
-    mprAddItem(server->endpoints, endpoint);
-}
-
-
-PUBLIC void maRemoveEndpoint(MaServer *server, HttpEndpoint *endpoint)
-{
-    mprRemoveItem(server->endpoints, endpoint);
-}
-
-
-/*
-    Set the document root for the default server
- */
-PUBLIC void maSetServerAddress(MaServer *server, cchar *ip, int port)
-{
-    HttpEndpoint    *endpoint;
-    int             next;
-
-    for (next = 0; ((endpoint = mprGetNextItem(server->endpoints, &next)) != 0); ) {
-        httpSetEndpointAddress(endpoint, ip, port);
-    }
-}
-
-
-
-/*
-    Load a module. Returns 0 if the modules is successfully loaded (may have already been loaded).
- */
-PUBLIC int maLoadModule(MaAppweb *appweb, cchar *name, cchar *libname)
-{
-    MprModule   *module;
-    char        entryPoint[ME_MAX_FNAME];
-    char        *path;
-
-    if (strcmp(name, "authFilter") == 0 || strcmp(name, "rangeFilter") == 0 || strcmp(name, "uploadFilter") == 0 ||
-            strcmp(name, "fileHandler") == 0 || strcmp(name, "dirHandler") == 0) {
-        mprLog("info appweb config", 1, "The %s module is now builtin. No need to use LoadModule", name);
-        return 0;
-    }
-    if ((module = mprLookupModule(name)) != 0) {
-#if ME_STATIC
-        mprLog("info appweb config", 2, "Activating module (Builtin) %s", name);
-#endif
-        return 0;
-    }
-    if (libname == 0) {
-        path = sjoin("mod_", name, ME_SHOBJ, NULL);
-    } else {
-        path = sclone(libname);
-    }
-    fmt(entryPoint, sizeof(entryPoint), "ma%sInit", stitle(name));
-    entryPoint[2] = toupper((uchar) entryPoint[2]);
-    if ((module = mprCreateModule(name, path, entryPoint, MPR->httpService)) == 0) {
-        return 0;
-    }
-    if (mprLoadModule(module) < 0) {
-        return MPR_ERR_CANT_CREATE;
-    }
-    return 0;
-}
-
- 
-PUBLIC HttpAuth *maGetDefaultAuth(MaServer *server)
-{
-    return server->defaultHost->defaultRoute->auth;
-}
-
-
-/*
-    @copy   default
-
-    Copyright (c) Embedthis Software LLC, 2003-2014. All Rights Reserved.
-
-    This software is distributed under commercial and open source licenses.
-    You may use the Embedthis Open Source license or you may acquire a 
-    commercial license from Embedthis Software. You agree to be fully bound
-    by the terms of either license. Consult the LICENSE.md distributed with
-    this software for full details and other copyrights.
-
-    Local variables:
-    tab-width: 4
-    c-basic-offset: 4
-    End:
-    vim: sw=4 ts=4 expandtab
-
-    @end
- */
 
 /************************************************************************/
 /*

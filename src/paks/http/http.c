@@ -711,7 +711,7 @@ static void threadMain(void *data, MprThread *tp)
 
     td = tp->data;
     td->dispatcher = mprCreateDispatcher(tp->name, 0);
-    td->conn = conn = httpCreateConn(app->http, NULL, td->dispatcher);
+    td->conn = conn = httpCreateConn(NULL, td->dispatcher);
 
     /*
         Relay to processThread via the dispatcher. This serializes all activity on the conn->dispatcher
@@ -1004,6 +1004,9 @@ static int doRequest(HttpConn *conn, cchar *url, MprList *files)
     assert(url && *url);
 
     if (issueRequest(conn, url, files) < 0) {
+        if (conn->rx && conn->rx->status) {
+            reportResponse(conn, url);
+        }
         return MPR_ERR_CANT_CONNECT;
     }
     if (app->outFilename) {
