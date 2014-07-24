@@ -26,3 +26,6 @@ pj.new
 project.xcworkspace
 xcuserdata
 samples/esp-login/cache
+testme/
+cache
+cache

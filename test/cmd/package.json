@@ -1,0 +1,100 @@
+/*
+    package.json - ESP configuration file
+ */
+{
+    name: "esptest",
+    description: "ESP Unit Tests using Http cmd",
+    version: "0.1.0",
+    app: {
+        http: {
+            documents: 'web',
+            server: {
+                listen: [
+                    'http://127.0.0.1:5100',
+                    'https://127.0.0.1:5143',
+                ],
+            },
+            auth: {
+                roles: {
+                    'executive':     ['manage', 'direct'],
+                    'user':          ['view'],
+                    'administrator': ['view', 'edit'],
+                },
+                users: {
+                    ralph: {
+                        password: 'BF1:00128:bWFG5x85BYfuf7GW:w+zzIU0WTZQYaNAe0sPecWyry8Z9GrKH',
+                        roles:    [ 'user', 'administrator', 'purchase' ],
+                    },
+                    mary: {
+                        password: '5b90553bea8ba3686f4239d62801f0f3',
+                        roles:    [ 'user', 'executive' ],
+                    },
+                    peter: {
+                        password: '5b90553bea8ba3686f4239d62801f0f3',
+                        roles:    [ 'user', 'executive' ],
+                    },
+                    joshua: {
+                        password: '2fd6e47ff9bb70c0465fd2f5c8e5305e',
+                        roles:    [ 'user', 'administrator', 'purchase' ],
+                    },
+                    julie: {
+                        password: '9d8873a123eb506e7f8e84d1f2a26916',
+                        roles:    [ 'user' ],
+                    },
+                },
+            },
+            routes: [ 
+                {
+                    pattern: '^/auth/basic',
+                    auth: {
+                        realm: 'example.com',
+                        type: 'basic',
+                    },
+                    routes: [
+                        {
+                            pattern: '^/auth/basic/executive',
+                            auth: {
+                                type: 'basic',
+                                require: {
+                                    roles: [ 'executive' ],
+                                },
+                            },
+                        }, {
+                            pattern: '^/auth/basic/joshua',
+                            auth: {
+                                type: 'basic',
+                                require: {
+                                    users: [ 'joshua' ],
+                                },
+                            },
+                        },
+                    ],
+                }, {
+                    pattern: '^/tmp/',
+                    methods: [ 'DELETE', 'PUT', 'OPTIONS' ],
+                }, {
+                    pattern: '^/trace/',
+                    prefix: '/trace',
+                    methods: [ 'OPTIONS', 'TRACE' ],
+                }, {
+                    pattern: '^/upload/',
+                    prefix: '/upload',
+                    pipeline: {
+                        filters: [{
+                            name: 'uploadFilter',
+                            extensions: [ '*' ],
+                        }],
+                    },
+                    directories: {
+                        /* Relative to home or absolute */
+                        upload: 'uploaded',
+                    },
+                },
+            ],
+            ssl: {
+                certificate: 'crt/test.crt',
+                key: 'crt/test.key',
+            },
+        },
+    },
+}

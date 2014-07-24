@@ -7,6 +7,7 @@
     The format of this file is CommonJS package.json file with esp sections. It is an enhanced 
     JSON file. Property keys do not need to be enclosed in quotes.
     Also the last property in a collection may be terminated with a comma.
+*/
 {
     /*
         Single word application name. Must be a C identifier
@@ -66,7 +67,7 @@
         "pakscache": "~/.paks",
         "src": "src",
         "upload": "/tmp",
-        "views: "views",
+        "views": "views",
     },
 
     /*
@@ -75,7 +76,7 @@
     app: {
 
         /*
-            Client-side configurationf
+            Client-side configuration
          */
         client: {
             /*
@@ -271,7 +272,7 @@
                         URL for the application login dialog
                      */
                     url: "",
-                }
+                },
 
                 /*
                     Authentication realm
@@ -329,6 +330,11 @@
                     Set to "app", "config" or "system".
                  */
                 store: "app",
+
+                /*
+                    Type of authentication protocol to use
+                 */
+                type: "basic|digest",
             },
             
             /*
@@ -343,12 +349,12 @@
                 /*
                     Cache at the server
                  */
-                server: "1hour"
+                server: "1hour",
                 
                 /*
                     File extensions to cache
                  */
-                extensions: [ "css", "gif", "ico", "jpeg", "jpg", "js", "html", "less", "png", "pdf", "txt" ] 
+                extensions: [ "css", "gif", "ico", "jpeg", "jpg", "js", "html", "less", "png", "pdf", "txt" ],
 
                 /*
                     URIs to cache. If the URI has a query, then only that exact request will be cached.
@@ -413,6 +419,11 @@
             deleteUploads: true,
 
             /*
+                Documents to serve. Same as {directories: documents: 'DIR' }
+             */
+            documents: 'directory',
+
+            /*
                 Domain to service. This supports virtual hosting. If the name contains "*", it tests if the
                 request Host header contains the substring.
              */
@@ -461,6 +472,11 @@
             },
 
             /*
+                Home directory for the server. Same as {directories: home: 'DIR' }
+             */
+            home: 'directory',
+
+            /*
                 List of index documents to serve for directory level requests
              */
             indexes: [
@@ -480,21 +496,21 @@
                 /*
                     Language code
                  */
-                "en": {
+                en: {
                     /*
                         If using a directory per-language
                      */
-                    "path": "/path/to/english"
+                    path: "/path/to/english",
 
                     /*
                         If using a document prefix per-language
                      */
-                    "prefix": "en",
+                    prefix: "en",
 
                     /*
                         If using a document suffix per-language
                      */
-                    "suffix": "en",
+                    suffix: "en",
 
                     /*
                         Set to true if this is the default language
@@ -804,7 +820,7 @@
                  */
             }
         }
-    }
+    },
 
     /*
         List of files to include. Files are textually included at the location of the include.

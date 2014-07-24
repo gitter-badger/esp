@@ -1,0 +1,16 @@
+/*
+    test.me - MakeMe file for ESP
+ */
+
+Me.load({
+    targets: {
+        test: {
+            action: `run('testme --depth ' + me.settings.depth, {noio: true})`,
+            platforms: [ 'local' ],
+        },
+        'clean-test': {
+            type: 'clean',                                                                                 
+            action: `run('testme --clean')`
+        },  
+    },
+})
