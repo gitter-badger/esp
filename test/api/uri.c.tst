@@ -264,6 +264,7 @@ int main(int argc, char **argv)
     testCreateUri();
     testNormalizeUri();
     testValidateUri();
+    return 0;
 }
 
 /*
