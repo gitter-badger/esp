@@ -15,10 +15,6 @@
  */
 typedef struct App {
     Mpr         *mpr;
-#if UNUSED
-    MaAppweb    *appweb;
-    MaServer    *server;
-#endif
 
     cchar       *appName;               /* Application name */
     cchar       *appwebConfig;          /* Arg to --config */
@@ -165,6 +161,7 @@ static bool installPak(cchar *name, cchar *criteria);
 static bool installPakFiles(cchar *name, cchar *version);
 static void list(int argc, char **argv);
 static MprJson *loadPackage(cchar *path);
+static void logHandler(cchar *tags, int level, cchar *msg);
 static void makeEspDir(cchar *dir);
 static void makeEspFile(cchar *path, cchar *data, ssize len);
 static MprHash *makeTokens(cchar *path, MprHash *other);
@@ -249,9 +246,6 @@ static void manageApp(App *app, int flags)
 {
     if (flags & MPR_MANAGE_MARK) {
         mprMark(app->appName);
-#if UNUSED
-        mprMark(app->appweb);
-#endif
         mprMark(app->cacheName);
         mprMark(app->command);
         mprMark(app->appwebConfig);
@@ -285,9 +279,6 @@ static void manageApp(App *app, int flags)
         mprMark(app->route);
         mprMark(app->routes);
         mprMark(app->routeSet);
-#if UNUSED
-        mprMark(app->server);
-#endif
         mprMark(app->targets);
         mprMark(app->table);
         mprMark(app->topDeps);
@@ -626,6 +617,7 @@ static void initRuntime()
     http = MPR->httpService;
     
     if (app->logSpec) {
+        mprSetLogHandler(logHandler);
         mprStartLogging(app->logSpec, MPR_LOG_CMDLINE);
     }
     if (app->traceSpec) {
@@ -645,20 +637,13 @@ static void initRuntime()
         app->error = 1;
         return;
     }
-#if UNUSED
-    if ((app->appweb = maCreateAppweb()) == 0) {
-        fail("Cannot create HTTP service for %s", mprGetAppName());
-        return;
-    }
-    appweb = MPR->appwebService = app->appweb;
-#endif
-
     if (app->platform) {
         httpSetPlatformDir(app->platform);
     } else {
         app->platform = http->platform;
         httpSetPlatformDir(0);
     }
+    trace("Info", "Platform \"%s\"", http->platformDir);
     if (!http->platformDir) {
         if (app->platform) {
             fail("Cannot find platform: \"%s\"", app->platform);
@@ -671,12 +656,6 @@ static void initRuntime()
     if (app->error) {
         return;
     }
-#if UNUSED
-    if ((app->server = maCreateServer("default")) == 0) {
-        fail("Cannot create HTTP server for %s", mprGetAppName());
-        return;
-    }
-#endif
     maLoadModule("espHandler", "libmod_esp");
 }
 
@@ -1282,8 +1261,9 @@ static void run(int argc, char **argv)
     if (app->error) {
         return;
     }
+#if KEEP
     MPR->flags |= MPR_LOG_DETAILED;
-
+#endif
     if (app->show) {
         httpLogRoutes(app->host, 0);
     }
@@ -1306,7 +1286,6 @@ static void run(int argc, char **argv)
             httpAddHostToEndpoints(app->host);
         }
     }
-    trace("Run", "Web server");
     if (httpStartEndpoints() < 0) {
         mprLog("", 0, "Cannot start HTTP service, exiting.");
         return;
@@ -3227,6 +3206,48 @@ static void why(cchar *path, cchar *fmt, ...)
     }
 }
 
+
+static void logHandler(cchar *tags, int level, cchar *msg)
+{
+    MprFile     *file;
+    char        tbuf[128];
+    ssize       len, width;
+
+    if ((file = MPR->logFile) == 0) {
+        return;
+    }
+#if TODO
+    static int  check = 0;
+    if (MPR->logBackup && MPR->logSize && (check++ % 1000) == 0) {
+        backupLog();
+    }
+#endif
+    if (MPR->flags & MPR_LOG_DETAILED) {
+        if (tags && *tags) {
+            fmt(tbuf, sizeof(tbuf), "%s %d %s, ", mprGetDate(MPR_LOG_DATE), level, tags);
+            mprWriteFileString(file, tbuf);
+            len = slen(tbuf);
+            width = 40;
+            if (len < width) {
+                mprWriteFile(file, "                                          ", width - len);
+            }
+        } else if (tags && level == 0) {
+            mprWriteFileString(file, "error: ");
+        } else {
+            mprWriteFileString(file, msg);
+            mprWriteFileString(file, "\n");
+        }
+        if (level == 0) {
+            mprWriteToOsLog(sfmt("%s: %d %s: %s", MPR->name, level, tags, msg), level);
+        }
+    } else {
+        if (level == 0) {
+            trace("Error", msg);
+        } else {
+            trace("Info", msg);
+        }
+    }
+}
 
 static MprJson *loadPackage(cchar *path)
 {
