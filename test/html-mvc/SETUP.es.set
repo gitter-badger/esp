@@ -1,5 +1,5 @@
 /*
-    MID.es.set - Server-side test setup
+    SETUP.es.set - Server-side test setup
  */
 require ejs.unix
 
@@ -11,6 +11,5 @@ let sslEndpoint = json.app.http.server.listen[1]
 tset('TM_HTTP', httpEndpoint)
 tset('TM_HTTPS', sslEndpoint)
 
-//  TODO - use TM_BIN
-let esp = Path(tget('TM_CFG')).join('bin/esp')
-startStopService('esp', {address: httpEndpoint})
+let esp = Path(tget('TM_BIN')).join('esp')
+startStopService(esp, {address: httpEndpoint})
