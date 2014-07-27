@@ -29,3 +29,5 @@ samples/esp-login/cache
 testme/
 cache
 cache
+test/html-mvc/db/blog.*
+test/cmd/uploaded/MPR*
