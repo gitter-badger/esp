@@ -201,7 +201,7 @@ PUBLIC int main(int argc, char **argv)
     Mpr     *mpr;
     int     options, rc;
 
-    if ((mpr = mprCreate(argc, argv, MPR_USER_EVENTS_THREAD)) == 0) {
+    if ((mpr = mprCreate(argc, argv, 0)) == 0) {
         exit(1);
     }
     if ((app = createApp(mpr)) == 0) {
@@ -1289,7 +1289,12 @@ static void run(int argc, char **argv)
         mprLog("", 0, "Cannot start HTTP service, exiting.");
         return;
     }
+    while (MPR->eventing) {
+        mprSleep(10);
+    }
+#if UNUSED
     mprServiceEvents(-1, 0);
+#endif
     mprLog("", 1, "Stopping ...");
 }
 
