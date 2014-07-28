@@ -3,7 +3,7 @@
 #
 
 NAME                  := esp
-VERSION               := 5.0.0
+VERSION               := 5.1.0
 PROFILE               ?= default
 ARCH                  ?= $(shell echo $(WIND_HOST_TYPE) | sed 's/-.*//')
 CPU                   ?= $(subst X86,PENTIUM,$(shell echo $(ARCH) | tr a-z A-Z))
@@ -90,7 +90,6 @@ ME_VAPP_PREFIX        ?= $(ME_APP_PREFIX)
 ME_SRC_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/src/$(NAME)-$(VERSION)
 
 
-TARGETS               += src/paks/esp-html-mvc/client/css/all.css
 TARGETS               += build/$(CONFIG)/esp
 TARGETS               += build/$(CONFIG)/bin/esp.conf
 TARGETS               += build/$(CONFIG)/bin/esp.out
@@ -124,16 +123,12 @@ prep:
 	@[ ! -x $(BUILD)/bin ] && mkdir -p $(BUILD)/bin; true
 	@[ ! -x $(BUILD)/inc ] && mkdir -p $(BUILD)/inc; true
 	@[ ! -x $(BUILD)/obj ] && mkdir -p $(BUILD)/obj; true
-	@[ ! -f $(BUILD)/inc/osdep.h ] && cp src/paks/osdep/osdep.h $(BUILD)/inc/osdep.h ; true
-	@if ! diff $(BUILD)/inc/osdep.h src/paks/osdep/osdep.h >/dev/null ; then\
-		cp src/paks/osdep/osdep.h $(BUILD)/inc/osdep.h  ; \
-	fi; true
 	@[ ! -f $(BUILD)/inc/me.h ] && cp projects/esp-vxworks-default-me.h $(BUILD)/inc/me.h ; true
 	@if ! diff $(BUILD)/inc/me.h projects/esp-vxworks-default-me.h >/dev/null ; then\
 		cp projects/esp-vxworks-default-me.h $(BUILD)/inc/me.h  ; \
 	fi; true
 	@if [ -f "$(BUILD)/.makeflags" ] ; then \
-		if [ "$(MAKEFLAGS)" != " ` cat $(BUILD)/.makeflags`" ] ; then \
+		if [ "$(MAKEFLAGS)" != "`cat $(BUILD)/.makeflags`" ] ; then \
 			echo "   [Warning] Make flags have changed since the last build: "`cat $(BUILD)/.makeflags`"" ; \
 		fi ; \
 	fi
@@ -177,7 +172,6 @@ clobber: clean
 	rm -fr ./$(BUILD)
 
 
-
 #
 #   esp-paks
 #
@@ -203,7 +197,6 @@ DEPS_1 += src/paks/esp-html-mvc/layouts/default.esp
 DEPS_1 += src/paks/esp-html-mvc/LICENSE.md
 DEPS_1 += src/paks/esp-html-mvc/package.json
 DEPS_1 += src/paks/esp-html-mvc/README.md
-DEPS_1 += src/paks/esp-html-mvc/start.me
 DEPS_1 += src/paks/esp-mvc
 DEPS_1 += src/paks/esp-mvc/generate
 DEPS_1 += src/paks/esp-mvc/generate/appweb.conf
@@ -224,45 +217,44 @@ DEPS_1 += src/paks/esp-server/README.md
 build/$(CONFIG)/esp: $(DEPS_1)
 	( \
 	cd src/paks; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0" ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client" ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/assets" ; \
-	cp esp-html-mvc/client/assets/favicon.ico ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/assets/favicon.ico ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/css" ; \
-	cp esp-html-mvc/client/css/all.css ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/css/all.css ; \
-	cp esp-html-mvc/client/css/all.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/css/all.less ; \
-	cp esp-html-mvc/client/index.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/client/index.esp ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/css" ; \
-	cp esp-html-mvc/css/app.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/css/app.less ; \
-	cp esp-html-mvc/css/theme.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/css/theme.less ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate" ; \
-	cp esp-html-mvc/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate/appweb.conf ; \
-	cp esp-html-mvc/generate/controller.c ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate/controller.c ; \
-	cp esp-html-mvc/generate/controllerSingleton.c ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate/controllerSingleton.c ; \
-	cp esp-html-mvc/generate/edit.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate/edit.esp ; \
-	cp esp-html-mvc/generate/list.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/generate/list.esp ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/layouts" ; \
-	cp esp-html-mvc/layouts/default.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/layouts/default.esp ; \
-	cp esp-html-mvc/LICENSE.md ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/LICENSE.md ; \
-	cp esp-html-mvc/package.json ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/package.json ; \
-	cp esp-html-mvc/README.md ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/README.md ; \
-	cp esp-html-mvc/start.me ../../build/$(CONFIG)/esp/esp-html-mvc/5.0.0/start.me ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.0.0" ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate" ; \
-	cp esp-mvc/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate/appweb.conf ; \
-	cp esp-mvc/generate/controller.c ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate/controller.c ; \
-	cp esp-mvc/generate/migration.c ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate/migration.c ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate/src" ; \
-	cp esp-mvc/generate/src/app.c ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/generate/src/app.c ; \
-	cp esp-mvc/LICENSE.md ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/LICENSE.md ; \
-	cp esp-mvc/package.json ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/package.json ; \
-	cp esp-mvc/README.md ../../build/$(CONFIG)/esp/esp-mvc/5.0.0/README.md ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-server/5.0.0" ; \
-	mkdir -p "../../build/$(CONFIG)/esp/esp-server/5.0.0/generate" ; \
-	cp esp-server/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-server/5.0.0/generate/appweb.conf ; \
-	cp esp-server/LICENSE.md ../../build/$(CONFIG)/esp/esp-server/5.0.0/LICENSE.md ; \
-	cp esp-server/package.json ../../build/$(CONFIG)/esp/esp-server/5.0.0/package.json ; \
-	cp esp-server/README.md ../../build/$(CONFIG)/esp/esp-server/5.0.0/README.md ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0" ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client" ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/assets" ; \
+	cp esp-html-mvc/client/assets/favicon.ico ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/assets/favicon.ico ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/css" ; \
+	cp esp-html-mvc/client/css/all.css ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/css/all.css ; \
+	cp esp-html-mvc/client/css/all.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/css/all.less ; \
+	cp esp-html-mvc/client/index.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/client/index.esp ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/css" ; \
+	cp esp-html-mvc/css/app.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/css/app.less ; \
+	cp esp-html-mvc/css/theme.less ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/css/theme.less ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate" ; \
+	cp esp-html-mvc/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate/appweb.conf ; \
+	cp esp-html-mvc/generate/controller.c ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate/controller.c ; \
+	cp esp-html-mvc/generate/controllerSingleton.c ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate/controllerSingleton.c ; \
+	cp esp-html-mvc/generate/edit.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate/edit.esp ; \
+	cp esp-html-mvc/generate/list.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/generate/list.esp ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/layouts" ; \
+	cp esp-html-mvc/layouts/default.esp ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/layouts/default.esp ; \
+	cp esp-html-mvc/LICENSE.md ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/LICENSE.md ; \
+	cp esp-html-mvc/package.json ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/package.json ; \
+	cp esp-html-mvc/README.md ../../build/$(CONFIG)/esp/esp-html-mvc/5.1.0/README.md ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.1.0" ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate" ; \
+	cp esp-mvc/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate/appweb.conf ; \
+	cp esp-mvc/generate/controller.c ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate/controller.c ; \
+	cp esp-mvc/generate/migration.c ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate/migration.c ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate/src" ; \
+	cp esp-mvc/generate/src/app.c ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/generate/src/app.c ; \
+	cp esp-mvc/LICENSE.md ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/LICENSE.md ; \
+	cp esp-mvc/package.json ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/package.json ; \
+	cp esp-mvc/README.md ../../build/$(CONFIG)/esp/esp-mvc/5.1.0/README.md ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-server/5.1.0" ; \
+	mkdir -p "../../build/$(CONFIG)/esp/esp-server/5.1.0/generate" ; \
+	cp esp-server/generate/appweb.conf ../../build/$(CONFIG)/esp/esp-server/5.1.0/generate/appweb.conf ; \
+	cp esp-server/LICENSE.md ../../build/$(CONFIG)/esp/esp-server/5.1.0/LICENSE.md ; \
+	cp esp-server/package.json ../../build/$(CONFIG)/esp/esp-server/5.1.0/package.json ; \
+	cp esp-server/README.md ../../build/$(CONFIG)/esp/esp-server/5.1.0/README.md ; \
 	)
 
 #
@@ -410,6 +402,7 @@ DEPS_15 += build/$(CONFIG)/inc/me.h
 DEPS_15 += build/$(CONFIG)/inc/appweb.h
 DEPS_15 += build/$(CONFIG)/inc/pcre.h
 DEPS_15 += build/$(CONFIG)/inc/mpr.h
+DEPS_15 += build/$(CONFIG)/inc/osdep.h
 DEPS_15 += build/$(CONFIG)/inc/http.h
 
 build/$(CONFIG)/obj/appwebLib.o: \
@@ -890,5 +883,5 @@ uninstall: $(DEPS_49)
 #   version
 #
 version: $(DEPS_50)
-	echo 5.0.0
+	echo 5.1.0
 

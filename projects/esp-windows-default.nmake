@@ -3,7 +3,7 @@
 #
 
 NAME                  = esp
-VERSION               = 5.0.0
+VERSION               = 5.1.0
 
 OS                    = windows
 PA                    = $(PROCESSOR_ARCHITECTURE)
@@ -21,7 +21,7 @@ ENTRY                 = _DllMainCRTStartup@12
 !ENDIF
 
 !IF "$(CONFIG)" == ""
-CONFIG                = build\$(OS)-$(ARCH)-$(PROFILE)
+CONFIG                = $(OS)-$(ARCH)-$(PROFILE)
 !ENDIF
 
 !IF "$(BUILD)" == ""
@@ -123,7 +123,6 @@ ME_CACHE_PREFIX       = $(ME_VAPP_PREFIX)\cache
 ME_SRC_PREFIX         = $(ME_VAPP_PREFIX)\src
 
 
-TARGETS               = $(TARGETS) src\paks\esp-html-mvc\client\css\all.css
 TARGETS               = $(TARGETS) build\$(CONFIG)\esp
 TARGETS               = $(TARGETS) build\$(CONFIG)\bin\esp.conf
 TARGETS               = $(TARGETS) build\$(CONFIG)\bin\esp.exe
@@ -158,9 +157,6 @@ prep:
 	@if not exist $(BUILD)\bin md $(BUILD)\bin
 	@if not exist $(BUILD)\inc md $(BUILD)\inc
 	@if not exist $(BUILD)\obj md $(BUILD)\obj
-[ ! -f ${BUILD}/inc/osdep.h ] && cp ${SRC}/src/paks/osdep/osdep.h ${BUILD}/inc/osdep.h
-	@if not exist $(BUILD copy src\paks\osdep\osdep.h $(BUILD)\inc\osdep.h
-
 	@if not exist $(BUILD)\inc\me.h copy projects\esp-windows-default-me.h $(BUILD)\inc\me.h
 
 clean:
@@ -236,7 +232,6 @@ clean:
 	if exist "build\$(CONFIG)\bin\sqlite.exp" del /Q "build\$(CONFIG)\bin\sqlite.exp"
 
 
-
 #
 #   esp-paks
 #
@@ -262,7 +257,6 @@ DEPS_1 = $(DEPS_1) src\paks\esp-html-mvc\layouts\default.esp
 DEPS_1 = $(DEPS_1) src\paks\esp-html-mvc\LICENSE.md
 DEPS_1 = $(DEPS_1) src\paks\esp-html-mvc\package.json
 DEPS_1 = $(DEPS_1) src\paks\esp-html-mvc\README.md
-DEPS_1 = $(DEPS_1) src\paks\esp-html-mvc\start.me
 DEPS_1 = $(DEPS_1) src\paks\esp-mvc
 DEPS_1 = $(DEPS_1) src\paks\esp-mvc\generate
 DEPS_1 = $(DEPS_1) src\paks\esp-mvc\generate\appweb.conf
@@ -282,45 +276,44 @@ DEPS_1 = $(DEPS_1) src\paks\esp-server\README.md
 
 build\$(CONFIG)\esp: $(DEPS_1)
 	cd src\paks
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0"
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client"
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\assets" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\assets"
-	copy /Y esp-html-mvc\client\assets\favicon.ico ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\assets\favicon.ico
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\css" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\css"
-	copy /Y esp-html-mvc\client\css\all.css ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\css\all.css
-	copy /Y esp-html-mvc\client\css\all.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\css\all.less
-	copy /Y esp-html-mvc\client\index.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\client\index.esp
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\css" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\css"
-	copy /Y esp-html-mvc\css\app.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\css\app.less
-	copy /Y esp-html-mvc\css\theme.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\css\theme.less
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate"
-	copy /Y esp-html-mvc\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate\appweb.conf
-	copy /Y esp-html-mvc\generate\controller.c ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate\controller.c
-	copy /Y esp-html-mvc\generate\controllerSingleton.c ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate\controllerSingleton.c
-	copy /Y esp-html-mvc\generate\edit.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate\edit.esp
-	copy /Y esp-html-mvc\generate\list.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\generate\list.esp
-	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\layouts" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\layouts"
-	copy /Y esp-html-mvc\layouts\default.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\layouts\default.esp
-	copy /Y esp-html-mvc\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\LICENSE.md
-	copy /Y esp-html-mvc\package.json ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\package.json
-	copy /Y esp-html-mvc\README.md ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\README.md
-	copy /Y esp-html-mvc\start.me ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.0.0\start.me
-	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0"
-	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate"
-	copy /Y esp-mvc\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\appweb.conf
-	copy /Y esp-mvc\generate\controller.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\controller.c
-	copy /Y esp-mvc\generate\migration.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\migration.c
-	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\src" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\src"
-	copy /Y esp-mvc\generate\src\app.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\generate\src\app.c
-	copy /Y esp-mvc\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\LICENSE.md
-	copy /Y esp-mvc\package.json ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\package.json
-	copy /Y esp-mvc\README.md ..\..\build\$(CONFIG)\esp\esp-mvc\5.0.0\README.md
-	if not exist "..\..\build\$(CONFIG)\esp\esp-server\5.0.0" md "..\..\build\$(CONFIG)\esp\esp-server\5.0.0"
-	if not exist "..\..\build\$(CONFIG)\esp\esp-server\5.0.0\generate" md "..\..\build\$(CONFIG)\esp\esp-server\5.0.0\generate"
-	copy /Y esp-server\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-server\5.0.0\generate\appweb.conf
-	copy /Y esp-server\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-server\5.0.0\LICENSE.md
-	copy /Y esp-server\package.json ..\..\build\$(CONFIG)\esp\esp-server\5.0.0\package.json
-	copy /Y esp-server\README.md ..\..\build\$(CONFIG)\esp\esp-server\5.0.0\README.md
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0"
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client"
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\assets" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\assets"
+	copy /Y esp-html-mvc\client\assets\favicon.ico ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\assets\favicon.ico
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\css" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\css"
+	copy /Y esp-html-mvc\client\css\all.css ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\css\all.css
+	copy /Y esp-html-mvc\client\css\all.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\css\all.less
+	copy /Y esp-html-mvc\client\index.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\client\index.esp
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\css" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\css"
+	copy /Y esp-html-mvc\css\app.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\css\app.less
+	copy /Y esp-html-mvc\css\theme.less ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\css\theme.less
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate"
+	copy /Y esp-html-mvc\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate\appweb.conf
+	copy /Y esp-html-mvc\generate\controller.c ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate\controller.c
+	copy /Y esp-html-mvc\generate\controllerSingleton.c ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate\controllerSingleton.c
+	copy /Y esp-html-mvc\generate\edit.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate\edit.esp
+	copy /Y esp-html-mvc\generate\list.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\generate\list.esp
+	if not exist "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\layouts" md "..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\layouts"
+	copy /Y esp-html-mvc\layouts\default.esp ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\layouts\default.esp
+	copy /Y esp-html-mvc\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\LICENSE.md
+	copy /Y esp-html-mvc\package.json ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\package.json
+	copy /Y esp-html-mvc\README.md ..\..\build\$(CONFIG)\esp\esp-html-mvc\5.1.0\README.md
+	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0"
+	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate"
+	copy /Y esp-mvc\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\appweb.conf
+	copy /Y esp-mvc\generate\controller.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\controller.c
+	copy /Y esp-mvc\generate\migration.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\migration.c
+	if not exist "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\src" md "..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\src"
+	copy /Y esp-mvc\generate\src\app.c ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\generate\src\app.c
+	copy /Y esp-mvc\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\LICENSE.md
+	copy /Y esp-mvc\package.json ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\package.json
+	copy /Y esp-mvc\README.md ..\..\build\$(CONFIG)\esp\esp-mvc\5.1.0\README.md
+	if not exist "..\..\build\$(CONFIG)\esp\esp-server\5.1.0" md "..\..\build\$(CONFIG)\esp\esp-server\5.1.0"
+	if not exist "..\..\build\$(CONFIG)\esp\esp-server\5.1.0\generate" md "..\..\build\$(CONFIG)\esp\esp-server\5.1.0\generate"
+	copy /Y esp-server\generate\appweb.conf ..\..\build\$(CONFIG)\esp\esp-server\5.1.0\generate\appweb.conf
+	copy /Y esp-server\LICENSE.md ..\..\build\$(CONFIG)\esp\esp-server\5.1.0\LICENSE.md
+	copy /Y esp-server\package.json ..\..\build\$(CONFIG)\esp\esp-server\5.1.0\package.json
+	copy /Y esp-server\README.md ..\..\build\$(CONFIG)\esp\esp-server\5.1.0\README.md
 	cd ..\..
 
 #
@@ -473,6 +466,7 @@ DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\me.h
 DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\appweb.h
 DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\pcre.h
 DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\mpr.h
+DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\osdep.h
 DEPS_15 = $(DEPS_15) build\$(CONFIG)\inc\http.h
 
 build\$(CONFIG)\obj\appwebLib.obj: \
@@ -1020,45 +1014,44 @@ installBinary: $(DEPS_48)
 	copy /Y build\$(CONFIG)\bin\libmprssl.lib "$(ME_VAPP_PREFIX)\bin\libmprssl.lib"
 !ENDIF
 	copy /Y build\$(CONFIG)\bin\ca.crt "$(ME_VAPP_PREFIX)\bin\ca.crt"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\assets" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\assets"
-	copy /Y src\paks\esp-html-mvc\client\assets\favicon.ico "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\assets\favicon.ico"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\css" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\css"
-	copy /Y src\paks\esp-html-mvc\client\css\all.css "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\css\all.css"
-	copy /Y src\paks\esp-html-mvc\client\css\all.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\css\all.less"
-	copy /Y src\paks\esp-html-mvc\client\index.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\client\index.esp"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\css" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\css"
-	copy /Y src\paks\esp-html-mvc\css\app.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\css\app.less"
-	copy /Y src\paks\esp-html-mvc\css\theme.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\css\theme.less"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate"
-	copy /Y src\paks\esp-html-mvc\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate\appweb.conf"
-	copy /Y src\paks\esp-html-mvc\generate\controller.c "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate\controller.c"
-	copy /Y src\paks\esp-html-mvc\generate\controllerSingleton.c "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate\controllerSingleton.c"
-	copy /Y src\paks\esp-html-mvc\generate\edit.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate\edit.esp"
-	copy /Y src\paks\esp-html-mvc\generate\list.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\generate\list.esp"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\layouts" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\layouts"
-	copy /Y src\paks\esp-html-mvc\layouts\default.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\layouts\default.esp"
-	copy /Y src\paks\esp-html-mvc\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\LICENSE.md"
-	copy /Y src\paks\esp-html-mvc\package.json "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\package.json"
-	copy /Y src\paks\esp-html-mvc\README.md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\README.md"
-	copy /Y src\paks\esp-html-mvc\start.me "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.0.0\start.me"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate"
-	copy /Y src\paks\esp-mvc\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\appweb.conf"
-	copy /Y src\paks\esp-mvc\generate\controller.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\controller.c"
-	copy /Y src\paks\esp-mvc\generate\migration.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\migration.c"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\src" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\src"
-	copy /Y src\paks\esp-mvc\generate\src\app.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\generate\src\app.c"
-	copy /Y src\paks\esp-mvc\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\LICENSE.md"
-	copy /Y src\paks\esp-mvc\package.json "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\package.json"
-	copy /Y src\paks\esp-mvc\README.md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.0.0\README.md"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0" md "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0"
-	if not exist "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\generate"
-	copy /Y src\paks\esp-server\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\generate\appweb.conf"
-	copy /Y src\paks\esp-server\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\LICENSE.md"
-	copy /Y src\paks\esp-server\package.json "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\package.json"
-	copy /Y src\paks\esp-server\README.md "$(ME_VAPP_PREFIX)\esp\esp-server\5.0.0\README.md"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\assets" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\assets"
+	copy /Y src\paks\esp-html-mvc\client\assets\favicon.ico "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\assets\favicon.ico"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\css" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\css"
+	copy /Y src\paks\esp-html-mvc\client\css\all.css "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\css\all.css"
+	copy /Y src\paks\esp-html-mvc\client\css\all.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\css\all.less"
+	copy /Y src\paks\esp-html-mvc\client\index.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\client\index.esp"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\css" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\css"
+	copy /Y src\paks\esp-html-mvc\css\app.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\css\app.less"
+	copy /Y src\paks\esp-html-mvc\css\theme.less "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\css\theme.less"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate"
+	copy /Y src\paks\esp-html-mvc\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate\appweb.conf"
+	copy /Y src\paks\esp-html-mvc\generate\controller.c "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate\controller.c"
+	copy /Y src\paks\esp-html-mvc\generate\controllerSingleton.c "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate\controllerSingleton.c"
+	copy /Y src\paks\esp-html-mvc\generate\edit.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate\edit.esp"
+	copy /Y src\paks\esp-html-mvc\generate\list.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\generate\list.esp"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\layouts" md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\layouts"
+	copy /Y src\paks\esp-html-mvc\layouts\default.esp "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\layouts\default.esp"
+	copy /Y src\paks\esp-html-mvc\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\LICENSE.md"
+	copy /Y src\paks\esp-html-mvc\package.json "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\package.json"
+	copy /Y src\paks\esp-html-mvc\README.md "$(ME_VAPP_PREFIX)\esp\esp-html-mvc\5.1.0\README.md"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate"
+	copy /Y src\paks\esp-mvc\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\appweb.conf"
+	copy /Y src\paks\esp-mvc\generate\controller.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\controller.c"
+	copy /Y src\paks\esp-mvc\generate\migration.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\migration.c"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\src" md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\src"
+	copy /Y src\paks\esp-mvc\generate\src\app.c "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\generate\src\app.c"
+	copy /Y src\paks\esp-mvc\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\LICENSE.md"
+	copy /Y src\paks\esp-mvc\package.json "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\package.json"
+	copy /Y src\paks\esp-mvc\README.md "$(ME_VAPP_PREFIX)\esp\esp-mvc\5.1.0\README.md"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0" md "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0"
+	if not exist "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\generate" md "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\generate"
+	copy /Y src\paks\esp-server\generate\appweb.conf "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\generate\appweb.conf"
+	copy /Y src\paks\esp-server\LICENSE.md "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\LICENSE.md"
+	copy /Y src\paks\esp-server\package.json "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\package.json"
+	copy /Y src\paks\esp-server\README.md "$(ME_VAPP_PREFIX)\esp\esp-server\5.1.0\README.md"
 	copy /Y build\$(CONFIG)\bin\esp.conf "$(ME_VAPP_PREFIX)\bin\esp.conf"
 	if not exist "$(ME_VAPP_PREFIX)\inc" md "$(ME_VAPP_PREFIX)\inc"
 	copy /Y build\$(CONFIG)\inc\me.h "$(ME_VAPP_PREFIX)\inc\me.h"
@@ -1108,5 +1101,5 @@ uninstall: $(DEPS_51)
 #   version
 #
 version: $(DEPS_52)
-	echo 5.0.0
+	echo 5.1.0
 
