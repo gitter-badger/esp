@@ -12,4 +12,4 @@ tset('TM_HTTP', httpEndpoint)
 tset('TM_HTTPS', sslEndpoint)
 
 let esp = Path(tget('TM_BIN')).join('esp')
-startStopService(esp, {address: httpEndpoint})
+startStopService('esp', {address: httpEndpoint})
