@@ -650,7 +650,6 @@ static void initRuntime()
         }
         return;
     }
-//  MOB - API
     HTTP->staticLink = app->staticLink;
     
     if (app->error) {
