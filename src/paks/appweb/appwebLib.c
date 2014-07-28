@@ -712,7 +712,6 @@ static int chrootDirective(MaState *state, cchar *key, cchar *value)
         mprLog("error appweb config", 0, "Cannot change working directory to %s", home);
         return MPR_ERR_CANT_OPEN;
     }
-//  MOB API
     if (HTTP->flags & HTTP_UTILITY) {
         /* Not running a web server but rather a utility like the "esp" generator program */
         mprLog("info appweb config", 2, "Change directory to: \"%s\"", home);
@@ -1698,7 +1697,6 @@ static int makeDirDirective(MaState *state, cchar *key, cchar *value)
             if (snumber(owner)) {
                 uid = (int) stoi(owner);
             } else if (smatch(owner, "APPWEB")) {
-//  MOB API
                 uid = HTTP->uid;
             } else {
                 uid = userToID(owner);
@@ -1709,7 +1707,6 @@ static int makeDirDirective(MaState *state, cchar *key, cchar *value)
             if (snumber(group)) {
                 gid = (int) stoi(group);
             } else if (smatch(owner, "APPWEB")) {
-//  MOB API
                 gid = HTTP->gid;
             } else {
                 gid = groupToID(group);
@@ -2750,7 +2747,6 @@ static bool conditionalDefinition(MaState *state, cchar *key)
     cchar   *arch, *os, *platform, *profile;
     int     result, not;
 
-//  MOB API
     platform = HTTP->platform;
     result = 0;
     not = (*key == '!') ? 1 : 0;
