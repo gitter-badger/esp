@@ -1,17 +1,5 @@
 /*
     TOP.es.set - Server-side test setup
  */
-require ejs.unix
 
 tset('libraries', 'http mpr')
-
-/*
-let json = Path('package.json').readJSON()
-let httpEndpoint = json.app.http.server.listen[0]
-let sslEndpoint = json.app.http.server.listen[1]
-tset('TM_HTTP', httpEndpoint)
-tset('TM_HTTPS', sslEndpoint)
-
-let esp = Path(tget('TM_BIN')).join('esp')
-startStopService(esp, {address: httpEndpoint})
-*/
