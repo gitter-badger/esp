@@ -19067,11 +19067,11 @@ PUBLIC void httpWriteTraceLogFile(HttpTrace *trace, cchar *buf, ssize len)
     if (trace->backupCount > 0) {
         if ((++skipCheck % 50) == 0) {
             backupTraceLogFile(trace);
-            if (!trace->file && httpOpenTraceLogFile(trace) < 0) {
-                unlock(trace);
-                return;
-            }
         }
+    }
+    if (!trace->file && trace->path && httpOpenTraceLogFile(trace) < 0) {
+        unlock(trace);
+        return;
     }
     mprWriteFile(trace->file, buf, len);
     unlock(trace);

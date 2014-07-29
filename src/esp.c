@@ -1289,12 +1289,13 @@ static void run(int argc, char **argv)
         mprLog("", 0, "Cannot start HTTP service, exiting.");
         return;
     }
-    while (MPR->eventing) {
-        mprSleep(10);
+    /*
+        Events thread will service requests
+     */
+    mprYield(MPR_YIELD_STICKY);
+    while (!mprIsStopping()) {
+        mprSuspendThread(-1);
     }
-#if UNUSED
-    mprServiceEvents(-1, 0);
-#endif
     mprLog("", 1, "Stopping ...");
 }
 
