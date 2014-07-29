@@ -1,0 +1,83 @@
+/*
+    package.json - ESP configuration file
+ */
+{
+    name: 'esptest',
+    description: 'ESP Unit Tests with Server',
+    app: {
+        http: {
+            documents: 'web',
+            server: {
+                listen: [
+                    'http://127.0.0.1:4100',
+                ],
+            },
+            limits: {
+                requestBody: 'unlimited',
+                cacheItem: '100k',
+            },
+            routes: [ {
+                pattern: '^/caching/{action}$',
+                source: 'caching.c',
+                target: 'caching-$1',
+                pipeline: {
+                    handlers: 'espHandler',
+                },
+                cache: [ {
+                    client: '1hr',
+                    uris: [ '/caching/client' ],
+                }, {
+                    server: '1day',
+                    uris: [ '/caching/small', '/caching/big', '/caching/huge' ],
+                }, {
+                    server: '1day',
+                    manual: true,
+                    uris: [ '/caching/manual' ],
+                } ],
+            }, {
+                pattern: '^/combined',
+                prefix: '/combined',
+                cache: [ {
+                    server: '1day',
+                    uris: [ '/caching.esp' ],
+                } ],
+            }, {
+                pattern: '^/only',
+                prefix: '/only',
+                cache: [ {
+                    server: '1day',
+                    uris: [ '/caching.esp?esp=1&prefix=/only' ],
+                } ],
+            }, {
+                pattern: '^/unique',
+                prefix: '/unique',
+                cache: [ {
+                    server: '1day',
+                    unique: true,
+                    uris: [ '/caching.esp' ],
+                } ],
+            }, {
+                pattern: '^/ext',
+                prefix: '/ext',
+                cache: [ {
+                    server: '1day',
+                    extensions: [ 'esp' ],
+                } ],
+            }, {
+                pattern: '^/types',
+                prefix: '/types',
+                cache: [ {
+                    server: '1day',
+                    extensions: [ 'application/x-MOB' ],
+                } ],
+            }, {
+                pattern: '^/methods',
+                prefix: '/methods',
+                cache: [ {
+                    server: '1day',
+                    methods: [ 'POST' ],
+                } ],
+            } ],
+        },
+    },
+}

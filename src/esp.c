@@ -1296,6 +1296,7 @@ static void run(int argc, char **argv)
     while (!mprIsStopping()) {
         mprSuspendThread(-1);
     }
+    mprResetYield();
     mprLog("", 1, "Stopping ...");
 }
 
