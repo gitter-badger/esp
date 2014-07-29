@@ -700,7 +700,7 @@ static void initialize(int argc, char **argv)
             }
         } else {
             /*
-                No package.json
+                No package.json - not an ESP app
              */
             route->update = 1;
             httpSetRouteShowErrors(route, 1);
@@ -1234,7 +1234,7 @@ static void setMode(cchar *mode)
 
 
 /*
-    Edit a key value in the package.json
+    Edit a key value in the package json
  */
 static void setPackageKey(cchar *key, cchar *value)
 {
