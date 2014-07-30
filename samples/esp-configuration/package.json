@@ -244,6 +244,55 @@
                         "enable": true,
                     },
                 },
+                /*
+                    SSL configuration
+                 */
+                ssl: {
+                    /*
+                        Certificate authority of root certificates to verify peers
+                     */
+                    authority: {
+                        /*
+                            File of catentated certificates
+                         */
+                        file: "",
+
+                        /*
+                            Directory of certificates
+                         */
+                        directory:  "",
+                    },
+                    /*
+                        Server's own certificate filename
+                     */
+                    certificate: "server.crt",
+
+                    /*
+                        Ordered list of preferred ciphers
+                     */
+                    ciphers: [
+                        "TLS_RSA_WITH_AES_256_CBC_SHA",
+                        "TLS_RSA_WITH_RC4_128_SHA"
+                    ],
+                    /*
+                        Server private key file
+                     */
+                    key: "server.key",
+
+                    /*
+                        Verification options
+                     */
+                    verify: {
+                        /*
+                            Verification the client certificate. Self-signed certificates permitted.
+                         */
+                        client: true,
+                        /*
+                            Verification the client certificate issuer. Self-signed certificates not permitted.
+                         */
+                        issuer: true,
+                    },
+                },
             },
 
             /*
@@ -636,56 +685,6 @@
                 Source file responsible for responding to the request.
              */
             source: "filename",
-
-            /*
-                SSL configuration
-             */
-            ssl: {
-                /*
-                    Certificate authority of root certificates to verify peers
-                 */
-                authority: {
-                    /*
-                        File of catentated certificates
-                     */
-                    file: "",
-
-                    /*
-                        Directory of certificates
-                     */
-                    directory:  "",
-                },
-                /*
-                    Server's own certificate filename
-                 */
-                certificate: "server.crt",
-
-                /*
-                    Ordered list of preferred ciphers
-                 */
-                ciphers: [
-                    "TLS_RSA_WITH_AES_256_CBC_SHA",
-                    "TLS_RSA_WITH_RC4_128_SHA"
-                ],
-                /*
-                    Server private key file
-                 */
-                key: "server.key",
-
-                /*
-                    Verification options
-                 */
-                verify: {
-                    /*
-                        Verification the client certificate. Self-signed certificates permitted.
-                     */
-                    client: true,
-                    /*
-                        Verification the client certificate issuer. Self-signed certificates not permitted.
-                     */
-                    issuer: true,
-                },
-            },
 
             /*
                 Stealth mode operates a quietly as possible

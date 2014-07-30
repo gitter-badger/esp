@@ -12,10 +12,10 @@
                     'http://127.0.0.1:4100',
                     'https://127.0.0.1:4443',
                 ],
-            },
-            ssl: {
-                key: '../crt/test.key',
-                certificate: '../crt/test.crt',
+                ssl: {
+                    key: '../crt/test.key',
+                    certificate: '../crt/test.crt',
+                },
             },
             routes: [ 
                 {
