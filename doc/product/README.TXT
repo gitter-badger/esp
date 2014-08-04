@@ -1,10 +1,10 @@
-Embedthis Appweb(TM)
+Embedthis ESP(TM)
 
-Welcome to the Appweb -- the fastest little web server.
+Welcome to the ESP -- the amazing C language web framework
 
-This document contains details regarding the installation procedure for the binary Embedthis Appweb package.  This package contains pre-built stand-alone web server and an embeddable HTTP library with headers. You can read the documentation for the latest release online at:
+This document contains details regarding the installation procedure for the binary Embedthis ESP package.  This package contains pre-built web framework, stand-alone web server and an embeddable HTTP library with headers. You can read the documentation for the latest release online at:
 
-http://embedthis.com/products/appweb/doc/index.html
+http://embedthis.com/esp/doc/index.html
 
 This software is copyrighted and distributed under license. Please read the LICENSE.TXT for details.
 
@@ -16,8 +16,8 @@ Table of Contents
 * Development Environment Platform Support
 * Apple MAC OS X  Release Details
 * Windows Release Details
-* Removing Appweb
-* Running Appweb
+* Removing ESP
+* Running ESP
 * Building from the Source Code
 * License and Copyright Information
 
@@ -31,24 +31,24 @@ Operating System Support
     * Linux 2.6 (x86,x64,arm,ppc,mips)
     * VxWorks (x86,arm,ppc,mips)
 
-To install Appweb, your development system will need at least the following:
+To install ESP, your development system will need at least the following:
 
     * 50 MB Disk
     * 1 GB RAM
 
-To deploy Appweb in an embedded environment, you will need at least the following:
+To deploy ESP in an embedded environment, you will need at least the following:
 
     * 2 MB Disk / ROM space
     * 2 MB RAM
 
-To rebuild Appweb from source code on your development system, you will need at least:
+To rebuild ESP from source code on your development system, you will need at least:
 
     * 80 MB disk space
 
 
 Installation Package Formats
 
-The Appweb binary installation is published in two formats:
+The ESP binary installation is published in two formats:
 
     * Native Apple MAC OS X PKG format
     * Native Windows installer format
@@ -58,7 +58,7 @@ For other platforms, you will need to download the source code distribution and 
 
 Development Environment Platform Support
 
-If you wish to embed Appweb in your application or build Appweb from source code, you will need to use a C compiler and associated development tools.  Several development environments are supported.  You may choose any of the following:
+If you wish to embed ESP in your application or build ESP from source code, you will need to use a C compiler and associated development tools.  Several development environments are supported.  You may choose any of the following:
 
     * Linux/Unix GNU Tools
 
@@ -91,53 +91,41 @@ To install the Windows Installer image:
    3. Double click on the setup.exe image to run it.
 
 
-Removing Appweb
+Removing ESP
 
-This is the procedure to remove Appweb on all systems except Windows.
+This is the procedure to remove ESP on all systems except Windows.
 
-   1. Run the uninstall script in the install directory for Appweb by typing:
+   1. Run the uninstall script in the install directory for ESP by typing:
 
-      sudo /usr/lib/appweb/latest/bin/uninstall
+      sudo /usr/lib/esp/latest/bin/uninstall
 
-If you installed the Appweb Windows Installer image, follow these steps to remove Appweb. If you installed the Tar
-self-install image, you will need to remove Appweb using the procedure described above. 
+If you installed the ESP Windows Installer image, follow these steps to remove ESP. If you installed the Tar
+self-install image, you will need to remove ESP using the procedure described above. 
 
    1. Login with administrator privileges
 
    2. Run the Add / Remove Programs applet from the control panel.
 
-   3. Select the Embedthis Appweb and choose remove.
+   3. Select the Embedthis ESP and choose remove.
 
 
-Running Appweb
+Running ESP
 
-Appweb will start when the Appweb installation procedure completes and on some systems, will launch your browser directed at the Appweb local home page.  Thereafter, Appweb will automatically start if the system is rebooted. If you wish to manually stop Appweb, type:
+To run ESP
 
-    appman stop
+    esp [options]
 
-To restart Appweb:
+To get all the options for ESP, read the ESP man page via
 
-    appman start
-
-Alternatively, you can run appweb manually:
-
-    cd /etc/appweb
-    appweb -v
-
-To get all the options for Appweb, read the Appweb man page via
-
-    man appweb
+    man esp
 
 or get the command help via:
 
-    appweb --help
-
-Appweb is configured by default to listen on port 80. To test that it is serving pages, point your browser at http://localhost/. 
-
+    esp --help
 
 Building from the Source Code
 
-If you wish to rebuild the Appweb product from the distributed source code, please download the source code distribution from the Embedthis web site. Then read "Building from Source" in the Appweb product documentation for an explanation of the necessary steps to successfully rebuild the product.
+If you wish to rebuild the ESP product from the distributed source code, please download the source code distribution from the Embedthis web site. Then read "Building from Source" in the ESP product documentation for an explanation of the necessary steps to successfully rebuild the product.
 
 
 License and Copyright Information
@@ -146,7 +134,7 @@ This software is supplied under license. Both a GNU and commercial license are a
 
 Copyright (c) Embedthis Software LLC, 2003-2014. All Rights Reserved.
 
-Embedthis is a trademark of Embedthis Software LLC. Embedthis, Appweb and Ejscript are trademarks of Embedthis Software. All other brand or product names are the trademarks or registered trademarks of their respective holders.
+Embedthis is a trademark of Embedthis Software LLC. Embedthis, ESP and Ejscript are trademarks of Embedthis Software. All other brand or product names are the trademarks or registered trademarks of their respective holders.
 
 
 Embedthis Software, LLC.
