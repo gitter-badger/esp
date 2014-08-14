@@ -149,7 +149,7 @@ Me.load({
                 set:        'core',
 
             },{ from:   'doc/man/esp.1',
-                to:     '${adoc}/man/man1/',
+                to:     '${adoc}/documents/man/man1/',
                 set:    'doc',
                 linkin: '${man}/man1',
                 enable: "me.platform.like == 'unix'",
@@ -271,7 +271,7 @@ Me.load({
             },{
                 from:       'doc/man/*.1',
                 exclude:    /appman|appweb.1|appwebMonitor|makerom|manager|http.1|authpass.1/,
-                to:         '${src}/doc/man/',
+                to:         '${src}/doc/documents/man/',
                 set:        'pak',
             }
         ],
