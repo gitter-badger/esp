@@ -1,55 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Embedthis Appweb 4.0.0 Documentation</title>
-    <meta name="keywords" content="embedded web server, web server software, embedded HTTP, application web server, 
-        embedded server, small web server, HTTP server, library web server, library HTTP, HTTP library" />
-    <meta name="description" content="Embedthis Appweb - embedded web servers for devices and applications." />
-    <meta charset="utf-8"/>
-	<link href="../doc.css" rel="stylesheet" type="text/css" />
-	<link href="api.css" rel="stylesheet" type="text/css" />
-	<link href="../print.css" rel="stylesheet" type="text/css" media="print"/>
-    <!--[if IE]>
-    <link href="../iehacks.css" rel="stylesheet" type="text/css" />
-    <![endif]-->
-    <link href="http://www.google.com/cse/style/look/default.css" type="text/css" rel="stylesheet" />
-</head>
-<body>
-    <div class="top">
-        <a class="logo" href="http://appwebserver.org/">&nbsp;</a>
-        <div class="topRight">
-             <div class="search">
-                <div id="cse-search-form"></div>
-                <div class="version"><!--TITLE-->Embedthis Appweb 4.0.0</div>
-            </div>
-        </div>
-        <div class="crumbs">
-            <a href="../index.html">Home</a>
-            &gt; <a href="../ref/esp/index.html">Programmers Reference</a> 
-            &gt; <a href="native.html">Native APIs</a> 
-            &gt; <b>EDI</b> 
-        </div>
-    </div>
-    <div class="content">
-        <div class="contentRight">
-            
-            
-<!-- BeginDsi "dsi/see.html" -->
-				<h1>See Also</h1>
-				<ul class="nav">
-					<li><a href="../ref/esp/index.html">Programmers Reference</a></li>
-					<li><a href="../api/native.html">Native APIs</a></li>
-				</ul>
-<!-- EndDsi -->
-            <h2>Quick Nav</h2>
-            <ul>
-                <li><a href="#Components">Components</a></li>
-                <li><a href="#Typedefs">Typedefs</a></li>
-                <li><a href="#Functions">Functions</a></li>
-                <li><a href="#Defines">Defines</a></li>
-            </ul>
-        </div>
-        <div class="contentLeft">
 <h1>ESP - EDI Native API</h1>
 <a name="Extensions"></a><h1>Extensions</h1>
   <table class="apiIndex" title="Extensions">
@@ -253,7 +201,7 @@ Database flags.
     <tr><td class="param">EdiMigration</td><td><td>forw</td><td>
 Forward migration callback.
 </td>
-    <tr><td class="param"><a class="ref" href="#struct_mpr_mutex" >MprMutex</a> *</td><td><td>mutex</td><td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_mutex" external="mpr.dtags">MprMutex</a> *</td><td><td>mutex</td><td>
 Multithread lock.
 </td>
     <tr><td class="param">cchar *</td><td><td>path</td><td>
@@ -262,10 +210,10 @@ Database path.
     <tr><td class="param">struct <a class="ref" href="#struct_edi_provider">EdiProvider</a> *</td><td><td>provider</td><td>
 Database provider.
 </td>
-    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" >MprHash</a> *</td><td><td>schemaCache</td><td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>schemaCache</td><td>
 Cache of table schema in JSON.
 </td>
-    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" >MprHash</a> *</td><td><td>validations</td><td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>validations</td><td>
 Validations.
 </td>
     </table></dd></dl>
@@ -905,7 +853,7 @@ This call makes a free-standing data grid based on the JSON format content strin
     <tr><td class="param">fmt</td><td>Printf style format string.</td>
     <tr><td class="param">...</td><td>arguments.</td>
     </table></dd></dl>
-    <dl><dt>Returns:</dt><dd><a class="ref" href="#struct_mpr_hash" >MprHash</a> instance.</dd></dl>
+    <dl><dt>Returns:</dt><dd><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> instance.</dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
@@ -1656,7 +1604,7 @@ For the first call, set rec to NULL
     <tr><td class="param">struct Edi *</td><td><td>edi</td><td>
 Database handle.
 </td>
-    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" >MprHash</a> *</td><td><td>errors</td><td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>errors</td><td>
 Hash of record errors.
 </td>
     <tr><td class="param">EdiField</td><td><td>fields[ARRAY_FLEX]</td><td>
@@ -1893,36 +1841,3 @@ Validation callback procedure.
     </table></dd></dl>
   </div>
 </div>
-            </div>
-        </div>
-<!-- BeginDsi "dsi/bottom.html" -->
-	<div class="bottom">
-		<p class="footnote"> 
-            <a href="../product/copyright.html" >&copy; Embedthis Software LLC, 2003-2014.
-            All rights reserved. Embedthis ESP is a trademark of Embedthis Software LLC.</a>
-		</p>
-	</div>
-    <script src="http://www.google.com/jsapi" type="text/javascript"></script>
-    <script type="text/javascript"> 
-      google.load('search', '1', {language : 'en'});
-      google.setOnLoadCallback(function() {
-        var customSearchControl = new google.search.CustomSearchControl(
-          '000262706376373952077:1hs0lhenihk');
-        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-        var options = new google.search.DrawOptions();
-        options.enableSearchboxOnly("http://embedthis.com/search.html");
-        customSearchControl.draw('cse-search-form', options);
-      }, true);
-    </script>
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-179169-2']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-</body>
-</html>
