@@ -310,10 +310,10 @@ h3 + ul {
   font-weight: bold;
 }
 
-.logos .logo {
-  width: 100px;
-  padding: 10px;
-  background: #FFF;
+.centered {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .ui.code.inverted.code.segment {
