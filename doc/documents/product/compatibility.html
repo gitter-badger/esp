@@ -1,0 +1,27 @@
+{
+    title:  "Compatibility",
+    crumbs: [ { '', ''} ],
+}
+            <h1>Compatibility</h1>
+            <!--
+            <p>ESP is provided in two supported versions:</p>
+            <ul>
+                <li><b>ESP Long Term Support (LTS)</b> &mdash; The goal of LTS versions is stability and compatibility. 
+                Bugs and security issues will be fixed, but no feature updates will be issued for LTS versions. 
+                ESP 4.5.X is head of the LTS stream and it will be maintained with security updates and fixes until 
+                the end of 2015.</li>
+                <li><b>ESP Development Versions (DEV)</b> &mdash; The goal of DEV versions is ongoing feature development. 
+                New features will be issued for DEV versions and APIs will evolve. ESP 5 is the next DEV version and it will be released in Q1 2014.</li>
+            </ul>
+            -->
+            <a id="api"></a>
+            <p>ESP APIs may evolve between minor releases. The ESP documentation
+            provides a <a href="../ref/esp/stability.html">Stability Classification</a> for each API 
+            group that reflects their stability with respect to forward changes.</p>
+            
+            <a id="r4"></a>
+            <h2>Migrating to ESP from Appweb</h2>
+            <p>ESP 1.X is mostly compatible with ESP in Appweb 4.X. Code written for Appweb 4.X 
+            ESP should migrate to ESP with few changes. The primary exception is use of the 
+            esp-legacy-mvc framework is not support. Apps using the esp-legacy-mvc framework should
+            migrate to use either esp-html-mvc or esp-angular-mvc.</p>
