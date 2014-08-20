@@ -1,8 +1,8 @@
 {
     title:       'Embedthis ESP Documentation',
     url:         'https://embedthis.com/esp/doc/',
-    description: 'Embedded Web Technologies for the Internet of Things',
-    keywords:    'embedded web server, embedded, devices, http server, internet of things, embedded javascript',
+    description: 'The amazing C web framework',
+    keywords:    'esp, c web framework, web framework, mvc, web application, internet of things',
 
     exclude: [
         'documents/css/app.less',
