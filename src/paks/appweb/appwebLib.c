@@ -20683,17 +20683,4 @@ PUBLIC MprRomInode romFiles[] = {
     { 0, 0, 0, 0 },
 };
 #endif /* ME_ROM */
-
-/************************************************************************/
-/*
-    Start of file "src/slink.c"
- */
-/************************************************************************/
-
-/* slink.c  -- Generated AppWeb Static Initialization */
-
-#include "mpr.h"
-
-
-PUBLIC void appwebStaticInitialize() {}
 #endif /* ME_COM_APPWEB */
