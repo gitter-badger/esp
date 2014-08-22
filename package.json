@@ -29,7 +29,6 @@
         "pcre": "*"
     },
     "optionalDependencies": {
-        /* Here so folks using esp won't pull in appweb */
         "appweb": "~5",
         "est": "~0.6",
         "me-ssl": "~0.8",
