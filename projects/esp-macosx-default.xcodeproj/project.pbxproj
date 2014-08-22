@@ -727,7 +727,6 @@
             children = (
 				7E9C57C07E9C6B6C000000A1 /* me.h */,
 				7E9C57C07E9C6B6C000000A6 /* mpr.h */,
-				7E9C57C07E9C6B6C000000A9 /* est.h */,
 				7E9C57C07E9C6B6C00000041 /* mprSsl.c */,
 			);
             name = "libmprssl";

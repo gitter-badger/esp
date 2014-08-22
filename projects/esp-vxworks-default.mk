@@ -754,7 +754,6 @@ endif
 #
 DEPS_39 += build/$(CONFIG)/inc/me.h
 DEPS_39 += build/$(CONFIG)/inc/mpr.h
-DEPS_39 += build/$(CONFIG)/inc/est.h
 
 build/$(CONFIG)/obj/mprSsl.o: \
     src/paks/mpr/mprSsl.c $(DEPS_39)
