@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Appweb Features</title>
+    <!-- Copyright Embedthis Software, LLC, 2003-2014. All Rights Reserved. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords" content="esp, c web framework, web framework, mvc, web application, internet of things" />
+    <meta name="description" content="The amazing C web framework" />
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700'
+        rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Julius+Sans+One' rel='stylesheet' type='text/css'>
+    <link href="../lib/semantic/packaged/css/semantic.css" rel="stylesheet" type="text/css" />
+    <link href="../css/all.css" rel="stylesheet" type="text/css" />
+    <link href="../images/favicon.ico" rel="shortcut icon" />
+
+</head>
+<body>
+    
+    <div class="ui large left vertical inverted labeled overlay sidebar menu">
+        <div class="item">
+            <a href="../">
+                <b>General</b>
+            </a>
+            <div class="menu">
+                <a class="item" href="../index.html">ESP Overview</a>
+                <a class="item" href="../users/features.html">ESP Features</a>
+                <a class="item" href="https://embedthis.com/esp/download.html">Download</a>
+                <a class="item" href="../licensing/index.html">Licensing</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../start/index.html">
+                <b>Getting Started</b>
+            </a>
+            <div class="menu">
+                <a class="item" href="../start/quick.html">Quick Start</a>
+                <a class="item" href="../start/index.html">Installing ESP</a>
+                <a class="item" href="../start/tour.html">ESP Tour</a>
+                <a class="item" href="../start/pages-tour.html">ESP Pages Tour</a>
+                <a class="item" href="../start/mvc-tour.html">ESP MVC Tour</a>
+                <a class="item" href="../start/releaseNotes.html">Release Notes</a>
+                <a class="item" href="../start/source.html">Building from Source</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../users/index.html"><b>User's Guide</b></a>
+            <div class="menu">
+                <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
+                <a class="item" href="../users/config.html">Configuring ESP</a>
+                <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                <a class="item" href="../users/program.html">ESP Utility</a>
+                <a class="item" href="../users/controllers.html">ESP Controllers</a>
+                <a class="item" href="../users/database.html">ESP Databases</a>
+                <a class="item" href="../users/sessions.html">ESP Sessions</a>
+                <a class="item" href="../users/angular.html">ESP for Angular</a>
+                <a class="item" href="../users/security.html">Security Considerations</a>
+                <a class="item" href="../users/monitor.html">Monitoring and Defending</a>
+                <a class="item" href="../users/hosting.html">Hosting in Appweb</a>
+                <a class="item" href="../users/man.html">Manual Pages</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../ref/index.html">Reference Guide</a>
+            <div class="menu">
+                <a class="item" href="../ref/compatibility.html">Compatibility</a>
+                <a class="item" href="../ref/native.html">API Library</a>
+                <a class="item" href="../ref/memory.html">ESP Memory Allocation</a>
+                <a class="item" href="../ref/multithread.html">Multithreaded Programming</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../users/project.html">Project Resources</a>
+            <div class="menu">
+                <a class="item" href="http://goo.gl/ZQsfIC">Official ESP News</a>
+                <a class="item" href="https://embedthis.com/esp/">ESP Web Site</a>
+                <a class="item" href="https://github.com/embedthis/esp">Source Code Repository</a>
+                <a class="item" href="https://github.com/embedthis/esp/issues">Project Issue Database</a>
+                <a class="item" href="https://github.com/embedthis/esp/releases">Change Log</a>
+                <a class="item" href="https://github.com/embedthis/esp/milestones">Roadmap</a>
+                <a class="item" href="https://embedthis.com/developers/contributors.html">Contributors Agreement</a>
+            </div>
+        </div>
+        <div class="item">
+            <b>Links</b>
+            <div class="menu">
+                <a class="item" href="https://embedthis.com/">Embedthis Web Site</a>
+                <a class="item" href="https://embedthis.com/blog/">Embedthis Blog</a>
+                <a class="item" href="http://twitter.com/mobstream">Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui inverted masthead">
+                <div class="column">
+            <div class="inverted secondary pointing ui menu">
+                <div class="header left item">
+                    <a href="/index.html">Embedthis ESP</a>
+                </div>
+                <div class="right menu">
+                    <div class="ui top right">
+                        <a class="item" href="http://goo.gl/ZQsfIC">News</a>
+                        <a class="item" href="https://embedthis.com/esp/">ESP Site</a>
+                        <a class="item" href="https://github.com/embedthis/esp">Repository</a>
+                        <a class="item" href="https://embedthis.com/blog/">Blog</a>
+                        <a class="item" href="https://twitter.com/mobstream">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="ui breadcrumb">
+                <a class="section" href="../">Home</a>
+                
+                <div class="divider">/</div>
+                <a class="section active" href="features.html">
+                    Appweb Features
+                </a>
+                
+            </div>
+        </div>
+        <div class="ui black small launch right attached toggle button" style="width: 40px;">
+            <i class="icon list layout">
+                <span class="text" style="display: none;">Menu</span>
+            </i>
+        </div>
+
+    </div>
+    <div class="content">
+<!-- BeginDsi "dsi/head.html" -->
+            <h1>Embedthis ESP&trade; Features</h1>
+            <p>The ESP product includes the following components:</p>
+            <ul>
+                <li>C-Languge Model-View-Controller web framework</li>
+                <li>Application and scaffold generator</li>
+                <li>HTTP/1.1 server and client</li>
+                <li>Documentation</li>
+                <li>Samples</li>
+                <li>Source code</li>
+            </ul>
+            <h2 >Feature Overview</h2>
+            <h3>Web Framework</h3>
+            <ul>
+                <li>Web page templates with inline C-code</li>
+                <li>Master layout pages and partials</li>
+                <li>Transparent recompilation and reload (browser reload triggered)</li>
+                <li>MVC web framework</li>
+                <li>RESTful URI mapping and routing</li>
+                <li>MDB and SQLite databases</li>
+                <li>Session and cookie management</li>
+                <li>Response caching</li>
+                <li>JSON parser supporting JSON requests and responses</li>
+                <li>AJAX and async request support</li>
+                <li>WebSockets for full-duplex comms</li>
+                <li>AngularJS support</li>
+            </ul>
+            <h3>Content Generation</h3>
+            <ul>
+                <li>Application generator</li>
+                <li>Scaffold generator</li>
+                <li>Database migration generation and management</li>
+                <li>Extensible components via the <a href="https://embedthis.com/pak/">Pak</a> 
+                    package manager and catalog</li>
+                <li>Client side asset minimization and compression</li>
+                <li>Batch compilation</li>
+                <li>Packaging applications into single executable</li>
+            </ul>
+            <h3>HTTP Engine</h3>
+            <ul>
+                <li>Based on the <a href="https://embedthis.com/appweb/">Appweb HTTP Engine</a></li>
+                <li>Full HTTP/1.1 support</li>
+                <li>Full HTTP/1.1 support</li>
+                <li>IPv4 and IPv6</li>
+                <li>Multithreaded, event-based server</li>
+                <li>Fast co-routine request pipeline</li>
+                <li>RESTful request routing with regular expression matching and rewriting</li>
+                <li>Supports ranged, chunked and pipelined requests</li>
+                <li>Efficient transmission via sendfile and vectored I/O</li>
+                <li>Virtual Hosting. IP-based and Name-based</li>
+                <li>Error and access Logging (Common Log Format)</li>
+                <li>Appweb (Apache) style configuration</li>
+                <li>Sand-box resource limits</li>
+                <li>Monitoring and defensive counter-measures</li>
+            </ul>
+            <h3>Performance</h3>
+            <ul>
+                <li>Request throughput (&gt; 40,000 requests per second on Macbook Pro)</li>
+                <li>Multi-threaded, event-based core for scale and blocking requests</li>
+                <li>Small memory footprint even under heavy load (from 1MB)</li>
+            </ul>
+            <h3>Modularity</h3>
+            <ul>
+                <li>Dynamic loading and reloading of applications, pages and controllers</li>
+                <li>Configurable request routing</li>
+                <li>Extensible/replaceable authorization and SSL</li>
+            </ul>
+            <h3>Security</h3>
+            <ul>
+                <li>Secure Sockets Layer (SSL)</li>
+                <li>Basic and Digest Authentication</li>
+                <li>Route based authorization</li>
+                <li>User authentication and role-based security</li>
+                <li>XSRF tokens to minimize CSRF threats</li>
+                <li>Sandbox limits</li>
+                <li>Access and access violation logging</li>
+                <li>Safe portable runtime to protect against buffer overflows</li>
+                <li>Garbage collector to eliminate memory leaks</li>
+            </ul>
+            <h3>Developer Support</h3>
+            <ul>
+                <li>Extensive "C" API</li>
+                <li>Extensive debug trace logging</li>
+                <li>Online community support forum</li>
+            </ul>
+            <h3>Documentation</h3>
+            <ul>
+                <li>Full "C" API Documentation</li>
+                <li>Guides and programmer reference</li>
+                <li>Cookbook of samples (cut and paste to get going)</li>
+                <li>Tutorials</li>
+            </ul>
+            <h3>Platform Support</h3>
+            <ul>
+                <li>Linux (2.6 and later)</li>
+                <li>Windows (7 and later)</li>
+                <li>Mac OSX (10.7 and later)</li>
+                <li>VxWorks (6.X)</li>
+                <li>Free BSD (10.X)</li>
+                <li>Packaged installations for Windows and MAC OSX</li>
+            </ul>
+            <h3>Embedding Support</h3>
+            <ul>
+                <li>Supports ARM, MIPS, X86, PPC and Sparc processors</li>
+                <li>Full cross-compilation support. Use Windows, Linux or Mac as build system</li>
+                <li>Fine-grained control for conditional build and compilation</li>
+                <li>Execute from ROM (XIP)</li>
+            </ul>
+    </div>
+    <div class="ui basic center aligned segment" id="terms">
+        <p>&copy; Embedthis Software, 2003-2014. All rights reserved.
+            Generated on Aug 21, 2014.
+        </p>
+    </div>
+
+    <script src="../lib/jquery/jquery.js"></script>
+    <script src="../lib/semantic/packaged/javascript/semantic.js"></script>
+    <script>
+        $('.sidebar').sidebar({overlay: false}).sidebar('toggle');
+        $('.sidebar').first().sidebar('attach events', '.toggle.button');
+    </script>
+</body>
+</html>

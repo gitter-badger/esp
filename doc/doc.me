@@ -11,24 +11,39 @@ Me.load({
                 apidoc('api/esp.dox', ['${SRC}/src/esp.h'], 'ESP', ls('api/*.tags'))
                 for each (let src: Path in ['api/http.html', 'api/mpr.html', 'api/osdep.html', 'api/esp.html', 
                         'api/edi.html']) {
-                    apiLayout(src, Path('out/ref/esp').join(src))
+                    apiLayout(src, Path('final/ref').join(src))
                 }
             `,
         },
         validate: {
             depends: [ 'gen-doc' ],
             action: `
-                for each (f in Path('out').files('**/*.html')) {
+                for each (f in Path('final').files('**/*.html')) {
                     let data = f.readString()
                     data = data.replace('700|Open', '').
+                        replace(/esp.download.html/g, 'download/esp.html').
                         replace(/appweb.download.html/g, 'download/appweb.html').
                         replace(/developers.contributors.html/g, 'scripts/contributors.esp').
-                        replace(/\\/developers\\//g, '/appweb/').
+                        replace(/pak.download.html/g, 'download/pak.html').
                         replace(/nowrap="nowrap"/g, '').
-                        replace(/nowrap/g, '')
+                        replace(/nowrap/g, '').
+                        replace(/https:..embedthis.com.appweb.licensing.html/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.appweb.doc.users.configuration.html/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.appweb.doc.users.dir.esp.html/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.appweb.doc.users.dir.route.html/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.esp.licensing.html/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.me.doc.guide.me.source.building.htm/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.me.doc.source.building.htm/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.me.doc.source/g, 'https://embedthis.com/').
+                        replace(/https:..embedthis.com.developers./g, 'https://embedthis.com/')
                     trace('Patch', f)
                     f.write(data)
                 }
+                for each (f in Path('final/man').files('*.html')) {
+                    f.write(f.readString().toLowerCase())
+                }
+                trace('Listen', 'exp --nowatch')
+                Cmd.run('exp --nowatch')
             `
         },
     },

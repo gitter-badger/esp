@@ -1,14 +1,15 @@
         <div class="column">
             <div class="inverted secondary pointing ui menu">
                 <div class="header left item">
-                    <!-- <a href="/index.html"><img src="/images/embedthis.png"></a> -->
-                    <a href="/index.html">ESP Documentation</a>
+                    <a href="/index.html">Embedthis ESP</a>
                 </div>
                 <div class="right menu">
                     <div class="ui top right">
-                        <a class="item" href="https://embedthis.com/esp/">ESP</a>
+                        <a class="item" href="http://goo.gl/ZQsfIC">News</a>
+                        <a class="item" href="https://embedthis.com/esp/">ESP Site</a>
                         <a class="item" href="https://github.com/embedthis/esp">Repository</a>
-                        <a class="item" href="http://groups.google.com/group/embedthis-esp">Support</a>
+                        <a class="item" href="https://embedthis.com/blog/">Blog</a>
+                        <a class="item" href="https://twitter.com/mobstream">Twitter</a>
                     </div>
                 </div>
             </div>
