@@ -16,7 +16,7 @@ ArchitecturesInstallIn64BitMode=x64
 
 [Icons]
 Name: "{group}\${settings.title} shell"; Filename: "{app}/bin/${settings.name}.exe"; Parameters: ""
-Name: "{group}\${settings.title} documentation"; Filename: "{app}/doc/product/index.html"; Parameters: ""
+Name: "{group}\${settings.title} documentation"; Filename: "{app}/doc/index.html"; Parameters: ""
 Name: "{group}\ReadMe"; Filename: "{app}/README.TXT"
 
 [Dirs]
