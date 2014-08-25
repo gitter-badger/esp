@@ -4,11 +4,11 @@ Embedthis ESP Samples
 These samples are configured to use a locally installed ESP.
 To build the samples, you will need to install Appweb and the MakeMe build tool from:
 
-* MakeMe - [http://embedthis.com/downloads/makeme/download.esp](http://embedthis.com/downloads/makeme/download.esp)
+* MakeMe - [https://embedthis.com/me/download.html](https://embedthis.com/me/download.html)
 
 The Pak tool may also be helpful to manage imported packages:
 
-* Pak - [http://embedthis.com/downloads/pak/download.esp](http://embedthis.com/downloads/pak/download.esp)
+* Pak - [https://embedthis.com/pak/download.html](https://embedthis.com/pak/download.html)
 
 The following samples are available:
 
@@ -34,14 +34,14 @@ To build all, use:
 
 The full product documentation is supplied in HTML format under the doc directory. This is also available online at:
 
-* http://embedthis.com/products/esp/doc/index.html
+* https://embedthis.com/esp/doc/index.html
 
 Licensing
 ---
 
 Please see: 
 
-http://embedthis.com/licensing/index.html
+https://embedthis.com/licensing/index.html
 
 
 Support

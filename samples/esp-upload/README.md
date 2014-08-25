@@ -10,7 +10,7 @@ For security, file upload is restricted to URIs starting with /upload.
 
 Requirements
 ---
-* [ESP](http://embedthis.com/downloads/esp/download.esp)
+* [ESP](https://embedthis.com/esp/download.html)
 
 To run:
 ---
@@ -28,12 +28,12 @@ Code:
 
 Documentation:
 ---
-* [ESP Documentation](http://embedthis.com/products/esp/doc/index.html)
-* [File Upload)(http://embedthis.com/products/esp/doc/guide/esp/users/uploading.html)
-* [ESP Configuration](http://embedthis.com/products/esp/doc/guide/esp/users/config.html)
-* [ESP APIs](http://embedthis.com/products/esp/doc/api/esp.html)
-* [ESP Guide](http://embedthis.com/products/esp/doc/guide/esp/users/index.html)
-* [ESP Overview](http://embedthis.com/products/esp/doc/guide/esp/users/using.html)
+* [ESP Documentation](https://embedthis.com/esp/doc/index.html)
+* [File Upload)(https://embedthis.com/esp/doc/users/uploading.html)
+* [ESP Configuration](https://embedthis.com/esp/doc/users/config.html)
+* [ESP APIs](https://embedthis.com/esp/doc/api/esp.html)
+* [ESP Guide](https://embedthis.com/esp/doc/users/index.html)
+* [ESP Overview](https://embedthis.com/esp/doc/users/using.html)
 
 See Also:
 ---

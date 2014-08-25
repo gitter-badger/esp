@@ -24,7 +24,7 @@ Notes:
 
 Requirements
 ---
-* [ESP](http://embedthis.com/downloads/esp/download.esp)
+* [ESP](https://embedthis.com/esp/download.html)
 
 To run:
 ---
@@ -51,5 +51,5 @@ Code:
 
 Documentation:
 ---
-* [ESP Documentation](http://embedthis.com/products/esp/doc/index.html)
-* [ESP Configuration](http://embedthis.com/products/esp/doc/guide/esp/users/config.html)
+* [ESP Documentation](https://embedthis.com/esp/doc/index.html)
+* [ESP Configuration](https://embedthis.com/esp/doc/users/config.html)
