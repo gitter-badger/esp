@@ -11,14 +11,14 @@ Me.load({
                 apidoc('api/esp.dox', ['${SRC}/src/esp.h'], 'ESP', ls('api/*.tags'))
                 for each (let src: Path in ['api/http.html', 'api/mpr.html', 'api/osdep.html', 'api/esp.html', 
                         'api/edi.html']) {
-                    apiLayout(src, Path('final/ref').join(src))
+                    apiLayout(src, Path('public/ref').join(src))
                 }
             `,
         },
         validate: {
             depends: [ 'gen-doc' ],
             action: `
-                for each (f in Path('final').files('**/*.html')) {
+                for each (f in Path('public').files('**/*.html')) {
                     let data = f.readString()
                     data = data.replace('700|Open', '').
                         replace(/esp.download.html/g, 'download/esp.html').
@@ -39,7 +39,7 @@ Me.load({
                     trace('Patch', f)
                     f.write(data)
                 }
-                for each (f in Path('final/man').files('*.html')) {
+                for each (f in Path('public/man').files('*.html')) {
                     f.write(f.readString().toLowerCase())
                 }
                 trace('Listen', 'exp --nowatch')
