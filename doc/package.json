@@ -1,0 +1,17 @@
+{
+    "name": "doc",
+    "dependencies": {
+        "jquery": "~1.11",
+        "semantic": "~0.19"
+    },
+    "directories": {
+        "paks": "files/lib",
+    },
+    "app": {
+        "client": {
+            "scripts": [
+                "lib/jquery/jquery.js"
+            ]
+        }
+    }
+}

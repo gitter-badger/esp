@@ -624,6 +624,9 @@ PUBLIC void scripts(cchar *patterns)
         }
         return;
     }
+#if FUTURE
+    client => public
+#endif
     if ((files = mprGlobPathFiles(httpGetDir(route, "client"), patterns, MPR_PATH_RELATIVE)) == 0 || 
             mprGetListLength(files) == 0) {
         files = mprCreateList(0, 0);
@@ -796,6 +799,9 @@ PUBLIC void stylesheets(cchar *patterns)
     route = rx->route;
     eroute = route->eroute;
     patterns = httpExpandRouteVars(route, patterns);
+#if FUTURE
+    client => public
+#endif
     clientDir = httpGetDir(route, "client");
 
     if (!patterns || !*patterns) {
