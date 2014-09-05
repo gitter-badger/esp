@@ -1,35 +1,10 @@
-# Object files
-*.o
-*.ko
-
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-macosx-*
+/build/
+/projects/.*.guid
+/projects/*mine*
+xcuserdata/
+project.xcworkspace/
 /start.me
-/releases
-/doc/lf/
-*.guid
-projects/esp-macosx-mine*
-pj.new
-project.xcworkspace
-xcuserdata
-samples/esp-login/cache
+cache/
+*.sdb
+test/cmd/support.mod
 testme/
-cache
-cache
-test/html-mvc/db/blog.*
-test/cmd/uploaded/MPR*
-build/
-*.mod
