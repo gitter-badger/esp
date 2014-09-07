@@ -5,7 +5,7 @@
 Me.load({
     targets: {
         test: {
-            action: `run('testme --depth ' + me.settings.depth, {noio: true})`,
+            action: `run('testme --depth ' + me.settings.depth)`,
             platforms: [ 'local' ],
         },
         'clean-test': {
