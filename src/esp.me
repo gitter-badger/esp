@@ -41,7 +41,6 @@ Me.load({
             home: '${TOP}/src/paks',
             files: [ 'esp-*/**' ],
             platforms: [ 'local' ],
-            'generate-capture': true,
             build: `
                 trace('Copy', me.dir.out.join('esp').relativeTo(me.dir.top))
                 let espVersion = me.dir.src.join('package.json').readJSON().version
