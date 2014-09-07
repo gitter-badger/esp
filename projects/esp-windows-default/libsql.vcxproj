@@ -115,7 +115,7 @@
 
   <CustomBuildStep>
     <Command>cd ..\..\src\paks\sqlite
-copy /Y sqlite3.h $(IncDir)
+copy /Y /B sqlite3.h $(IncDir)
 cd ..\..\..\projects\esp-windows-default</Command>
     <Outputs>$(BinDir)\libsql.dll</Outputs>
   </CustomBuildStep>

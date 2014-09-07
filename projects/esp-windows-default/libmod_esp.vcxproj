@@ -131,9 +131,9 @@
 
   <CustomBuildStep>
     <Command>cd ..\..\src
-copy /Y edi.h $(IncDir)
-copy /Y esp.h $(IncDir)
-copy /Y mdb.h $(IncDir)
+copy /Y /B edi.h $(IncDir)
+copy /Y /B esp.h $(IncDir)
+copy /Y /B mdb.h $(IncDir)
 cd ..\projects\esp-windows-default</Command>
     <Outputs>$(BinDir)\libmod_esp.dll</Outputs>
   </CustomBuildStep>

@@ -115,7 +115,7 @@
 
   <CustomBuildStep>
     <Command>cd ..\..\src\paks\appweb
-copy /Y appweb.h $(IncDir)
+copy /Y /B appweb.h $(IncDir)
 cd ..\..\..\projects\esp-windows-default</Command>
     <Outputs>$(BinDir)\libappweb.dll</Outputs>
   </CustomBuildStep>

@@ -22,6 +22,84 @@
 </head>
 <body>
     
+    <div class="ui large left vertical inverted labeled overlay sidebar menu">
+        <div class="item">
+            <a href="../index.html" class="logo">ESP Docs</a>
+        </div>
+        <div class="item">
+            <a href="../index.html">
+                <b>General</b>
+            </a>
+            <div class="menu">
+                <a class="item" href="../index.html">ESP Overview</a>
+                <a class="item" href="../users/features.html">ESP Features</a>
+                <a class="item" href="https://embedthis.com/esp/download.html">Download</a>
+                <a class="item" href="../licensing/index.html">Licensing</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../start/index.html">
+                <b>Getting Started</b>
+            </a>
+            <div class="menu">
+                <a class="item" href="../start/quick.html">Quick Start</a>
+                <a class="item" href="../start/index.html">Installing ESP</a>
+                <a class="item" href="../start/tour.html">ESP Tour</a>
+                <a class="item" href="../start/pages-tour.html">ESP Pages Tour</a>
+                <a class="item" href="../start/mvc-tour.html">ESP MVC Tour</a>
+                <a class="item" href="../start/releaseNotes.html">Release Notes</a>
+                <a class="item" href="../start/source.html">Building from Source</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../users/index.html"><b>User's Guide</b></a>
+            <div class="menu">
+                <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
+                <a class="item" href="../users/config.html">Configuring ESP</a>
+                <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                <a class="item" href="../users/program.html">ESP Utility</a>
+                <a class="item" href="../users/controllers.html">ESP Controllers</a>
+                <a class="item" href="../users/database.html">ESP Databases</a>
+                <a class="item" href="../users/sessions.html">ESP Sessions</a>
+                <a class="item" href="../users/angular.html">ESP for Angular</a>
+                <a class="item" href="../users/security.html">Security Considerations</a>
+                <a class="item" href="../users/monitor.html">Monitoring and Defending</a>
+                <a class="item" href="../users/hosting.html">Hosting in Appweb</a>
+                <a class="item" href="../users/man.html">Manual Pages</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../ref/index.html">Reference Guide</a>
+            <div class="menu">
+                <a class="item" href="../ref/compatibility.html">Compatibility</a>
+                <a class="item" href="../ref/native.html">API Library</a>
+                <a class="item" href="../ref/memory.html">ESP Memory Allocation</a>
+                <a class="item" href="../ref/multithread.html">Multithreaded Programming</a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="../users/project.html">Project Resources</a>
+            <div class="menu">
+                <a class="item" href="http://goo.gl/ZQsfIC">Official ESP News</a>
+                <a class="item" href="https://embedthis.com/esp/">ESP Web Site</a>
+                <a class="item" href="https://github.com/embedthis/esp">Source Code Repository</a>
+                <a class="item" href="https://github.com/embedthis/esp/issues">Project Issue Database</a>
+                <a class="item" href="https://github.com/embedthis/esp/releases">Change Log</a>
+                <a class="item" href="https://github.com/embedthis/esp/milestones">Roadmap</a>
+                <a class="item" href="https://embedthis.com/developers/contributors.html">Contributors Agreement</a>
+            </div>
+        </div>
+        <div class="item">
+            <b>Links</b>
+            <div class="menu">
+                <a class="item" href="https://embedthis.com/">Embedthis Web Site</a>
+                <a class="item" href="https://embedthis.com/blog/">Embedthis Blog</a>
+                <a class="item" href="http://twitter.com/mobstream">Twitter</a>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="ui inverted masthead">
          
@@ -135,15 +213,17 @@
     </div>
     <div class="terms ui basic center aligned segment">
         <p>&copy; Embedthis Software, 2003-2014. All rights reserved.
-            Generated on Sep  2, 2014.
+            Generated on Sep  5, 2014.
         </p>
     </div>
 
     <script src="../lib/jquery/jquery.js"></script>
-    <script src="../lib/semantic/javascript/query.js"></script>
+    <script src="../lib/semantic/javascript/semantic.js"></script>
     <script>
+        $('.sidebar').sidebar({overlay: false}).sidebar('toggle');
+        $('.sidebar').first().sidebar('attach events', '.toggle.button');
         $(function() {
-            var url = '@@{top}@@{meta.url}';
+            var url = '../ref/stability.html';
             var active = $('.sidebar a[href="' + url +'"]');
             active.addClass('active');
             var sidebar = $(".sidebar");
