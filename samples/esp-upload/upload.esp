@@ -4,6 +4,7 @@
         HttpConn        *conn;
         HttpUploadFile  *file;
         MprKey          *kp;
+        int             index;
 
         /*
             File upload permits multiple files. Iterate over all uploaded files.
@@ -17,7 +18,8 @@
             are unique and solve potential conflicts.
          */
         conn = getConn();
-        for (ITERATE_KEY_DATA(conn->rx->files, kp, file)) {
+        for (ITERATE_ITEMS(conn->rx->files, file, index)) {
+            render("NAME %s\n", file->name);
             render("FILENAME %s\n", file->filename);
             render("CLIENT_NAME %s\n", file->clientFilename);
             render("TYPE %s\n", file->contentType);

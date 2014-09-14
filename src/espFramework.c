@@ -407,7 +407,7 @@ PUBLIC char *espGetStatusMessage(HttpConn *conn)
 }
 
 
-PUBLIC MprHash *espGetUploads(HttpConn *conn)
+PUBLIC MprList *espGetUploads(HttpConn *conn)
 {
     return conn->rx->files;
 }

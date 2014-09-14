@@ -302,7 +302,7 @@ PUBLIC cchar *getConfig(cchar *field)
 }
 
 
-PUBLIC MprHash *getUploads()
+PUBLIC MprList *getUploads()
 {
     return espGetUploads(getConn());
 }
