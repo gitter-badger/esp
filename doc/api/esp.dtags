@@ -421,10 +421,10 @@
       <arglist>(HttpConn *conn)</arglist>
     </member>
     <member kind="function">
-      <type>MprHash *</type>
+      <type>MprList *</type>
       <name>espGetUploads</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>gaedbde7b9b4acc7ab426336c359166348</anchor>
+      <anchor>ga71aeaa3e8171c1cc2cdfe7d7b872156b</anchor>
       <arglist>(HttpConn *conn)</arglist>
     </member>
     <member kind="function">
@@ -1084,10 +1084,10 @@
       <arglist>(cchar *name)</arglist>
     </member>
     <member kind="function">
-      <type>MprHash *</type>
+      <type>MprList *</type>
       <name>getUploads</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>gad86dc79486e424b71970a6c2340de171</anchor>
+      <anchor>ga12e7ea4b97725ef6cf2cb4aa02d6f21b</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
