@@ -1526,6 +1526,10 @@
 </tr>
 <tr class="apiBrief"><td>&nbsp;</td><td>Normal (default) priority.</td></tr>
 <tr class="apiDef">
+<td>#define</td><td><a href="#mpr_8h_1ace65c038d3a8380c6213fd2dccbc135b" class="nameRef">MPR_NOT_ALL</a>&nbsp;&nbsp;&nbsp;0x10</td>
+</tr>
+<tr class="apiBrief"><td>&nbsp;</td><td>Don&apos;t invoke all destructors when terminating.</td></tr>
+<tr class="apiDef">
 <td>#define</td><td><a href="#mpr_8h_1aa3a00f803c06f8d85b8281dff1021acb" class="nameRef">MPR_OBJ_HASH</a>&nbsp;&nbsp;&nbsp;0x1</td>
 </tr>
 <tr class="apiBrief"><td>&nbsp;</td><td>Object is a hash.</td></tr>
@@ -15923,10 +15927,10 @@ Set a property value in an object.
 General flags word.
 </td>
     <tr><td class="param">void *</td><td><td>key</td><td>
-Key string.
+Key string (managed).
 </td>
     <tr><td class="param">void *</td><td><td>value</td><td>
-Associated value for the key.
+Associated value for the key (managed).
 </td>
     </table></dd></dl>
   </div>
@@ -16118,7 +16122,7 @@ Close a socket.
 <simplesect kind="par"><b>Description</b>:Close a socket. If the graceful option is true, the socket will first wait for written data to drain before doing a graceful close. </simplesect><parameterlist kind="param"><parameteritem><parameternamelist><parametername>socket</parametername></parameternamelist><parameterdescription>Socket object returned from <a class="ref" href="#group___mpr_socket_1ga0ef02d313ec268eae6038a5af0ee5cc4">mprCreateSocket</a></parameterdescription></parameteritem><parameteritem><parameternamelist><parametername>graceful</parametername></parameternamelist><parameterdescription>Set to true to do a graceful close. Otherwise, an abortive close will be performed. </parameterdescription></parameteritem></parameterlist><simplesect kind="par"><b>API</b> Stability:Stable </simplesect>
 </td>
     <tr><td class="param">void *</td><td><td>data</td><td>
-Socket provider private data.
+Socket provider private data (unmanaged).
 </td>
     <tr><td class="param">void(*</td><td><td>disconnectSocket)(struct MprSocket *socket)</td><td>
 Disconnect a socket by closing its underlying file descriptor. 
@@ -16330,7 +16334,7 @@ Number of busy workers yielded for GC.
     </div>
     <div class="terms ui basic center aligned segment">
         <p>&copy; Embedthis Software, 2003-2014. All rights reserved.
-            Generated on Sep 14, 2014.
+            Generated on Sep 16, 2014.
         </p>
     </div>
 
