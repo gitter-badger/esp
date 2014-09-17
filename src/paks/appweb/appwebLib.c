@@ -2936,10 +2936,10 @@ static void manageState(MaState *state, int flags)
         mprMark(state->key);
         mprMark(state->configDir);
         mprMark(state->filename);
+        mprMark(state->endpoints);
         mprMark(state->prev);
         mprMark(state->top);
         mprMark(state->current);
-        mprMark(state->endpoints);
     }
 }
 
