@@ -1258,6 +1258,8 @@ static void manageTable(MdbTable *table, int flags)
         mprMark(table->schema);
         mprMark(table->index);
         mprMark(table->rows);
+        mprMark(table->keyCol);
+        mprMark(table->indexCol);
     }
 }
 
@@ -1397,6 +1399,7 @@ static void manageRow(MdbRow *row, int flags)
     int     fid;
 
     if (flags & MPR_MANAGE_MARK) {
+        mprMark(row->table);
         for (fid = 0; fid < row->nfields; fid++) {
             mprMark(row->fields[fid]);
         }

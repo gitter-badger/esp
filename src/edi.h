@@ -73,8 +73,8 @@ typedef cchar *(*EdiValidationProc)(struct EdiValidation *vp, struct EdiRec *rec
 typedef struct EdiValidation {
     cchar               *name;          /**< Validation name */
     EdiValidationProc   vfn;            /**< Validation callback procedure */
-    cvoid               *mdata;         /**< Non-GC (malloc) data. Used for pcre. */
-    cvoid               *data;          /**< Allocated data that must be marked for GC */
+    cvoid               *data;          /**< Custom data (managed) */
+    cvoid               *mdata;         /**< Custom data (unmanaged) */
 } EdiValidation;
 
 /**
@@ -146,7 +146,6 @@ typedef struct EdiRec {
     int             index;              /**< Grid index for iteration */
     EdiField        fields[ARRAY_FLEX]; /**< Field records */
 } EdiRec;
-
 
 #define EDI_GRID_READ_ONLY  0x1         /**< Grid contains pure database records, must not be modified */
 

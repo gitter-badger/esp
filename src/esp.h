@@ -542,8 +542,8 @@ typedef struct EspReq {
     MprHash         *flash;                 /**< New flash messages */
     MprHash         *lastFlash;             /**< Flash messages from the last request */
     HttpNotifier    notifier;               /**< Connection Http state change notification callback */
-    void            *data;                  /**< Custom data for request - must be a managed reference */
-    void            *staticData;            /**< Custom data for request - must be an unmanaged reference */
+    void            *data;                  /**< Custom data for request (managed) */
+    void            *staticData;            /**< Custom data for request (unmanaged) */
     cchar           *commandLine;           /**< Command line for compile/link */
     int             autoFinalize;           /**< Request is or will be auto-finalized */
     int             sessionProbed;          /**< Already probed for session store */

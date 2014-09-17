@@ -700,6 +700,7 @@ PUBLIC void espManageEspRoute(EspRoute *eroute, int flags)
         mprMark(eroute->env);
         mprMark(eroute->link);
         mprMark(eroute->searchPath);
+        mprMark(eroute->top);
         mprMark(eroute->winsdk);
     }
 }
@@ -775,6 +776,7 @@ static void manageReq(EspReq *req, int flags)
     if (flags & MPR_MANAGE_MARK) {
         mprMark(req->commandLine);
         mprMark(req->flash);
+        mprMark(req->lastFlash);
         mprMark(req->feedback);
         mprMark(req->route);
         mprMark(req->data);
@@ -793,6 +795,7 @@ static void manageEsp(Esp *esp, int flags)
         mprMark(esp->databases);
         mprMark(esp->databasesTimer);
         mprMark(esp->ediService);
+        mprMark(esp->internalOptions);
         mprMark(esp->local);
         mprMark(esp->mutex);
         mprMark(esp->views);
