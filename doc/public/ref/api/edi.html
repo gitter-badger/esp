@@ -1972,11 +1972,10 @@ For the first call, set fp to NULL
     <dl><dt>Fields:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">cvoid *</td><td><td>data</td><td>
-Allocated data that must be marked for GC.
+Custom data (managed).
 </td>
     <tr><td class="param">cvoid *</td><td><td>mdata</td><td>
-Non-GC (malloc) data. 
-Used for pcre.
+Custom data (unmanaged).
 </td>
     <tr><td class="param">cchar *</td><td><td>name</td><td>
 Validation name.
@@ -1992,7 +1991,7 @@ Validation callback procedure.
     </div>
     <div class="terms ui basic center aligned segment">
         <p>&copy; Embedthis Software, 2003-2014. All rights reserved.
-            Generated on Sep 16, 2014.
+            Generated on Sep 17, 2014.
         </p>
     </div>
 
