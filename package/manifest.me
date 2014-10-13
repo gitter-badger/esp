@@ -9,7 +9,7 @@ Me.load({
         The sets used are: binary, service, test, doc, dev, package, source
      */
     manifest: {
-        home: me.dir.src,
+        home: me.dir.bin,
         packages:   {
             install: {
                 inherit:    'package-manifest',
@@ -38,241 +38,237 @@ Me.load({
             },
         },
 
-        files: [ 
-            /* Binary Set */
-            {   from:   '${BIN}/esp${EXE}',
-                to:     '${abin}/',
-                linkin: '${bin}',
-                set:    'core',
+        sets: {
+            core: [ 
+                {   
+                    from:       'esp${EXE}',
+                    to:         '${abin}/',
+                    symlink:    '${bin}/',
 
-            },{ from:        [
-                    '${BIN}/espman${EXE}',
-                ],
-                to:         '${abin}/',
-                linkin:     '${bin}',
-                set:        'core',
+                }, { 
+                    from:       'espman${EXE}',
+                    to:         '${abin}/',
+                    symlink:    '${bin}/',
 
-            },{ from: [
-                    '${BIN}/libappweb${SHOBJ}',
-                    '${BIN}/libhttp${SHOBJ}',
-                    '${BIN}/libmpr${SHOBJ}',
-                    '${BIN}/libmprssl${SHOBJ}',
-                    '${BIN}/libpcre${SHOBJ}',
-                    '${BIN}/libsql${SHOBJ}',
-                    '${BIN}/libmod_esp${SHOBJ}',
-                ],
-                to:     '${abin}/',
-                set:    'libs',
-                enable: '!me.settings.static',
+                }, { 
+                    from: [
+                                'libssl*${SHOBJ}*',
+                                'libcrypto*${SHOBJ}*',
+                    ],
+                    to:         '${abin}/',
+                    enable:     "me.platform.os != 'windows'",
+                    ifdef:      'openssl',
 
-            },{ from:        [
-                    '${BIN}/libssl*${SHOBJ}*',
-                    '${BIN}/libcrypto*${SHOBJ}*',
-                ],
-                to:         '${abin}/',
-                set:        'core',
-                enable:     "me.platform.os != 'windows'",
-                ifdef:      'openssl',
+                }, { 
+                    from: [
+                                'libeay32${SHOBJ}',
+                                'ssleay32${SHOBJ}',
+                    ],
+                    to:         '${abin}/',
+                    enable:     "me.platform.os == 'windows'",
+                    ifdef:      'openssl',
 
-            },{ from:        [
-                    '${BIN}/libeay32${SHOBJ}',
-                    '${BIN}/ssleay32${SHOBJ}',
-                ],
-                to:         '${abin}/',
-                set:        'core',
-                enable:     "me.platform.os == 'windows'",
-                ifdef:      'openssl',
+                }, { 
+                    from:       'ca.crt',
+                    to:         '${abin}/',
 
-            },{ from:       '${BIN}/libest${SHOBJ}',
-                to:         '${abin}/',
-                set:        'libs',
-                ifdef:      'est',
-                enable:     "!me.settings.static",
-
-            },{ from:        [
-                    /* Windows needs the libs to be able to compile esp programs */
-                    '${BIN}/libmod_esp${SHLIB}',
-                    '${BIN}/libappweb${SHLIB}',
-                    '${BIN}/libpcre${SHLIB}',
-                    '${BIN}/libhttp${SHLIB}',
-                    '${BIN}/libmpr${SHLIB}',
-                ],
-                to:         '${abin}/',
-                set:        'libs',
-                enable:     "me.platform.os == 'windows' && !me.settings.static",
-
-            },{ from:        [
-                    '${BIN}/libmprssl${SHLIB}',
-                ],
-                to:         '${abin}/',
-                set:        'libs',
-                ifdef:      'ssl',
-                enable:     "me.platform.os == 'windows' && !me.settings.static",
-
-            },{ from: [
-                    '${BIN}/ca.crt',
-                ],
-                to:     '${abin}/',
-                set:    'core',
-
-           }, {
-                from:       [ 'package/uninstall.sh' ],
-                to:         '${abin}/uninstall',
-                expand:     true,
-                permissions: 0755,
-                set:        'core',
-                enable:     "!me.generating",
-
-            },{
-                set:        'core',
-                copy:       `
-                    for each (pak in Path(me.dir.paks).files(['angular', 'esp-*'])) {
-                        let version = pak.join('package.json').readJSON().version || '0.0.0'
-                        let dir = me.globals.abin.join('../esp', pak.basename, version)
-                        makeDir(dir)
-                        for each (from in pak.files('**')) {
-                            let base = from.relativeTo(me.dir.paks)
-                            let stem = base.components.slice(1).join(from.separator)
-                            let to = dir.join(stem)
-                            if (from.isDir) {
-                                makeDir(to)
-                            } else {
-                                copyFile(from, to)
+                }, {
+                    perform:    function() {
+                        for each (pak in Path(me.dir.paks).files(['angular', 'esp-*'])) {
+                            let version = pak.join('package.json').readJSON().version || '0.0.0'
+                            let dir = me.globals.abin.join('../esp', pak.basename, version)
+                            makeDirectory(dir)
+                            for each (from in pak.files('**')) {
+                                let base = from.relativeTo(me.dir.paks)
+                                let stem = base.components.slice(1).join(from.separator)
+                                let to = dir.join(stem)
+                                if (from.isDir) {
+                                    makeDirectory(to)
+                                } else {
+                                    copyFile(from, to)
+                                }
                             }
                         }
-                    }
-                `,
+                    },
 
-            },{
-                from:       '${BIN}/esp.conf',
-                to:         '${abin}/',
-                set:        'core',
+                }, {
+                    from:       'esp.conf',
+                    to:         '${abin}/',
+                }
+            ],
+            libs: [
+                {
+                    from: [
+                                'libappweb${SHOBJ}',
+                                'libhttp${SHOBJ}',
+                                'libmpr${SHOBJ}',
+                                'libmprssl${SHOBJ}',
+                                'libpcre${SHOBJ}',
+                                'libsql${SHOBJ}',
+                                'libmod_esp${SHOBJ}',
+                    ],
+                    to:         '${abin}/',
+                    enable:     '!me.settings.static',
 
-            },{ from:   'doc/documents/man/esp.1',
-                to:     '${adoc}/man/man1/',
-                set:    'doc',
-                linkin: '${man}/man1',
-                enable: "me.platform.like == 'unix'",
+                }, { 
+                    from:       'libest${SHOBJ}',
+                    to:         '${abin}/',
+                    ifdef:      'est',
+                    enable:     "!me.settings.static",
 
-            },{
-                name:        'Launch daemon script'
-                from:        'package/macosx/com.embedthis.esp.plist',
-                to:          '${root}/Library/LaunchDaemons/com.embedthis.esp.plist',
-                permissions: 0644,
-                user:        'root',
-                group:       'wheel',
-                set:         'service',
-                root:        true,
-                enable:      "me.platform.os == 'macosx'",
+                }, { 
+                    from: [
+                                /* Windows needs the libs to be able to compile esp programs */
+                                'libmod_esp${SHLIB}',
+                                'libappweb${SHLIB}',
+                                'libpcre${SHLIB}',
+                                'libhttp${SHLIB}',
+                                'libmpr${SHLIB}',
+                    ],
+                    to:         '${abin}/',
+                    enable:     "me.platform.os == 'windows' && !me.settings.static",
 
-            },{
-                name:        'Init script'
-                from:        'package/linux/${settings.name}.init',
-                to:          '${root}/etc/init.d/${settings.name}',
-                permissions: 0755,
-                user:        'root',
-                group:       'root',
-                set:         'service',
-                root:        true,
-                enable:      "me.platform.os == 'linux'",
+                }, { 
+                    from:       'libmprssl${SHLIB}',
+                    to:         '${abin}/',
+                    ifdef:      'ssl',
+                    enable:     "me.platform.os == 'windows' && !me.settings.static",
 
-            },{
-                name:        'Upstart script'
-                from:        'package/linux/${settings.name}.upstart',
-                to:          '${root}/etc/init/${settings.name}.conf',
-                permissions: 0644,
-                user:        'root',
-                group:       'root',
-                set:         'service',
-                root:        true,
-                enable:      "false && me.platform.os == 'linux'",
+                }, {
+                    home:       '${SRC}',
+                    from:       [
+                                '${INC}/me.h',
+                                'src/esp.h',
+                                'src/edi.h',
+                                'src/paks/osdep/osdep.h',
+                                'src/paks/appweb/appweb.h',
+                                'src/paks/est/est.h',
+                                'src/paks/http/http.h',
+                                'src/paks/mpr/mpr.h',
+                                'src/paks/pcre/pcre.h',
+                                'src/paks/sqlite/sqlite3.h',
+                    ],
+                    to:         '${vapp}/inc/',
+                    symlink:    '${inc}/esp/',
+                }
+            ],
+            doc: [
+                { 
+                    from:       '${SRC}/doc/documents/man/esp.1',
+                    to:         '${adoc}/man/man1/',
+                    symlink:    '${man}/man1/',
+                    enable:     "me.platform.like == 'unix'",
+                }
+            ],
+            service: [
+                {
+                    name:        'Launch daemon script'
+                    from:        '${SRC}/package/macosx/com.embedthis.esp.plist',
+                    to:          '${root}/Library/LaunchDaemons/com.embedthis.esp.plist',
+                    permissions: 0644,
+                    user:        'root',
+                    group:       'wheel',
+                    root:        true,
+                    enable:      "me.platform.os == 'macosx'",
 
-            },{
-                from:       [
-                    '${INC}/me.h',
-                    'src/esp.h',
-                    'src/edi.h',
-                    'src/paks/osdep/osdep.h',
-                    'src/paks/appweb/appweb.h',
-                    'src/paks/est/est.h',
-                    'src/paks/http/http.h',
-                    'src/paks/mpr/mpr.h',
-                    'src/paks/pcre/pcre.h',
-                    'src/paks/sqlite/sqlite3.h',
-                ],
-                to:         '${vapp}/inc/',
-                set:        'libs',
-                linkin:     '${inc}/esp',
+                }, {
+                    name:        'Init script'
+                    from:        '${SRC}/package/linux/${settings.name}.init',
+                    to:          '${root}/etc/init.d/${settings.name}',
+                    permissions: 0755,
+                    user:        'root',
+                    group:       'root',
+                    root:        true,
+                    enable:      "me.platform.os == 'linux'",
 
-            /* Source Set */
-            },{ from:   [ '*.md' ],
-                to:     '${src}/',
-                fold:   true,
-                expand: true,
-                set:    'source',
+                }, {
+                    name:        'Upstart script'
+                    from:        '${SRC}/package/linux/${settings.name}.upstart',
+                    to:          '${root}/etc/init/${settings.name}.conf',
+                    permissions: 0644,
+                    user:        'root',
+                    group:       'root',
+                    root:        true,
+                    enable:      "false && me.platform.os == 'linux'",
+                /* Source Set */
+                }
+            ],
+            source: [
+                {
+                    from:       '${SRC}/*.md',
+                    to:         '${src}/',
+                    fold:       true,
+                    patch:      true,
 
-            },{ from:   [ 'configure' ],
-                to:     '${src}/',
-                permissions: 0755,     
-                set:    'source',
+                }, { 
+                    from:       '${SRC}/configure',
+                    to:         '${src}/',
+                    permissions: 0755,     
 
-            },{ from:   [ 'Makefile', 'make.bat', 'main.me', 'package.json', 'src', 'doc', 'projects', 'package' ],
-                to:     '${src}/',
-                set:    'source',
+                }, { 
+                    home:       '${SRC}',
+                    from: [ 
+                                'Makefile', 
+                                'make.bat', 
+                                'main.me', 
+                                'package.json', 
+                                'src', 
+                                'doc', 
+                                'projects', 
+                                'package' 
+                    ],
+                    to:     '${src}/',
+                }
+            ],
+            pak: [
+                {
+                    from:       '${SRC}/package/esp.me',
+                    to:         '${src}/esp.me',
 
-            /*
-                Pak set
-             */
-            },{
-                from:       'package/esp.me',
-                to:         '${src}/esp.me',
-                set:        'pak',
+                }, {
+                    home:       '${SRC}',
+                    from:       [
+                        'src/edi.h',
+                        'src/mdb.h',
+                        'src/esp.h',
+                    ],
+                    to:         '${src}/esp.h',
+                    append:     true, 
+                    filter:     /^#inc.*edi.*$|^#inc.*mdb.*$/mg,
+                    header:     '/*\n * ${settings.title} Library Source\n */\n#include "me.h"\n\n#if ME_COM_ESP\n\n#include "osdep.h"\n#include "appweb.h"\n\n#ifndef ESP_VERSION\n    #define ESP_VERSION "${settings.version}"\n#endif',
+                    footer:     '#endif /* ME_COM_ESP */',
 
-            },{
-                from:       [
-                    'src/edi.h',
-                    'src/mdb.h',
-                    'src/esp.h',
-                ],
-                to:         '${src}/esp.h',
-                cat:        true, 
-                remove:     /^#inc.*edi.*$|^#inc.*mdb.*$/mg,
-                header:     '#include "me.h"\n\n#if ME_COM_ESP\n\n#include "osdep.h"\n#include "appweb.h"\n\n#ifndef ESP_VERSION\n    #define ESP_VERSION "${settings.version}"\n#endif',
-                footer:     '#endif /* ME_COM_ESP */',
-                title:      '${settings.title} Library Source',
-                set:        'pak',
+                }, {
+                    from:       '${SRC}/src/*.c', 
+                    to:         '${src}/espLib.c',
+                    append:     true,                                                                                         
+                    filter:     /^#inc.*appweb.*$|^#inc.*esp.*$|^#inc.*edi.*$|^#inc.*mdb.*$|^#inc.*customize.*$/mg,
+                    exclude:    /esp.c$|\/paks\//,
+                    header:     '/*\n * ${settings.title} Library Source\n */\n#include "esp.h"\n\n#if ME_COM_ESP',
+                    footer:     '#endif /* ME_COM_ESP */',
 
-            },{
-                from:       ['src/*.c'], 
-                to:         '${src}/espLib.c',
-                cat:        true,                                                                                         
-                remove:     /^#inc.*appweb.*$|^#inc.*esp.*$|^#inc.*edi.*$|^#inc.*mdb.*$|^#inc.*customize.*$/mg,
-                exclude:    /esp.c$|\/paks\//,
-                header:     '#include "esp.h"\n\n#if ME_COM_ESP',
-                footer:     '#endif /* ME_COM_ESP */',
-                title:      '${settings.title} Library Source',
-                set:        'pak',
+                }, {
+                    from:       '${SRC}/src/esp.c', 
+                    to:         '${src}/esp.c',
 
-            },{
-                from:       'src/esp.c', 
-                to:         '${src}/esp.c',
-                set:        'pak',
-            },{
-                from:       'src/esp.conf', 
-                to:         '${src}/esp.conf',
-                set:        'pak',
-            },{
-                from:   [
-                             'doc/documents/ref/api/esp.*', 'doc/documents/ref/api/edi.*',
-                ],
-                to:         '${src}/doc/api/',
-                set:        'pak',
-            },{
-                from:       'doc/documents/man/*.1',
-                exclude:    /appman|appweb.1|appwebMonitor|makerom|manager|http.1|authpass.1/,
-                to:         '${src}/doc/documents/man/',
-                set:        'pak',
-            }
-        ],
+                }, {
+                    from:       '${SRC}/src/esp.conf', 
+                    to:         '${src}/esp.conf',
+
+                }, {
+                    home:       '${SRC}',
+                    from:   [
+                                'doc/documents/ref/api/esp.*', 
+                                'doc/documents/ref/api/edi.*',
+                    ],
+                    to:         '${src}/doc/api/',
+
+                }, {
+                    from:       '${SRC}/doc/documents/man/*.1',
+                    exclude:    /appman|appweb.1|appwebMonitor|makerom|manager|http.1|authpass.1/,
+                    to:         '${src}/doc/documents/man/',
+                }
+            ],
+        }
     },
 })

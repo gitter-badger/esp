@@ -1,21 +1,15 @@
 /*
-    appwebLib.c -- Embedthis Appweb Library Source
-
-    This file is a catenation of all the source code. Amalgamating into a
-    single file makes embedding simpler and the resulting application faster.
-
-    Prepared by: orion.local
+ * Embedthis Appweb Library Source
  */
 
 #include "appweb.h"
 
 #if ME_COM_APPWEB
 
-/************************************************************************/
-/*
-    Start of file "src/config.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/config.c ************/
+
 
 /**
     config.c - Parse the configuration file.
@@ -3346,11 +3340,10 @@ PUBLIC int maLoadModule(cchar *name, cchar *libname)
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/convenience.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/convenience.c ************/
+
 
 /*
     convenience.c -- High level convenience API
@@ -3492,11 +3485,10 @@ PUBLIC int maRunWebClient(cchar *method, cchar *uri, cchar *data, char **respons
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/modules/cgiHandler.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/modules/cgiHandler.c ************/
+
 
 /* 
     cgiHandler.c -- Common Gateway Interface Handler
@@ -4564,11 +4556,10 @@ PUBLIC int maCgiHandlerInit(Http *http, MprModule *module)
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/modules/ejsHandler.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/modules/ejsHandler.c ************/
+
 
 /*
     ejsHandler.c -- Ejscript language request handler for the Ejscript Web Framework.
@@ -4751,11 +4742,10 @@ PUBLIC int maEjsHandlerInit(Http *http, MprModule *module)
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/modules/phpHandler.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/modules/phpHandler.c ************/
+
 
 /*
     phpHandler.c - Appweb PHP handler
@@ -5334,11 +5324,10 @@ PUBLIC int maPhpHandlerInit(Http *http, MprModule *module)
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/modules/sslModule.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/modules/sslModule.c ************/
+
 
 /*
     sslModule.c - Module for SSL support
@@ -5639,11 +5628,10 @@ PUBLIC int maSslModuleInit(Http *http, MprModule *mp)
     @end
  */
 
-/************************************************************************/
-/*
-    Start of file "src/romFiles.c"
- */
-/************************************************************************/
+
+
+/********* Start of file ../../../src/romFiles.c ************/
+
 
 /*
     romFiles -- Compiled Files
@@ -20683,4 +20671,5 @@ PUBLIC MprRomInode romFiles[] = {
     { 0, 0, 0, 0 },
 };
 #endif /* ME_ROM */
+
 #endif /* ME_COM_APPWEB */
