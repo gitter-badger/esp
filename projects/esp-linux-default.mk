@@ -65,7 +65,7 @@ ME_LIB_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/lib
 ME_MAN_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/share/man
 ME_SBIN_PREFIX        ?= $(ME_ROOT_PREFIX)/usr/local/sbin
 ME_ETC_PREFIX         ?= $(ME_ROOT_PREFIX)/etc/$(NAME)
-ME_WEB_PREFIX         ?= $(ME_ROOT_PREFIX)/var/www/$(NAME)-default
+ME_WEB_PREFIX         ?= $(ME_ROOT_PREFIX)/var/www/$(NAME)
 ME_LOG_PREFIX         ?= $(ME_ROOT_PREFIX)/var/log/$(NAME)
 ME_SPOOL_PREFIX       ?= $(ME_ROOT_PREFIX)/var/spool/$(NAME)
 ME_CACHE_PREFIX       ?= $(ME_ROOT_PREFIX)/var/spool/$(NAME)/cache
@@ -145,7 +145,6 @@ clean:
 clobber: clean
 	rm -fr ./$(BUILD)
 
-
 #
 #   appweb.h
 #
@@ -189,6 +188,7 @@ $(BUILD)/inc/est.h: $(DEPS_4)
 #
 #   me.h
 #
+
 $(BUILD)/inc/me.h: $(DEPS_5)
 
 #
@@ -258,6 +258,7 @@ $(BUILD)/inc/sqlite3.h: $(DEPS_11)
 #
 #   appweb.h
 #
+
 src/paks/appweb/appweb.h: $(DEPS_12)
 
 #
@@ -275,6 +276,7 @@ $(BUILD)/obj/appwebLib.o: \
 #
 #   edi.h
 #
+
 src/edi.h: $(DEPS_14)
 
 #
@@ -291,6 +293,7 @@ $(BUILD)/obj/edi.o: \
 #
 #   esp.h
 #
+
 src/esp.h: $(DEPS_16)
 
 #
@@ -357,6 +360,7 @@ $(BUILD)/obj/espTemplate.o: \
 #
 #   est.h
 #
+
 src/paks/est/est.h: $(DEPS_23)
 
 #
@@ -372,6 +376,7 @@ $(BUILD)/obj/estLib.o: \
 #
 #   http.h
 #
+
 src/paks/http/http.h: $(DEPS_25)
 
 #
@@ -387,6 +392,7 @@ $(BUILD)/obj/httpLib.o: \
 #
 #   mpr.h
 #
+
 src/paks/mpr/mpr.h: $(DEPS_27)
 
 #
@@ -402,6 +408,7 @@ $(BUILD)/obj/manager.o: \
 #
 #   mdb.h
 #
+
 src/mdb.h: $(DEPS_29)
 
 #
@@ -441,6 +448,7 @@ $(BUILD)/obj/mprSsl.o: \
 #
 #   pcre.h
 #
+
 src/paks/pcre/pcre.h: $(DEPS_33)
 
 #
@@ -468,6 +476,7 @@ $(BUILD)/obj/sdb.o: \
 #
 #   sqlite3.h
 #
+
 src/paks/sqlite/sqlite3.h: $(DEPS_36)
 
 #
@@ -490,7 +499,6 @@ $(BUILD)/bin/esp.conf: $(DEPS_38)
 	@echo '      [Copy] $(BUILD)/bin/esp.conf'
 	mkdir -p "$(BUILD)/bin"
 	cp src/esp.conf $(BUILD)/bin/esp.conf
-
 
 #
 #   http-ca-crt
@@ -602,6 +610,9 @@ endif
 ifeq ($(ME_COM_APPWEB),1)
     DEPS_46 += $(BUILD)/bin/libappweb.so
 endif
+ifeq ($(ME_COM_SQLITE),1)
+    DEPS_46 += $(BUILD)/bin/libsql.so
+endif
 DEPS_46 += $(BUILD)/inc/edi.h
 DEPS_46 += $(BUILD)/inc/esp.h
 DEPS_46 += $(BUILD)/inc/mdb.h
@@ -637,6 +648,9 @@ $(BUILD)/bin/libmod_esp.so: $(DEPS_46)
 #   libmprssl
 #
 DEPS_47 += $(BUILD)/bin/libmpr.so
+ifeq ($(ME_COM_EST),1)
+    DEPS_47 += $(BUILD)/bin/libest.so
+endif
 DEPS_47 += $(BUILD)/obj/mprSsl.o
 
 LIBS_47 += -lmpr
@@ -672,9 +686,10 @@ $(BUILD)/bin/espman: $(DEPS_48)
 #
 #   installBinary
 #
+
 installBinary: $(DEPS_49)
 	( \
-	cd .; \
+	cd ../../.paks/me-package/0.8.3; \
 	mkdir -p "$(ME_APP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	ln -s "5.2.0" "$(ME_APP_PREFIX)/latest" ; \
@@ -683,10 +698,50 @@ installBinary: $(DEPS_49)
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
 	rm -f "$(ME_BIN_PREFIX)/esp" ; \
 	ln -s "$(ME_VAPP_PREFIX)/bin/esp" "$(ME_BIN_PREFIX)/esp" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
 	cp $(BUILD)/bin/espman $(ME_VAPP_PREFIX)/bin/espman ; \
 	mkdir -p "$(ME_BIN_PREFIX)" ; \
 	rm -f "$(ME_BIN_PREFIX)/espman" ; \
 	ln -s "$(ME_VAPP_PREFIX)/bin/espman" "$(ME_BIN_PREFIX)/espman" ; \
+	if [ "$(ME_COM_OPENSSL)" = 1 ]; then true ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+	cp $(BUILD)/bin/libssl*.so* $(ME_VAPP_PREFIX)/bin/libssl*.so* ; \
+	cp $(BUILD)/bin/libcrypto*.so* $(ME_VAPP_PREFIX)/bin/libcrypto*.so* ; \
+	fi ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+	cp $(BUILD)/bin/ca.crt $(ME_VAPP_PREFIX)/bin/ca.crt ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0" ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/all.css $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/all.css ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/all.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/all.less ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/app.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/app.less ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/appweb.conf ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/controller.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/controller.c ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/controllerSingleton.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/controllerSingleton.c ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/default.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/default.esp ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/edit.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/edit.esp ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/favicon.ico $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/favicon.ico ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/index.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/index.esp ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/LICENSE.md ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/list.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/list.esp ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/package.json ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/README.md ; \
+	cp ../../../git/esp/src/paks/esp-html-mvc/theme.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/theme.less ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0" ; \
+	cp ../../../git/esp/src/paks/esp-mvc/app.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/app.c ; \
+	cp ../../../git/esp/src/paks/esp-mvc/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/appweb.conf ; \
+	cp ../../../git/esp/src/paks/esp-mvc/controller.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/controller.c ; \
+	cp ../../../git/esp/src/paks/esp-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/LICENSE.md ; \
+	cp ../../../git/esp/src/paks/esp-mvc/migration.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/migration.c ; \
+	cp ../../../git/esp/src/paks/esp-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/package.json ; \
+	cp ../../../git/esp/src/paks/esp-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/README.md ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.2.0" ; \
+	cp ../../../git/esp/src/paks/esp-server/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/appweb.conf ; \
+	cp ../../../git/esp/src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/LICENSE.md ; \
+	cp ../../../git/esp/src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/package.json ; \
+	cp ../../../git/esp/src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/README.md ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+	cp $(BUILD)/bin/esp.conf $(ME_VAPP_PREFIX)/bin/esp.conf ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
 	cp $(BUILD)/bin/libappweb.so $(ME_VAPP_PREFIX)/bin/libappweb.so ; \
 	cp $(BUILD)/bin/libhttp.so $(ME_VAPP_PREFIX)/bin/libhttp.so ; \
 	cp $(BUILD)/bin/libmpr.so $(ME_VAPP_PREFIX)/bin/libmpr.so ; \
@@ -694,60 +749,10 @@ installBinary: $(DEPS_49)
 	cp $(BUILD)/bin/libpcre.so $(ME_VAPP_PREFIX)/bin/libpcre.so ; \
 	cp $(BUILD)/bin/libsql.so $(ME_VAPP_PREFIX)/bin/libsql.so ; \
 	cp $(BUILD)/bin/libmod_esp.so $(ME_VAPP_PREFIX)/bin/libmod_esp.so ; \
-	if [ "$(ME_COM_OPENSSL)" = 1 ]; then true ; \
-	cp $(BUILD)/bin/libssl*.so* $(ME_VAPP_PREFIX)/bin/libssl*.so* ; \
-	cp $(BUILD)/bin/libcrypto*.so* $(ME_VAPP_PREFIX)/bin/libcrypto*.so* ; \
-	fi ; \
 	if [ "$(ME_COM_EST)" = 1 ]; then true ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
 	cp $(BUILD)/bin/libest.so $(ME_VAPP_PREFIX)/bin/libest.so ; \
 	fi ; \
-	cp $(BUILD)/bin/ca.crt $(ME_VAPP_PREFIX)/bin/ca.crt ; \
-	cp package/uninstall.sh $(ME_VAPP_PREFIX)/bin/uninstall ; \
-	chmod 755 "$(ME_VAPP_PREFIX)/bin/uninstall" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/assets" ; \
-	cp src/paks/esp-html-mvc/client/assets/favicon.ico $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/assets/favicon.ico ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/css" ; \
-	cp src/paks/esp-html-mvc/client/css/all.css $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/css/all.css ; \
-	cp src/paks/esp-html-mvc/client/css/all.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/css/all.less ; \
-	cp src/paks/esp-html-mvc/client/index.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/client/index.esp ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/css" ; \
-	cp src/paks/esp-html-mvc/css/app.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/css/app.less ; \
-	cp src/paks/esp-html-mvc/css/theme.less $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/css/theme.less ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate" ; \
-	cp src/paks/esp-html-mvc/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate/appweb.conf ; \
-	cp src/paks/esp-html-mvc/generate/controller.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate/controller.c ; \
-	cp src/paks/esp-html-mvc/generate/controllerSingleton.c $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate/controllerSingleton.c ; \
-	cp src/paks/esp-html-mvc/generate/edit.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate/edit.esp ; \
-	cp src/paks/esp-html-mvc/generate/list.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/generate/list.esp ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/layouts" ; \
-	cp src/paks/esp-html-mvc/layouts/default.esp $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/layouts/default.esp ; \
-	cp src/paks/esp-html-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/LICENSE.md ; \
-	cp src/paks/esp-html-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/package.json ; \
-	cp src/paks/esp-html-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0/README.md ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate" ; \
-	cp src/paks/esp-mvc/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate/appweb.conf ; \
-	cp src/paks/esp-mvc/generate/controller.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate/controller.c ; \
-	cp src/paks/esp-mvc/generate/migration.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate/migration.c ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate/src" ; \
-	cp src/paks/esp-mvc/generate/src/app.c $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/generate/src/app.c ; \
-	cp src/paks/esp-mvc/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/LICENSE.md ; \
-	cp src/paks/esp-mvc/package.json $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/package.json ; \
-	cp src/paks/esp-mvc/README.md $(ME_VAPP_PREFIX)/esp/esp-mvc/5.2.0/README.md ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.2.0" ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/generate" ; \
-	cp src/paks/esp-server/generate/appweb.conf $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/generate/appweb.conf ; \
-	cp src/paks/esp-server/LICENSE.md $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/LICENSE.md ; \
-	cp src/paks/esp-server/package.json $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/package.json ; \
-	cp src/paks/esp-server/README.md $(ME_VAPP_PREFIX)/esp/esp-server/5.2.0/README.md ; \
-	cp $(BUILD)/bin/esp.conf $(ME_VAPP_PREFIX)/bin/esp.conf ; \
-	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
-	cp doc/documents/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
-	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
-	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
-	ln -s "$(ME_VAPP_PREFIX)/doc/man/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1" ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/inc" ; \
 	cp $(BUILD)/inc/me.h $(ME_VAPP_PREFIX)/inc/me.h ; \
 	mkdir -p "$(ME_INC_PREFIX)/esp" ; \
@@ -789,6 +794,11 @@ installBinary: $(DEPS_49)
 	mkdir -p "$(ME_INC_PREFIX)/esp" ; \
 	rm -f "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
 	ln -s "$(ME_VAPP_PREFIX)/inc/sqlite3.h" "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
+	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
+	cp doc/documents/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
+	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
+	ln -s "$(ME_VAPP_PREFIX)/doc/man/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1" ; \
 	)
 
 
@@ -808,7 +818,7 @@ DEPS_51 += stop
 
 uninstall: $(DEPS_51)
 	( \
-	cd .; \
+	cd ../../.paks/me-package/0.8.3; \
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	rmdir -p "$(ME_APP_PREFIX)" 2>/dev/null ; true ; \
@@ -817,6 +827,7 @@ uninstall: $(DEPS_51)
 #
 #   version
 #
+
 version: $(DEPS_52)
 	echo 5.2.0
 

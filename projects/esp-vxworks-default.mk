@@ -151,7 +151,6 @@ clean:
 clobber: clean
 	rm -fr ./$(BUILD)
 
-
 #
 #   appweb.h
 #
@@ -195,6 +194,7 @@ $(BUILD)/inc/est.h: $(DEPS_4)
 #
 #   me.h
 #
+
 $(BUILD)/inc/me.h: $(DEPS_5)
 
 #
@@ -264,6 +264,7 @@ $(BUILD)/inc/sqlite3.h: $(DEPS_11)
 #
 #   appweb.h
 #
+
 src/paks/appweb/appweb.h: $(DEPS_12)
 
 #
@@ -281,6 +282,7 @@ $(BUILD)/obj/appwebLib.o: \
 #
 #   edi.h
 #
+
 src/edi.h: $(DEPS_14)
 
 #
@@ -297,6 +299,7 @@ $(BUILD)/obj/edi.o: \
 #
 #   esp.h
 #
+
 src/esp.h: $(DEPS_16)
 
 #
@@ -363,6 +366,7 @@ $(BUILD)/obj/espTemplate.o: \
 #
 #   est.h
 #
+
 src/paks/est/est.h: $(DEPS_23)
 
 #
@@ -378,6 +382,7 @@ $(BUILD)/obj/estLib.o: \
 #
 #   http.h
 #
+
 src/paks/http/http.h: $(DEPS_25)
 
 #
@@ -393,6 +398,7 @@ $(BUILD)/obj/httpLib.o: \
 #
 #   mpr.h
 #
+
 src/paks/mpr/mpr.h: $(DEPS_27)
 
 #
@@ -408,6 +414,7 @@ $(BUILD)/obj/manager.o: \
 #
 #   mdb.h
 #
+
 src/mdb.h: $(DEPS_29)
 
 #
@@ -447,6 +454,7 @@ $(BUILD)/obj/mprSsl.o: \
 #
 #   pcre.h
 #
+
 src/paks/pcre/pcre.h: $(DEPS_33)
 
 #
@@ -474,6 +482,7 @@ $(BUILD)/obj/sdb.o: \
 #
 #   sqlite3.h
 #
+
 src/paks/sqlite/sqlite3.h: $(DEPS_36)
 
 #
@@ -496,7 +505,6 @@ $(BUILD)/bin/esp.conf: $(DEPS_38)
 	@echo '      [Copy] $(BUILD)/bin/esp.conf'
 	mkdir -p "$(BUILD)/bin"
 	cp src/esp.conf $(BUILD)/bin/esp.conf
-
 
 #
 #   http-ca-crt
@@ -595,6 +603,9 @@ endif
 ifeq ($(ME_COM_APPWEB),1)
     DEPS_46 += $(BUILD)/bin/libappweb.out
 endif
+ifeq ($(ME_COM_SQLITE),1)
+    DEPS_46 += $(BUILD)/bin/libsql.out
+endif
 DEPS_46 += $(BUILD)/inc/edi.h
 DEPS_46 += $(BUILD)/inc/esp.h
 DEPS_46 += $(BUILD)/inc/mdb.h
@@ -616,6 +627,9 @@ $(BUILD)/bin/libmod_esp.out: $(DEPS_46)
 #   libmprssl
 #
 DEPS_47 += $(BUILD)/bin/libmpr.out
+ifeq ($(ME_COM_EST),1)
+    DEPS_47 += $(BUILD)/bin/libest.out
+endif
 DEPS_47 += $(BUILD)/obj/mprSsl.o
 
 ifeq ($(ME_COM_OPENSSL),1)
@@ -645,6 +659,7 @@ $(BUILD)/bin/espman.out: $(DEPS_48)
 #
 #   installBinary
 #
+
 installBinary: $(DEPS_49)
 
 
@@ -667,6 +682,7 @@ uninstall: $(DEPS_51)
 #
 #   version
 #
+
 version: $(DEPS_52)
 	echo 5.2.0
 

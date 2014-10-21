@@ -3,12 +3,16 @@
  */
 
 Me.load({
+    plugins: [ 'configuration' ],
+
     blend: [
-        "src/paks/*/*.me",
-        "samples/samples.me",
-        "src/esp.me",
-        "test/test.me",
-        "doc/doc.me",
+        'appweb',
+        'sqlite',
+        
+        'samples/samples.me',
+        'src/esp.me',
+        'test/test.me',
+        'doc/doc.me',
     ],
 
     configure: {
@@ -74,7 +78,7 @@ Me.load({
     scripts: {
         loaded: `
             me.targets.httpcmd.enable = false
-            me.targets.makerom.enable = false
+            //MOB me.targets.makerom.enable = false
         `,
     },
 
@@ -85,9 +89,9 @@ Me.load({
         },
 
         projects: {
-            action: "
+            action: `
                 genProjects('-with est', 'default')
-            ",
+            `,
         },
     },
 
