@@ -44,9 +44,9 @@
             flexible library file.</p>
             <h3>Garbage Collection</h3>
             <p>ESP uses <a href="../ref/memory.html#collector">Garbage Collection</a> 
-            for managing ESP and Appweb memory. This makes working with ESP pages 
-            and embedded "C" code simpler and more secure. Any memory allocated by Appweb or ESP APIs is automatically
-            managed by the Appweb garbage collector. You do not need to free such memory. You can still use the normal
+            for managing memory. This makes working with ESP pages 
+            and embedded "C" code simpler and more secure. Any memory allocated by ESP is automatically
+            managed by the garbage collector. You do not need to free such memory. You can still use the normal
             malloc and free APIs if you wish. Just don't mix the two kinds of memory.</p>
             <p>The use of garbage collection enables the use of decorator patterns and API chaining where the outputs of one
             function can be used as arguments to others. If you need to manually free memory, this style of programming

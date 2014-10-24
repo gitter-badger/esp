@@ -169,7 +169,7 @@ $ <b>esp install esp-server</b>
             generate the application. The PACKS are optional extension packs for the 
             generated application. The standard packs included with ESP are:</p>
             <ul>
-<li>esp-server &mdash; Default ESP service-side configuration for Appweb</li>
+<li>esp-server &mdash; Default ESP service-side configuration</li>
 <li>esp-mvc &mdash; ESP server-side MVC application skeleton</li>
 <li>esp-html-mvc &mdash; ESP server-side MVC application skeleton</li>
             </ul>
@@ -381,8 +381,7 @@ $ <b>esp compile</b>
             <em>--config</em> esp option may also contain a full path to an appweb.conf file. </p>
             <p>An appweb.conf file may contain directives for one more more applications.
             It will usually contain many routes for various URIs. When "<em>esp compile</em>" is invoked without any
-            filtering arguments, esp will compile the resources managed by each of the ESP routes specified in the 
-            Appweb configuration file. </p>
+            filtering arguments, esp will compile the resources managed by each of the ESP routes.</p>
             <h3>Filtering</h3>
             <p>If "<em>esp compile</em>" is invoked with one or more paths on the command line, these paths will act as 
             filters such that only the designated paths will be compiled. For example:</p>
