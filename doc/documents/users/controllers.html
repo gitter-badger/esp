@@ -65,7 +65,7 @@ http://example.com/APP/CONTROLLER/ACTION/ID
         They map common <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> 
         operations to specific URIs and controller actions.</p>
         <p>ESP will create a initial set of Restful routes depending on the <em>esp.server.routes</em> configuration.</p>
-<table title="routes">
+<table class="ui table" title="routes">
     <thead>
 <tr><th>Name</th><th>Method</th><th>Pattern</th><th>Action</th></tr>
     </thead>
@@ -252,7 +252,7 @@ static void first() {
             TCP/IP connection. By using HTTP KeepAlive, the connection may be utilized for multiple requests. The fields
             of the HttpConn object are public and can be accessed and
             navigated.</p> 
-            <table title="properties">
+            <table class="table ui" title="properties">
                 <thead>
                     <tr><th>HttpConn Property</th><th>Purpose</th></tr>
                 </thead>
@@ -271,7 +271,7 @@ static void first() {
             <p>The <a href="../ref/api/http.html#group___http_rx">HttpRx</a> object represents the receive side of the
             HTTP protocol. On the server, it holds state regarding the client HTTP request. The fields of the HttpRx
             object are public and can be accessed and navigated.</p> 
-            <table title="fields">
+            <table class="table ui" title="fields">
                 <thead>
                     <tr><th>HttpRx Property</th><th>Purpose</th></tr>
                 </thead>
@@ -290,7 +290,7 @@ static void first() {
             <p>The <a href="../ref/api/http.html#group___http_tx">HttpTx</a> object represents the transmit side of the
             HTTP protocol. On the server, it holds state regarding the response to the client. The fields of the HttpTx
             object are public and can be accessed and navigated.</p> 
-            <table title="state">
+            <table class="table ui" title="state">
                 <thead>
                     <tr><th>HttpTx Property</th><th>Purpose</th></tr>
                 </thead>
@@ -307,7 +307,7 @@ static void first() {
             <a id="models"></a>
             <h3>Sample of ESP API</h3>
             <p>Here are a few of the ESP APIs that may be used inside controller actions:</p>
-            <table title="viewClass">
+            <table class="table ui" title="viewClass">
                 <thead>
                     <tr>
                         <th class="nowrap">Method / Property</th>

@@ -40,10 +40,11 @@
             ESP must be used for a request to be serviced. By using a well defined sandbox, you can help
             ensure that your application will not be compromised by malicious requests. You should customize the
             sandbox limits to use minimum values and thus provide the most protection.</p>
+
             <h3>Security Limit Directives</h3>
             <p>The ESP security limits can be used to effectively block some denial of service attacks. 
             Limits should be set as low as possible while still permitting all valid requests and workloads.</p>
-            <p>Setting the LimitRequestsPerClient to a low value can restrict the ability of a malicious client to monopolize
+            <p>Setting the <a href="config.html#limits">app.http.limits.requests</a> to a low value can restrict the ability of a malicious client to monopolize
             the server. One attack method for denial of service attacks is to initiate requests, but not conclude the
             request headers. The server is then forced to wait for the client to complete the request before it can
             act. However, setting the RequestParseTimeout directive to a low value will abort such requests and prevent
@@ -65,10 +66,7 @@
                         <td>Maximum number of network connections. Note a client can open many network connections. A browser
                             session will typically open 4-6 connections.</td>
                     </tr>
-                    <tr>
-                        <td class="pivot">app.http.limits.requests</td>
-                        <td>Maximum number of simultaneous requests from a single client IP</td>
-                    </tr>
+
                     <tr>
                         <td class="pivot">app.http.limits.clients</td>
                         <td>Maximum number of simultaneous clients</td>
@@ -104,6 +102,10 @@
                     <tr>
                         <td class="pivot">app.http.limits.requestHeader</td>
                         <td>Maximum size of the request header</td>
+                    </tr>
+                    <tr>
+                        <td class="pivot">app.http.limits.requests</td>
+                        <td>Maximum number of simultaneous requests from a single client IP</td>
                     </tr>
                     <tr>
                         <td class="pivot">app.http.limits.uri</td>

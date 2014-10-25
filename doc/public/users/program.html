@@ -141,14 +141,14 @@
             <h1>ESP Utility &mdash; <em>esp</em></h1>
             <p>ESP provides an ESP application manager named <em>esp</em>. 
             This program makes it easy and quick to create and manage your web applications. The <em>esp</em> 
-            runs ESP applications but it also compiles ESP pages and controllers and generates MVC web 
+            program runs ESP applications and it also compiles ESP pages, controllers and generates MVC web 
             applications, database schema, scaffolds and views. 
             <p>The <em>esp</em> program is not just for MVC applications. It can be used to pre-compile stand-alone
             ESP web pages too.</p> 
             <a id="generating"></a>
             <h2 >Creating Applications</h2>
             <p>To start a new web application, create a directory named for the application then run 
-            <em>esp</em> to install the required Paks to initialize the application. 
+            "<em>esp install</em>" to install the required Paks to initialize the application. 
             For example:</p>
             <pre class="ui code segment">$ <b>mkdir blog</b>
 $ <b>cd blog</b>
@@ -160,46 +160,44 @@ $ <b>esp install esp-server</b>
     [Create] client/paks/esp-server/README.md
     [Create] templates/esp-server/appweb.conf
       [Info] esp-server successfully installed</pre>
-            <p>This installs the bare minimum application without additional packs. The <em>pacakge.conf</em> file
-            is an ESP configuration file. This defines the configuration to run your application.
-            The templates directory contains components that can be generated at a later stage.</p>
+            <p>This installs the bare minimum ESP application without additional packs. The <em>pacakge.json</em> file
+            contains the ESP configuration.</p>
             <p>The format of the "<em>esp install</em>" command is:</p>
             <pre class="ui code segment">$ <b>esp install [PACKS...]</b></pre>
-            <p>The given NAME is the name of the application and also the name of the directory into which esp will
-            generate the application. The PACKS are optional extension packs for the 
+            <p>The PACKS are optional extension packs for the 
             generated application. The standard packs included with ESP are:</p>
             <ul>
 <li>esp-server &mdash; Default ESP service-side configuration</li>
 <li>esp-mvc &mdash; ESP server-side MVC application skeleton</li>
 <li>esp-html-mvc &mdash; ESP server-side MVC application skeleton</li>
             </ul>
-            <p>You can also install packs from a wide variety from the online 
+            <p>You can also install packs from a wide variety paks published in the online 
             <a href="https://embedthis.com/catalog/">Pak Catalog</a> by using the 
             <a href="https://embedthis.com/pak/">Pak Manager</a>.
             <p> For example:</p>
             <pre class="ui code segment">
 $ <b>pak install esp-angular-mvc</b></pre>
-            <p>Once Pak has downloaded the desired pack, it will save a copy locally. Thereafter, you can use
+            <p>Once Pak has downloaded the desired pack, it will save a copy locally in the Pak cache. 
+            Thereafter, you can use
             <em>esp</em> to install that pack in other applications. You can also use <em>pak</em> to pre-load
             the Pak cache via the <em>pak cache</em> command.</p>
             <h3>Pack Dependencies</h3>
             <p>Pack may depend on other packs. The <em>esp</em> program will resolve these 
             dependencies and install all the required packs. For example: the 
-            <em>esp-angular-mvc</em> pack depends on: angular, esp-angular-session, esp-angular, 
-            less and more packs. After installing, the pack dependencies are described in the
+            <em>esp-angular-mvc</em> pack depends on the: angular, esp-angular-session, esp-angular and
+            less packs. After installing, the pack dependencies are described in the
             <em>package.json</em> file in the <em>dependencies</em> property.</p>
             <h3>Overwriting</h3>
             <p>The <em>esp</em> command will create directories and configuration and 
             source code files that can then be manually edited as required. The <em>esp</em> 
-            command is intelligent and will not overwrite existing files after you have install and modified files.
-            So you can safely edit without losing your changes. 
-            You can add packs at any time by installing additional packs. 
-            You can overwrite your changes if you wish to by using the <em>--overwrite</em> switch.</p>
+            command is intelligent and will not overwrite existing files after you have install and modified files 
+            &mdash; so you can safely edit without losing your changes. 
+            <p>You can overwrite your changes if you wish to by using the <em>--overwrite</em> switch.</p>
             
             <h3>Created Directories</h3>
             <p>The <em>esp</em> command will create directories as required when generating an application.
             Not all these directories will be created depending on the generated packs.</p>
-            <table title="Directories">
+            <table class="ui table" title="Directories">
                 <thead>
                     <tr>
                         <th>Directory</th>
@@ -230,14 +228,6 @@ $ <b>pak install esp-angular-mvc</b></pre>
                         <td>Client side CSS</td>
                     </tr>
                     <tr>
-                        <td>layouts</td>
-                        <td>Layout template pages</td>
-                    </tr>
-                    <tr>
-                        <td>client/paks</td>
-                       <td>Installed packs</td>
-                    </tr>
-                    <tr>
                         <td>controllers</td>
                         <td>Controller source</td>
                     </tr>
@@ -246,13 +236,22 @@ $ <b>pak install esp-angular-mvc</b></pre>
                         <td>Databases and scripts</td>
                     </tr>
                     <tr>
+                        <td>layouts</td>
+                        <td>Layout template pages</td>
+                    </tr>
+                    <tr>
+                        <td>paks</td>
+                       <td>Installed packs</td>
+                    </tr>
+                    <tr>
                         <td>src</td>
                         <td>Other application C source code</td>
                     </tr>
                 </tbody>
             </table>
+
             <p>The <em>esp</em> command will also create some files which have the following meaning:</p>
-            <table title="Files">
+            <table class="ui table" title="Files">
                 <thead>
                     <tr>
                         <th>Files</th>
@@ -372,17 +371,12 @@ $ <b>esp compile</b>
 </pre>
             <p>This will compile and link all controllers and views and place the generated shared libraries (DLLs)
             in the <em>cache</em> directory.</p>
-            <p>If you are using static linking, use the <em>--static</em> switch to generate archive libraries instead of
-                shared libraries. If you are doing this, you must manually call the ESP initializers. See the --genlink
-                option for how to generate the code to call the ESP initializers.</p>
+            <p>If you are using static linking, use the <em>--static</em> switch to generate archive libraries instead of shared libraries. If you are doing this, you must manually call the ESP initializers. See the --genlink option for how to generate the code to call the ESP initializers.</p>
+
             <h3>Routes</h3>
-            <p>When <em>esp</em> is invoked it, loads the <em>appweb.conf</em> configuration file from the current
-            directory. If not found, esp will search up the parent directories for an appweb.conf file to use. The
-            <em>--config</em> esp option may also contain a full path to an appweb.conf file. </p>
-            <p>An appweb.conf file may contain directives for one more more applications.
-            It will usually contain many routes for various URIs. When "<em>esp compile</em>" is invoked without any
-            filtering arguments, esp will compile the resources managed by each of the ESP routes.</p>
-            <h3>Filtering</h3>
+            <p>When <em>esp</em> is invoked it, loads the <em>package.json</em> configuration file from the current directory. The <em>--home</em> esp option may be used to specify an alternative
+            home directory. </p>
+            <h3>Compiling</h3>
             <p>If "<em>esp compile</em>" is invoked with one or more paths on the command line, these paths will act as 
             filters such that only the designated paths will be compiled. For example:</p>
             <pre class="ui code segment">
@@ -397,10 +391,12 @@ $ <b>esp compile /directory/of/apps</b>
             is part of an MVC application is provided, then all resources under that directory will be compiled. 
             If a directory that is a parent directory of ESP applications or web pages, then all those
             resources contained by that directory will be compiled.</p>
-            <p>You may also use the <em>--routeName</em> or <em>--routePrefix</em> switches to select a specific route
-            in the appweb.conf configuration file. Then only the resources managed by that route will be compiled.</p>
+
+            <p>You may also use the <em>--routeName</em> or <em>--routePrefix</em> switches to select a specific ESP route
+            Then only the resources managed by that route will be compiled.</p>
+
             <h3>Keep Source</h3>
-            <p>When compiling ESP pages, the <em>EspKeepSource</em> configuration file directive will control
+            <p>When compiling ESP pages, the <em>app.http.keep</em> configuration file directive will control
             if the intermediate C source code generated from the ESP will be preserved.  This can sometimes be helpful
             for debugging. You also keep the generated source via the <em>esp --keep compile</em> option.</p> 
             
@@ -421,14 +417,16 @@ $ <b>esp compile /directory/of/apps</b>
     }
 </pre>
             <h3>Static Linking</h3>
-            <p>When using dynamic linking, appweb automatically invokes the necessary ESP initializers when running
+            <p>When using dynamic linking, ESP automatically invokes the necessary initializers when running
             ESP pages or invoking ESP controllers. However, if you are using static linking, you need to manually
             call these ESP initializers. You can generate the necessary initialization calls via the esp <em>--genlink
-                slink.c</em> switch. The generated code should be linked with your appweb main program replacing the default
+                slink.c</em> switch. The generated code should be linked with your main program replacing the default
             slink.c file.</p>
             <pre class="ui code segment">
 $ <b>esp --static --genlink slink.c</b>
 </pre>
+
+            <a name="cross"></a>
             <h3>Cross Compiling</h3>
             <p>When <em>esp compile</em> is invoked, it selects its compile and link rules from the <em>esp.conf</em>
             configuration file. This file, which may be customized, contains the rules for various operating systems
@@ -439,7 +437,7 @@ $ <b>esp --static --genlink slink.c</b>
             <p>The <em>esp</em> command can select alternate compile and link configurations via the 
             <em>--platform</em> switch. For example:</p>
             <pre class="ui code segment">
-$ <b>esp --platform vxworks-arm-debug</b>
+$ <b>esp --platform vxworks-arm-debug compile</b>
 </pre>
             <p>This will compile the application for VxWorks on arm. Of course, the resulting module cannot be 
             run on the development system if cross-compiling. 
@@ -471,7 +469,7 @@ $ <b>esp clean</b>
 ESP Usage:
   esp [options] [commands]
   Options:
-    --config appwebConfig      # Use named config file instead appweb.conf
+    --appweb appwebConfig      # Use named config file instead appweb.conf
     --database name            # Database provider 'mdb|sdb'
     --genlink filename         # Generate a static link module for combined compilations
     --home directory           # Change to directory first
@@ -514,21 +512,21 @@ ESP Usage:
     esp uninstall paks...
     esp upgrade paks...
 </pre>
-            <table title="switches">
+            <table class="ui table" title="switches">
                 <thead>
                     <tr>
-                        <th>Switch</th>
+                        <th class="four wide">Switch</th>
                         <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>--chdir dir</td>
-                        <td>Change to the specified directory.</td>
+                        <td>--appweb configFile</td>
+                        <td>Use the named config file instead of appweb.conf.</td>
                     </tr>
                     <tr>
-                        <td>--config configFile</td>
-                        <td>Use the named config file instead of appweb.conf.</td>
+                        <td>--chdir dir</td>
+                        <td>Change to the specified directory.</td>
                     </tr>
                     <tr>
                         <td class="nowrap">--database connector</td>
@@ -545,7 +543,7 @@ ESP Usage:
                     </tr>
                     <tr>
                         <td>--listen [ip:]port</td>
-                        <td>Listen on the specified address. Overrides the Listen directive in appweb.conf.</td>
+                        <td>Listen on the specified address. Overrides the Listen directive in package.json.</td>
                     </tr>
                     <tr>
                         <td>--log logFile:level</td>
@@ -580,15 +578,11 @@ ESP Usage:
                     </tr>
                     <tr>
                         <td>--routeName name</td>
-                        <td>This selects the Appweb route by name that will be used for the ESP configuration. Routes can be
-                            given an explicit name via the "Name" appweb.conf directive. Otherwise routes are named by their
-                            route pattern.</td> 
+                        <td>This selects the Appweb route by name that will be used for the ESP configuration.</td>
                     </tr>
                     <tr>
                         <td>--routePrefix prefix</td>
-                        <td>This selects the Appweb route by prefix that will be used for the ESP configuration. Routes can be
-                            given an explicit prefix via the "Prefix" appweb.conf directive. If the route prefix does not match, 
-                            the first portion of the route pattern is tested against the requested prefix.</td>
+                        <td>This selects the Appweb route by prefix that will be used for the ESP configuration.</td>
                     </tr>
                     <tr>
                         <td>--show</td>

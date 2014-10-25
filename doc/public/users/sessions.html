@@ -143,9 +143,9 @@
             The HTTP protocol by design, encourages stateless implementations and so Session state storage provides an
             essential context for a series of requests by a specific client.</p>
             <p>ESP provides a high performance, in-process session state store. The store is managed in that ESP
-            imposes a session timeout on information and will automatically prune stale information. It uses the 
-            memory limit configured by the <a href="https://embedthis.com/appweb/doc/guide/appweb/users/dir/sandbox.html#limitMemory">LimitMemory</a>
-            directive to restrict the amount of memory that is devoted to session state.</p>
+            imposes a session timeout on information and will automatically prune stale information. It uses the memory limit configured by the 
+            <a href="config.html#limits">app.http.limits</a> directive
+            to restrict the amount of memory that is devoted to session state.</p>
             <a id="sample"></a>
             <h2>Sample Code</h2>
             <pre class="ui code segment">
@@ -249,13 +249,12 @@ flash("custom", "Error code %d", code);
             <a id="configuring"></a>
             <h2 >Configuring Session</h2>
             <p>Session data has a lifespan defined by the <a
-                href="https://embedthis.com/appweb/doc/guide/appweb/users/dir/route.html#sessionTimeout">SessionTimeout</a> 
-               configuration file directive. When this timeout expires, ESP will prune the data from the session 
+                href="config.html#timeouts">app.http.timeouts</a> 
+               configuration directive. When this timeout expires, ESP will prune the data from the session 
                 store.</p>
             <p>If there is a low memory condition, ESP may prune session data prematurely to free up memory. 
             The maximum memory limit may be configured by the 
-            <a href="https://embedthis.com/appweb/doc/guide/appweb/users/dir/sandbox.html#limitMemory">LimitMemory</a>
-                 configuration directive.</p>
+            <a href="config.html#limits">app.http.limits</a> configuration directive.</p>
             <a id="performance"></a>
             <h2 >Performance Considerations</h2>
             <h3>Minimize Session Data Size</h3>

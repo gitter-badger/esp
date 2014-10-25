@@ -157,9 +157,10 @@
             </ul>
             <p>This document will cover the various package.json properties and the steps to 
                 configure ESP applications.</p>
-            <p>If you need to do more complex routing of URIs or more granular control of authentication, you may
-                need to specify additional routes in an <em>appweb.conf</em> configuration file. For details, see
-            the <a href="https://embedthis.com/appweb/doc/">Appweb Documentation</a>.</p>
+            <p>If you are hosting your application in Appweb and need to do more complex routing of 
+                URIs or more granular control of authentication, you may need to specify additional 
+                routes in an <em>appweb.conf</em> configuration file. For details, see
+                the <a href="https://embedthis.com/appweb/doc/">Appweb Documentation</a>.</p>
 
             <h2>Package.json</h2>
             <p>The package.json schema is defined by the <a href="https://embedthis.com/pak/">Pak</a>
@@ -658,7 +659,9 @@ or
                     </tr>
                     <tr>
                         <td>limits</td>
-                        <td>Resource limits to "<em>sandbox</em>" the server.
+                        <td>
+                        <a name="limits"></a>
+                        Resource limits to "<em>sandbox</em>" the server.
                         Note that values may either be numbers or strings using natural language suffixes like 
                         <em>MB</em> or <em>GB</em>.
                         For example:

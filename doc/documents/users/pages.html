@@ -60,7 +60,7 @@
             <p>ESP pages support a suite of page directives to control how embedded "C" code will be processed and at
             what scope in the generated page the code should be positioned.
             The following directives are provided:</p>
-            <table title="directives">
+            <table class="ui table" title="directives">
                 <thead>
                     <tr>
                         <th>Directive</th>
@@ -241,7 +241,11 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             </ul>
             <p>The Rx, Tx, Host, Route, EspRoute and EspReq objects are all addressable from the HttpConn object. 
             Here is a collection of especially useful context items:</p>
-            <table title="items">
+            <table class="ui table" title="items">
+                <thead>
+                    <tr><th>Item</th><th>Description</th></tr>
+                </thead>
+                <tbody>
                 <tr><td>getConn()</td><td>Get the current HttpConn object. Can be used inside controllers and 
                     template web pages</td></tr>
                 <tr><td>conn-&gt;rx</td><td>Request object</td>
@@ -258,6 +262,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
                 <tr><td>tx-&gt;finalized</td><td>Set if response output has been completed</td>
                 <tr><td>route-&gt;documents</td><td>Document root directory for the route</td>
                 <tr><td>route-&gt;home</td><td>Route home directory</td>
+                </tbody>
             </table>
             <p>See the <a href="../ref/native.html">Native APIs</a> document for more details about the available
             APIs. See the <a href="program.html">ESP Generator</a> documentation for full details.</p>

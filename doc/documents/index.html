@@ -300,16 +300,19 @@ static void update() {
             <h3>Deployment</h3>
             <p>To deploy an ESP application, only the saved library files are required. The source code for the ESP pages 
             and controllers is typically not deployed. Of course, if you wish to continue to provide transparent compilation 
-            once deployed, then include the source and enable <em>EspUpdate</em> in the appweb.conf configuration file.</p>
+            once deployed, then include the source and enable <em>app.http.update</em> in the package.json 
+            configuration file.</p>
+
             <p>The <em>esp</em> generator program can also be used to compile an ESP application including all ESP 
             pages and controllers. For example:</p>
             <pre class="ui code segment">esp compile</pre>
             <h3>Cross Compilation</h3>
+
             <p>If your target system is of a different architecture to your development system, you will need to 
-            cross-compile your ESP application for the target.
-            When cross-compiling, prepare a version of the appweb.conf and esp.conf configuration files for your 
-            target. Then invoke the following to cross compile the ESP pages and controllers.</p>
-            <pre class="ui code segment">esp --config cross.conf compile ...</pre>
+            cross-compile your ESP application for the target using the <em>esp --platform</em> swtich. See
+            <a href="program.html#cross">Cross Compiling with ESP</a> for more details.</p>
+
+            <pre class="ui code segment">esp --platform vxworks-arm-debug compile</pre>
             <p>If you have specific cross-compilation requirements, you may need to edit the <em>esp.conf</em> 
             file to define the appropriate compilation command line for your target. </p>
             <a id="generator"></a>
@@ -327,8 +330,8 @@ esp install esp-server</pre>
                 <li>client/*</li>
             </ul>
             <p>The <em>esp</em> program creates the application directory and populates it with the necessary
-            directories, configuration files and stubs to begin the application.</p>
-            <p>When you run ESP will automatically compile and components as required. </p>
+            directories, configuration files and stubs to begin the application. When you run, 
+            ESP will automatically compile components as required. </p>
             <p>To create a more featured MVC demo application with support for the Angular client framework, use:</p>
             <pre class="ui code segment">esp generate app demo esp-angular-mvc</pre>
             <a id="api"></a>
