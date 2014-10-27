@@ -745,7 +745,7 @@ LIBS_48 = $(LIBS_48) libmpr.lib
 
 build\$(CONFIG)\bin\espman.exe: $(DEPS_48)
 	@echo ..... [Link] build\$(CONFIG)\bin\espman.exe
-	"$(LD)" -out:$(BUILD)\bin\espman.exe -entry:WinMainCRTStartup -subsystem:windows $(LDFLAGS) $(LIBPATHS) "$(BUILD)\obj\manager.obj" $(LIBPATHS_48) $(LIBS_48) $(LIBS_48) $(LIBS)  $(LOG)
+	"$(LD)" -nologo -out:$(BUILD)\bin\espman.exe -entry:WinMainCRTStartup -subsystem:windows $(LDFLAGS) $(LIBPATHS) "$(BUILD)\obj\manager.obj" $(LIBPATHS_48) $(LIBS_48) $(LIBS_48) $(LIBS)  $(LOG)
 
 #
 #   removeFiles.obj
@@ -764,5 +764,5 @@ DEPS_50 = $(DEPS_50) build\$(CONFIG)\obj\removeFiles.obj
 
 build\$(CONFIG)\bin\removeFiles.exe: $(DEPS_50)
 	@echo ..... [Link] build\$(CONFIG)\bin\removeFiles.exe
-	"$(LD)" -out:$(BUILD)\bin\removeFiles.exe -entry:WinMainCRTStartup -subsystem:windows "$(BUILD)\obj\removeFiles.obj"   $(LOG)
+	"$(LD)" -nologo -out:$(BUILD)\bin\removeFiles.exe -entry:WinMainCRTStartup -subsystem:windows "$(BUILD)\obj\removeFiles.obj"   $(LOG)
 
