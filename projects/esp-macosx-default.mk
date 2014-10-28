@@ -80,11 +80,7 @@ ifeq ($(ME_COM_EST),1)
     TARGETS           += $(BUILD)/bin/libest.dylib
 endif
 TARGETS               += $(BUILD)/bin/libmprssl.dylib
-TARGETS               += $(BUILD)/bin/makerom
 TARGETS               += $(BUILD)/bin/espman
-ifeq ($(ME_COM_SQLITE),1)
-    TARGETS           += $(BUILD)/bin/sqlite
-endif
 
 unexport CDPATH
 
@@ -146,9 +142,7 @@ clean:
 	rm -f "$(BUILD)/bin/libmprssl.dylib"
 	rm -f "$(BUILD)/bin/libpcre.dylib"
 	rm -f "$(BUILD)/bin/libsql.dylib"
-	rm -f "$(BUILD)/bin/makerom"
 	rm -f "$(BUILD)/bin/espman"
-	rm -f "$(BUILD)/bin/sqlite"
 
 clobber: clean
 	rm -fr ./$(BUILD)
@@ -817,49 +811,23 @@ $(BUILD)/bin/libmprssl.dylib: $(DEPS_52)
 	$(CC) -dynamiclib -o $(BUILD)/bin/libmprssl.dylib -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS)  -install_name @rpath/libmprssl.dylib -compatibility_version 5.2 -current_version 5.2 "$(BUILD)/obj/mprSsl.o" $(LIBPATHS_52) $(LIBS_52) $(LIBS_52) $(LIBS) 
 
 #
-#   makerom
+#   manager
 #
 DEPS_53 += $(BUILD)/bin/libmpr.dylib
-DEPS_53 += $(BUILD)/obj/makerom.o
+DEPS_53 += $(BUILD)/obj/manager.o
 
 LIBS_53 += -lmpr
 
-$(BUILD)/bin/makerom: $(DEPS_53)
-	@echo '      [Link] $(BUILD)/bin/makerom'
-	$(CC) -o $(BUILD)/bin/makerom -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/makerom.o" $(LIBPATHS_53) $(LIBS_53) $(LIBS_53) $(LIBS) 
-
-#
-#   manager
-#
-DEPS_54 += $(BUILD)/bin/libmpr.dylib
-DEPS_54 += $(BUILD)/obj/manager.o
-
-LIBS_54 += -lmpr
-
-$(BUILD)/bin/espman: $(DEPS_54)
+$(BUILD)/bin/espman: $(DEPS_53)
 	@echo '      [Link] $(BUILD)/bin/espman'
-	$(CC) -o $(BUILD)/bin/espman -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/manager.o" $(LIBPATHS_54) $(LIBS_54) $(LIBS_54) $(LIBS) 
-
-ifeq ($(ME_COM_SQLITE),1)
-#
-#   sqliteshell
-#
-DEPS_55 += $(BUILD)/bin/libsql.dylib
-DEPS_55 += $(BUILD)/obj/sqlite.o
-
-LIBS_55 += -lsql
-
-$(BUILD)/bin/sqlite: $(DEPS_55)
-	@echo '      [Link] $(BUILD)/bin/sqlite'
-	$(CC) -o $(BUILD)/bin/sqlite -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/sqlite.o" $(LIBPATHS_55) $(LIBS_55) $(LIBS_55) $(LIBS) 
-endif
+	$(CC) -o $(BUILD)/bin/espman -arch $(CC_ARCH) $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/manager.o" $(LIBPATHS_53) $(LIBS_53) $(LIBS_53) $(LIBS) 
 
 
 #
 #   installBinary
 #
 
-installBinary: $(DEPS_56)
+installBinary: $(DEPS_54)
 	mkdir -p "$(ME_APP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	ln -s "5.2.0" "$(ME_APP_PREFIX)/latest" ; \
@@ -983,18 +951,18 @@ installBinary: $(DEPS_56)
 #
 #   install
 #
-DEPS_57 += stop
-DEPS_57 += installBinary
-DEPS_57 += start
+DEPS_55 += stop
+DEPS_55 += installBinary
+DEPS_55 += start
 
-install: $(DEPS_57)
+install: $(DEPS_55)
 
 #
 #   uninstall
 #
-DEPS_58 += stop
+DEPS_56 += stop
 
-uninstall: $(DEPS_58)
+uninstall: $(DEPS_56)
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	rmdir -p "$(ME_APP_PREFIX)" 2>/dev/null ; true
@@ -1003,6 +971,6 @@ uninstall: $(DEPS_58)
 #   version
 #
 
-version: $(DEPS_59)
+version: $(DEPS_57)
 	echo 5.2.0
 
