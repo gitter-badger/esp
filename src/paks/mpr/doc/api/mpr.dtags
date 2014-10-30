@@ -1186,13 +1186,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>MPR_PROTO_TLSV1</name>
-      <anchorfile>mpr_8h.html</anchorfile>
-      <anchor>ab6be6a83c03fb2edc3d9b758cbeb0db0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>MPR_PROTO_TLSV1_1</name>
       <anchorfile>mpr_8h.html</anchorfile>
       <anchor>aa66454bfc118af48a0d0df362211d9ad</anchor>

@@ -527,9 +527,9 @@
 		7E9C57C07E9C6B6C000000B5 /* mpr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpr.h; path = src/paks/mpr/mpr.h; sourceTree = "<group>"; };
 		7E9C57C07E9C6B6C00000054 /* libmpr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmpr.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E9C57C07E9C6B6C00000044 /* mprSsl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mprSsl.c; path = src/paks/mpr/mprSsl.c; sourceTree = "<group>"; };
-		7E9C57C07E9C6B6C000000B6 /* me.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = me.h; path = build/macosx-x64-default/inc/me.h; sourceTree = "<group>"; };
-		7E9C57C07E9C6B6C000000B7 /* libmprssl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmprssl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E9C57C07E9C6B6C000000B6 /* libmprssl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmprssl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E9C57C07E9C6B6C00000046 /* pcre.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcre.c; path = src/paks/pcre/pcre.c; sourceTree = "<group>"; };
+		7E9C57C07E9C6B6C000000B7 /* me.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = me.h; path = build/macosx-x64-default/inc/me.h; sourceTree = "<group>"; };
 		7E9C57C07E9C6B6C000000B8 /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcre.h; path = src/paks/pcre/pcre.h; sourceTree = "<group>"; };
 		7E9C57C07E9C6B6C00000056 /* libpcre */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libpcre.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E9C57C07E9C6B6C00000048 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = src/paks/sqlite/sqlite3.c; sourceTree = "<group>"; };
@@ -752,7 +752,6 @@
 		7E9C57C07E9C6B6C000000CF /* libmprssl */ = {
                 isa = PBXGroup;
                 children = (
-				7E9C57C07E9C6B6C000000B6 /* me.h */,
 				7E9C57C07E9C6B6C000000B5 /* mpr.h */,
 				7E9C57C07E9C6B6C00000044 /* mprSsl.c */,
 			);
@@ -763,7 +762,7 @@
 		7E9C57C07E9C6B6C000000D0 /* libpcre */ = {
                 isa = PBXGroup;
                 children = (
-				7E9C57C07E9C6B6C000000B6 /* me.h */,
+				7E9C57C07E9C6B6C000000B7 /* me.h */,
 				7E9C57C07E9C6B6C000000B8 /* pcre.h */,
 				7E9C57C07E9C6B6C00000046 /* pcre.c */,
 			);
@@ -774,7 +773,7 @@
 		7E9C57C07E9C6B6C000000D1 /* libsql */ = {
                 isa = PBXGroup;
                 children = (
-				7E9C57C07E9C6B6C000000B6 /* me.h */,
+				7E9C57C07E9C6B6C000000B7 /* me.h */,
 				7E9C57C07E9C6B6C000000B9 /* sqlite3.h */,
 				7E9C57C07E9C6B6C00000048 /* sqlite3.c */,
 			);
@@ -805,7 +804,7 @@
 		7E9C57C07E9C6B6C000000D5 /* sqliteshell */ = {
                 isa = PBXGroup;
                 children = (
-				7E9C57C07E9C6B6C000000B6 /* me.h */,
+				7E9C57C07E9C6B6C000000B7 /* me.h */,
 				7E9C57C07E9C6B6C000000B9 /* sqlite3.h */,
 				7E9C57C07E9C6B6C0000004E /* sqlite.c */,
 			);
@@ -822,7 +821,7 @@
 				7E9C57C07E9C6B6C00000052 /* libhttp */,
 				7E9C57C07E9C6B6C0000005A /* libmod_esp */,
 				7E9C57C07E9C6B6C00000054 /* libmpr */,
-				7E9C57C07E9C6B6C000000B7 /* libmprssl */,
+				7E9C57C07E9C6B6C000000B6 /* libmprssl */,
 				7E9C57C07E9C6B6C00000056 /* libpcre */,
 				7E9C57C07E9C6B6C00000058 /* libsql */,
 				7E9C57C07E9C6B6C000000BA /* makerom */,
@@ -970,7 +969,7 @@
     			);
     			name = libmprssl;
     			productName = esp;
-    			productReference = 7E9C57C07E9C6B6C000000B7 /* libmprssl */;
+    			productReference = 7E9C57C07E9C6B6C000000B6 /* libmprssl */;
     			productType = "com.apple.product-type.library.dynamic";
     		};
 		7E9C57C07E9C6B6C00000071 /* libpcre */ = {

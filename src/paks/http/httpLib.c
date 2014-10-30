@@ -4932,7 +4932,10 @@ static void parseSslProtocols(HttpRoute *route, cchar *key, MprJson *prop)
             value++;
         }
         bit = 0;
-        if (scaselessmatch(value, "sslv2")) {
+        if (scaselessmatch(value, "all")) {
+            /* Do not include insecure SSLv2 and SSLv3 */
+            bit = MPR_PROTO_TLSV1 | MPR_PROTO_TLSV1_2;
+        } else if (scaselessmatch(value, "sslv2")) {
             /* SSLv2 is insecure */
             bit = MPR_PROTO_SSLV2;
         } else if (scaselessmatch(value, "sslv3")) {
