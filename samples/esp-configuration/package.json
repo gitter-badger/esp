@@ -280,6 +280,13 @@
                     key: "server.key",
 
                     /*
+                        Supported protocols
+                     */
+                    protocols: [
+                        'all', '-sslv3', '+tls', '-tlsv1.1', 'tlsv1.2'
+                    ],
+
+                    /*
                         Verification options
                      */
                     verify: {

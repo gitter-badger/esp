@@ -89,10 +89,12 @@ Me.load({
         },
 
         projects: {
-            action: `
-                genProjects('-with est', 'default')
-            `,
+            action: `genProjects('-with est', 'default')`,
         },
+
+        mine: {
+            action: `genProjects('-with openssl', 'mine', Config.OS + '-' + Config.CPU)`,
+        }
     },
 
     usage: {
