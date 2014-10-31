@@ -779,34 +779,44 @@ $(BUILD)/bin/espman.out: $(DEPS_53)
 	@echo '      [Link] $(BUILD)/bin/espman.out'
 	$(CC) -o $(BUILD)/bin/espman.out $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/manager.o" $(LIBS) -Wl,-r 
 
+#
+#   stop
+#
+
+stop: $(DEPS_54)
 
 #
 #   installBinary
 #
 
-installBinary: $(DEPS_54)
+installBinary: $(DEPS_55)
 
+#
+#   start
+#
+
+start: $(DEPS_56)
 
 #
 #   install
 #
-DEPS_55 += stop
-DEPS_55 += installBinary
-DEPS_55 += start
+DEPS_57 += stop
+DEPS_57 += installBinary
+DEPS_57 += start
 
-install: $(DEPS_55)
+install: $(DEPS_57)
 
 #
 #   uninstall
 #
-DEPS_56 += stop
+DEPS_58 += stop
 
-uninstall: $(DEPS_56)
+uninstall: $(DEPS_58)
 
 #
 #   version
 #
 
-version: $(DEPS_57)
+version: $(DEPS_59)
 	echo 5.2.0
 

@@ -821,12 +821,17 @@ $(BUILD)/bin/espman: $(DEPS_53)
 	@echo '      [Link] $(BUILD)/bin/espman'
 	$(CC) -o $(BUILD)/bin/espman $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/manager.o" $(LIBPATHS_53) $(LIBS_53) $(LIBS_53) $(LIBS) $(LIBS) 
 
+#
+#   stop
+#
+
+stop: $(DEPS_54)
 
 #
 #   installBinary
 #
 
-installBinary: $(DEPS_54)
+installBinary: $(DEPS_55)
 	mkdir -p "$(ME_APP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	ln -s "5.2.0" "$(ME_APP_PREFIX)/latest" ; \
@@ -946,22 +951,27 @@ installBinary: $(DEPS_54)
 	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
 	ln -s "$(ME_VAPP_PREFIX)/doc/man/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1"
 
+#
+#   start
+#
+
+start: $(DEPS_56)
 
 #
 #   install
 #
-DEPS_55 += stop
-DEPS_55 += installBinary
-DEPS_55 += start
+DEPS_57 += stop
+DEPS_57 += installBinary
+DEPS_57 += start
 
-install: $(DEPS_55)
+install: $(DEPS_57)
 
 #
 #   uninstall
 #
-DEPS_56 += stop
+DEPS_58 += stop
 
-uninstall: $(DEPS_56)
+uninstall: $(DEPS_58)
 	rm -fr "$(ME_VAPP_PREFIX)" ; \
 	rm -f "$(ME_APP_PREFIX)/latest" ; \
 	rmdir -p "$(ME_APP_PREFIX)" 2>/dev/null ; true
@@ -970,6 +980,6 @@ uninstall: $(DEPS_56)
 #   version
 #
 
-version: $(DEPS_57)
+version: $(DEPS_59)
 	echo 5.2.0
 
