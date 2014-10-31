@@ -7,6 +7,7 @@ Me.load({
     targets: {
         api: {
             action: `
+                rm(['api/edi.tags', 'api/esp.tags'])
                 apidoc('api/edi.dox', ['${SRC}/src/edi.h', '${SRC}/src/mdb.h' ], 'EDI', ls('api/*.tags'))
                 apidoc('api/esp.dox', ['${SRC}/src/esp.h'], 'ESP', ls('api/*.tags'))
                 for each (let src: Path in ['api/http.html', 'api/mpr.html', 'api/osdep.html', 'api/esp.html', 
