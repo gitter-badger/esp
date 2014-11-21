@@ -103,6 +103,7 @@ if not exist "$(IncDir)\me.h" copy "..\esp-windows-default-me.h" "$(IncDir)\me.h
 copy /Y /B ..\..\src\paks\appweb\appweb.h $(IncDir)
 copy /Y /B ..\..\src\edi.h $(IncDir)
 copy /Y /B ..\..\src\esp.h $(IncDir)
+copy /Y /B ..\..\src\paks\est\est.h $(IncDir)
 copy /Y /B ..\..\src\paks\http\http.h $(IncDir)
 copy /Y /B ..\..\src\mdb.h $(IncDir)
 copy /Y /B ..\..\src\paks\mpr\mpr.h $(IncDir)
