@@ -31,6 +31,7 @@ static void serverRouteSet(HttpRoute *parent, cchar *set)
     httpSetRouteXsrf(parent, 1);
     route = httpAddRestfulRoute(parent, parent->serverPrefix, "action", "GET,POST","/{action}(/)*$",
         "${action}", "{controller}");
+    httpAddClientRoute(parent, "", "/public");
     httpAddRouteHandler(route, "espHandler", "");
 }
 
