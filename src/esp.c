@@ -1404,6 +1404,10 @@ static void user(int argc, char **argv)
         if (smatch(password, "-")) {
             password = getPassword();
         }
+        if (auth->realm == 0 || *auth->realm == '\0') {
+            fail("An authentication realm has not been defined. Define a \"app.http.auth.realm\" value.");
+            return;
+        }
         if (smatch(app->cipher, "md5")) {
             encodedPassword = mprGetMD5(sfmt("%s:%s:%s", username, auth->realm, password));
         } else {
