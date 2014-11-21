@@ -3299,7 +3299,7 @@ static void savePackage()
     cchar       *path;
 
     if (!app->noupdate) {
-        path = mprJoinPath(app->route ? app->route->documents : ".", ME_ESP_PACKAGE);
+        path = mprJoinPath(app->route ? app->route->home : ".", ME_ESP_PACKAGE);
         if (mprSaveJson(app->config, path, MPR_JSON_PRETTY | MPR_JSON_QUOTES) < 0) {
             fail("Cannot save %s", path);
         }
