@@ -968,11 +968,16 @@ server: {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>login</td>
-                        <td>Collection of login related properties. The <em>login.name</em> property defines an account name
-                        that the application will automatically login. This is useful during development to bypass the
-                        login step. The <em>login.roles</em> property defines the roles for which the user will be 
+                        <td>auto</td>
+                        <td>Collection of automatic login related properties. The <em>auto.name</em> property defines an 
+                        account name that the application will automatically login. This is useful during development to bypass the
+                        login step. The <em>auto.roles</em> property defines the roles for which the user will be 
                         authorized. The <em>url</em> property defines the URI for the login dialog.</td>
+                    </tr>
+                    <tr>
+                        <td>login</td>
+                        <td>Login page when using the 'form' authentication scheme. If the user is not logged in, they
+                            will be redirected to this page.</td>
                     </tr>
                     <tr>
                         <td>realm</td>
@@ -1012,8 +1017,8 @@ server: {
                         <td>session</td>
                         <td><p>Configure the user session details. 
                             The <em>cookie</em> property can define a unique prefix to use for the session cookie.
-                            The default session cookie prefix is: "-http-session-".
-                            The <em>visible</em>propery specifies whether the cookie is readable by scripts in the browser.
+                            The default session cookie prefix is: "-http-session-". If set to 'none', then no cookie is 
+                            emitted. The <em>visible</em>propery specifies whether the cookie is readable by scripts in the browser.
                             By default, the session cookie is not visible to Javascript. It is desirable to keep the 
                             session cookie invisible to minimize XSS security vulnerabilities.</p>
                             <p>ESP implements this by adding the <i>"httpOnly"</i> option on the "Set-Cookie" 
@@ -1032,7 +1037,7 @@ session: {
                     </tr>
                     <tr>
                         <td>type</td>
-                        <td>Authentication type. Set to "basic" or "digest". No need to define if
+                        <td>Authentication type. Set to "basic", "digest" or "form". No need to define if
                             using the "app" authentication store.</td>
                     </tr>
                     <tr>
