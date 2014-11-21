@@ -39,13 +39,6 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>espApp</name>
-      <anchorfile>group___esp_route.html</anchorfile>
-      <anchor>gad01dbff7dee8ea0cf2f2804f46f47ae7</anchor>
-      <arglist>(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>espBindProc</name>
       <anchorfile>group___esp_route.html</anchorfile>
       <anchor>ga0d812aed0ff96f0ffa281860270e8910</anchor>
@@ -78,6 +71,13 @@
       <anchorfile>group___esp_route.html</anchorfile>
       <anchor>ga321abe89cc91246b2a44f40493988670</anchor>
       <arglist>(HttpRoute *route, cchar *targetKey, void *actionProc)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>espDefineApp</name>
+      <anchorfile>group___esp_route.html</anchorfile>
+      <anchor>ga0e0729b0a75cdf55a2731129c740acc0</anchor>
+      <arglist>(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)</arglist>
     </member>
     <member kind="function">
       <type>void</type>

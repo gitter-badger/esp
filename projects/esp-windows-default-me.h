@@ -82,7 +82,7 @@
     #define ME_EST_XTEA 0
 #endif
 #ifndef ME_HTTP_PAM
-    #define ME_HTTP_PAM 0
+    #define ME_HTTP_PAM 1
 #endif
 #ifndef ME_HTTP_WEB_SOCKETS
     #define ME_HTTP_WEB_SOCKETS 1

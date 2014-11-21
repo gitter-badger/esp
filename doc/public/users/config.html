@@ -704,6 +704,14 @@ methods: [
                         </td>
                     </tr>
                     <tr>
+                        <td>mode</td>
+                        <td>Execution mode. Selects a set of properties from modes.</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>Descriptive name for the route. Used when showing the route table in logs.</td>
+                    </tr>
+                    <tr>
                         <td>params</td>
                         <td>List of required parameters before the request will match the current route.
                         For example:
@@ -764,10 +772,6 @@ pipeline: {
 ]</pre>
                     <p>Alternatively, a rule may be just the string "https://" in which case all HTTP content 
                     will be redirected over HTTPS.</p></td>
-                    </tr>
-                    <tr>
-                        <td>routeName</td>
-                        <td>Descriptive name for the route. Used when showing the route table in logs.</td>
                     </tr>
                     <tr>
                         <td>routes</td>

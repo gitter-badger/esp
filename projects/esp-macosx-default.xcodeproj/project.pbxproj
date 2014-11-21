@@ -1764,6 +1764,11 @@ fi";
 					"ME_DEBUG",
 					"$(inherited)"
 				);
+				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Debug;
     		};
@@ -1772,7 +1777,11 @@ fi";
     			buildSettings = {
     				PRODUCT_NAME = esp;
     
-    
+    				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Release;
     		};
@@ -1806,6 +1815,11 @@ fi";
 					"ME_DEBUG",
 					"$(inherited)"
 				);
+				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Debug;
     		};
@@ -1814,7 +1828,11 @@ fi";
     			buildSettings = {
     				PRODUCT_NAME = libappweb;
     
-    
+    				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Release;
     		};
@@ -1827,6 +1845,11 @@ fi";
 					"ME_DEBUG",
 					"$(inherited)"
 				);
+				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Debug;
     		};
@@ -1835,7 +1858,11 @@ fi";
     			buildSettings = {
     				PRODUCT_NAME = libhttp;
     
-    
+    				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Release;
     		};
@@ -1848,6 +1875,11 @@ fi";
 					"ME_DEBUG",
 					"$(inherited)"
 				);
+				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Debug;
     		};
@@ -1856,7 +1888,11 @@ fi";
     			buildSettings = {
     				PRODUCT_NAME = libmod_esp;
     
-    
+    				OTHER_LDFLAGS = (
+					"-lpam",
+					"$(inherited)"
+				);
+
     			};
     			name = Release;
     		};
