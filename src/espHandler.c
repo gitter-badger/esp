@@ -84,11 +84,13 @@ static int openEsp(HttpQueue *q)
     req->esp = esp;
     req->route = route;
     req->autoFinalize = 1;
+
     /*
-        If a cookie is not explicitly set, use the application name for the session cookie
+        If a cookie is not explicitly set, use the application name for the session cookie so that
+        cookies are unique per esp application.
      */
     if (!route->cookie && eroute->appName && *eroute->appName) {
-        route->cookie = eroute->appName;
+        httpSetRouteCookie(route, eroute->appName);
     }
     return 0;
 }
@@ -699,6 +701,7 @@ PUBLIC void espManageEspRoute(EspRoute *eroute, int flags)
         mprMark(eroute->edi);
         mprMark(eroute->env);
         mprMark(eroute->link);
+        mprMark(eroute->routeSet);
         mprMark(eroute->searchPath);
         mprMark(eroute->top);
         mprMark(eroute->winsdk);
@@ -763,6 +766,7 @@ static EspRoute *cloneEspRoute(HttpRoute *route, EspRoute *parent)
     eroute->appName = parent->appName;
     eroute->combineScript = parent->combineScript;
     eroute->combineSheet = parent->combineSheet;
+    eroute->routeSet = parent->routeSet;
     route->eroute = eroute;
     return eroute;
 }
@@ -842,10 +846,8 @@ PUBLIC void espAddHomeRoute(HttpRoute *parent)
 
 
 /*********************************** Directives *******************************/
-/*
-    Define an ESP Application
- */
-PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)
+
+PUBLIC int espDefineApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)
 {
     EspRoute    *eroute;
 
@@ -859,6 +861,9 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
     if (name) {
         eroute->appName = sclone(name);
     }
+    if (routeSet) {
+        eroute->routeSet = sclone(routeSet);
+    }
     espSetDefaultDirs(route);
     if (prefix) {
         if (*prefix != '/') {
@@ -870,17 +875,37 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
         httpSetRoutePrefix(route, prefix);
         httpSetRoutePattern(route, sfmt("^%s", prefix), 0);
     } else {
-        httpSetRouteName(route, sfmt("/%s", name));
+        httpSetRouteName(route, sfmt("app-%s", name));
     }
+    if (!route->cookie && eroute->appName && *eroute->appName) {
+        httpSetRouteCookie(route, eroute->appName);
+    }
+
     httpAddRouteHandler(route, "espHandler", "esp");
+    /*
+        Added so redirections get handled in esp-login for "/" after being logged in
+     */
+    httpAddRouteHandler(route, "fileHandler", "");
     httpAddRouteIndex(route, "index.esp");
     httpAddRouteIndex(route, "index.html");
 
     httpSetRouteVar(route, "APP", name);
     httpSetRouteVar(route, "UAPP", stitle(name));
+    return 0;
+}
+
+
+PUBLIC int espConfigureApp(HttpRoute *route) 
+{
+    EspRoute    *eroute;
+
+    eroute = route->eroute;
 
     if (httpLoadConfig(route, ME_ESP_PACKAGE) < 0) {
         return MPR_ERR_CANT_LOAD;
+    }
+    if (eroute->routeSet) {
+        httpAddRouteSet(route, eroute->routeSet);
     }
     if (route->database && !eroute->edi) {
         if (espOpenDatabase(route, route->database) < 0) {
@@ -888,7 +913,15 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
             return MPR_ERR_CANT_LOAD;
         }
     }
+    return 0;
+}
+
+
+PUBLIC int espLoadApp(HttpRoute *route)
+{
 #if !ME_STATIC
+    EspRoute    *eroute;
+    eroute = route->eroute;
     if (!eroute->skipApps) {
         MprJson     *preload, *item;
         cchar       *errMsg, *source;
@@ -914,9 +947,6 @@ PUBLIC int espApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, ccha
         }
     }
 #endif
-    if (routeSet) {
-        httpAddRouteSet(route, routeSet);
-    }
     return 0;
 }
 
@@ -997,7 +1027,7 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
             return MPR_ERR_BAD_STATE;
         }
     }
-    if (espApp(route, dir, name, prefix, routeSet) < 0) {
+    if (espDefineApp(route, dir, name, prefix, routeSet) < 0) {
         return MPR_ERR_CANT_CREATE;
     }
     if (prefix) {
@@ -1016,8 +1046,15 @@ static int finishEspAppDirective(MaState *state, cchar *key, cchar *value)
         to the enclosing host. This ensures that nested routes are defined BEFORE outer/enclosing routes.
      */
     route = state->route;
+
+    if (espConfigureApp(route) < 0) {
+        return MPR_ERR_CANT_LOAD;
+    }
     if (route != state->prev->route) {
         httpFinalizeRoute(route);
+    }
+    if (espLoadApp(route) < 0) {
+        return MPR_ERR_CANT_LOAD;
     }
     return 0;
 }
