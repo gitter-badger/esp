@@ -84,7 +84,7 @@
              */
             mappings: {
                 auth: {
-                    login:    "app.http.auth.login",
+                    login:    "app.http.auth.auto",
                     store:    "app.http.auth.store",
                 },
                 formats:      "app.http.formats",
@@ -313,7 +313,7 @@
                 /*
                     Login configuration
                  */
-                login: {
+                auto: {
                     /*
                         Give the auto-logged-in user these abilities
                      */
@@ -610,6 +610,11 @@
             methods: [ "get", "post" ],
 
             /*
+                Descriptive name for route
+             */
+            name:  "",
+
+            /*
                 Required request parameters before this route will match a request
              */
             params: [ {
@@ -664,14 +669,40 @@
             ],
 
             /*
-                Descriptive name for route
+                List of routes
              */
-            routeName:  "",
-
+            routes: [
             /*
-                List of routes. This can be a route-set name, or an array of routes.
+                Routes may nest other routes under their own "routes" property.
+                Properties can be a route-set name, or an array of routes objects.
+                A route will typically define a "pattern" and may override most per-route properties.
              */
-            routes: [ ],
+            /*
+                For example:
+
+                "esp-server",
+                {
+                    pattern: '^/auth/basic',
+                    auth: {
+                        realm: 'example.com',
+                        type: 'basic|digest',
+                    },
+                },
+                {
+                    "resources": {
+                        "sets": [
+                            "esp-server"
+                        ],
+                        "groups": [
+                            "user",
+                        ],
+                        "singletons": [
+                            "dashboard",
+                        ]
+                    }
+                }
+             */
+            ],
 
             /*
                 Supported scheme for this route. Set to https to require SSL.

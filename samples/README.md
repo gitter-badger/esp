@@ -12,14 +12,14 @@ The Pak tool may also be helpful to manage imported packages:
 
 The following samples are available:
 
-* [esp-configuration](esp-configuration/README.md)  Configuring ESP.
-* [esp-controller](esp-controller/README.md)        Creating ESP controllers.
-* [esp-html-mvc](esp-html-mvc/README.md)            ESP esp-html-mvc application (stand-alone).
-* [esp-layout](esp-layout/README.md)                ESP layout templates.
-* [esp-login](esp-login/README.md)                  ESP form-based login.
-* [esp-page](esp-page/README.md)                    Serving ESP web pages.
-* [esp-session](esp-session/README.md)              Using ESP session state storage.
-* [esp-upload](esp-upload/README.md)                ESP file upload.
+* [config](configh/README.md)  Configuring ESP.
+* [controller](controller/README.md)        Creating ESP controllers.
+* [html-mvc](html-mvc/README.md)            ESP esp-html-mvc application (stand-alone).
+* [layout](layout/README.md)                ESP layout templates.
+* [login](login/README.md)                  ESP form-based login.
+* [page](page/README.md)                    Serving ESP web pages.
+* [session](session/README.md)              Using ESP session state storage.
+* [upload](upload/README.md)                ESP file upload.
 
 The "crt" directory contains scripts to create test certificate.
 

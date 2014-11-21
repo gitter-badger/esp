@@ -620,10 +620,8 @@ static void initRuntime()
     }
     http = MPR->httpService;
     
-    if (app->logSpec) {
-        mprSetLogHandler(logHandler);
-        mprStartLogging(app->logSpec, MPR_LOG_CMDLINE);
-    }
+    mprSetLogHandler(logHandler);
+    mprStartLogging(app->logSpec, MPR_LOG_CMDLINE);
     if (app->traceSpec) {
         httpStartTracing(app->traceSpec);
     }
@@ -1272,7 +1270,7 @@ static void run(int argc, char **argv)
     MPR->flags |= MPR_LOG_DETAILED;
 #endif
     if (app->show) {
-        httpLogRoutes(app->host, 0);
+        httpLogRoutes(app->host, mprGetLogLevel() > 4);
     }
     if (!app->appwebConfig) {
         if (argc == 0) {
