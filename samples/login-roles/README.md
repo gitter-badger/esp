@@ -1,11 +1,12 @@
 login-roles Sample
 ===
 
-This sample shows how to configure a simple form-based login using ESP. 
-This sample uses the a web form for entering username and password credentials.
+This sample shows how to configure a simple form-based login using ESP and control
+access based on user roles.
 
 This sample uses:
 
+* Per-user roles defined in the package.json
 * Https for encryption of traffic for login forms
 * Redirection to a login page and logged out page
 * Redirection to use https for login forms and http once logged in
