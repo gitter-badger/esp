@@ -8,10 +8,27 @@
             "auth": {
                 "store": "config",
                 "realm": "example.com",
-                "type": "form",
+                "roles": {
+                    "user": [
+                        "view"
+                    ],
+                    "administrator": [
+                        "view",
+                        "edit"
+                    ]
+                },
                 "users": {
                     "joshua": {
                         "password": "BF1:00128:5RdIPYT33dz2Mq7D:0YQi7BNN2ZdEHQPYS4ZPtQIfnIZxEQ00",
+                        "roles": [
+                            "user", "administrator",
+                        ]
+                    },
+                    "mary": {
+                        "password": "BF1:00128:oju2hEWmhzLV9Di5:y9khsIrgr2kLfhNMUB//pN0UYcC4nzIX",
+                        "roles": [
+                            "user"
+                        ]
                     }
                 }
             },
@@ -40,16 +57,23 @@
                     "source": "user.c",
                     "target": "user-${action}",
                     "handler": "espHandler",
-                    "auth": {
-                        "type": "none",
-                    }
+                    "auth": { type: "none" },
                 },
                 {
                     "name": "public",
                     "pattern": "/public",
                     "documents": ".",
+                    "auth": { type: "none" },
+                },
+                {
+                    "name": "administrators",
+                    "pattern": "/admin",
                     "auth": {
-                        "type": "none",
+                        "require": {
+                            "roles": [
+                                "administrator"
+                            ]
+                        }
                     }
                 },
             ],

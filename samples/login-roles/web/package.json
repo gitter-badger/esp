@@ -8,10 +8,11 @@
             "auth": {
                 "store": "config",
                 "realm": "example.com",
-                "type": "form",
                 "users": {
                     "joshua": {
-                        "password": "BF1:00128:5RdIPYT33dz2Mq7D:0YQi7BNN2ZdEHQPYS4ZPtQIfnIZxEQ00",
+                        "password": "BF1:00128:2dBqqelNWJNHEd3V:euHH24Q2EwZFyBCyFJcu/VWwyz6QmsZp",
+                        "roles": [
+                        ]
                     }
                 }
             },
@@ -27,31 +28,22 @@
             },
             "routes": [
                 {
-                    "name": "web",
-                    "auth": {
-                        "type": "form",
-                        "login": "https:///public/login.esp"
-                    }
-                },
-                {
-                    "name": "login",
                     "pattern": "/user/{action}",
                     "redirect": "secure",
                     "source": "user.c",
                     "target": "user-${action}",
-                    "handler": "espHandler",
-                    "auth": {
-                        "type": "none",
-                    }
+                    "handler": "espHandler"
                 },
                 {
-                    "name": "public",
                     "pattern": "/public",
-                    "documents": ".",
-                    "auth": {
-                        "type": "none",
-                    }
+                    "documents": "."
                 },
+                {
+                    "auth": {
+                        "type": "form",
+                        "login": "https:///public/login.esp"
+                    }
+                }
             ],
             "timeouts": {
                 "session": "1min"

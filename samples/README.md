@@ -18,6 +18,7 @@ The following samples are available:
 * [layout](layout/README.md)                 ESP layout templates.
 * [login-database](login-database/README.md) ESP database storage of passwords for login.
 * [login-form](login-form/README.md)         ESP form-based login.
+* [login-roles](login-roles/README.md)       ESP role based user authorization.
 * [page](page/README.md)                     Serving ESP web pages.
 * [session](session/README.md)               Using ESP session state storage.
 * [upload](upload/README.md)                 ESP file upload.

@@ -3959,7 +3959,7 @@ static void parseAuthRequireRoles(HttpRoute *route, cchar *key, MprJson *prop)
     int         ji;
 
     for (ITERATE_CONFIG(route, prop, child, ji)) {
-        httpSetAuthRequiredAbilities(route->auth, prop->value);
+        httpSetAuthRequiredAbilities(route->auth, child->value);
     }
 }
 
@@ -4033,8 +4033,9 @@ static void parseAuthType(HttpRoute *route, cchar *key, MprJson *prop)
     if (httpSetAuthType(auth, type, 0) < 0) {
         httpParseError(route, "The %s AuthType is not available on this platform", type);
     }
-    httpAddRouteCondition(route, "auth", 0, 0);
-
+    if (type && !smatch(type, "none")) {
+        httpAddRouteCondition(route, "auth", 0, 0);
+    }
     if (smatch(type, "basic") || smatch(type, "digest")) {
         /*
             Must not use cookies by default, otherwise, the client cannot logoff.
@@ -14303,7 +14304,7 @@ static int allowDenyCondition(HttpConn *conn, HttpRoute *route, HttpRouteOp *op)
             deny++;
         }
         if (!allow || deny) {
-            httpError(conn, HTTP_CODE_UNAUTHORIZED, "Access denied for this server %s", conn->ip);
+            httpError(conn, HTTP_CODE_FORBIDDEN, "Access denied for this server %s", conn->ip);
             return HTTP_ROUTE_OK;
         }
     } else {
@@ -14317,7 +14318,7 @@ static int allowDenyCondition(HttpConn *conn, HttpRoute *route, HttpRouteOp *op)
             allow++;
         }
         if (deny || !allow) {
-            httpError(conn, HTTP_CODE_UNAUTHORIZED, "Access denied for this server %s", conn->ip);
+            httpError(conn, HTTP_CODE_FORBIDDEN, "Access denied for this server %s", conn->ip);
             return HTTP_ROUTE_OK;
         }
     }
@@ -14358,12 +14359,8 @@ static int authCondition(HttpConn *conn, HttpRoute *route, HttpRouteOp *op)
     if (!httpCanUser(conn, NULL)) {
         httpTrace(conn, "auth.check", "error", "msg:'Access denied, user is not authorized for access'");
         if (!conn->tx->finalized) {
-            if (auth && auth->type) {
-                (auth->type->askLogin)(conn);
-                /* Request has been denied and a response generated. So OK to accept this route. */
-            } else {
-                httpError(conn, HTTP_CODE_UNAUTHORIZED, "Access denied. User is not authorized for access.");
-            }
+            httpError(conn, HTTP_CODE_FORBIDDEN, "Access denied. User is not authorized for access.");
+            /* Request has been denied and a response generated. So OK to accept this route. */
         }
     }
     /* OK to accept route. This does not mean the request was authenticated - an error may have been already generated */
