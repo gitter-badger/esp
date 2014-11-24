@@ -640,6 +640,19 @@ pipeline: {
                     will be redirected over HTTPS.</p></td>
                     </tr>
                     <tr>
+                        <td>resources</td>
+                        <td><p>Create routes sets for the requested resources. Route sets select pre-defined route sets.
+Some of the available sets are: 'esp-server' and 'esp-html-mvc'. Resource groups greate RESTful routes for a resource
+that has multiple instances. Singletons create RESTful routes for singleton resources.</p>
+<pre class="ui code segment">
+resources: {
+    sets: [ 'esp-html-mvc' ],
+    groups: [ 'users', 'administrators' ],
+    singletons: [ 'profile' ],
+}
+</pre></td>
+                    </tr>
+                    <tr>
                         <td>routes</td>
                         <td>Ordered list of routes. This may be a pre-defined route set name or it may be an array
                             of routes. Examples:
