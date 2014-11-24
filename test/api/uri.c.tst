@@ -247,7 +247,7 @@ static void testValidateUri()
 
     validate("/..\\appweb.conf", 0);
     validate("/\\appweb.conf", 0);
-    validate("/..%5Cappweb.conf", "/..\\appweb.conf");
+    validate("/..%5Cappweb.conf", 0);
 
     /*
         Regression tests
