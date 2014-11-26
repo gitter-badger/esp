@@ -877,7 +877,7 @@ PUBLIC bool updateFields(cchar *tableName, MprJson *params)
     EdiRec  *rec;
     cchar   *key;
 
-    key = mprLookupJson(params, "id");
+    key = mprReadJson(params, "id");
     if ((rec = ediSetFields(ediReadRec(getDatabase(), tableName, key), params)) == 0) {
         return 0;
     }

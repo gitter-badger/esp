@@ -535,17 +535,17 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
         case ESP_TOK_CODE:
             if (*token == '^') {
                 for (token++; *token && isspace((uchar) *token); token++) ;
-                where = stok(token, " \t\r\n", &rest);
-                if (rest == 0) {
-                    ;
-                } else if (scmp(where, "global") == 0) {
-                    mprPutStringToBuf(state->global, rest);
+                where = ssplit(token, " \t\r\n", &rest);
+                if (*rest) {
+                    if (scmp(where, "global") == 0) {
+                        mprPutStringToBuf(state->global, rest);
 
-                } else if (scmp(where, "start") == 0) {
-                    mprPutToBuf(state->start, "%s  ", rest);
+                    } else if (scmp(where, "start") == 0) {
+                        mprPutToBuf(state->start, "%s  ", rest);
 
-                } else if (scmp(where, "end") == 0) {
-                    mprPutToBuf(state->end, "%s  ", rest);
+                    } else if (scmp(where, "end") == 0) {
+                        mprPutToBuf(state->end, "%s  ", rest);
+                    }
                 }
             } else {
                 mprPutStringToBuf(body, fixMultiStrings(token));
@@ -553,14 +553,11 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
             break;
 
         case ESP_TOK_CONTROL:
-            control = stok(token, " \t\r\n", &token);
+            control = ssplit(token, " \t\r\n", &token);
             if (scmp(control, "content") == 0) {
                 mprPutStringToBuf(body, ESP_CONTENT_MARKER);
 
             } else if (scmp(control, "include") == 0) {
-                if (token == 0) {
-                    token = "";
-                }
                 token = strim(token, " \t\r\n\"", MPR_TRIM_BOTH);
                 token = mprNormalizePath(token);
                 if (token[0] == '/') {
@@ -611,10 +608,7 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
         case ESP_TOK_EXPR:
             /* <%= expr %> */
             if (*token == '%') {
-                fmt = stok(token, ": \t\r\n", &token);
-                if (token == 0) { 
-                    token = "";
-                }
+                fmt = ssplit(token, ": \t\r\n", &token);
                 /* Default without format is safe. If users want a format and safe, use %S or renderSafe() */
                 token = strim(token, " \t\r\n;", MPR_TRIM_BOTH);
                 mprPutToBuf(body, "  espRender(conn, \"%s\", %s);\n", fmt, token);
@@ -1001,8 +995,8 @@ static cchar *getVxCPU(cchar *arch)
 {
     char   *cpu, *family;
 
-    family = stok(sclone(arch), ":", &cpu);
-    if (!cpu || *cpu == '\0') {
+    family = ssplit(sclone(arch), ":", &cpu);
+    if (*cpu == '\0') {
         if (smatch(family, "i386")) {
             cpu = "I80386";
         } else if (smatch(family, "i486")) {
