@@ -165,6 +165,7 @@
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gaefcc3825a86579c9c2669e239f8b1431" class="nameRef">getReferrer</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the referring URI.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="#group___esp_req" class="ref">EspReq*</a></td><td><a href="#group___esp_abbrev_1ga3dea06818770c33f63a8b60f793a6999" class="nameRef">getReq</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the ESP request object.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="http.html#group___http_route" class="ref">HttpRoute*</a></td><td><a href="#group___esp_abbrev_1ga3e7e849481e913c3971b7e0bf73ce088" class="nameRef">getRoute</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the HttpRoute object for the current route.</td></tr>
+<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga9b8a2c16e5e9dfa287b466b5d580a3e3" class="nameRef">getSecurityToken</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the security token.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gaff139c388f84eb5e478f2391c1fedafb" class="nameRef">getSessionID</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the session state ID.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga241f0cd4f5d49f8a137f1024415b2674" class="nameRef">getSessionVar</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a session state variable.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="mpr.html#group___mpr_list" class="ref">MprList*</a></td><td><a href="#group___esp_abbrev_1ga12e7ea4b97725ef6cf2cb4aa02d6f21b" class="nameRef">getUploads</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the uploaded files.</td></tr>
@@ -914,6 +915,22 @@
   </div>
   <div class="apiDetail">
 <p>Get the HttpRoute object for the current route.</p>
+    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt>See Also:</dt><dd>
+    </dd></dl>
+  </div>
+</div>
+<a name="group___esp_abbrev_1ga9b8a2c16e5e9dfa287b466b5d580a3e3"></a>
+<div class="api">
+  <div class="prototype">
+    <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *
+    getSecurityToken
+()
+  </div>
+  <div class="apiDetail">
+<p>Get the security token.</p>
+    <dl><dt><b>Description</b>:</dt><dd>To minimize form replay attacks, a security token may be required for POST requests on a route. Client-side Javascript must then send this token as a request header in subsquent POST requests. To configure a route to require security tokens, call <a class="ref" href="#group___http_route_1ga4b4feabc71a3ad15f2b9d33722a2340b" external="http.dtags">httpSetRouteXsrf</a></dd></dl>
+    <dl><dt>Returns:</dt><dd>The security token.</dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>

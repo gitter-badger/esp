@@ -6397,6 +6397,7 @@ PUBLIC void mprXmlSetParserHandler(MprXml *xp, MprXmlHandler h);
     @stability Evolving
     @see mprBlendJson mprGetJsonObj mprGetJson mprGetJsonLength mprLoadJson mprParseJson mprSetJsonError
         mprParseJsonEx mprParseJsonInto mprQueryJson mprRemoveJson mprSetJsonObj mprSetJson mprJsonToString mprLogJson
+        mprReadJson mprWriteJsonObj mprWriteJson mprWriteJsonObj
  */
 typedef struct MprJson {
     cchar           *name;              /**< Property name for this object */
@@ -6535,7 +6536,7 @@ PUBLIC MprHash *mprDeserialize(cchar *str);
 PUBLIC MprHash *mprDeserializeInto(cchar *str, MprHash *hash);
 
 /**
-    Lookup a parsed JSON object for a key value
+    Get a parsed JSON object for a key value
     @param obj Parsed JSON object returned by mprJsonParser
     @param key Property name to search for. This may include ".". For example: "settings.mode".
         See #mprQueryJson for a full description of key formats.
@@ -6546,7 +6547,7 @@ PUBLIC MprHash *mprDeserializeInto(cchar *str, MprHash *hash);
 PUBLIC MprJson *mprGetJsonObj(MprJson *obj, cchar *key);
 
 /**
-    Lookup a JSON key and return a string value.
+    Get a JSON key and return a string value.
     @description This routine is useful to querying JSON property or object values.
         If the supplied key is an array or object, or matches more than one property, the
         result is a string representation of the array or object.
