@@ -4,7 +4,7 @@ Embedthis ESP Samples
 These samples are configured to use a locally installed ESP.
 To build the samples, you will need to install Appweb and the MakeMe build tool from:
 
-* MakeMe - [https://embedthis.com/me/download.html](https://embedthis.com/me/download.html)
+* MakeMe - [https://embedthis.com/makeme/download.html](https://embedthis.com/makeme/download.html)
 
 The Pak tool may also be helpful to manage imported packages:
 
