@@ -18,10 +18,13 @@
     "bugs": {
         "url": "http://github.com/embedthis/osdep/issues"
     },
-    "export": [
-        "src/osdep.h",
-        "doc/**"
-    ],
+    "export": [ {
+        "from": [
+            "src/osdep.h",
+            "doc/**"
+        ],
+        "to": "${TOP}"
+    } ],
     "licenses": [
         {
             "type": "GPL",
@@ -44,6 +47,5 @@
     ],
     "ignore": [
         "start.me"
-    ],
-    "import": true,
+    ]
 }
