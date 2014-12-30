@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="keywords" content="esp, c web framework, web framework, mvc, web application, internet of things" />
+    <meta name="keywords" content="undefined" />
     <meta name="description" content="The amazing C web framework" />
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700'
         rel='stylesheet' type='text/css'>
@@ -153,7 +153,7 @@
         </div>
         
         <div class="ui right floated basic segment version">
-            v5.3.0
+            v5.4.0
         </div>
 
     </div>
@@ -432,13 +432,13 @@
 </tr>
 <tr class="apiBrief"><td>&nbsp;</td><td>Very short timeout for reloading.</td></tr>
 <tr class="apiDef">
+<td>#define</td><td><a href="#esp_8h_1ae6ca06d5b1bb7135ea18f542ffd69142" class="nameRef">ME_ESP_CONFIG</a>&nbsp;&nbsp;&nbsp;&quot;esp.json&quot;</td>
+</tr>
+<tr class="apiBrief"><td>&nbsp;</td><td>ESP configuration file.</td></tr>
+<tr class="apiDef">
 <td>#define</td><td><a href="#esp_8h_1a127996447ce859e8cd9a792090171d1f" class="nameRef">ME_ESP_EMAIL_TIMEOUT</a>&nbsp;&nbsp;&nbsp;(60 * 1000)</td>
 </tr>
 <tr class="apiBrief"><td>&nbsp;</td><td>Timeout for sending email.</td></tr>
-<tr class="apiDef">
-<td>#define</td><td><a href="#esp_8h_1a11f387f9b426fdbc219bf56ef3622680" class="nameRef">ME_ESP_PACKAGE</a>&nbsp;&nbsp;&nbsp;&quot;package.json&quot;</td>
-</tr>
-<tr class="apiBrief"><td>&nbsp;</td><td>Pak file name.</td></tr>
 <tr class="apiDef">
 <td>#define</td><td><a href="#esp_8h_1accdbc1b1222a2585deed597c7b080e8a" class="nameRef">ME_ESP_PAKS</a>&nbsp;&nbsp;&nbsp;&quot;esp&quot;</td>
 </tr>
@@ -4273,11 +4273,8 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <tr><td class="param">char *</td><td><td>appName</td><td>
 App module name when compiled in combine mode.
 </td>
-    <tr><td class="param">cchar *</td><td><td>combineScript</td><td>
-Combine mode script filename.
-</td>
-    <tr><td class="param">cchar *</td><td><td>combineSheet</td><td>
-Combine mode stylesheet filename.
+    <tr><td class="param">int</td><td><td>combine</td><td>
+Combine C source into a single file.
 </td>
     <tr><td class="param">EspProc</td><td><td>commonController</td><td>
 Common code for all controllers.
@@ -4299,6 +4296,9 @@ Environment variables for route.
 </td>
     <tr><td class="param">cchar *</td><td><td>link</td><td>
 Link template.
+</td>
+    <tr><td class="param">MprTime</td><td><td>loaded</td><td>
+When configuration was last loaded.
 </td>
     <tr><td class="param">HttpRoute *</td><td><td>route</td><td>
 Back link to route.
