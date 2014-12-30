@@ -10,6 +10,25 @@
 
 /************************************** Code **********************************/
 
+
+static void parseEsp(HttpRoute *route, cchar *key, MprJson *prop)
+{
+    httpParseAll(route, key, prop);
+}
+
+
+static void parseCombine(HttpRoute *route, cchar *key, MprJson *prop)
+{
+    EspRoute    *eroute;
+
+    eroute = route->eroute;
+    if (smatch(prop->value, "true")) {
+        eroute->combine = 1;
+    } else {
+        eroute->combine = 0;
+    }
+}
+
 static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
 {
     EspRoute    *eroute;
@@ -22,7 +41,6 @@ static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
     }
 }
 
-
 static void serverRouteSet(HttpRoute *parent, cchar *set)
 {
     HttpRoute   *route;
@@ -31,7 +49,7 @@ static void serverRouteSet(HttpRoute *parent, cchar *set)
     httpSetRouteXsrf(parent, 1);
     route = httpAddRestfulRoute(parent, parent->serverPrefix, "action", "GET,POST","/{action}(/)*$",
         "${action}", "{controller}");
-    httpAddClientRoute(parent, "", "/public");
+    httpAddPublicRoute(parent, "", "/public");
     httpAddRouteHandler(route, "espHandler", "");
 }
 
@@ -42,7 +60,7 @@ static void angularRouteSet(HttpRoute *parent, cchar *set)
     httpAddRouteHandler(parent, "espHandler", "");
     httpAddWebSocketsRoute(parent, 0, "/*/stream");
     httpAddResourceGroup(parent, 0, "{controller}");
-    httpAddClientRoute(parent, "", "/public");
+    httpAddPublicRoute(parent, "", "/public");
     httpHideRoute(parent, 1);
 }
 
@@ -58,7 +76,7 @@ static void htmlRouteSet(HttpRoute *parent, cchar *set)
         "$1", 
         "${controller}.c");
     httpAddResourceGroup(parent, 0, "{controller}");
-    httpAddClientRoute(parent, "", "/public");
+    httpAddPublicRoute(parent, "", "/public");
     httpHideRoute(parent, 1);
 }
 
@@ -68,6 +86,9 @@ PUBLIC int espInitParser()
     httpDefineRouteSet("esp-server", serverRouteSet);
     httpDefineRouteSet("esp-angular-mvc", angularRouteSet);
     httpDefineRouteSet("esp-html-mvc", htmlRouteSet);
+
+    httpAddConfig("esp", parseEsp);
+    httpAddConfig("esp.combine", parseCombine);
     httpAddConfig("esp.compile", parseCompile);
     return 0;
 } 

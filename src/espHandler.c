@@ -225,7 +225,7 @@ static void startEsp(HttpQueue *q)
         /*
             See if the esp configuration or app needs to be reloaded.
          */
-        if (eroute->appName && httpLoadConfig(route, ME_ESP_PACKAGE) < 0) {
+        if (route->update && eroute->appName && espLoadConfig(route) < 0) {
             httpError(conn, HTTP_CODE_NOT_FOUND, "Cannot load esp config for %s", eroute->appName);
             return;
         }
@@ -289,12 +289,12 @@ static int runAction(HttpConn *conn)
         Expand any form var $tokens. This permits ${controller} and user form data to be used in the controller name
      */
     filename = schr(route->sourceName, '$') ? stemplateJson(route->sourceName, rx->params) : route->sourceName;
-    controllersDir = httpGetDir(route, "controllers");
+    controllersDir = httpGetDir(route, "CONTROLLERS");
     source = controllersDir ? mprJoinPath(controllersDir, filename) : mprJoinPath(route->home, filename);
 
 #if !ME_STATIC
     key = mprJoinPath(controllersDir, rx->target);
-    if (!route->combine && (route->update || !mprLookupKey(esp->actions, key))) {
+    if (!eroute->combine && (route->update || !mprLookupKey(esp->actions, key))) {
         cchar *errMsg;
         if (espLoadModule(route, conn->dispatcher, "controller", source, &errMsg) < 0) {
             httpError(conn, HTTP_CODE_NOT_FOUND, "%s", errMsg);
@@ -349,20 +349,22 @@ PUBLIC void espRenderView(HttpConn *conn, cchar *name)
 {
     HttpRx      *rx;
     HttpRoute   *route;
+    EspRoute    *eroute;
     EspViewProc viewProc;
     cchar       *source;
 
     rx = conn->rx;
     route = rx->route;
+    eroute = conn->rx->route->eroute;
 
     if (name) {
-        source = mprJoinPathExt(mprJoinPath(httpGetDir(route, "views"), name), ".esp");
+        source = mprJoinPathExt(mprJoinPath(httpGetDir(route, "VIEWS"), name), ".esp");
     } else {
         httpMapFile(conn);
         source = conn->tx->filename;
     }
 #if !ME_STATIC
-    if (!route->combine && (route->update || !mprLookupKey(esp->views, mprGetPortablePath(source)))) {
+    if (!eroute->combine && (route->update || !mprLookupKey(esp->views, mprGetPortablePath(source)))) {
         cchar *errMsg;
         /* WARNING: GC yield */
         mprHold(source);
@@ -457,7 +459,7 @@ static char *getModuleEntry(EspRoute *eroute, cchar *kind, cchar *source, cchar 
         entry = sfmt("esp_%s", cacheName);
 
     } else if (smatch(kind, "app")) {
-        if (eroute->route->combine) {
+        if (eroute->combine) {
             entry = sfmt("esp_%s_%s_combine", kind, eroute->appName);
         } else {
             entry = sfmt("esp_%s_%s", kind, eroute->appName);
@@ -500,12 +502,12 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
 #endif
     canonical = mprGetPortablePath(mprGetRelPath(source, route->documents));
     appName = eroute->appName ? eroute->appName : route->host->name;
-    if (route->combine) {
+    if (eroute->combine) {
         cacheName = eroute->appName;
     } else {
         cacheName = mprGetMD5WithPrefix(sfmt("%s:%s", appName, canonical), -1, sjoin(kind, "_", NULL));
     }
-    module = mprNormalizePath(sfmt("%s/%s%s", httpGetDir(route, "cache"), cacheName, ME_SHOBJ));
+    module = mprNormalizePath(sfmt("%s/%s%s", httpGetDir(route, "CACHE"), cacheName, ME_SHOBJ));
     isView = smatch(kind, "view");
 
     lock(esp);
@@ -560,10 +562,10 @@ static bool loadApp(HttpRoute *route, MprDispatcher *dispatcher)
     if (route->loaded && !route->update) {
         return 1;
     }
-    if (route->combine) {
-        source = mprJoinPath(httpGetDir(route, "cache"), sfmt("%s.c", eroute->appName));
+    if (eroute->combine) {
+        source = mprJoinPath(httpGetDir(route, "CACHE"), sfmt("%s.c", eroute->appName));
     } else {
-        source = mprJoinPath(httpGetDir(route, "src"), "app.c");
+        source = mprJoinPath(httpGetDir(route, "SRC"), "app.c");
     }
     if (mprPathExists(source, R_OK)) {
         if (espLoadModule(route, dispatcher, "app", source, &errMsg) < 0) {
@@ -592,7 +594,8 @@ PUBLIC bool espModuleIsStale(cchar *source, cchar *module, int *recompile)
     if (!minfo.valid) {
         if ((mp = mprLookupModule(source)) != 0) {
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("error esp", 0, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("error esp", 0, "Cannot unload module %s. Connections still open. Continue using old version.",
+                    source);
                 return 0;
             }
         }
@@ -604,7 +607,8 @@ PUBLIC bool espModuleIsStale(cchar *source, cchar *module, int *recompile)
     if (sinfo.valid && sinfo.mtime > minfo.mtime) {
         if ((mp = mprLookupModule(source)) != 0) {
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.",
+                    source);
                 return 0;
             }
         }
@@ -616,7 +620,8 @@ PUBLIC bool espModuleIsStale(cchar *source, cchar *module, int *recompile)
         if (minfo.mtime > mp->modified) {
             /* Module file has been updated */
             if (!espUnloadModule(source, ME_ESP_RELOAD_TIMEOUT)) {
-                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.", source);
+                mprLog("warn esp", 4, "Cannot unload module %s. Connections still open. Continue using old version.",
+                    source);
                 return 0;
             }
             mprLog("info esp", 4, "Module %s has been externally updated, reloading ...", module);
@@ -640,7 +645,7 @@ static bool layoutIsStale(EspRoute *eroute, cchar *source, cchar *module)
     int     recompile;
 
     stale = 0;
-    layoutsDir = httpGetDir(eroute->route, "layouts");
+    layoutsDir = httpGetDir(eroute->route, "LAYOUTS");
     if ((data = mprReadPathContents(source, &len)) != 0) {
         if ((lpath = scontains(data, "@ layout \"")) != 0) {
             lpath = strim(&lpath[10], " ", MPR_TRIM_BOTH);
@@ -678,7 +683,7 @@ static bool pageExists(HttpConn *conn)
     cchar       *source, *dir;
 
     rx = conn->rx;
-    if ((dir = httpGetDir(rx->route, "views")) == 0) {
+    if ((dir = httpGetDir(rx->route, "VIEWS")) == 0) {
         dir = rx->route->documents;
     }
     source = mprJoinPathExt(mprJoinPath(dir, rx->target), ".esp");
@@ -695,8 +700,10 @@ PUBLIC void espManageEspRoute(EspRoute *eroute, int flags)
     if (flags & MPR_MANAGE_MARK) {
         mprMark(eroute->appName);
         mprMark(eroute->compile);
+#if KEEP
         mprMark(eroute->combineScript);
         mprMark(eroute->combineSheet);
+#endif
         mprMark(eroute->currentSession);
         mprMark(eroute->edi);
         mprMark(eroute->env);
@@ -764,8 +771,11 @@ static EspRoute *cloneEspRoute(HttpRoute *route, EspRoute *parent)
         eroute->env = mprCloneHash(parent->env);
     }
     eroute->appName = parent->appName;
+#if KEEP
     eroute->combineScript = parent->combineScript;
     eroute->combineSheet = parent->combineSheet;
+#endif
+    eroute->combine = parent->combine;
     eroute->routeSet = parent->routeSet;
     route->eroute = eroute;
     return eroute;
@@ -839,7 +849,7 @@ PUBLIC void espAddHomeRoute(HttpRoute *parent)
     prefix = parent->prefix ? parent->prefix : "";
     source = parent->sourceName;
     name = sjoin(prefix, "/home", NULL);
-    path = stemplate("${CLIENT_DIR}/index.esp", parent->vars);
+    path = stemplate("${PUBLIC_DIR}/index.esp", parent->vars);
     pattern = sfmt("^%s(/)$", prefix);
     httpDefineRoute(parent, name, "GET,POST", pattern, path, source);
 }
@@ -854,9 +864,10 @@ PUBLIC int espDefineApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix
     if ((eroute = getEroute(route)) == 0) {
         return MPR_ERR_MEMORY;
     }
-    httpSetRouteDocuments(route, dir);
-    httpSetRouteHome(route, dir);
-
+    if (dir) {
+        httpSetRouteDocuments(route, dir);
+        httpSetRouteHome(route, dir);
+    }
     eroute->top = eroute;
     if (name) {
         eroute->appName = sclone(name);
@@ -880,7 +891,6 @@ PUBLIC int espDefineApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix
     if (!route->cookie && eroute->appName && *eroute->appName) {
         httpSetRouteCookie(route, eroute->appName);
     }
-
     httpAddRouteHandler(route, "espHandler", "esp");
     /*
         Added so redirections get handled in esp-login for "/" after being logged in
@@ -895,13 +905,81 @@ PUBLIC int espDefineApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix
 }
 
 
+static void ifConfigModified(HttpRoute *route, cchar *path, bool *modified)
+{
+    EspRoute    *eroute;
+    MprPath     info;
+
+    eroute = route->eroute;
+    path = mprJoinPath(route->home, path);
+    mprGetPathInfo(path, &info);
+    if (info.mtime > eroute->loaded) {
+        *modified = 1;
+        eroute->loaded = info.mtime;
+    }
+}
+
+
+static void hoistConfig(HttpRoute *route, cchar *from, cchar *to)
+{
+    MprJson     *src, *dest;
+
+    if ((src = mprGetJsonObj(route->config, from)) != 0) {
+        if ((dest = mprGetJsonObj(route->config, to)) != 0) {
+            mprBlendJson(dest, src, MPR_JSON_COMBINE);
+        } else {
+            mprSetJsonObj(route->config, to, src);
+        }
+        mprRemoveJson(route->config, from);
+    }
+}
+
+
+PUBLIC int espLoadConfig(HttpRoute *route)
+{
+    cchar       *files[] = { "package.json", "esp.json", "expansive.json", 0 };
+    cchar       *roots[] = { 0,              "app",      "app.expansive",  0 };
+    EspRoute    *eroute;
+    cchar       **file, *path;
+    bool        modified;
+
+    modified = 0;
+    eroute = route->eroute;
+    for (file = files; *file; file++) {
+        ifConfigModified(route, *file, &modified);
+    }
+    if (modified) {
+        lock(esp);
+        httpInitConfig(route);
+        for (file = files; *file; file++) {
+            path = mprJoinPath(route->home, *file);
+            if (mprPathExists(path, R_OK)) {
+                if (httpLoadConfig(route, roots[file - files], path) < 0) {
+                    unlock(esp);
+                    return MPR_ERR_CANT_LOAD;
+                }
+            }
+        }
+        httpFinalizeConfig(route);
+
+        hoistConfig(route, "app.directories", "directories");
+        hoistConfig(route, "app.name", "name");
+        hoistConfig(route, "app.title", "title");
+        hoistConfig(route, "app.description", "description");
+        hoistConfig(route, "app.version", "version");
+        unlock(esp);
+    }
+    return 0;
+}
+
+
 PUBLIC int espConfigureApp(HttpRoute *route) 
 {
     EspRoute    *eroute;
 
     eroute = route->eroute;
 
-    if (httpLoadConfig(route, ME_ESP_PACKAGE) < 0) {
+    if (espLoadConfig(route) < 0) {
         return MPR_ERR_CANT_LOAD;
     }
     if (eroute->routeSet) {
@@ -921,6 +999,7 @@ PUBLIC int espLoadApp(HttpRoute *route)
 {
 #if !ME_STATIC
     EspRoute    *eroute;
+
     eroute = route->eroute;
     if (!eroute->skipApps) {
         MprJson     *preload, *item;
@@ -934,13 +1013,13 @@ PUBLIC int espLoadApp(HttpRoute *route)
         if (!loadApp(route, NULL)) {
             return MPR_ERR_CANT_LOAD;
         }
-        if (!route->combine && (preload = mprGetJsonObj(route->config, "esp.preload")) != 0) {
+        if (!eroute->combine && (preload = mprGetJsonObj(route->config, "esp.preload")) != 0) {
             for (ITERATE_JSON(preload, item, i)) {
                 source = ssplit(sclone(item->value), ":", &kind);
                 if (*kind == '\0') {
                     kind = "controller";
                 }
-                source = mprJoinPath(httpGetDir(route, "controllers"), source);
+                source = mprJoinPath(httpGetDir(route, "CONTROLLERS"), source);
                 if (espLoadModule(route, NULL, kind, source, &errMsg) < 0) {
                     mprLog("error esp", 0, "Cannot preload esp module %s. %s", source, errMsg);
                     return MPR_ERR_CANT_LOAD;
@@ -968,6 +1047,7 @@ PUBLIC int espLoadApp(HttpRoute *route)
 static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
 {
     HttpRoute   *route;
+    EspRoute    *eroute;
     cchar       *auth, *database, *name, *prefix, *dir, *routeSet, *combine;
     char        *option, *ovalue, *tok;
 
@@ -1022,7 +1102,10 @@ static int startEspAppDirective(MaState *state, cchar *key, cchar *value)
         }
     }
     if (combine) {
-        route->combine = scaselessmatch(combine, "true") || smatch(combine, "1");
+        if ((eroute = getEroute(state->route)) == 0) {
+            return MPR_ERR_MEMORY;
+        }
+        eroute->combine = scaselessmatch(combine, "true") || smatch(combine, "1");
     }
     if (database) {
         if (espDbDirective(state, key, database) < 0) {
@@ -1139,7 +1222,7 @@ PUBLIC int espOpenDatabase(HttpRoute *route, cchar *spec)
     if (*provider == '\0' || *path == '\0') {
         return MPR_ERR_BAD_ARGS;
     }
-    path = mprJoinPath(httpGetDir(route, "db"), path);
+    path = mprJoinPath(httpGetDir(route, "DB"), path);
     dir = mprGetPathDir(path);
     if (!mprPathExists(dir, X_OK)) {
         mprMakeDir(dir, 0755, -1, -1, 1);
@@ -1174,25 +1257,23 @@ static int espDbDirective(MaState *state, cchar *key, cchar *value)
 
 PUBLIC void espSetDefaultDirs(HttpRoute *route)
 {
-#if FUTURE
-    client => documents
-    Add public
-#endif
-    httpSetDir(route, "app", "client/app");
-    httpSetDir(route, "cache", 0);
-    httpSetDir(route, "client", 0);
-    httpSetDir(route, "controllers", 0);
-    httpSetDir(route, "db", 0);
-    httpSetDir(route, "layouts", 0);
-    httpSetDir(route, "lib", "client/lib");
-    httpSetDir(route, "paks", 0);
-    httpSetDir(route, "src", 0);
-    httpSetDir(route, "views", "client/app");
+    //  MOB - why are these not uppercase?
+    httpSetDir(route, "APP", "app");
+    httpSetDir(route, "CACHE", 0);
+    httpSetDir(route, "CONTROLLERS", 0);
+    httpSetDir(route, "DB", 0);
+    httpSetDir(route, "LAYOUTS", 0);
+    httpSetDir(route, "LIB", "lib");
+    httpSetDir(route, "PAKS", 0);
+    httpSetDir(route, "PUBLIC", 0);
+    httpSetDir(route, "SRC", 0);
+    httpSetDir(route, "TOP", mprGetCurrentPath());
 
-    /*  Client relative LIB for client.scripts */
+#if UNUSED
+    //  MOB - is this used?
+    httpSetDir(route, "views", "app");
+    /*  Public relative LIB */
     httpSetRouteVar(route, "LIB", "lib");
-
-#if TODO
     //  missing upload
     httpSetRouteUploadDir(route, httpMakePath(route, 0, value));
 #endif

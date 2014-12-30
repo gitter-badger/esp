@@ -514,8 +514,8 @@ PUBLIC ssize renderConfig()
 
     conn = getConn();
     route = conn->rx->route;
-    if (route->client) {
-        return renderString(route->client);
+    if (route->clientConfig) {
+        return renderString(route->clientConfig);
     }
     return 0;
 }
@@ -588,6 +588,7 @@ PUBLIC int runCmd(cchar *command, char *input, char **output, char **error, MprT
 }
 
 
+#if KEEP
 /*
     <% scripts(patterns); %>
 
@@ -600,9 +601,9 @@ PUBLIC void scripts(cchar *patterns)
     HttpRoute   *route;
     EspRoute    *eroute;
     MprList     *files;
-    MprJson     *cscripts, *script;
+    MprJson     *app, *pak, *js, *script;
     cchar       *uri, *path, *version;
-    int         next, ci;
+    int         next, pi, si;
 
     conn = getConn();
     rx = conn->rx;
@@ -622,18 +623,19 @@ PUBLIC void scripts(cchar *patterns)
             }
             scripts(eroute->combineScript);
         } else {
-            if ((cscripts = mprGetJsonObj(route->config, "app.client.scripts")) != 0) {
-                for (ITERATE_JSON(cscripts, script, ci)) {
-                    scripts(script->value);
+            if ((app = mprGetJsonObj(route->config, "app")) != 0) {
+                for (ITERATE_JSON(app, pak, pi)) {
+                    if ((js = mprGetJsonObj(app, "js")) != 0) {
+                        for (ITERATE_JSON(app, script, si)) {
+                            scripts(script->value);
+                        }
+                    }
                 }
             }
         }
         return;
     }
-#if FUTURE
-    client => public
-#endif
-    if ((files = mprGlobPathFiles(httpGetDir(route, "client"), patterns, MPR_PATH_RELATIVE)) == 0 || 
+    if ((files = mprGlobPathFiles(httpGetDir(route, "PUBLIC"), patterns, MPR_PATH_RELATIVE)) == 0 || 
             mprGetListLength(files) == 0) {
         files = mprCreateList(0, 0);
         mprAddItem(files, patterns);
@@ -647,6 +649,7 @@ PUBLIC void scripts(cchar *patterns)
         espRender(conn, "<script src='%s' type='text/javascript'></script>\n", uri);
     }
 }
+#endif
 
 
 /*
@@ -785,6 +788,7 @@ PUBLIC void showRequest()
 }
 
 
+#if KEEP
 /*
     <% stylesheets(patterns); %>
 
@@ -797,7 +801,7 @@ PUBLIC void stylesheets(cchar *patterns)
     HttpRoute   *route;
     EspRoute    *eroute;
     MprList     *files;
-    cchar       *filename, *ext, *uri, *path, *kind, *version, *clientDir;
+    cchar       *filename, *ext, *uri, *path, *kind, *version, *public;
     int         next;
 
     conn = getConn();
@@ -805,10 +809,7 @@ PUBLIC void stylesheets(cchar *patterns)
     route = rx->route;
     eroute = route->eroute;
     patterns = httpExpandRouteVars(route, patterns);
-#if FUTURE
-    client => public
-#endif
-    clientDir = httpGetDir(route, "client");
+    public = httpGetDir(route, "PUBLIC");
 
     if (!patterns || !*patterns) {
         version = espGetConfig(route, "version", "1.0.0");
@@ -831,11 +832,11 @@ PUBLIC void stylesheets(cchar *patterns)
              */
             ext = espGetConfig(route, "app.http.content.stylesheets", "css");
             filename = mprJoinPathExt("css/all", ext);
-            path = mprJoinPath(clientDir, filename);
+            path = mprJoinPath(public, filename);
             if (mprPathExists(path, R_OK)) {
                 stylesheets(filename);
             } else if (!smatch(ext, "less")) {
-                path = mprJoinPath(clientDir, "css/all.less");
+                path = mprJoinPath(public, "css/all.less");
                 if (mprPathExists(path, R_OK)) {
                     stylesheets("css/all.less");
                 }
@@ -843,12 +844,12 @@ PUBLIC void stylesheets(cchar *patterns)
         }
     } else {
         if (sends(patterns, "all.less")) {
-            path = mprJoinPath(clientDir, "css/fix.css");
+            path = mprJoinPath(public, "css/fix.css");
             if (mprPathExists(path, R_OK)) {
                 stylesheets("css/fix.css");
             }
         }
-        if ((files = mprGlobPathFiles(clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
+        if ((files = mprGlobPathFiles(public, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
             files = mprCreateList(0, 0);
             mprAddItem(files, patterns);
         }
@@ -864,6 +865,7 @@ PUBLIC void stylesheets(cchar *patterns)
         }
     }
 }
+#endif
 
 
 PUBLIC void updateCache(cchar *uri, cchar *data, int lifesecs)

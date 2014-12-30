@@ -118,7 +118,7 @@ PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
 
     esp = MPR->espService;
     if (target) {
-        mprAddKey(esp->actions, mprJoinPath(httpGetDir(route, "controllers"), target), action);
+        mprAddKey(esp->actions, mprJoinPath(httpGetDir(route, "CONTROLLERS"), target), action);
     }
 }
 
@@ -134,7 +134,7 @@ PUBLIC void espDefineBase(HttpRoute *route, EspProc baseProc)
 
     for (ITERATE_ITEMS(route->host->routes, rp, next)) {
         if ((er = route->eroute) != 0) {
-            if (smatch(httpGetDir(rp, "controllers"), httpGetDir(route, "controllers"))) {
+            if (smatch(httpGetDir(rp, "CONTROLLERS"), httpGetDir(route, "CONTROLLERS"))) {
                 er->commonController = baseProc;
             }
         }
@@ -681,7 +681,7 @@ PUBLIC int espSaveConfig(HttpRoute *route)
 {
     cchar       *path;
 
-    path = mprJoinPath(route->documents, ME_ESP_PACKAGE);
+    path = mprJoinPath(route->documents, ME_ESP_CONFIG);
 #if KEEP
     mprBackupLog(path, 3);
 #endif

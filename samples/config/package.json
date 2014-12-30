@@ -834,7 +834,6 @@
                 Set to include a XSRF token to minimize CSRF vulnerabilies
              */
             xsrf: true,
-
         },
 
         /*

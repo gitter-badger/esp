@@ -34,60 +34,6 @@ Me.load({
         'esp.conf': {
             type: 'file',
             files: [ 'esp.conf' ],
-        },
-
-        'esp-paks': {
-            path: '${OUT}/esp/',
-            home: '${TOP}/src/paks',
-            files: [ 'esp-*/**' ],
-            platforms: [ 'local' ],
-            message: 'Copy: src/paks/esp-*',
-            build: `
-                let espVersion = me.dir.src.join('package.json').readJSON().version
-                for each (pak in Path('.').files('esp-*')) {
-                    let version = pak.join('package.json').readJSON().version
-                    /* Disabled */
-                    if (false && espVersion != version) {
-                        throw 'Pak ' + pak + ' has different version ' + version + ' vs esp version of ' + espVersion
-                    }
-                    makeDirectory(OUT.join('esp', pak, version))
-                    for each (path in pak.files('**')) {
-                        let stem = path.components.slice(1).join(path.separator)
-                        let dest = OUT.join('esp', pak, version, stem)
-                        if (path.isDir) {
-                            makeDirectory(dest)
-                        } else {
-                            copyFile(path, dest)
-                        }
-                    }
-                }
-            `
-        },
-
-        pakcss: {
-            action: `
-                strace('Run', 'recess -compile export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.less')
-                let result = Cmd.run('recess -compile export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.less')
-                Path('export/esp-angular-mvc/templates/esp-angular-mvc/client/css/all.css').write(result)
-
-                strace('Run', 'recess -compile export/esp-html-mvc/templates/esp-html-mvc/client/css/all.less')
-                let result = Cmd.run('recess -compile export/esp-html-mvc/templates/esp-html-mvc/client/css/all.less')
-                Path('export/esp-html-mvc/templates/esp-html-mvc/client/css/all.css').write(result)
-            `
-        },
-
-        'esp-configure': {
-            scripts: {
-                postconfig: `
-                    if (me.platform.os == 'vxworks') {
-                        let evars = []
-                        for (let [key,value] in me.env) {
-                            evars.push('EspEnv ' + key + ' \"' + value + '\"\n')
-                        }
-                        me.dir.lib.join('esp-' + me.platform.os + '.conf').write(evars.join())
-                    }
-                `,
-            },
-        },
+        }
     }
 })

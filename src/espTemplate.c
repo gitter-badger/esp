@@ -108,7 +108,7 @@ PUBLIC char *espExpandCommand(HttpRoute *route, cchar *command, cchar *source, c
 
             } else if (matchToken(&cp, "${APPINC}")) {
                 /* Application src include directory */
-                if ((srcDir = httpGetDir(route, "src")) == 0) {
+                if ((srcDir = httpGetDir(route, "SRC")) == 0) {
                     srcDir = ".";
                 }
                 mprPutStringToBuf(buf, srcDir);
@@ -289,7 +289,8 @@ static int runCommand(HttpRoute *route, MprDispatcher *dispatcher, cchar *comman
 
     WARNING: this routine blocks and runs GC. All parameters must be retained.
  */
-PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *source, cchar *module, cchar *cacheName, int isView, char **errMsg)
+PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *source, cchar *module, cchar *cacheName, 
+    int isView, char **errMsg)
 {
     MprFile     *fp;
     EspRoute    *eroute;
@@ -307,7 +308,7 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
             *errMsg = sfmt("Cannot read %s", source);
             return 0;
         }
-        if ((layoutsDir = httpGetDir(route, "layouts")) != 0) {
+        if ((layoutsDir = httpGetDir(route, "LAYOUTS")) != 0) {
             layout = mprJoinPath(layoutsDir, "default.esp");
         }
         if ((script = espBuildScript(route, page, source, cacheName, layout, NULL, &err)) == 0) {
@@ -584,7 +585,7 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
                     if (token[0] == '/') {
                         layout = sclone(token);
                     } else {
-                        if ((layoutsDir = httpGetDir(route, "layouts")) != 0) {
+                        if ((layoutsDir = httpGetDir(route, "LAYOUTS")) != 0) {
                             layout = mprJoinPath(layoutsDir, token);
                         } else {
                             layout = mprJoinPath(mprGetPathDir(path), token);
