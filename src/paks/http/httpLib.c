@@ -15431,7 +15431,6 @@ PUBLIC void httpSetDir(HttpRoute *route, cchar *name, cchar *value)
 PUBLIC void httpSetDefaultDirs(HttpRoute *route)
 {
 #if UNUSED
-    //  MOB - are these needed ?
     httpSetDir(route, "cache", 0);
     httpSetDir(route, "paks", 0);
     httpSetDir(route, "public", 0);

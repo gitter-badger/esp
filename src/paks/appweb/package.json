@@ -2,7 +2,8 @@
     "name": "appweb",
     "description": "Embedthis Appweb Embedded Web Server",
     "title": "Embedthis Appweb",
-    "version": "5.3.0",
+    "version": "5.4.0",
+    "pak": ">=0.10",
     "keywords": [
         "appweb",
         "http",
@@ -35,7 +36,6 @@
     "directories": {
         "paks": "src/paks"
     },
-    "pak": "~0.10",
     "dependencies": {
         "http": "~6",
         "mpr": "~6.0",
