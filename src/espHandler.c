@@ -1257,11 +1257,11 @@ static int espDbDirective(MaState *state, cchar *key, cchar *value)
 
 PUBLIC void espSetDefaultDirs(HttpRoute *route)
 {
-    //  MOB - why are these not uppercase?
-    httpSetDir(route, "APP", "app");
+    httpSetDir(route, "APP", "documents/app");
     httpSetDir(route, "CACHE", 0);
     httpSetDir(route, "CONTROLLERS", 0);
     httpSetDir(route, "DB", 0);
+    httpSetDir(route, "DOCUMENTS", 0);
     httpSetDir(route, "LAYOUTS", 0);
     httpSetDir(route, "LIB", "lib");
     httpSetDir(route, "PAKS", 0);
@@ -1269,12 +1269,9 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
     httpSetDir(route, "SRC", 0);
     httpSetDir(route, "TOP", mprGetCurrentPath());
 
-#if UNUSED
-    //  MOB - is this used?
+#if UNUSED && DEPRECATED
     httpSetDir(route, "views", "app");
-    /*  Public relative LIB */
     httpSetRouteVar(route, "LIB", "lib");
-    //  missing upload
     httpSetRouteUploadDir(route, httpMakePath(route, 0, value));
 #endif
 }
