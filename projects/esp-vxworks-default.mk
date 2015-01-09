@@ -132,9 +132,9 @@ clean:
 	rm -f "$(BUILD)/obj/espAbbrev.o"
 	rm -f "$(BUILD)/obj/espConfig.o"
 	rm -f "$(BUILD)/obj/espFramework.o"
-	rm -f "$(BUILD)/obj/espHandler.o"
 	rm -f "$(BUILD)/obj/espHtml.o"
 	rm -f "$(BUILD)/obj/espTemplate.o"
+	rm -f "$(BUILD)/obj/esphandler.o"
 	rm -f "$(BUILD)/obj/httpLib.o"
 	rm -f "$(BUILD)/obj/makerom.o"
 	rm -f "$(BUILD)/obj/manager.o"
@@ -342,35 +342,35 @@ $(BUILD)/obj/espFramework.o: \
 	$(CC) -c -o $(BUILD)/obj/espFramework.o $(CFLAGS) $(DFLAGS) "-I$(BUILD)/inc" "-I$(WIND_BASE)/target/h" "-I$(WIND_BASE)/target/h/wrn/coreip" src/espFramework.c
 
 #
-#   espHandler.o
-#
-DEPS_20 += src/esp.h
-
-$(BUILD)/obj/espHandler.o: \
-    src/espHandler.c $(DEPS_20)
-	@echo '   [Compile] $(BUILD)/obj/espHandler.o'
-	$(CC) -c -o $(BUILD)/obj/espHandler.o $(CFLAGS) $(DFLAGS) "-I$(BUILD)/inc" "-I$(WIND_BASE)/target/h" "-I$(WIND_BASE)/target/h/wrn/coreip" src/espHandler.c
-
-#
 #   espHtml.o
 #
-DEPS_21 += src/esp.h
-DEPS_21 += src/edi.h
+DEPS_20 += src/esp.h
+DEPS_20 += src/edi.h
 
 $(BUILD)/obj/espHtml.o: \
-    src/espHtml.c $(DEPS_21)
+    src/espHtml.c $(DEPS_20)
 	@echo '   [Compile] $(BUILD)/obj/espHtml.o'
 	$(CC) -c -o $(BUILD)/obj/espHtml.o $(CFLAGS) $(DFLAGS) "-I$(BUILD)/inc" "-I$(WIND_BASE)/target/h" "-I$(WIND_BASE)/target/h/wrn/coreip" src/espHtml.c
 
 #
 #   espTemplate.o
 #
-DEPS_22 += src/esp.h
+DEPS_21 += src/esp.h
 
 $(BUILD)/obj/espTemplate.o: \
-    src/espTemplate.c $(DEPS_22)
+    src/espTemplate.c $(DEPS_21)
 	@echo '   [Compile] $(BUILD)/obj/espTemplate.o'
 	$(CC) -c -o $(BUILD)/obj/espTemplate.o $(CFLAGS) $(DFLAGS) "-I$(BUILD)/inc" "-I$(WIND_BASE)/target/h" "-I$(WIND_BASE)/target/h/wrn/coreip" src/espTemplate.c
+
+#
+#   esphandler.o
+#
+DEPS_22 += src/esp.h
+
+$(BUILD)/obj/esphandler.o: \
+    src/esphandler.c $(DEPS_22)
+	@echo '   [Compile] $(BUILD)/obj/esphandler.o'
+	$(CC) -c -o $(BUILD)/obj/esphandler.o $(CFLAGS) $(DFLAGS) "-I$(BUILD)/inc" "-I$(WIND_BASE)/target/h" "-I$(WIND_BASE)/target/h/wrn/coreip" src/esphandler.c
 
 #
 #   http.h
@@ -605,7 +605,7 @@ DEPS_44 += $(BUILD)/obj/edi.o
 DEPS_44 += $(BUILD)/obj/espAbbrev.o
 DEPS_44 += $(BUILD)/obj/espConfig.o
 DEPS_44 += $(BUILD)/obj/espFramework.o
-DEPS_44 += $(BUILD)/obj/espHandler.o
+DEPS_44 += $(BUILD)/obj/esphandler.o
 DEPS_44 += $(BUILD)/obj/espHtml.o
 DEPS_44 += $(BUILD)/obj/espTemplate.o
 DEPS_44 += $(BUILD)/obj/mdb.o
@@ -613,7 +613,7 @@ DEPS_44 += $(BUILD)/obj/sdb.o
 
 $(BUILD)/bin/libmod_esp.out: $(DEPS_44)
 	@echo '      [Link] $(BUILD)/bin/libmod_esp.out'
-	$(CC) -r -o $(BUILD)/bin/libmod_esp.out $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/edi.o" "$(BUILD)/obj/espAbbrev.o" "$(BUILD)/obj/espConfig.o" "$(BUILD)/obj/espFramework.o" "$(BUILD)/obj/espHandler.o" "$(BUILD)/obj/espHtml.o" "$(BUILD)/obj/espTemplate.o" "$(BUILD)/obj/mdb.o" "$(BUILD)/obj/sdb.o" $(LIBS) 
+	$(CC) -r -o $(BUILD)/bin/libmod_esp.out $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/edi.o" "$(BUILD)/obj/espAbbrev.o" "$(BUILD)/obj/espConfig.o" "$(BUILD)/obj/espFramework.o" "$(BUILD)/obj/esphandler.o" "$(BUILD)/obj/espHtml.o" "$(BUILD)/obj/espTemplate.o" "$(BUILD)/obj/mdb.o" "$(BUILD)/obj/sdb.o" $(LIBS) 
 
 #
 #   espcmd

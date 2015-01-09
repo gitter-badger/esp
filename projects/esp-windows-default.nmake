@@ -183,9 +183,9 @@ clean:
 	if exist "build\$(CONFIG)\obj\espAbbrev.obj" del /Q "build\$(CONFIG)\obj\espAbbrev.obj"
 	if exist "build\$(CONFIG)\obj\espConfig.obj" del /Q "build\$(CONFIG)\obj\espConfig.obj"
 	if exist "build\$(CONFIG)\obj\espFramework.obj" del /Q "build\$(CONFIG)\obj\espFramework.obj"
-	if exist "build\$(CONFIG)\obj\espHandler.obj" del /Q "build\$(CONFIG)\obj\espHandler.obj"
 	if exist "build\$(CONFIG)\obj\espHtml.obj" del /Q "build\$(CONFIG)\obj\espHtml.obj"
 	if exist "build\$(CONFIG)\obj\espTemplate.obj" del /Q "build\$(CONFIG)\obj\espTemplate.obj"
+	if exist "build\$(CONFIG)\obj\esphandler.obj" del /Q "build\$(CONFIG)\obj\esphandler.obj"
 	if exist "build\$(CONFIG)\obj\estLib.obj" del /Q "build\$(CONFIG)\obj\estLib.obj"
 	if exist "build\$(CONFIG)\obj\httpLib.obj" del /Q "build\$(CONFIG)\obj\httpLib.obj"
 	if exist "build\$(CONFIG)\obj\makerom.obj" del /Q "build\$(CONFIG)\obj\makerom.obj"
@@ -572,14 +572,14 @@ build\$(CONFIG)\obj\espFramework.obj: \
 	"$(CC)" -c -Fo$(BUILD)\obj\espFramework.obj -Fd$(BUILD)\obj\espFramework.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\espFramework.c $(LOG)
 
 #
-#   espHandler.obj
+#   esphandler.obj
 #
 DEPS_33 = $(DEPS_33) src\esp.h
 
-build\$(CONFIG)\obj\espHandler.obj: \
-    src\espHandler.c $(DEPS_33)
-	@echo .. [Compile] build\$(CONFIG)\obj\espHandler.obj
-	"$(CC)" -c -Fo$(BUILD)\obj\espHandler.obj -Fd$(BUILD)\obj\espHandler.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\espHandler.c $(LOG)
+build\$(CONFIG)\obj\esphandler.obj: \
+    src\esphandler.c $(DEPS_33)
+	@echo .. [Compile] build\$(CONFIG)\obj\esphandler.obj
+	"$(CC)" -c -Fo$(BUILD)\obj\esphandler.obj -Fd$(BUILD)\obj\esphandler.pdb $(CFLAGS) $(DFLAGS) $(IFLAGS) src\esphandler.c $(LOG)
 
 #
 #   espHtml.obj
@@ -648,7 +648,7 @@ DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\edi.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espAbbrev.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espConfig.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espFramework.obj
-DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espHandler.obj
+DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\esphandler.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espHtml.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\espTemplate.obj
 DEPS_39 = $(DEPS_39) build\$(CONFIG)\obj\mdb.obj
@@ -670,7 +670,7 @@ LIBS_39 = $(LIBS_39) libsql.lib
 
 build\$(CONFIG)\bin\libmod_esp.dll: $(DEPS_39)
 	@echo ..... [Link] build\$(CONFIG)\bin\libmod_esp.dll
-	"$(LD)" -dll -out:$(BUILD)\bin\libmod_esp.dll -entry:$(ENTRY) $(LDFLAGS) $(LIBPATHS) "$(BUILD)\obj\edi.obj" "$(BUILD)\obj\espAbbrev.obj" "$(BUILD)\obj\espConfig.obj" "$(BUILD)\obj\espFramework.obj" "$(BUILD)\obj\espHandler.obj" "$(BUILD)\obj\espHtml.obj" "$(BUILD)\obj\espTemplate.obj" "$(BUILD)\obj\mdb.obj" "$(BUILD)\obj\sdb.obj" $(LIBPATHS_39) $(LIBS_39) $(LIBS_39) $(LIBS)  $(LOG)
+	"$(LD)" -dll -out:$(BUILD)\bin\libmod_esp.dll -entry:$(ENTRY) $(LDFLAGS) $(LIBPATHS) "$(BUILD)\obj\edi.obj" "$(BUILD)\obj\espAbbrev.obj" "$(BUILD)\obj\espConfig.obj" "$(BUILD)\obj\espFramework.obj" "$(BUILD)\obj\esphandler.obj" "$(BUILD)\obj\espHtml.obj" "$(BUILD)\obj\espTemplate.obj" "$(BUILD)\obj\mdb.obj" "$(BUILD)\obj\sdb.obj" $(LIBPATHS_39) $(LIBS_39) $(LIBS_39) $(LIBS)  $(LOG)
 
 #
 #   esp.obj
