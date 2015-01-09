@@ -12,7 +12,7 @@ Me.load({
                 apidoc('api/esp.dox', ['${SRC}/src/esp.h'], 'ESP', ls('api/*.tags'))
                 for each (let src: Path in ['api/http.html', 'api/mpr.html', 'api/osdep.html', 'api/esp.html', 
                         'api/edi.html']) {
-                    apiLayout(src, Path('public/ref').join(src))
+                    apiLayout(src, Path('documents/ref').join(src))
                 }
             `,
         },

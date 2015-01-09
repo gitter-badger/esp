@@ -40,7 +40,7 @@
 <tr class="apiDef"><td class="apiType"><a href="#group___esp_route" class="ref">EspRoute*</a></td><td><a href="#esp_8h_1a0ac80522752809c14f74ccaf02e48de5" class="nameRef">espCreateRoute</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Create an EspRoute object.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1gafa8b3b579ec913aa905ec9c173571059" class="nameRef">espCreateSession</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Create a session state object.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_route_1ga321abe89cc91246b2a44f40493988670" class="nameRef">espDefineAction</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *targetKey, void *actionProc)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Define an action.</td></tr>
-<tr class="apiDef"><td class="apiType">int</td><td><a href="#group___esp_route_1ga0e0729b0a75cdf55a2731129c740acc0" class="nameRef">espDefineApp</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *dir, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *prefix, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *routeSet)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Define an ESP application.</td></tr>
+<tr class="apiDef"><td class="apiType">int</td><td><a href="#group___esp_route_1gab2088c94c6f9a0484def185b9ae715d6" class="nameRef">espDefineApp</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *prefix, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *home, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *documents, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *routeSet)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Define an ESP application.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_route_1gae250d071bb458546c8ed5fad3aba5e84" class="nameRef">espDefineBase</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="#esp_8h_1aa0c56d9f50902eb9cf16889d3d95c129" class="ref">EspProc</a> baseProc)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Define a base function to invoke for all controller actions.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_route_1gab7ebccfe31eb1e07f3f40db700d18bd9" class="nameRef">espDefineView</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *path, void *viewProc)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Define a view.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gaf6d82157def054f3c2c38b96f15872ce" class="nameRef">espDestroySession</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Destroy a session state object.</td></tr>
@@ -59,7 +59,7 @@
 <tr class="apiDef"><td class="apiType"><a href="edi.html#group___edi" class="ref">Edi*</a></td><td><a href="#group___esp_req_1gadb72373974f7f4d05a8dbbdf966c6496" class="nameRef">espGetDatabase</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the current database instance.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1gaf694aade2329f4c9dcb7c6d5a77e62c1" class="nameRef">espGetDocuments</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the default documents directory for the request route.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="#group___esp_route" class="ref">EspRoute*</a></td><td><a href="#group___esp_req_1gaefe462fb7ee0c6fa6a0c7842b973de3c" class="nameRef">espGetEspRoute</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the current extended route information.</td></tr>
-<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1gac3aa8897554734458a399dcbdaeba4e5" class="nameRef">espGetFeedback</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1">feedback</a></td></tr>
+<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1ga307d1d071150431efd74a1450ed095ce" class="nameRef">espGetFeedback</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a">feedback</a></td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1ga52bddd62e4cce84888abbeb44ba44c33" class="nameRef">espGetFlash</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a flash message.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="edi.html#group___edi_grid" class="ref">EdiGrid*</a></td><td><a href="#group___esp_req_1ga440de6fba35ad0513c2925f11a0f3710" class="nameRef">espGetGrid</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the current database grid.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1gaddf870926cbeee2779b687522d5db0aa" class="nameRef">espGetHeader</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *key)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get an rx http header.</td></tr>
@@ -101,12 +101,12 @@
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga94594750521ce6621691dcec43a2d670" class="nameRef">espRenderCached</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render cached content.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1gaf5951884b79343ba98eb53b8c2d28a4f" class="nameRef">espRenderError</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, int status, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render an error message back to the client and finalize the request.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga543bb9b12ee3f064a730a47164feac0d" class="nameRef">espRenderFile</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *path)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render the contents of a file back to the client.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#esp_8h_1ab04a21984d5639fddd53f6b107f9d8ed" class="nameRef">espRenderFlash</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kinds)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render flash messages.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#esp_8h_1a4407e22758d752f6348b01ae462704e0" class="nameRef">espRenderFlash</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *types)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render flash messages.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga53ad9ef2ea042b04db7307acde5ebf02" class="nameRef">espRenderSafe</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a formatted string after HTML escaping.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga743eec6372aeb305a939bc9b0026281e" class="nameRef">espRenderSafeString</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *s)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a safe string of data to the client.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga2bc125ce68d2a8a8992228f0232c9b6f" class="nameRef">espRenderString</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *s)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a string of data to the client.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1gad0c3cc923d09313ed81476b74c32ab00" class="nameRef">espRenderVar</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render the value of a request variable to the client.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga492e5353599306baaf769d1b8636260e" class="nameRef">espRenderView</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a view template to the client.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gab1131281c14f4f3af98a45b1344aad91" class="nameRef">espRenderView</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *view)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a view template to the client.</td></tr>
 <tr class="apiDef"><td class="apiType">int</td><td><a href="#group___esp_route_1gacd7c962cf79038c3d7604c72dc43bbdb" class="nameRef">espSaveConfig</a>(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Save the in-memory ESP package.json configuration to the default location for the ESP application defined by the specified route.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1gaed0422d33553efa73195661fd80efaee" class="nameRef">espSendGrid</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="edi.html#group___edi_grid" class="ref">EdiGrid</a> *grid, int flags)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a database grid as a JSON string.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_req_1ga1ba6eef08895cd89005dd96262d1cd53" class="nameRef">espSendRec</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="edi.html#group___edi_rec" class="ref">EdiRec</a> *rec, int flags)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a database record as a JSON string.</td></tr>
@@ -119,10 +119,10 @@
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga58039e1fafe24481848bf1b47a2d444f" class="nameRef">espSetCookie</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *value, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *path, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *domain, <a href="mpr.html#mpr_8h_1adbceeccda24c35e7b4c6090db7065319" class="ref">MprTicks</a> lifespan, <a href="osdep.html#osdep_8h_1ad5c9d4ba3dc37783a528b0925dc981a0" class="ref">bool</a> isSecure)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a cookie in the transmission.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga3311af6602f80872182db7112b832f5e" class="nameRef">espSetCurrentSession</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set this authenticated session as the current session.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gac44e50b7d3c22c093e139a172c878608" class="nameRef">espSetData</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, void *data)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a private data reference for the current request.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gade767c2c5c496c08fbf803181b93da17" class="nameRef">espSetFeedback</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a feedback message.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga577256eaaa82e8dabe11d6ceca989d6b" class="nameRef">espSetFeedbackv</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a feedback message.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gaad505657a6cb461d6645e1ee47740926" class="nameRef">espSetFlash</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a flash message.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gac9ed013a63fe33aa9262a26bfa6ff317" class="nameRef">espSetFlashv</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a flash message.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga12f466c3ea4ae6e7eb2692c80e03a45b" class="nameRef">espSetFeedback</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a feedback message.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga7508b46ff71aa46719836d2720840047" class="nameRef">espSetFeedbackv</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a feedback message.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga767686a555d4a6aa466c869a16ed634c" class="nameRef">espSetFlash</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a flash message.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga09525c559cb0343bda3b3773161ee5f2" class="nameRef">espSetFlashv</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Send a flash message.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="edi.html#group___edi_grid" class="ref">EdiGrid*</a></td><td><a href="#group___esp_req_1ga6e09b2658067694a86d1535bf56aebae" class="nameRef">espSetGrid</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="edi.html#group___edi_grid" class="ref">EdiGrid</a> *grid)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set the current database grid.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga66c536436b8a99612b1ce571c315b39b" class="nameRef">espSetHeader</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *key, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a transmission header.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1gafcb200922fb98165c0485348ea640d01" class="nameRef">espSetHeaderString</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *key, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *value)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a simple key/value transmission header.</td></tr>
@@ -137,9 +137,9 @@
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_req_1ga2d10fdd68ab00d306d344c815f7655e7" class="nameRef">espUpdateCache</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *uri, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *data, int lifesecs)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Update the cached content for a request.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1ad5c9d4ba3dc37783a528b0925dc981a0" class="ref">bool</a></td><td><a href="#group___esp_req_1ga585c648e2d4b3b6183bf22cc976b7d4b" class="nameRef">espUpdateRec</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="edi.html#group___edi_rec" class="ref">EdiRec</a> *rec)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Write a record to the database.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1ga47475da9d7a9da33d0d07cd2a8211b8d" class="nameRef">espUri</a>(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *target)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Create a URI.</td></tr>
-<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1ad5c9d4ba3dc37783a528b0925dc981a0" class="ref">bool</a></td><td><a href="#group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1" class="nameRef">feedback</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a feedback message.</td></tr>
+<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1ad5c9d4ba3dc37783a528b0925dc981a0" class="ref">bool</a></td><td><a href="#group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a" class="nameRef">feedback</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a feedback message.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1ga32d626626eee0bc4ade146973f6abb1c" class="nameRef">finalize</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Finalize the response.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1ga71d13cb7c477077d3fa31d855442deff" class="nameRef">flash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a flash notification message.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gab8d4dc18829f1fd9453757508b0de666" class="nameRef">flash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Set a flash notification message.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gadac116554b543b7c4228c018a85882f5" class="nameRef">flush</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Flush transmit data.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="http.html#group___http_auth" class="ref">HttpAuth*</a></td><td><a href="#group___esp_abbrev_1ga35c88eaa69d732f54eb5829a85dffcce" class="nameRef">getAuth</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the auth object for the current route.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="mpr.html#group___mpr_list" class="ref">MprList*</a></td><td><a href="#group___esp_abbrev_1ga4ab3c77c072c0e1b7a21439a85240d7e" class="nameRef">getColumns</a>(<a href="edi.html#group___edi_rec" class="ref">EdiRec</a> *rec)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a list of column names.</td></tr>
@@ -153,10 +153,10 @@
 <tr class="apiDef"><td class="apiType"><a href="mpr.html#group___mpr_dispatcher" class="ref">MprDispatcher*</a></td><td><a href="#group___esp_abbrev_1ga93b589637883c1707073619898354ff1" class="nameRef">getDispatcher</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the connection dispatcher object.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gadcce96e047630e80fc6283689be47ae0" class="nameRef">getDocuments</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the default document root directory for the request route.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="#group___esp_route" class="ref">EspRoute*</a></td><td><a href="#group___esp_abbrev_1ga29c40a3c98f7e8b07c4bab47a29d8ade" class="nameRef">getEspRoute</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the extended route EspRoute structure.</td></tr>
-<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gaaef4ca7c60c2fd04b5c34fdc72f047d3" class="nameRef">getFeedback</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1">feedback</a></td></tr>
+<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga35b754641777f940d7902f1887cbda55" class="nameRef">getFeedback</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a">feedback</a></td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gac52ae6c15d4dc95d264a15235187f915" class="nameRef">getField</a>(<a href="edi.html#group___edi_rec" class="ref">EdiRec</a> *rec, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *field)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a field from the current database record.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1gaca4c0e5a528f05f835631b4f60b2917c" class="nameRef">getFieldError</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *field)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Test if a field in the current record has input validation errors.</td></tr>
-<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga99b145381ebe019cea05e3405d51c684" class="nameRef">getFlash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a flash message defined via <a class="ref" href="#group___esp_abbrev_1ga71d13cb7c477077d3fa31d855442deff">flash</a></td></tr>
+<tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga2fd8e3719f3e302cfbf7727443cadd1f" class="nameRef">getFlash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get a flash message defined via <a class="ref" href="#group___esp_abbrev_1gab8d4dc18829f1fd9453757508b0de666">flash</a></td></tr>
 <tr class="apiDef"><td class="apiType"><a href="edi.html#group___edi_grid" class="ref">EdiGrid*</a></td><td><a href="#group___esp_abbrev_1ga2e60477a5b4168f59758c93507b4b899" class="nameRef">getGrid</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the current database grid.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_abbrev_1ga3a9e6969b5beb4c554ec9032b322c0fe" class="nameRef">getHeader</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *key)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get an rx http header.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar*</a></td><td><a href="#group___esp_req_1ga6cb98a81fac3b68ef772a6cc7a37a156" class="nameRef">getMethod</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Get the HTTP method.</td></tr>
@@ -200,11 +200,11 @@
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_abbrev_1ga680e8d96388553f684b29b6007e2411a" class="nameRef">renderConfig</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render the package.json.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1ga5c6a2717cd75e9e0069b206507e5207e" class="nameRef">renderError</a>(int status, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render an error message back to the client and finalize the request.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_abbrev_1gaa1e37f244a0e0796df494dfb756472a8" class="nameRef">renderFile</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *path)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a file back to the client.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1ga1b0bb36b22b201b21b863943b007c063" class="nameRef">renderFlash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kinds)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render flash messages.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gae7831ebce7adc03e3d93dd350d83882d" class="nameRef">renderFlash</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *types)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render flash messages.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_abbrev_1ga40445cbba9d5b3a5baec51e59e3d6340" class="nameRef">renderSafe</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a formatted string after HTML escaping.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_abbrev_1gaaafafb9657167c8093d9015733dd15e2" class="nameRef">renderString</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *s)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a string of data to the client.</td></tr>
 <tr class="apiDef"><td class="apiType"><a href="osdep.html#osdep_8h_1a7d08ccc1e981eb4d5a238641ac4ccfc1" class="ref">ssize</a></td><td><a href="#group___esp_abbrev_1ga688f12fa155a796f2f35f33cc52d5abb" class="nameRef">renderVar</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render the value of a request variable to the client.</td></tr>
-<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gaf0db430f850378bd83c514a0dda77fb9" class="nameRef">renderView</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *view)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render a view template to the client.</td></tr>
+<tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gaf0db430f850378bd83c514a0dda77fb9" class="nameRef">renderView</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *view)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render an ESP page to the client.</td></tr>
 <tr class="apiDef"><td class="apiType">int</td><td><a href="#group___esp_abbrev_1ga1d226bb7d309a4586b862d409f53ab9f" class="nameRef">runCmd</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *command, char *input, char **output, char **error, <a href="mpr.html#mpr_8h_1adbceeccda24c35e7b4c6090db7065319" class="ref">MprTicks</a> timeout, int flags)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Run a command.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1ga55805dac6f16fafd2fdc18df732b7b46" class="nameRef">scripts</a>(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *patterns)</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Render scripts.</td></tr>
 <tr class="apiDef"><td class="apiType">void</td><td><a href="#group___esp_abbrev_1gab3444f174346e0d8e8d4d3a43d451c5e" class="nameRef">securityToken</a>()</td></tr><tr class="apiBrief"><td>&nbsp;</td><td>Add the security token to the response.</td></tr>
@@ -342,7 +342,7 @@
     <tr><td class="param">name</td><td>Name of the request parameter to set.</td>
     <tr><td class="param">value</td><td>Value to set.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -473,23 +473,23 @@
     </dd></dl>
   </div>
 </div>
-<a name="group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1"></a>
+<a name="group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a"></a>
 <div class="api">
   <div class="prototype">
     <a href="osdep.html#osdep_8h_1ad5c9d4ba3dc37783a528b0925dc981a0" class="ref">bool</a>
     feedback
-(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
+(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
   </div>
   <div class="apiDetail">
 <p>Set a feedback message.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Feedback messages are a convenient way to aggregate messages state information in the response. The <a class="ref" href="#group___esp_abbrev_1gaaef4ca7c60c2fd04b5c34fdc72f047d3">getFeedback</a> API can be used to retrieve feedback messages. Feedback messages are removed at the completion of the request.</dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Feedback messages are a convenient way to aggregate messages state information in the response. The <a class="ref" href="#group___esp_abbrev_1ga35b754641777f940d7902f1887cbda55">getFeedback</a> API can be used to retrieve feedback messages. Feedback messages are removed at the completion of the request.</dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">kind</td><td>Kind of feedback message.</td>
+    <tr><td class="param">type</td><td>type of feedback message. This may be set to any word, but the following feedback types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style formatted string to use as the message.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>True if the request has been successful so far, i.e. there is not an error feedback message defined. Return false if there is an error feedback defined. This permits feedback to be chained as: renderResult(feedback(&quot;error&quot;, ...));.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -509,19 +509,19 @@
     </dd></dl>
   </div>
 </div>
-<a name="group___esp_abbrev_1ga71d13cb7c477077d3fa31d855442deff"></a>
+<a name="group___esp_abbrev_1gab8d4dc18829f1fd9453757508b0de666"></a>
 <div class="api">
   <div class="prototype">
     void
     flash
-(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
+(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
   </div>
   <div class="apiDetail">
 <p>Set a flash notification message.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Flash messages persist for only one request and are a convenient way to pass state information or feedback messages to the next request. Flash messages use the session state store, but persist only for one request. This routine calls <a class="ref" href="#group___esp_req_1gaad505657a6cb461d6645e1ee47740926">espSetFlash</a></dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Flash messages persist for only one request and are a convenient way to pass state information or feedback messages to the next request. Flash messages use the session state store, but persist only for one request. This routine calls <a class="ref" href="#group___esp_req_1ga767686a555d4a6aa466c869a16ed634c">espSetFlash</a></dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">kind</td><td>Kind of flash message.</td>
+    <tr><td class="param">type</td><td>type of flash message. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style message format.</td>
     </table></dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
@@ -736,21 +736,21 @@
     </dd></dl>
   </div>
 </div>
-<a name="group___esp_abbrev_1gaaef4ca7c60c2fd04b5c34fdc72f047d3"></a>
+<a name="group___esp_abbrev_1ga35b754641777f940d7902f1887cbda55"></a>
 <div class="api">
   <div class="prototype">
     <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *
     getFeedback
-(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)
+(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)
   </div>
   <div class="apiDetail">
-<p>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1">feedback</a></p>
+<p>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a">feedback</a></p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">kind</td><td>Kind of feedback message to retrieve.</td>
+    <tr><td class="param">type</td><td>type of feedback message to retrieve. This may be set to any word, but the following feedback types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Reference to private data.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -789,21 +789,21 @@
     </dd></dl>
   </div>
 </div>
-<a name="group___esp_abbrev_1ga99b145381ebe019cea05e3405d51c684"></a>
+<a name="group___esp_abbrev_1ga2fd8e3719f3e302cfbf7727443cadd1f"></a>
 <div class="api">
   <div class="prototype">
     <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *
     getFlash
-(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)
+(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)
   </div>
   <div class="apiDetail">
-<p>Get a flash message defined via <a class="ref" href="#group___esp_abbrev_1ga71d13cb7c477077d3fa31d855442deff">flash</a></p>
+<p>Get a flash message defined via <a class="ref" href="#group___esp_abbrev_1gab8d4dc18829f1fd9453757508b0de666">flash</a></p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">kind</td><td>Kind of flash message to retrieve.</td>
+    <tr><td class="param">type</td><td>type of flash message to retrieve. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Reference to private data.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -915,7 +915,7 @@
   </div>
   <div class="apiDetail">
 <p>Get the HttpRoute object for the current route.</p>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -931,7 +931,7 @@
 <p>Get the security token.</p>
     <dl><dt><b>Description</b>:</dt><dd>To minimize form replay attacks, a security token may be required for POST requests on a route. Client-side Javascript must then send this token as a request header in subsquent POST requests. To configure a route to require security tokens, call <a class="ref" href="#group___http_route_1ga4b4feabc71a3ad15f2b9d33722a2340b" external="http.dtags">httpSetRouteXsrf</a></dd></dl>
     <dl><dt>Returns:</dt><dd>The security token.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -947,7 +947,7 @@
 <p>Get the session state ID.</p>
     <dl><dt><b>Description</b>:</dt><dd>This will get a session and return the session ID. This will create a new session state storage area if one does not already exist.</dd></dl>
     <dl><dt>Returns:</dt><dd>The session state identifier string.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -1411,7 +1411,7 @@ This is a smart input control that will call the appropriate input control based
     <table class="parameters" title="Parameters">
     <tr><td class="param">name</td><td>Cookie name.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -1549,21 +1549,21 @@ The output is Html escaped for security
     </dd></dl>
   </div>
 </div>
-<a name="group___esp_abbrev_1ga1b0bb36b22b201b21b863943b007c063"></a>
+<a name="group___esp_abbrev_1gae7831ebce7adc03e3d93dd350d83882d"></a>
 <div class="api">
   <div class="prototype">
     void
     renderFlash
-(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kinds)
+(<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *types)
   </div>
   <div class="apiDetail">
 <p>Render flash messages.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Flash notices are one-time messages that are passed to the newt request (only). See <a class="ref" href="#group___esp_req_1gaad505657a6cb461d6645e1ee47740926">espSetFlash</a> and <a class="ref" href="#group___esp_abbrev_1ga71d13cb7c477077d3fa31d855442deff">flash</a> for how to define flash messages.</dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Flash notices are one-time messages that are passed to the newt request (only). See <a class="ref" href="#group___esp_req_1ga767686a555d4a6aa466c869a16ed634c">espSetFlash</a> and <a class="ref" href="#group___esp_abbrev_1gab8d4dc18829f1fd9453757508b0de666">flash</a> for how to define flash messages.</dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">kinds</td><td>Space separated list of flash messages types. Typical types are: &quot;error&quot;, &quot;inform&quot;, &quot;warning&quot;.</td>
+    <tr><td class="param">types</td><td>Types of flash message to retrieve. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -1638,11 +1638,10 @@ If a request parameter is not found by the given name, consult the session store
 (<a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *view)
   </div>
   <div class="apiDetail">
-<p>Render a view template to the client.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Actions are C procedures that are invoked when specific URIs are routed to the controller/action pair.</dd></dl>
+<p>Render an ESP page to the client.</p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">view</td><td>view name.</td>
+    <tr><td class="param">view</td><td>View name. The view name is interpreted relative to the matching route documents directory and may omit an ESP extension.</td>
     </table></dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
@@ -1687,7 +1686,7 @@ If a request parameter is not found by the given name, consult the session store
     <table class="parameters" title="Parameters">
     <tr><td class="param">patterns</td><td>An enhanced glob-style expression pattern. The format is is a comma separated string of filename expressions. Each expression may contain the wildcard tokens: &quot;*&quot; which matches any filename portion, &quot;**&quot; which matches any filename portion in any subdirectory. An expression may be prefixed with &quot;!&quot; to exclude files of that expression.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Deprecated.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -1722,7 +1721,7 @@ If a request parameter is not found by the given name, consult the session store
     <tr><td class="param">name</td><td>Variable name to get.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>The session variable value. Returns NULL if not set.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -1916,7 +1915,7 @@ This wraps httpSetConnNotifier and calls espSetConn before invoking the notifier
     <table class="parameters" title="Parameters">
     <tr><td class="param">notifier</td><td>Callback function.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -2045,7 +2044,7 @@ This wraps httpSetConnNotifier and calls espSetConn before invoking the notifier
     <table class="parameters" title="Parameters">
     <tr><td class="param">patterns</td><td>An enhanced glob-style expression pattern. The format is is a comma separated string of filename expressions. Each expression may contain the wildcard tokens: &quot;*&quot; which matches any filename portion, &quot;**&quot; which matches any filename portion in any subdirectory. An expression may be prefixed with &quot;!&quot; to exclude files of that expression.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Deprecated.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     </dd></dl>
   </div>
@@ -2278,7 +2277,7 @@ Custom data for request (unmanaged).
     <tr><td class="param">var</td><td>Name of the request parameter to set.</td>
     <tr><td class="param">value</td><td>Value to set.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2360,7 +2359,7 @@ Custom data for request (unmanaged).
     <tr><td class="param">conn</td><td>HttpConn connection object.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Session ID string.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2379,7 +2378,7 @@ Custom data for request (unmanaged).
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>HttpConn connection object.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2508,7 +2507,7 @@ Custom data for request (unmanaged).
     <tr><td class="param">name</td><td>Cookie name to retrieve.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>The cookie value Return null if the cookie is not defined.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2602,22 +2601,22 @@ Custom data for request (unmanaged).
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1gac3aa8897554734458a399dcbdaeba4e5"></a>
+<a name="group___esp_req_1ga307d1d071150431efd74a1450ed095ce"></a>
 <div class="api">
   <div class="prototype">
     <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *
     espGetFeedback
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type)
   </div>
   <div class="apiDetail">
-<p>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1ga63881d9f310a306933e09607c91205d1">feedback</a></p>
+<p>Get a feedback message defined via <a class="ref" href="#group___esp_abbrev_1gac782d72d3f7c11dce5c48befaff8ac0a">feedback</a></p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>HttpConn object.</td>
-    <tr><td class="param">kind</td><td>Kind of feedback message to retrieve.</td>
+    <tr><td class="param">type</td><td>type of feedback message to retrieve. This may be set to any word, but the following feedback types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     </table></dd></dl>
-    <dl><dt>Returns:</dt><dd>Reference to private data.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt>Returns:</dt><dd>Reference to the feedback message.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2635,9 +2634,9 @@ Custom data for request (unmanaged).
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>HttpConn connection object.</td>
-    <tr><td class="param">type</td><td>Type of flash message to retrieve. Possible types include: &quot;error&quot;, &quot;inform&quot;, &quot;warning&quot;, &quot;all&quot;.</td>
+    <tr><td class="param">type</td><td>type of flash message to retrieve. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -2889,7 +2888,7 @@ Custom data for request (unmanaged).
     <tr><td class="param">create</td><td>Set to true to create a new session if one does not already exist.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>The session state identifier string.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -3011,7 +3010,7 @@ Custom data for request (unmanaged).
 <p>Test if the connection is being made on behalf of the current, single authenticated user.</p>
     <dl><dt><b>Description</b>:</dt><dd>Set esp.login.single to true to enable current session tracking.</dd></dl>
     <dl><dt>Returns:</dt><dd>True if the.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -3193,7 +3192,7 @@ Use httpReadBlock for more options to read data
     <tr><td class="param">conn</td><td>HttpConn connection object.</td>
     <tr><td class="param">name</td><td>Cookie name.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -3233,7 +3232,7 @@ Use httpReadBlock for more options to read data
     <tr><td class="param">conn</td><td>HttpConn connection object.</td>
     <tr><td class="param">name</td><td>Variable name to set.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -3361,7 +3360,7 @@ The output is Html escaped for security
     <tr><td class="param">...</td><td>Arguments for fmt.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>A count of the bytes actually written.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -3430,12 +3429,12 @@ If a request parameter is not found by the given name, consult the session store
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1ga492e5353599306baaf769d1b8636260e"></a>
+<a name="group___esp_req_1gab1131281c14f4f3af98a45b1344aad91"></a>
 <div class="api">
   <div class="prototype">
     void
     espRenderView
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *view)
   </div>
   <div class="apiDetail">
 <p>Render a view template to the client.</p>
@@ -3443,7 +3442,7 @@ If a request parameter is not found by the given name, consult the session store
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">name</td><td>view name.</td>
+    <tr><td class="param">view</td><td>View name. The view name is interpreted relative to the matching route documents directory and may omit an ESP extension.</td>
     </table></dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
@@ -3633,40 +3632,40 @@ If a request parameter is not found by the given name, consult the session store
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1gade767c2c5c496c08fbf803181b93da17"></a>
+<a name="group___esp_req_1ga12f466c3ea4ae6e7eb2692c80e03a45b"></a>
 <div class="api">
   <div class="prototype">
     void
     espSetFeedback
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
   </div>
   <div class="apiDetail">
 <p>Set a feedback message.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Feedback messages are a convenient way to aggregate messages state information in the response. The <a class="ref" href="#group___esp_req_1gac3aa8897554734458a399dcbdaeba4e5">espGetFeedback</a> APIs can be used to extract feedback messages. Feedback messages are removed at the completion of the request.</dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Feedback messages are a convenient way to aggregate messages state information in the response. The <a class="ref" href="#group___esp_req_1ga307d1d071150431efd74a1450ed095ce">espGetFeedback</a> APIs can be used to extract feedback messages. Feedback messages are removed at the completion of the request.</dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">kind</td><td>Kind of feedback message.</td>
+    <tr><td class="param">type</td><td>type of feedback message. This may be set to any word, but the following feedback types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style formatted string to use as the message.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1ga577256eaaa82e8dabe11d6ceca989d6b"></a>
+<a name="group___esp_req_1ga7508b46ff71aa46719836d2720840047"></a>
 <div class="api">
   <div class="prototype">
     void
     espSetFeedbackv
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)
   </div>
   <div class="apiDetail">
 <p>Send a feedback message.</p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">kind</td><td>Kind of feedback message.</td>
+    <tr><td class="param">type</td><td>type of feedback message. This may be set to any word, but the following feedback types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style formatted string to use as the message.</td>
     <tr><td class="param">args</td><td>Varargs style list.</td>
     </table></dd></dl>
@@ -3675,20 +3674,20 @@ If a request parameter is not found by the given name, consult the session store
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1gaad505657a6cb461d6645e1ee47740926"></a>
+<a name="group___esp_req_1ga767686a555d4a6aa466c869a16ed634c"></a>
 <div class="api">
   <div class="prototype">
     void
     espSetFlash
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, ...)
   </div>
   <div class="apiDetail">
 <p>Set a flash message.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Flash messages persist for only one request and are a convenient way to pass state information or feedback messages to the next request. Flash messages use the session state store, but persist only for one request. The flash message is removed after running the next controller and before rendering any server-side view. If you need to set a message to include in the request response, consider using <a class="ref" href="#group___esp_req_1gade767c2c5c496c08fbf803181b93da17">espSetFeedback</a></dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Flash messages persist for only one request and are a convenient way to pass state information or feedback messages to the next request. Flash messages use the session state store, but persist only for one request. The flash message is removed after running the next controller and before rendering any server-side view. If you need to set a message to include in the request response, consider using <a class="ref" href="#group___esp_req_1ga12f466c3ea4ae6e7eb2692c80e03a45b">espSetFeedback</a></dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">kind</td><td>Kind of flash message.</td>
+    <tr><td class="param">type</td><td>type of flash message. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style formatted string to use as the message.</td>
     </table></dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
@@ -3696,19 +3695,19 @@ If a request parameter is not found by the given name, consult the session store
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_req_1gac9ed013a63fe33aa9262a26bfa6ff317"></a>
+<a name="group___esp_req_1ga09525c559cb0343bda3b3773161ee5f2"></a>
 <div class="api">
   <div class="prototype">
     void
     espSetFlashv
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kind, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *type, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *fmt, va_list args)
   </div>
   <div class="apiDetail">
 <p>Send a flash message.</p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">kind</td><td>Kind of flash message.</td>
+    <tr><td class="param">type</td><td>type of flash message. This may be set to any word, but the following flash types are typically supported as per RFC 5424: &quot;debug&quot;, &quot;info&quot;, &quot;notice&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;critical&quot;.</td>
     <tr><td class="param">fmt</td><td>Printf style formatted string to use as the message.</td>
     <tr><td class="param">args</td><td>Varargs style list.</td>
     </table></dd></dl>
@@ -3812,7 +3811,7 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <tr><td class="param">conn</td><td>HttpConn connection object created via <a class="ref" href="#group___http_conn_1ga25308956e8946f7f26ee9adc396534d3" external="http.dtags">httpCreateConn</a></td>
     <tr><td class="param">notifier</td><td>Notifier function.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4055,7 +4054,7 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <tr><td class="param">grid</td><td>EDI grid.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Number of bytes sent.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4075,7 +4074,7 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <tr><td class="param">rec</td><td>EDI record.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Number of bytes sent.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4094,7 +4093,7 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <table class="parameters" title="Parameters">
     <tr><td class="param">status</td><td>Request success status. Note: this is not the HTTP response status code.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4109,11 +4108,20 @@ Before the notifier is invoked, espSetConn is called to set the connection objec
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
     <dl><dt>Fields:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">char *</td><td><td>appName</td><td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>actions</td><td>
+Table of actions.
+</td>
+    <tr><td class="param">cchar *</td><td><td>appName</td><td>
 App module name when compiled in combine mode.
 </td>
     <tr><td class="param">int</td><td><td>combine</td><td>
 Combine C source into a single file.
+</td>
+    <tr><td class="param">cchar *</td><td><td>combineScript</td><td>
+Combine mode script filename.
+</td>
+    <tr><td class="param">cchar *</td><td><td>combineSheet</td><td>
+Combine mode stylesheet filename.
 </td>
     <tr><td class="param">EspProc</td><td><td>commonController</td><td>
 Common code for all controllers.
@@ -4153,6 +4161,9 @@ Skip loading applications.
 </td>
     <tr><td class="param">struct EspRoute *</td><td><td>top</td><td>
 Top-level route for this application.
+</td>
+    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>views</td><td>
+Table of views.
 </td>
     <tr><td class="param">cchar *</td><td><td>winsdk</td><td>
 Windows SDK.
@@ -4215,7 +4226,7 @@ Windows SDK.
     <tr><td class="param">route</td><td>Parent route from which to inherit configuration.</td>
     <tr><td class="param">set</td><td>Route set to select. Use &quot;angular-mvc&quot;, or &quot;html-mvc&quot;.</td>
     </table></dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4348,21 +4359,22 @@ Windows SDK.
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
 </div>
-<a name="group___esp_route_1ga0e0729b0a75cdf55a2731129c740acc0"></a>
+<a name="group___esp_route_1gab2088c94c6f9a0484def185b9ae715d6"></a>
 <div class="api">
   <div class="prototype">
     int
     espDefineApp
-(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *dir, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *prefix, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *routeSet)
+(<a href="http.html#group___http_route" class="ref">HttpRoute</a> *route, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *name, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *prefix, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *home, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *documents, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *routeSet)
   </div>
   <div class="apiDetail">
 <p>Define an ESP application.</p>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">route</td><td>Parent route from which to inherit configuration.</td>
-    <tr><td class="param">dir</td><td>Directory containing the application.</td>
     <tr><td class="param">name</td><td>Name of the application.</td>
     <tr><td class="param">prefix</td><td>URI prefix for the application.</td>
+    <tr><td class="param">home</td><td>Directory containing the application.</td>
+    <tr><td class="param">documents</td><td>Directory containing the client visible web pages.</td>
     <tr><td class="param">routeSet</td><td>Pre-defined route set.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Zero if successful, otherwise a negative MPR error code.</dd></dl>
@@ -4451,7 +4463,7 @@ Windows SDK.
     <tr><td class="param">defaultValue</td><td>Default value to use if the configuration is not defined. May be null.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>The Configuration string value.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4495,7 +4507,7 @@ Windows SDK.
     <tr><td class="param">errMsg</td><td>Output string reference to receive any error messages.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>Zero if successful, otherwise a negative MPR error code.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>See Also:</dt><dd>
     <a href="#struct_esp" class="ref">Esp</a></dd></dl>
   </div>
@@ -4625,20 +4637,20 @@ Windows SDK.
 <p>Initialize the ESP configuration file parser.</p>
   </div>
 </div>
-<a name="esp_8h_1ab04a21984d5639fddd53f6b107f9d8ed"></a>
+<a name="esp_8h_1a4407e22758d752f6348b01ae462704e0"></a>
 <div class="api">
   <div class="prototype">
     void
     espRenderFlash
-(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *kinds)
+(<a href="http.html#group___http_conn" class="ref">HttpConn</a> *conn, <a href="osdep.html#osdep_8h_1a0f128c3e0c83721af0220c00554e9c4e" class="ref">cchar</a> *types)
   </div>
   <div class="apiDetail">
 <p>Render flash messages.</p>
-    <dl><dt><b>Description</b>:</dt><dd>Flash messages are one-time messages that are displayed to the client on the next request (only). Flash messages use the session state store but persist for only one request. See <a class="ref" href="#group___esp_req_1gaad505657a6cb461d6645e1ee47740926">espSetFlash</a> for how to define flash messages.</dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>Flash messages are one-time messages that are displayed to the client on the next request (only). Flash messages use the session state store but persist for only one request. See <a class="ref" href="#group___esp_req_1ga767686a555d4a6aa466c869a16ed634c">espSetFlash</a> for how to define flash messages.</dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">conn</td><td>Http connection object.</td>
-    <tr><td class="param">kinds</td><td>Space separated list of flash messages types. Typical types are: &quot;error&quot;, &quot;inform&quot;, &quot;warning&quot;.</td>
+    <tr><td class="param">types</td><td>Types of feedback message to render. This may be set to a space separated list of flash message types. If the types list contains a flash message type, it will be rendered.</td>
     </table></dd></dl>
     <dl><dt><b>API</b> Stability:</dt><dd>Deprecated.</dd></dl>
   </div>
@@ -4685,7 +4697,7 @@ Create a URI link based on a given target an expanding embedded tokens based on 
     <tr><td class="param">...</td><td>arguments to the formatted target string.</td>
     </table></dd></dl>
     <dl><dt>Returns:</dt><dd>A normalized, server-local Uri string.</dd></dl>
-    <dl><dt><b>API</b> Stability:</dt><dd>Prototype.</dd></dl>
+    <dl><dt><b>API</b> Stability:</dt><dd>Evolving.</dd></dl>
     <dl><dt>Remarks:</dt><dd>Examples:<pre>
     uri(&quot;http://example.com/index.html&quot;);
     uri(&quot;/path/to/index.html&quot;);
@@ -4771,9 +4783,6 @@ Create a URI link based on a given target an expanding embedded tokens based on 
 <p>Top level ESP structure.</p>
     <dl><dt>Fields:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>actions</td><td>
-Table of actions.
-</td>
     <tr><td class="param">int</td><td><td>canCompile</td><td>
 Configured for compilation.
 </td>
@@ -4803,9 +4812,6 @@ Multithread lock.
 </td>
     <tr><td class="param">int</td><td><td>reloading</td><td>
 Reloading ESP and modules.
-</td>
-    <tr><td class="param"><a class="ref" href="#struct_mpr_hash" external="mpr.dtags">MprHash</a> *</td><td><td>views</td><td>
-Table of views.
 </td>
     </table></dd></dl>
   </div>

@@ -76,8 +76,8 @@
       <type>int</type>
       <name>espDefineApp</name>
       <anchorfile>group___esp_route.html</anchorfile>
-      <anchor>ga0e0729b0a75cdf55a2731129c740acc0</anchor>
-      <arglist>(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet)</arglist>
+      <anchor>gab2088c94c6f9a0484def185b9ae715d6</anchor>
+      <arglist>(HttpRoute *route, cchar *name, cchar *prefix, cchar *home, cchar *documents, cchar *routeSet)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -305,8 +305,8 @@
       <type>cchar *</type>
       <name>espGetFeedback</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>gac3aa8897554734458a399dcbdaeba4e5</anchor>
-      <arglist>(HttpConn *conn, cchar *kind)</arglist>
+      <anchor>ga307d1d071150431efd74a1450ed095ce</anchor>
+      <arglist>(HttpConn *conn, cchar *type)</arglist>
     </member>
     <member kind="function">
       <type>cchar *</type>
@@ -599,8 +599,8 @@
       <type>void</type>
       <name>espRenderView</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>ga492e5353599306baaf769d1b8636260e</anchor>
-      <arglist>(HttpConn *conn, cchar *name)</arglist>
+      <anchor>gab1131281c14f4f3af98a45b1344aad91</anchor>
+      <arglist>(HttpConn *conn, cchar *view)</arglist>
     </member>
     <member kind="function">
       <type>ssize</type>
@@ -669,29 +669,29 @@
       <type>void</type>
       <name>espSetFeedback</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>gade767c2c5c496c08fbf803181b93da17</anchor>
-      <arglist>(HttpConn *conn, cchar *kind, cchar *fmt,...)</arglist>
+      <anchor>ga12f466c3ea4ae6e7eb2692c80e03a45b</anchor>
+      <arglist>(HttpConn *conn, cchar *type, cchar *fmt,...)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>espSetFeedbackv</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>ga577256eaaa82e8dabe11d6ceca989d6b</anchor>
-      <arglist>(HttpConn *conn, cchar *kind, cchar *fmt, va_list args)</arglist>
+      <anchor>ga7508b46ff71aa46719836d2720840047</anchor>
+      <arglist>(HttpConn *conn, cchar *type, cchar *fmt, va_list args)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>espSetFlash</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>gaad505657a6cb461d6645e1ee47740926</anchor>
-      <arglist>(HttpConn *conn, cchar *kind, cchar *fmt,...)</arglist>
+      <anchor>ga767686a555d4a6aa466c869a16ed634c</anchor>
+      <arglist>(HttpConn *conn, cchar *type, cchar *fmt,...)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>espSetFlashv</name>
       <anchorfile>group___esp_req.html</anchorfile>
-      <anchor>gac9ed013a63fe33aa9262a26bfa6ff317</anchor>
-      <arglist>(HttpConn *conn, cchar *kind, cchar *fmt, va_list args)</arglist>
+      <anchor>ga09525c559cb0343bda3b3773161ee5f2</anchor>
+      <arglist>(HttpConn *conn, cchar *type, cchar *fmt, va_list args)</arglist>
     </member>
     <member kind="function">
       <type>EdiGrid *</type>
@@ -884,8 +884,8 @@
       <type>bool</type>
       <name>feedback</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>ga63881d9f310a306933e09607c91205d1</anchor>
-      <arglist>(cchar *kind, cchar *fmt,...)</arglist>
+      <anchor>gac782d72d3f7c11dce5c48befaff8ac0a</anchor>
+      <arglist>(cchar *type, cchar *fmt,...)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -898,8 +898,8 @@
       <type>void</type>
       <name>flash</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>ga71d13cb7c477077d3fa31d855442deff</anchor>
-      <arglist>(cchar *kind, cchar *fmt,...)</arglist>
+      <anchor>gab8d4dc18829f1fd9453757508b0de666</anchor>
+      <arglist>(cchar *type, cchar *fmt,...)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -996,8 +996,8 @@
       <type>cchar *</type>
       <name>getFeedback</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>gaaef4ca7c60c2fd04b5c34fdc72f047d3</anchor>
-      <arglist>(cchar *kind)</arglist>
+      <anchor>ga35b754641777f940d7902f1887cbda55</anchor>
+      <arglist>(cchar *type)</arglist>
     </member>
     <member kind="function">
       <type>cchar *</type>
@@ -1017,8 +1017,8 @@
       <type>cchar *</type>
       <name>getFlash</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>ga99b145381ebe019cea05e3405d51c684</anchor>
-      <arglist>(cchar *kind)</arglist>
+      <anchor>ga2fd8e3719f3e302cfbf7727443cadd1f</anchor>
+      <arglist>(cchar *type)</arglist>
     </member>
     <member kind="function">
       <type>EdiGrid *</type>
@@ -1311,8 +1311,8 @@
       <type>void</type>
       <name>renderFlash</name>
       <anchorfile>group___esp_abbrev.html</anchorfile>
-      <anchor>ga1b0bb36b22b201b21b863943b007c063</anchor>
-      <arglist>(cchar *kinds)</arglist>
+      <anchor>gae7831ebce7adc03e3d93dd350d83882d</anchor>
+      <arglist>(cchar *types)</arglist>
     </member>
     <member kind="function">
       <type>ssize</type>
@@ -1529,13 +1529,6 @@
     <name>Esp</name>
     <filename>struct_esp.html</filename>
     <member kind="variable">
-      <type>MprHash *</type>
-      <name>actions</name>
-      <anchorfile>struct_esp.html</anchorfile>
-      <anchor>a69abe25c82410c2d1f1f2ebe679f3fcf</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
       <type>int</type>
       <name>canCompile</name>
       <anchorfile>struct_esp.html</anchorfile>
@@ -1603,13 +1596,6 @@
       <name>reloading</name>
       <anchorfile>struct_esp.html</anchorfile>
       <anchor>a233d2ab68047501248e6e9dae7363dee</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>MprHash *</type>
-      <name>views</name>
-      <anchorfile>struct_esp.html</anchorfile>
-      <anchor>a23a21d717ba1e7b1f2ce7bf4b759e3bf</anchor>
       <arglist></arglist>
     </member>
   </compound>
