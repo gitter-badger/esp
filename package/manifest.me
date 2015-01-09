@@ -155,7 +155,7 @@ Me.load({
             ],
             doc: [
                 { 
-                    from:       '${SRC}/doc/documents/man/esp.1',
+                    from:       '${SRC}/doc/source/man/esp.1',
                     to:         '${adoc}/man/man1/',
                     symlink:    '${man}/man1/',
                     enable:     "me.platform.like == 'unix'",
@@ -259,15 +259,15 @@ Me.load({
                 }, {
                     home:       '${SRC}',
                     from:   [
-                                'doc/documents/ref/api/esp.*', 
-                                'doc/documents/ref/api/edi.*',
+                                'doc/source/ref/api/esp.*', 
+                                'doc/source/ref/api/edi.*',
                     ],
                     to:         '${src}/doc/api/',
 
                 }, {
-                    from:       '${SRC}/doc/documents/man/*.1',
+                    from:       '${SRC}/doc/source/man/*.1',
                     exclude:    /appman|appweb.1|appwebMonitor|makerom|manager|http.1|authpass.1/,
-                    to:         '${src}/doc/documents/man/',
+                    to:         '${src}/doc/source/man/',
                 }
             ],
         }
