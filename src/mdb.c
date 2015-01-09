@@ -154,6 +154,7 @@ static EdiRec *mdbCreateRec(Edi *edi, cchar *tableName)
 
     mdb = (Mdb*) edi;
     if ((table = lookupTable(mdb, tableName)) == 0) {
+        mprLog("error esp mdb", 0, "Cannot find table %s", tableName);
         return 0;
     }
     nfields = max(table->schema->ncols, 1);

@@ -492,6 +492,9 @@ static EdiRec *sdbReadRec(Edi *edi, cchar *tableName, cchar *key)
     if ((grid = query(edi, sfmt("SELECT * FROM %s WHERE id = ?;", tableName), key, NULL)) == 0) {
         return 0;
     }
+    if (grid->nrecords == 0) {
+        return 0;
+    }
     return grid->records[0];
 }
 

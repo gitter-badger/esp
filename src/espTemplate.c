@@ -19,7 +19,7 @@
 #define ESP_TOK_FIELD           3            /* @#field */
 #define ESP_TOK_VAR             4            /* @!var */
 #define ESP_TOK_HOME            5            /* @~ Home ULR */
-#define ESP_TOK_SERVER          6            /* @^ Server URL  */
+#define ESP_TOK_SERVER          6            /* @| Server URL  */
 #define ESP_TOK_LITERAL         7            /* literal HTML */
 #define ESP_TOK_EXPR            8            /* <%= expression %> */
 #define ESP_TOK_CONTROL         9            /* <%@ control */
@@ -642,10 +642,13 @@ PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *c
             mprPutToBuf(body, "  espRenderString(conn, conn->rx->route->prefix);");
             break;
 
+#if DEPRECATED || 1
+        //  DEPRECATE serverPrefix in version 6
         case ESP_TOK_SERVER:
-            /* @^ Server URL */
+            /* @| Server URL */
             mprPutToBuf(body, "  espRenderString(conn, sjoin(conn->rx->route->prefix ? conn->rx->route->prefix : \"\", conn->rx->route->serverPrefix, NULL));");
             break;
+#endif
 
         case ESP_TOK_LITERAL:
             line = joinLine(token, &len);
@@ -1093,7 +1096,6 @@ static cchar *getMappedArch(cchar *arch)
 
 
 #if WINDOWS
-//  TODO - move to mpr
 static int reverseSortVersions(char **s1, char **s2)
 {
     return -scmp(*s1, *s2);

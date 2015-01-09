@@ -555,7 +555,6 @@ PUBLIC Edi *ediClone(Edi *edi);
  */
 PUBLIC EdiGrid *ediQuery(Edi *edi, cchar *cmd, int argc, cchar **argv, va_list vargs);
 
-//  TODO - fmt not implemented
 /**
     Read a formatted field from the database
     @description This reads a field from the database and formats the result using an optional format string.

@@ -588,70 +588,6 @@ PUBLIC int runCmd(cchar *command, char *input, char **output, char **error, MprT
 }
 
 
-#if KEEP
-/*
-    <% scripts(patterns); %>
-
-    Where patterns may contain *, ** and !pattern for exclusion
- */
-PUBLIC void scripts(cchar *patterns)
-{
-    HttpConn    *conn;
-    HttpRx      *rx;
-    HttpRoute   *route;
-    EspRoute    *eroute;
-    MprList     *files;
-    MprJson     *app, *pak, *js, *script;
-    cchar       *uri, *path, *version;
-    int         next, pi, si;
-
-    conn = getConn();
-    rx = conn->rx;
-    route = rx->route;
-    eroute = route->eroute;
-    patterns = httpExpandRouteVars(route, patterns);
-
-    if (!patterns || !*patterns) {
-        version = espGetConfig(route, "version", "1.0.0");
-        if (eroute->combineScript) {
-            scripts(eroute->combineScript);
-        } else if (espGetConfig(route, "app.http.content.combine[@=js]", 0)) {
-            if (espGetConfig(route, "app.http.content.minify[@=js]", 0)) {
-                eroute->combineScript = sfmt("all-%s.min.js", version);
-            } else {
-                eroute->combineScript = sfmt("all-%s.js", version);
-            }
-            scripts(eroute->combineScript);
-        } else {
-            if ((app = mprGetJsonObj(route->config, "app")) != 0) {
-                for (ITERATE_JSON(app, pak, pi)) {
-                    if ((js = mprGetJsonObj(app, "js")) != 0) {
-                        for (ITERATE_JSON(app, script, si)) {
-                            scripts(script->value);
-                        }
-                    }
-                }
-            }
-        }
-        return;
-    }
-    if ((files = mprGlobPathFiles(httpGetDir(route, "PUBLIC"), patterns, MPR_PATH_RELATIVE)) == 0 || 
-            mprGetListLength(files) == 0) {
-        files = mprCreateList(0, 0);
-        mprAddItem(files, patterns);
-    }
-    for (ITERATE_ITEMS(files, path, next)) {
-        if (schr(path, '$')) {
-            path = stemplateJson(path, route->config);
-        }
-        path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
-        uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
-        espRender(conn, "<script src='%s' type='text/javascript'></script>\n", uri);
-    }
-}
-#endif
-
-
 /*
     Add a security token to the response. The token is generated as a HTTP header and session cookie.
  */
@@ -788,86 +724,6 @@ PUBLIC void showRequest()
 }
 
 
-#if KEEP
-/*
-    <% stylesheets(patterns); %>
-
-    Where patterns may contain *, ** and !pattern for exclusion
- */
-PUBLIC void stylesheets(cchar *patterns)
-{
-    HttpConn    *conn;
-    HttpRx      *rx;
-    HttpRoute   *route;
-    EspRoute    *eroute;
-    MprList     *files;
-    cchar       *filename, *ext, *uri, *path, *kind, *version, *public;
-    int         next;
-
-    conn = getConn();
-    rx = conn->rx;
-    route = rx->route;
-    eroute = route->eroute;
-    patterns = httpExpandRouteVars(route, patterns);
-    public = httpGetDir(route, "PUBLIC");
-
-    if (!patterns || !*patterns) {
-        version = espGetConfig(route, "version", "1.0.0");
-        if (eroute->combineSheet) {
-            /* Previously computed combined stylesheet filename */
-            stylesheets(eroute->combineSheet);
-
-        } else if (espGetConfig(route, "app.http.content.combine[@=css]", 0)) {
-            if (espGetConfig(route, "app.http.content.minify[@=css]", 0)) {
-                eroute->combineSheet = sfmt("css/all-%s.min.css", version);
-            } else {
-                eroute->combineSheet = sfmt("css/all-%s.css", version);
-            }
-            stylesheets(eroute->combineSheet);
-
-        } else {
-            /*
-                Not combining into a single stylesheet, so give priority to all.less over all.css if present
-                Load a pure CSS incase some styles need to be applied before the lesssheet is parsed
-             */
-            ext = espGetConfig(route, "app.http.content.stylesheets", "css");
-            filename = mprJoinPathExt("css/all", ext);
-            path = mprJoinPath(public, filename);
-            if (mprPathExists(path, R_OK)) {
-                stylesheets(filename);
-            } else if (!smatch(ext, "less")) {
-                path = mprJoinPath(public, "css/all.less");
-                if (mprPathExists(path, R_OK)) {
-                    stylesheets("css/all.less");
-                }
-            }
-        }
-    } else {
-        if (sends(patterns, "all.less")) {
-            path = mprJoinPath(public, "css/fix.css");
-            if (mprPathExists(path, R_OK)) {
-                stylesheets("css/fix.css");
-            }
-        }
-        if ((files = mprGlobPathFiles(public, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
-            files = mprCreateList(0, 0);
-            mprAddItem(files, patterns);
-        }
-        for (ITERATE_ITEMS(files, path, next)) {
-            path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
-            uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
-            kind = mprGetPathExt(path);
-            if (smatch(kind, "css")) {
-                espRender(conn, "<link rel='stylesheet' type='text/css' href='%s' />\n", uri);
-            } else {
-                espRender(conn, "<link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
-            }
-        }
-    }
-}
-#endif
-
-
 PUBLIC void updateCache(cchar *uri, cchar *data, int lifesecs)
 {
     espUpdateCache(getConn(), uri, data, lifesecs);
@@ -926,7 +782,150 @@ PUBLIC cchar *uri(cchar *target, ...)
     return httpLink(getConn(), uri);
 }
 
+#if DEPRECATED || 1
+/*
+    <% stylesheets(patterns); %>
 
+    Where patterns may contain *, ** and !pattern for exclusion
+ */
+PUBLIC void stylesheets(cchar *patterns)
+{
+    HttpConn    *conn;
+    HttpRx      *rx;
+    HttpRoute   *route;
+    EspRoute    *eroute;
+    MprList     *files;
+    cchar       *filename, *ext, *uri, *path, *kind, *version, *clientDir;
+    int         next;
+
+    conn = getConn();
+    rx = conn->rx;
+    route = rx->route;
+    eroute = route->eroute;
+    patterns = httpExpandRouteVars(route, patterns);
+#if FUTURE
+    client => public
+#endif
+    clientDir = httpGetDir(route, "client");
+
+    if (!patterns || !*patterns) {
+        version = espGetConfig(route, "version", "1.0.0");
+        if (eroute->combineSheet) {
+            /* Previously computed combined stylesheet filename */
+            stylesheets(eroute->combineSheet);
+
+        } else if (espGetConfig(route, "http.content.combine[@=css]", 0)) {
+            if (espGetConfig(route, "http.content.minify[@=css]", 0)) {
+                eroute->combineSheet = sfmt("css/all-%s.min.css", version);
+            } else {
+                eroute->combineSheet = sfmt("css/all-%s.css", version);
+            }
+            stylesheets(eroute->combineSheet);
+
+        } else {
+            /*
+                Not combining into a single stylesheet, so give priority to all.less over all.css if present
+                Load a pure CSS incase some styles need to be applied before the lesssheet is parsed
+             */
+            ext = espGetConfig(route, "http.content.stylesheets", "css");
+            filename = mprJoinPathExt("css/all", ext);
+            path = mprJoinPath(clientDir, filename);
+            if (mprPathExists(path, R_OK)) {
+                stylesheets(filename);
+            } else if (!smatch(ext, "less")) {
+                path = mprJoinPath(clientDir, "css/all.less");
+                if (mprPathExists(path, R_OK)) {
+                    stylesheets("css/all.less");
+                }
+            }
+        }
+    } else {
+        if (sends(patterns, "all.less")) {
+            path = mprJoinPath(clientDir, "css/fix.css");
+            if (mprPathExists(path, R_OK)) {
+                stylesheets("css/fix.css");
+            }
+        }
+        if ((files = mprGlobPathFiles(clientDir, patterns, MPR_PATH_RELATIVE)) == 0 || mprGetListLength(files) == 0) {
+            files = mprCreateList(0, 0);
+            mprAddItem(files, patterns);
+        }
+        for (ITERATE_ITEMS(files, path, next)) {
+            path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
+            uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
+            kind = mprGetPathExt(path);
+            if (smatch(kind, "css")) {
+                espRender(conn, "<link rel='stylesheet' type='text/css' href='%s' />\n", uri);
+            } else {
+                espRender(conn, "<link rel='stylesheet/%s' type='text/css' href='%s' />\n", kind, uri);
+            }
+        }
+    }
+}
+
+
+/*
+    <% scripts(patterns); %>
+
+    Where patterns may contain *, ** and !pattern for exclusion
+ */
+PUBLIC void scripts(cchar *patterns)
+{
+    HttpConn    *conn;
+    HttpRx      *rx;
+    HttpRoute   *route;
+    EspRoute    *eroute;
+    MprList     *files;
+    MprJson     *cscripts, *script;
+    cchar       *uri, *path, *version;
+    int         next, ci;
+
+    conn = getConn();
+    rx = conn->rx;
+    route = rx->route;
+    eroute = route->eroute;
+    patterns = httpExpandRouteVars(route, patterns);
+
+    if (!patterns || !*patterns) {
+        version = espGetConfig(route, "version", "1.0.0");
+        if (eroute->combineScript) {
+            scripts(eroute->combineScript);
+        } else if (espGetConfig(route, "http.content.combine[@=js]", 0)) {
+            if (espGetConfig(route, "http.content.minify[@=js]", 0)) {
+                eroute->combineScript = sfmt("all-%s.min.js", version);
+            } else {
+                eroute->combineScript = sfmt("all-%s.js", version);
+            }
+            scripts(eroute->combineScript);
+        } else {
+            if ((cscripts = mprGetJsonObj(route->config, "client.scripts")) != 0) {
+                for (ITERATE_JSON(cscripts, script, ci)) {
+                    scripts(script->value);
+                }
+            }
+        }
+        return;
+    }
+#if FUTURE
+    client => public
+#endif
+    if ((files = mprGlobPathFiles(httpGetDir(route, "client"), patterns, MPR_PATH_RELATIVE)) == 0 || 
+            mprGetListLength(files) == 0) {
+        files = mprCreateList(0, 0);
+        mprAddItem(files, patterns);
+    }
+    for (ITERATE_ITEMS(files, path, next)) {
+        if (schr(path, '$')) {
+            path = stemplateJson(path, route->config);
+        }
+        path = sjoin("~/", strim(path, ".gz", MPR_TRIM_END), NULL);
+        uri = httpUriToString(httpGetRelativeUri(rx->parsedUri, httpLinkUri(conn, path, 0), 0), 0);
+        espRender(conn, "<script src='%s' type='text/javascript'></script>\n", uri);
+    }
+}
+
+
+#endif
 /*
     @copy   default
 

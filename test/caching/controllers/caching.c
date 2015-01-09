@@ -80,15 +80,15 @@ static void update() {
 ESP_EXPORT int esp_controller_esptest_caching(HttpRoute *route, MprModule *module) {
     HttpRoute   *rp;
 
-    espDefineAction(route, "caching-api", api);
-    espDefineAction(route, "caching-big", big);
-    espDefineAction(route, "caching-small", sml);
-    espDefineAction(route, "caching-medium", medium);
-    espDefineAction(route, "caching-clear", clear);
-    espDefineAction(route, "caching-client", client);
-    espDefineAction(route, "caching-huge", huge);
-    espDefineAction(route, "caching-manual", manual);
-    espDefineAction(route, "caching-update", update);
+    espDefineAction(route, "caching/api", api);
+    espDefineAction(route, "caching/big", big);
+    espDefineAction(route, "caching/small", sml);
+    espDefineAction(route, "caching/medium", medium);
+    espDefineAction(route, "caching/clear", clear);
+    espDefineAction(route, "caching/client", client);
+    espDefineAction(route, "caching/huge", huge);
+    espDefineAction(route, "caching/manual", manual);
+    espDefineAction(route, "caching/update", update);
 
     //  This is not required for unit tests
     if ((rp = httpLookupRoute(route->host, "/caching/")) != 0) {

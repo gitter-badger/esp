@@ -10,6 +10,7 @@
 
 /************************************* Code ***********************************/
 
+#if DEPRECATED || 1
 PUBLIC void espAddPak(HttpRoute *route, cchar *name, cchar *version)
 {
     if (!version || !*version || smatch(version, "0.0.0")) {
@@ -17,6 +18,7 @@ PUBLIC void espAddPak(HttpRoute *route, cchar *name, cchar *version)
     }
     mprSetJson(route->config, sfmt("dependencies.%s", name), version);
 }
+#endif
 
 
 /*
@@ -108,17 +110,32 @@ PUBLIC cchar *espCreateSession(HttpConn *conn)
 }
 
 
-PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
+PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *callback)
 {
-    Esp     *esp;
+    EspRoute    *eroute;
+    char        *action, *controller;
 
     assert(route);
     assert(target && *target);
-    assert(action);
+    assert(callback);
 
-    esp = MPR->espService;
+    eroute = ((EspRoute*) route->eroute)->top;
     if (target) {
-        mprAddKey(esp->actions, mprJoinPath(httpGetDir(route, "CONTROLLERS"), target), action);
+#if DEPRECATE || 1 
+        /* 
+            Keep till version 6
+         */
+        if (scontains(target, "-cmd-")) {
+            target = sreplace(target, "-cmd-", "/");
+        } else if (schr(target, '-')) {
+            controller = ssplit(sclone(target), "-", (char**) &action);
+            target = sjoin(controller, "/", action, NULL);
+        }
+#endif
+        if (!eroute->actions) {
+            eroute->actions = mprCreateHash(-1, MPR_HASH_STATIC_VALUES);
+        }
+        mprAddKey(eroute->actions, target, callback);
     }
 }
 
@@ -129,13 +146,13 @@ PUBLIC void espDefineAction(HttpRoute *route, cchar *target, void *action)
 PUBLIC void espDefineBase(HttpRoute *route, EspProc baseProc)
 {
     HttpRoute   *rp;
-    EspRoute    *er;
+    EspRoute    *eroute;
     int         next;
 
     for (ITERATE_ITEMS(route->host->routes, rp, next)) {
-        if ((er = route->eroute) != 0) {
+        if ((eroute = route->eroute) != 0) {
             if (smatch(httpGetDir(rp, "CONTROLLERS"), httpGetDir(route, "CONTROLLERS"))) {
-                er->commonController = baseProc;
+                eroute->commonController = baseProc;
             }
         }
     }
@@ -147,16 +164,19 @@ PUBLIC void espDefineBase(HttpRoute *route, EspProc baseProc)
  */
 PUBLIC void espDefineView(HttpRoute *route, cchar *path, void *view)
 {
-    Esp         *esp;
+    EspRoute    *eroute;
 
     assert(path && *path);
     assert(view);
 
-    esp = MPR->espService;
+    eroute = ((EspRoute*) route->eroute)->top;
     if (route) {
         path = mprGetPortablePath(mprJoinPath(route->documents, path));
     }
-    mprAddKey(esp->views, path, view);
+    if (!eroute->views) {
+        eroute->views = mprCreateHash(-1, MPR_HASH_STATIC_VALUES);
+    }
+    mprAddKey(eroute->views, path, view);
 }
 
 
@@ -188,6 +208,9 @@ PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue)
 {
     cchar       *value;
 
+    if (sstarts(key, "app.")) {
+        mprLog("warn esp", 0, "Using legacy \"app\" configuration property");
+    }
     if ((value = mprGetJson(route->config, key)) != 0) {
         return value;
     }
@@ -419,10 +442,13 @@ PUBLIC cchar *espGetUri(HttpConn *conn)
 }
 
 
+#if DEPRECATED || 1
+
 PUBLIC bool espHasPak(HttpRoute *route, cchar *name)
 {
     return mprGetJsonObj(route->config, sfmt("dependencies.%s", name)) != 0;
 }
+#endif
 
 
 PUBLIC bool espHasGrid(HttpConn *conn)
@@ -537,7 +563,7 @@ PUBLIC ssize espRenderError(HttpConn *conn, int status, cchar *fmt, ...)
                 "    <p>To prevent errors being displayed in the browser, " \
                 "       set <b>ShowErrors off</b> in the appweb.conf file.</p>\r\n" \
                 "</body>\r\n</html>\r\n", title, title, msg);
-            httpSetHeader(conn, "Content-Type", "text/html");
+            httpSetContentType(conn, "text/html");
             written += espRenderString(conn, text);
             espFinalize(conn);
             httpTrace(conn, "esp.error", "error", "msg=\"%s\", status=%d, uri=\"%s\"", msg, status, rx->pathInfo);
@@ -677,23 +703,26 @@ PUBLIC void espRemoveSessionVar(HttpConn *conn, cchar *var)
 }
 
 
+#if DEPRECATED || 1
 PUBLIC int espSaveConfig(HttpRoute *route)
 {
     cchar       *path;
 
-    path = mprJoinPath(route->documents, ME_ESP_CONFIG);
+    path = mprJoinPath(route->home, ME_ESP_CONFIG);
 #if KEEP
     mprBackupLog(path, 3);
 #endif
     return mprSaveJson(route->config, path, MPR_JSON_PRETTY | MPR_JSON_QUOTES);
 }
+#endif
 
 
 PUBLIC ssize espSendGrid(HttpConn *conn, EdiGrid *grid, int flags)
 {
-    httpAddHeaderString(conn, "Content-Type", "application/json");
+    httpSetContentType(conn, "application/json");
     if (grid) {
-        return espRender(conn, "{\n  \"data\": %s, \"schema\": %s}\n", ediGridAsJson(grid, flags), ediGetGridSchemaAsJson(grid));
+        return espRender(conn, "{\n  \"data\": %s, \"schema\": %s}\n", ediGridAsJson(grid, flags), 
+            ediGetGridSchemaAsJson(grid));
     }
     return espRender(conn, "{}");
 }
@@ -701,7 +730,7 @@ PUBLIC ssize espSendGrid(HttpConn *conn, EdiGrid *grid, int flags)
 
 PUBLIC ssize espSendRec(HttpConn *conn, EdiRec *rec, int flags)
 {
-    httpAddHeaderString(conn, "Content-Type", "application/json");
+    httpSetContentType(conn, "application/json");
     if (rec) {
         return espRender(conn, "{\n  \"data\": %s, \"schema\": %s}\n", ediRecAsJson(rec, flags), ediGetRecSchemaAsJson(rec));
     }
@@ -1062,7 +1091,6 @@ PUBLIC int espEmail(HttpConn *conn, cchar *to, cchar *from, cchar *subject, MprT
 }
 
 
-//  TODO - rename espSingularClear (and trace)
 PUBLIC void espClearCurrentSession(HttpConn *conn)
 {
     EspRoute    *eroute;

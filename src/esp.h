@@ -117,10 +117,8 @@ typedef struct EspState {
     Top level ESP structure. This is a singleton.
  */
 typedef struct Esp {
-    MprHash         *actions;               /**< Table of actions */
     MprHash         *databases;             /**< Cloned databases */
     MprEvent        *databasesTimer;        /**< Database prune timer */ 
-    MprHash         *views;                 /**< Table of views */
     MprHash         *internalOptions;       /**< Table of internal HTML control options  */
     MprThreadLocal  *local;                 /**< Thread local data */
     MprMutex        *mutex;                 /**< Multithread lock */
@@ -173,30 +171,33 @@ PUBLIC int espInitParser();
     @see Esp
  */
 typedef struct EspRoute {
-    char            *appName;               /**< App module name when compiled in combine mode */
+    cchar           *appName;               /**< App module name when compiled in combine mode */
     struct EspRoute *top;                   /**< Top-level route for this application */
     HttpRoute       *route;                 /**< Back link to route */
     EspProc         commonController;       /**< Common code for all controllers */
     MprTime         loaded;                 /**< When configuration was last loaded */
 
+    MprHash         *actions;               /**< Table of actions */
     MprHash         *env;                   /**< Environment variables for route */
+    MprHash         *views;                 /**< Table of views */
     cchar           *currentSession;        /**< Current login session when enforcing a single login */
 
     cchar           *compile;               /**< Compile template */
     cchar           *link;                  /**< Link template */
     cchar           *searchPath;            /**< Search path to use when locating compiler/linker */
     cchar           *winsdk;                /**< Windows SDK */
-#if KEEP
-    cchar           *combineScript;         /**< Combine mode script filename */
-    cchar           *combineSheet;          /**< Combine mode stylesheet filename */
-#endif
     cchar           *routeSet;              /**< Directive route set */
     int             combine;                /**< Combine C source into a single file */
     int             compileMode;            /**< Compile the application debug or release mode */
+#if DEPRECATED || 1
+    cchar           *combineScript;         /**< Combine mode script filename */
+    cchar           *combineSheet;          /**< Combine mode stylesheet filename */
+#endif
     int             skipApps;               /**< Skip loading applications */
     Edi             *edi;                   /**< Default database for this route */
 } EspRoute;
 
+#if DEPRECATED || 1
 /**
     Add the specified pak to the package.json packs list.
     @param route HttpRoute defining the ESP application
@@ -207,6 +208,7 @@ typedef struct EspRoute {
     @stability Prototype
  */
 PUBLIC void espAddPak(HttpRoute *route, cchar *name, cchar *version);
+#endif
 
 /**
     Add a route for the home page.
@@ -231,22 +233,23 @@ PUBLIC void espAddHomeRoute(HttpRoute *route);
     @param route Parent route from which to inherit configuration.
     @param set Route set to select. Use "angular-mvc", or "html-mvc".  
     @ingroup EspRoute
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void espAddRouteSet(HttpRoute *route, cchar *set);
 
 /**
     Define an ESP application
     @param route Parent route from which to inherit configuration.
-    @param dir Directory containing the application
     @param name Name of the application
     @param prefix URI prefix for the application
+    @param home Directory containing the application
+    @param documents Directory containing the client visible web pages
     @param routeSet Pre-defined route set
     @returns Zero if successful, otherwise a negative MPR error code.
     @ingroup EspRoute
     @stability Prototype
  */
-PUBLIC int espDefineApp(HttpRoute *route, cchar *dir, cchar *name, cchar *prefix, cchar *routeSet);
+PUBLIC int espDefineApp(HttpRoute *route, cchar *name, cchar *prefix, cchar *home, cchar *documents, cchar *routeSet);
 
 //  MOB DOC
 PUBLIC int espConfigureApp(HttpRoute *route);
@@ -383,7 +386,7 @@ PUBLIC int espBindProc(HttpRoute *route, cchar *pattern, void *actionProc);
     @param route HttpRoute to associate with
     @return EspRoute object
     @internal
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC EspRoute *espCreateRoute(HttpRoute *route);
 
@@ -447,10 +450,11 @@ PUBLIC char *espExpandCommand(HttpRoute *route, cchar *command, cchar *source, c
     @param defaultValue Default value to use if the configuration is not defined. May be null
     @returns the Configuration string value
     @ingroup EspRoute
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue);
 
+#if DEPRECATED || 1
 /**
     Test if the ESP application includes the specified pak
     @description This tests the dependencies property specified pak.
@@ -461,6 +465,7 @@ PUBLIC cchar *espGetConfig(HttpRoute *route, cchar *key, cchar *defaultValue);
     @stability Prototype
  */
 PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
+#endif
 
 /**
     Load an ESP module
@@ -471,10 +476,11 @@ PUBLIC bool espHasPak(HttpRoute *route, cchar *name);
     @param errMsg Output string reference to receive any error messages.
     @returns Zero if successful, otherwise a negative MPR error code.
     @ingroup EspRoute
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kind, cchar *source, cchar **errMsg);
 
+#if DEPRECATED || 1
 /**
     Save the in-memory ESP package.json configuration to the default location for the ESP application
     defined by the specified route. 
@@ -484,6 +490,7 @@ PUBLIC int espLoadModule(HttpRoute *route, MprDispatcher *dispatcher, cchar *kin
     @stability Prototype
  */
 PUBLIC int espSaveConfig(HttpRoute *route);
+#endif
 
 /**
     Set a configuration value to the ESP package.json. 
@@ -600,7 +607,7 @@ PUBLIC void espAddHeaderString(HttpConn *conn, cchar *key, cchar *value);
     @param var Name of the request parameter to set
     @param value Value to set.
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void espAddParam(HttpConn *conn, cchar *var, cchar *value);
 
@@ -647,7 +654,7 @@ PUBLIC void espAutoFinalize(HttpConn *conn);
     @param conn HttpConn connection object
     @return Session ID string
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *espCreateSession(HttpConn *conn);
 
@@ -657,7 +664,7 @@ PUBLIC cchar *espCreateSession(HttpConn *conn);
         emit an expired cookie to the client to force it to erase the session cookie.
     @param conn HttpConn connection object
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void espDestroySession(HttpConn *conn);
 
@@ -674,7 +681,8 @@ PUBLIC void espDestroySession(HttpConn *conn);
     @return Zero if the email is successfully sent.
     @stability Prototype
  */
-PUBLIC int espEmail(HttpConn *conn, cchar *to, cchar *from, cchar *subject, MprTime date, cchar *mime, cchar *message, MprList *files);
+PUBLIC int espEmail(HttpConn *conn, cchar *to, cchar *from, cchar *subject, MprTime date, cchar *mime, 
+    cchar *message, MprList *files);
 
 /**
     Finalize processing of the http request.
@@ -741,7 +749,7 @@ PUBLIC cchar *espGetContentType(HttpConn *conn);
     @return Return the cookie value
         Return null if the cookie is not defined.
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *espGetCookie(HttpConn *conn, cchar *name);
 
@@ -798,21 +806,23 @@ PUBLIC cchar *espGetDocuments(HttpConn *conn);
         Flash messages are messages kept in session storage messages that are passed to the next request (only). 
         The message is cleared after the controller action completes.
     @param conn HttpConn connection object
-    @param type Type of flash message to retrieve. Possible types include: "error", "inform", "warning", "all".
+    @param type type of flash message to retrieve. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *espGetFlash(HttpConn *conn, cchar *type);
 
 /**
     Get a feedback message defined via #feedback
     @param conn HttpConn object
-    @param kind Kind of feedback message to retrieve.
-    @return Reference to private data
+    @param type type of feedback message to retrieve. This may be set to any word, but the following feedback types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
+    @return Reference to the feedback message
     @ingroup EspReq
-    @stability prototype
+    @stability Evolving
  */
-PUBLIC cchar *espGetFeedback(HttpConn *conn, cchar *kind);
+PUBLIC cchar *espGetFeedback(HttpConn *conn, cchar *type);
 
 /**
     Get the current database grid.
@@ -951,7 +961,7 @@ PUBLIC Edi *espGetRouteDatabase(HttpRoute *route);
     @param create Set to true to create a new session if one does not already exist.
     @return The session state identifier string.
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *espGetSessionID(HttpConn *conn, int create);
 
@@ -1018,7 +1028,7 @@ PUBLIC bool espHasRec(HttpConn *conn);
     Test if the connection is being made on behalf of the current, single authenticated user.
     @description Set esp.login.single to true to enable current session tracking.
     @return true if the 
-    @stability Prototype
+    @stability Evolving
     @ingroup EspReq
  */
 PUBLIC bool espIsCurrentSession(HttpConn *conn);
@@ -1101,7 +1111,7 @@ PUBLIC void espRedirectBack(HttpConn *conn);
     @param conn HttpConn connection object
     @param name Cookie name
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
 */
 PUBLIC void espRemoveCookie(HttpConn *conn, cchar *name);
 
@@ -1121,7 +1131,7 @@ PUBLIC int espRemoveHeader(HttpConn *conn, cchar *key);
     @param conn HttpConn connection object
     @param name Variable name to set
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void espRemoveSessionVar(HttpConn *conn, cchar *name);
 
@@ -1182,18 +1192,21 @@ PUBLIC ssize espRenderError(HttpConn *conn, int status, cchar *fmt, ...);
  */
 PUBLIC ssize espRenderFile(HttpConn *conn, cchar *path);
 
+#if DEPRECATED || 1
 /**
     Render flash messages.
     @description Flash messages are one-time messages that are displayed to the client on the next request (only).
     Flash messages use the session state store but persist for only one request.
         See #espSetFlash for how to define flash messages. 
     @param conn Http connection object
-    @param kinds Space separated list of flash messages types. Typical types are: "error", "inform", "warning".
+    @param types Types of feedback message to render. This may be set to a space separated list of flash message types.
+        If the types list contains a flash message type, it will be rendered.
     @ingroup EspControl
     @stability Deprecated
     @internal
  */
-PUBLIC void espRenderFlash(HttpConn *conn, cchar *kinds);
+PUBLIC void espRenderFlash(HttpConn *conn, cchar *types);
+#endif
 
 /**
     Read a table from the current database
@@ -1214,7 +1227,7 @@ PUBLIC EdiGrid *espReadTable(HttpConn *conn, cchar *tableName);
     @param ... Arguments for fmt
     @return A count of the bytes actually written
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
 */
 PUBLIC ssize espRenderSafe(HttpConn *conn, cchar *fmt, ...);
 
@@ -1255,15 +1268,20 @@ PUBLIC ssize espRenderString(HttpConn *conn, cchar *s);
  */
 PUBLIC ssize espRenderVar(HttpConn *conn, cchar *name);
 
+//  MOB - doc
 /**
     Render a view template to the client
     @description Actions are C procedures that are invoked when specific URIs are routed to the controller/action pair.
     @param conn Http connection object
-    @param name view name
+    @param view View name. The view name is interpreted relative to the matching route documents directory and may omit
+        an ESP extension.
     @ingroup EspReq
     @stability Evolving
  */
-PUBLIC void espRenderView(HttpConn *conn, cchar *name);
+PUBLIC void espRenderView(HttpConn *conn, cchar *view);
+
+//  MOB
+PUBLIC void espRenderDocument(HttpConn *conn, cchar *path);
 
 /**
     Send a database grid as a JSON string
@@ -1368,7 +1386,7 @@ PUBLIC void espSetContentType(HttpConn *conn, cchar *mimeType);
  */
 PUBLIC void espSetCurrentSession(HttpConn *conn);
 
-//  TODO - do we need abbrev versions
+//  MOB DOC
 PUBLIC void espClearCurrentSession(HttpConn *conn);
 
 /**
@@ -1377,24 +1395,26 @@ PUBLIC void espClearCurrentSession(HttpConn *conn);
         The #espGetFeedback APIs can be used to extract feedback messages.
         Feedback messages are removed at the completion of the request.
     @param conn Http connection object
-    @param kind Kind of feedback message
+    @param type type of feedback message. This may be set to any word, but the following feedback types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style formatted string to use as the message
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
-PUBLIC void espSetFeedback(HttpConn *conn, cchar *kind, cchar *fmt, ...);
+PUBLIC void espSetFeedback(HttpConn *conn, cchar *type, cchar *fmt, ...);
 
 /**
     Send a feedback message
     @param conn Http connection object
-    @param kind Kind of feedback message
+    @param type type of feedback message. This may be set to any word, but the following feedback types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style formatted string to use as the message
     @param args Varargs style list
     @ingroup EspReq
     @stability Internal
     @internal
  */
-PUBLIC void espSetFeedbackv(HttpConn *conn, cchar *kind, cchar *fmt, va_list args);
+PUBLIC void espSetFeedbackv(HttpConn *conn, cchar *type, cchar *fmt, va_list args);
 
 /**
     Set a flash message
@@ -1403,24 +1423,26 @@ PUBLIC void espSetFeedbackv(HttpConn *conn, cchar *kind, cchar *fmt, va_list arg
         The flash message is removed after running the next controller and before rendering any server-side view.
         If you need to set a message to include in the request response, consider using #espSetFeedback.
     @param conn Http connection object
-    @param kind Kind of flash message
+    @param type type of flash message. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style formatted string to use as the message
     @ingroup EspReq
     @stability Evolving
  */
-PUBLIC void espSetFlash(HttpConn *conn, cchar *kind, cchar *fmt, ...);
+PUBLIC void espSetFlash(HttpConn *conn, cchar *type, cchar *fmt, ...);
 
 /**
     Send a flash message
     @param conn Http connection object
-    @param kind Kind of flash message
+    @param type type of flash message. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style formatted string to use as the message
     @param args Varargs style list
     @ingroup EspReq
     @stability Internal
     @internal
  */
-PUBLIC void espSetFlashv(HttpConn *conn, cchar *kind, cchar *fmt, va_list args);
+PUBLIC void espSetFlashv(HttpConn *conn, cchar *type, cchar *fmt, va_list args);
 
 /**
     Set the current database grid
@@ -1487,7 +1509,7 @@ PUBLIC void espSetIntParam(HttpConn *conn, cchar *var, int value);
     @param conn HttpConn connection object created via #httpCreateConn
     @param notifier Notifier function. 
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void espSetNotifier(HttpConn *conn, HttpNotifier notifier);
 
@@ -1670,7 +1692,7 @@ PUBLIC void addHeader(cchar *key, cchar *fmt, ...);
     @param name Name of the request parameter to set
     @param value Value to set.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void addParam(cchar *name, cchar *value);
 
@@ -1751,27 +1773,29 @@ PUBLIC void finalize();
     @description Flash messages persist for only one request and are a convenient way to pass state information or 
         feedback messages to the next request. Flash messages use the session state store, but persist only for one request.
         This routine calls #espSetFlash.
-    @param kind Kind of flash message.
+    @param type type of flash message. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style message format
     @ingroup EspAbbrev
     @stability Evolving
  */
-PUBLIC void flash(cchar *kind, cchar *fmt, ...);
+PUBLIC void flash(cchar *type, cchar *fmt, ...);
 
 /**
     Set a feedback message
     @description Feedback messages are a convenient way to aggregate messages state information in the response.
         The #getFeedback API can be used to retrieve feedback messages.
         Feedback messages are removed at the completion of the request.
-    @param kind Kind of feedback message
+    @param type type of feedback message. This may be set to any word, but the following feedback types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @param fmt Printf style formatted string to use as the message
     @return True if the request has been successful so far, i.e. there is not an error feedback message defined. 
         Return false if there is an error feedback defined.
         This permits feedback to be chained as: renderResult(feedback("error", ...));
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
-PUBLIC bool feedback(cchar *kind, cchar *fmt, ...);
+PUBLIC bool feedback(cchar *type, cchar *fmt, ...);
 
 /**
     Flush transmit data. 
@@ -1853,21 +1877,23 @@ PUBLIC MprDispatcher *getDispatcher();
 
 /**
     Get a flash message defined via #flash
-    @param kind Kind of flash message to retrieve.
+    @param type type of flash message to retrieve. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @return Reference to private data
     @ingroup EspAbbrev
-    @stability prototype
+    @stability Evolving
  */
-PUBLIC cchar *getFlash(cchar *kind);
+PUBLIC cchar *getFlash(cchar *type);
 
 /**
     Get a feedback message defined via #feedback
-    @param kind Kind of feedback message to retrieve.
+    @param type type of feedback message to retrieve. This may be set to any word, but the following feedback types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @return Reference to private data
     @ingroup EspAbbrev
-    @stability prototype
+    @stability Evolving
  */
-PUBLIC cchar *getFeedback(cchar *kind);
+PUBLIC cchar *getFeedback(cchar *type);
 
 /**
     Get the current database instance
@@ -1964,7 +1990,7 @@ PUBLIC EspReq *getReq();
 /**
     Get the HttpRoute object for the current route
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC HttpRoute *getRoute();
 
@@ -1975,7 +2001,7 @@ PUBLIC HttpRoute *getRoute();
     To configure a route to require security tokens, call #httpSetRouteXsrf.
     @return the security token.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
 */
 PUBLIC cchar *getSecurityToken();
 
@@ -1995,7 +2021,7 @@ PUBLIC cchar *getSessionVar(cchar *name);
         one does not already exist.
     @return The session state identifier string.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *getSessionID();
 
@@ -2334,7 +2360,7 @@ PUBLIC void redirectBack();
     Remove a cookie
     @param name Cookie name
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
 */
 PUBLIC void removeCookie(cchar *name);
 
@@ -2403,11 +2429,12 @@ PUBLIC void renderError(int status, cchar *fmt, ...);
     Render flash messages.
     @description Flash notices are one-time messages that are passed to the newt request (only).
         See #espSetFlash and #flash for how to define flash messages. 
-    @param kinds Space separated list of flash messages types. Typical types are: "error", "inform", "warning".
+    @param types Types of flash message to retrieve. This may be set to any word, but the following flash types
+        are typically supported as per RFC 5424: "debug", "info", "notice", "warn", "error", "critical". 
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
-PUBLIC void renderFlash(cchar *kinds);
+PUBLIC void renderFlash(cchar *types);
 
 /**
     Render a file back to the client
@@ -2467,9 +2494,9 @@ PUBLIC ssize renderString(cchar *s);
 PUBLIC ssize renderVar(cchar *name);
 
 /**
-    Render a view template to the client
-    @description Actions are C procedures that are invoked when specific URIs are routed to the controller/action pair.
-    @param view view name
+    Render an ESP page to the client
+    @param view View name. The view name is interpreted relative to the matching route documents directory and may omit
+        an ESP extension.
     @ingroup EspAbbrev
     @stability Evolving
  */
@@ -2489,6 +2516,7 @@ PUBLIC void renderView(cchar *view);
  */
 PUBLIC int runCmd(cchar *command, char *input, char **output, char **error, MprTicks timeout, int flags);
 
+#if DEPRECATED || 1
 /**
     Render scripts
     @description This renders script elements for all matching filenames on the server.
@@ -2496,9 +2524,10 @@ PUBLIC int runCmd(cchar *command, char *input, char **output, char **error, MprT
     expressions. Each expression may contain the wildcard tokens: "*" which matches any filename portion, "**" which matches
     any filename portion in any subdirectory. An expression may be prefixed with "!" to exclude files of that expression.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Deprecated
  */
 PUBLIC void scripts(cchar *patterns);
+#endif
 
 /**
     Send a Edatabase grid as a JSON string
@@ -2506,7 +2535,7 @@ PUBLIC void scripts(cchar *patterns);
     @param grid EDI grid
     @return Number of bytes sent
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
   */
 PUBLIC ssize sendGrid(EdiGrid *grid);
 
@@ -2516,7 +2545,7 @@ PUBLIC ssize sendGrid(EdiGrid *grid);
     @param rec EDI record
     @return Number of bytes sent
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
   */
 PUBLIC ssize sendRec(EdiRec *rec);
 
@@ -2529,10 +2558,11 @@ PUBLIC ssize sendRec(EdiRec *rec);
     The feedback messages are created via the espSetFeedback API. Field errors are created by ESP validations.
     @param status Request success status. Note: this is not the HTTP response status code.
     @ingroup EspReq
-    @stability Prototype
+    @stability Evolving
   */
 PUBLIC void sendResult(bool status);
 
+#if DEPRECATED || 1
 /**
     Render stylesheets 
     @description This renders stylesheet elements for all matching filenames on the server.
@@ -2540,9 +2570,10 @@ PUBLIC void sendResult(bool status);
     expressions. Each expression may contain the wildcard tokens: "*" which matches any filename portion, "**" which matches
     any filename portion in any subdirectory. An expression may be prefixed with "!" to exclude files of that expression.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Deprecated
  */
 PUBLIC void stylesheets(cchar *patterns);
+#endif
 
 /**
     Add the security token to the response.
@@ -2561,7 +2592,7 @@ PUBLIC void securityToken();
     @param name Variable name to get
     @return The session variable value. Returns NULL if not set.
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC cchar *session(cchar *name);
 
@@ -2670,7 +2701,7 @@ PUBLIC void setIntParam(cchar *name, int value);
     connection events.
     @param notifier Callback function 
     @ingroup EspAbbrev
-    @stability Prototype
+    @stability Evolving
  */
 PUBLIC void setNotifier(HttpNotifier notifier);
 
@@ -2848,7 +2879,7 @@ PUBLIC bool updateRecFromParams(cchar *table);
     @param ... arguments to the formatted target string
     @return A normalized, server-local Uri string.
     @ingroup Esp
-    @stability Prototype
+    @stability Evolving
     @remarks Examples:<pre>
     uri("http://example.com/index.html");
     uri("/path/to/index.html");

@@ -41,52 +41,48 @@ static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
     }
 }
 
-static void serverRouteSet(HttpRoute *parent, cchar *set)
+static void serverRouteSet(HttpRoute *route, cchar *set)
 {
-    HttpRoute   *route;
+    EspRoute    *eroute;
 
-    /* Simple controller/action route */
-    httpSetRouteXsrf(parent, 1);
-    route = httpAddRestfulRoute(parent, parent->serverPrefix, "action", "GET,POST","/{action}(/)*$",
-        "${action}", "{controller}");
-    httpAddPublicRoute(parent, "", "/public");
-    httpAddRouteHandler(route, "espHandler", "");
+    eroute = route->eroute;
+    eroute->routeSet = sclone(set);
+    httpAddRestfulRoute(route, "GET,POST","/{action}(/)*$", "${action}", "{controller}");
 }
 
 
-static void angularRouteSet(HttpRoute *parent, cchar *set)
+static void restfulRouteSet(HttpRoute *route, cchar *set)
 {
-    httpSetRouteXsrf(parent, 1);
-    httpAddRouteHandler(parent, "espHandler", "");
-    httpAddWebSocketsRoute(parent, 0, "/*/stream");
-    httpAddResourceGroup(parent, 0, "{controller}");
-    httpAddPublicRoute(parent, "", "/public");
-    httpHideRoute(parent, 1);
+#if DEPRECATE || 1
+    if (route->flags & HTTP_ROUTE_SET_DEFINED) {
+        return;
+    }
+    route->flags |= HTTP_ROUTE_SET_DEFINED;
+#endif
+    httpAddResourceGroup(route, "{controller}");
 }
 
-
-static void htmlRouteSet(HttpRoute *parent, cchar *set)
+static void legacyRouteSet(HttpRoute *route, cchar *set)
 {
-    httpSetRouteXsrf(parent, 1);
-    httpAddRouteHandler(parent, "espHandler", "");
-    httpDefineRoute(parent,
-        sfmt("%s%s/*", parent->prefix, parent->serverPrefix), 
-        "GET", 
-        sfmt("^%s%s/{controller}$", parent->prefix, parent->serverPrefix),
-        "$1", 
-        "${controller}.c");
-    httpAddResourceGroup(parent, 0, "{controller}");
-    httpAddPublicRoute(parent, "", "/public");
-    httpHideRoute(parent, 1);
+#if DEPRECATE || 1
+    if (route->flags & HTTP_ROUTE_SET_DEFINED) {
+        return;
+    }
+#endif
+    restfulRouteSet(route, "restful");
+    // addClientRoute(route);
 }
 
 
 PUBLIC int espInitParser() 
 {
     httpDefineRouteSet("esp-server", serverRouteSet);
-    httpDefineRouteSet("esp-angular-mvc", angularRouteSet);
-    httpDefineRouteSet("esp-html-mvc", htmlRouteSet);
-
+    httpDefineRouteSet("esp-restful", restfulRouteSet);
+#if DEPRECATED || 1
+    httpDefineRouteSet("esp-angular-mvc", legacyRouteSet);
+    httpDefineRouteSet("esp-html-mvc", legacyRouteSet);
+#endif
+    
     httpAddConfig("esp", parseEsp);
     httpAddConfig("esp.combine", parseCombine);
     httpAddConfig("esp.compile", parseCompile);
