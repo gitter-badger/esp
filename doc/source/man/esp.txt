@@ -45,7 +45,7 @@ SYNOPSIS
            esp generate migration description model [field:type ...]
            esp generate scaffold model [field:type ...]
            esp generate table name model [field:type ...]
-           esp init
+           esp init [name [version]]
            esp migrate [forward|backward|NNN]
            esp mode [debug|release|otherMode]
            esp role [add|remove] rolename
@@ -260,6 +260,7 @@ MIGRATIONS
        migration sequence number at the start of the migration file name.
 
 
+
 COMMANDS
        esp has the following command usage patterns:
 
@@ -274,6 +275,8 @@ COMMANDS
              esp run
              esp run 4000
              esp mode debug
+             esp init appName version
+
 
 
 OPTIONS

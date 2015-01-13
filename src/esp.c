@@ -505,7 +505,10 @@ static void parseCommand(int argc, char **argv)
 
     } else if (smatch(cmd, "init")) {
         if (!app->name) {
-            app->name = (argc >= 1) ? argv[0] : mprGetPathBase(mprGetCurrentPath());
+            app->name = (argc >= 2) ? sclone(argv[1]) : mprGetPathBase(mprGetCurrentPath());
+        }
+        if (argc >= 3) {
+            app->version = sclone(argv[2]);
         }
         app->require = REQ_NAME;
 
@@ -612,7 +615,7 @@ static void initialize(int argc, char **argv)
         app->title = stitle(app->name);
     }
     if (!app->description) {
-        app->description = stitle(app->name);
+        app->description = sfmt("%s Application", app->title);
     }
     if (!app->version) {
         app->version = sclone("0.0.1");
@@ -926,11 +929,18 @@ static void editValue(int argc, char **argv)
 static void init(int argc, char **argv)
 {
     MprJson     *config;
-    cchar       *data, *path;
+    cchar       *data, *identity, *path;
 
     if (!mprPathExists(ME_ESP_CONFIG, R_OK)) {
         trace("Create", ME_ESP_CONFIG);
-        config = mprParseJson("{" \
+        if (!mprPathExists("package.json", R_OK)) {
+            identity = sfmt("name: '%s', title: '%s', description: '%s', version: '%s'",
+                app->name, app->title, app->description, app->version);
+        } else {
+            identity = "";
+        }
+        config = mprParseJson(sfmt("{" \
+            "%s," \
             "http: {" \
                 "server: {" \
                     "listen: [" \
@@ -945,7 +955,7 @@ static void init(int argc, char **argv)
             "esp: {" \
                 "compile: 'symbols'" \
             "}" \
-        "}");
+        "}", identity));
         if (config == 0) {
             fail("Cannot parse config");
             return;
@@ -1222,7 +1232,7 @@ static void setMode(cchar *mode)
 static void setConfigValue(MprJson *config, cchar *key, cchar *value)
 {
     qtrace("Set", sfmt("Key \"%s\" to \"%s\"", key, value));
-    if (mprSetJson(config, key, value) < 0) {
+    if (mprSetJson(config, key, value, 0) < 0) {
         fail("Cannot update %s with %s", key, value);
         return;
     }
@@ -2511,7 +2521,7 @@ static void usageError()
     "    esp generate migration description model [field:type [, field:type] ...]\n"
     "    esp generate scaffold model [field:type [, field:type] ...]\n"
     "    esp generate table name [field:type [, field:type] ...]\n"
-    "    esp init\n"
+    "    esp init [name [version]]\n"
     "    esp migrate [forward|backward|NNN]\n"
     "    esp mode [debug|release|...]\n"
     "    esp role [add|remove] rolename abilities...\n"

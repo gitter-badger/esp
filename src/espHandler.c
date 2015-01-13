@@ -1259,8 +1259,10 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
     httpSetDir(route, "PARTIALS", 0);
     httpSetDir(route, "SOURCE", 0);
     httpSetDir(route, "SRC", 0);
-    httpSetDir(route, "TOP", mprGetCurrentPath());
     httpSetDir(route, "UPLOAD", "/tmp");
+#if UNUSED
+    httpSetDir(route, "TOP", mprGetCurrentPath());
+#endif
 }
 
 

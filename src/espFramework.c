@@ -16,7 +16,7 @@ PUBLIC void espAddPak(HttpRoute *route, cchar *name, cchar *version)
     if (!version || !*version || smatch(version, "0.0.0")) {
         version = "*";
     }
-    mprSetJson(route->config, sfmt("dependencies.%s", name), version);
+    mprSetJson(route->config, sfmt("dependencies.%s", name), version, MPR_JSON_STRING);
 }
 #endif
 
@@ -771,7 +771,7 @@ PUBLIC bool espSetAutoFinalizing(HttpConn *conn, bool on)
 
 PUBLIC int espSetConfig(HttpRoute *route, cchar *key, cchar *value)
 {
-    return mprSetJson(route->config, key, value);
+    return mprSetJson(route->config, key, value, 0);
 }
 
 

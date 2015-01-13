@@ -40,7 +40,7 @@ esp \- ESP Application Generator for Server-Side Web Applications.
     esp generate migration description model [field:type ...]
     esp generate scaffold model [field:type ...]
     esp generate table name model [field:type ...]
-    esp init
+    esp init [name [version]]
     esp migrate [forward|backward|NNN]
     esp mode [debug|release|otherMode]
     esp role [add|remove] rolename
@@ -244,6 +244,7 @@ apply apply the next unapplied migration. Similarly \fBesp migrate backward\fR w
 migration. You can also use \fBesp migrate NNN\fR to migrate forward or backward to a specific migration, where NNN
 is the migration sequence number at the start of the migration file name.
 .PP
+
 .SH COMMANDS
 .PP 
 esp has the following command usage patterns:
@@ -260,7 +261,9 @@ esp has the following command usage patterns:
  esp run
  esp run 4000
  esp mode debug
+ esp init appName version
 .RE
+.PP
 
 .SH OPTIONS
 .PP
