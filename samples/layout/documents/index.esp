@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="@~/assets/favicon.ico" type="image/x-icon">
+</head>
+<body id='body'>
+    <nav class="navbar">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="@~">Home</a>
+        </div>
+    </nav>
+    <main class="container">
+        <section class="content col-md-10" id="content">
+
+            <!-- Specify any ESP code here -->
+            <% render("Hello World"); %>
+
+        </section>
+        <div class="feedback">
+            <% renderFlash("all"); %>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,26 @@
+/*
+   esp.json - ESP Application configuration file
+
+   See https://github.com/embedthis/esp/tree/dev/samples/config for a commented sample.
+ */
+{
+    name: "layout",
+    title: "Layout",
+    description: "Layout Description",
+    version: "1.0.0",
+
+    http: {
+        server: {
+            listen: [
+                "http://127.0.0.1:4000"
+            ]
+        },
+        ssl: {
+            certificate: "",
+            key: ""
+        }
+    },
+    esp: {
+        compile: "symbols"
+    }
+}

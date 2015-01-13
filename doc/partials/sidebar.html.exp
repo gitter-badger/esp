@@ -33,7 +33,7 @@
                 <div class="menu">
                     <a class="item" href="@~users/mvc.html">ESP MVC Framework</a>
                     <a class="item" href="@~users/config.html">Configuring ESP</a>
-                    <a class="item" href="@~users/pages.html">ESP Pages and Layouts</a>
+                    <a class="item" href="@~users/pages.html">ESP Pages</a>
                     <a class="item" href="@~users/program.html">ESP Utility</a>
                     <a class="item" href="@~users/controllers.html">ESP Controllers</a>
                     <a class="item" href="@~users/database.html">ESP Databases</a>

@@ -349,7 +349,7 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
     @param path Pathname for the ESP web page. This is used to process include directives which are resolved relative
         to this path.
     @param cacheName MD5 cache name. Not a full path.
-    @param layout Default layout page.
+    @param layout Default layout page. Deprecated.
     @param state Reserved. Must set to NULL.
     @param err Output parameter to hold any relevant error message.
     @return Compiled script. Return NULL on errors.
@@ -357,7 +357,8 @@ PUBLIC bool espCompile(HttpRoute *route, MprDispatcher *dispatcher, cchar *sourc
     @stability Evolving
     @internal
  */
-PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *cacheName, cchar *layout, EspState *state, char **err);
+PUBLIC char *espBuildScript(HttpRoute *route, cchar *page, cchar *path, cchar *cacheName, cchar *layout, 
+    EspState *state, char **err);
 
 /**
     Define an action
@@ -1192,7 +1193,6 @@ PUBLIC ssize espRenderError(HttpConn *conn, int status, cchar *fmt, ...);
  */
 PUBLIC ssize espRenderFile(HttpConn *conn, cchar *path);
 
-#if DEPRECATED || 1
 /**
     Render flash messages.
     @description Flash messages are one-time messages that are displayed to the client on the next request (only).
@@ -1206,7 +1206,6 @@ PUBLIC ssize espRenderFile(HttpConn *conn, cchar *path);
     @internal
  */
 PUBLIC void espRenderFlash(HttpConn *conn, cchar *types);
-#endif
 
 /**
     Read a table from the current database

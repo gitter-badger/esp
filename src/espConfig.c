@@ -43,34 +43,18 @@ static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
 
 static void serverRouteSet(HttpRoute *route, cchar *set)
 {
-    EspRoute    *eroute;
-
-    eroute = route->eroute;
-    eroute->routeSet = sclone(set);
-    httpAddRestfulRoute(route, "GET,POST","/{action}(/)*$", "${action}", "{controller}");
+    httpAddRestfulRoute(route, "GET,POST,OPTIONS", "/{action}(/)*$", "${action}", "{controller}");
 }
 
 
 static void restfulRouteSet(HttpRoute *route, cchar *set)
 {
-#if DEPRECATE || 1
-    if (route->flags & HTTP_ROUTE_SET_DEFINED) {
-        return;
-    }
-    route->flags |= HTTP_ROUTE_SET_DEFINED;
-#endif
     httpAddResourceGroup(route, "{controller}");
 }
 
 static void legacyRouteSet(HttpRoute *route, cchar *set)
 {
-#if DEPRECATE || 1
-    if (route->flags & HTTP_ROUTE_SET_DEFINED) {
-        return;
-    }
-#endif
     restfulRouteSet(route, "restful");
-    // addClientRoute(route);
 }
 
 

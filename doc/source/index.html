@@ -43,7 +43,7 @@
             <p>An ESP page is a standard HTML web page with embedded "C" code that executes at run-time to create a dynamic
             client response. Pages typically have a "<em>.esp</em>" extension and may use ESP layout pages to
             define the look and feel of the application in one place.</p>
-            <p>The C code is embedded between <em>&lt;% and %&gt;</em> tags. For example:
+            <p>The C code is embedded between <em>&lt;%</em> and <em>%&gt;</em> tags. For example:
 <pre class="ui code segment">&lt;h1&gt;Hello World&lt;/h1&gt;
 &lt;p&gt;<b>&lt;% render("A random number %d", rand(0)); %&gt;</b>&lt;/p&gt;</pre>
             <p>When the web page is requested, the web page including the code inside the ESP tags is compiled
@@ -300,7 +300,7 @@ static void update() {
             <h3>Deployment</h3>
             <p>To deploy an ESP application, only the saved library files are required. The source code for the ESP pages 
             and controllers is typically not deployed. Of course, if you wish to continue to provide transparent compilation 
-            once deployed, then include the source and enable <em>app.http.update</em> in the package.json 
+            once deployed, then include the source and enable <em>http.update</em> in the esp.json 
             configuration file.</p>
 
             <p>The <em>esp</em> generator program can also be used to compile an ESP application including all ESP 
@@ -321,9 +321,9 @@ static void update() {
             applications, controllers, models, migrations and scaffolds. It is also used to serve the application.</p>
            
             <p>To create a new bare-bones application called demo:</p>
-            <pre class="ui code segment">mkdir demo
-cd demo
-esp install esp-server</pre>
+            <pre class="ui code segment">$ mkdir demo
+$ cd demo
+$ pak install esp-server</pre>
             <p>This will create the following files:</p>
             <ul>
                 <li>package.json</li>

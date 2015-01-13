@@ -17,9 +17,11 @@
         that has one action to say "Hello World".</p>
         <pre class="ui code segment">
 #include "esp.h"
+
 static void hello() { 
     render("Hello World\n");
 }
+
 ESP_EXPORT int esp_controller_test_greeting(HttpRoute *route) 
 {
     espDefineAction(route, "greeting-hello", hello);
@@ -47,10 +49,9 @@ ESP_EXPORT int esp_controller_test_greeting(HttpRoute *route)
         <h2 >Routing Requests</h2>
         <p>At the heart of understanding how controllers are loaded and actions are run, is understanding request
         routing. When ESP HTTP server receives a client request, it examines each of the configured request routes. These
-        may be configred via the <em>package.json</em> or if hosted in Appweb, in the 
-        <em>appweb.conf</em> configuration file. The ESP HTTP server searches the route table, until it finds a matching 
-       route for the request URI. The selected route will then break the URI into tokens and save the token values 
-       as request parameters.</p>
+        may be configred via the <em>esp.json</em> or if hosted in Appweb, in the <em>appweb.conf</em> configuration file.
+        The ESP HTTP server searches the route table, until it finds a matching route for the request URI. The 
+        selected route will then break the URI into tokens and save the token values as request parameters.</p>
         <p>For example: consider the URI format:</p>
         <pre class="ui code segment">
 http://example.com/APP/CONTROLLER/ACTION/ID
@@ -59,6 +60,7 @@ http://example.com/APP/CONTROLLER/ACTION/ID
         name, <em>ACTION</em> is the name of the action method to run and <em>ID</em> is a selector for an element
         in the Model. When the request URI is tokenized, the ESP HTTP router will extract the controller name and then
         use this name to load the appropriate controller to service the request.</p>
+
         <h3>Restful Routes</h3>
         <p>ESP applications will typically use a collection of Restful routes.
         Restful routes are a simple, readable, and familiar pattern for many developers and users. 
@@ -67,19 +69,24 @@ http://example.com/APP/CONTROLLER/ACTION/ID
         <p>ESP will create a initial set of Restful routes depending on the <em>esp.server.routes</em> configuration.</p>
 <table class="ui table" title="routes">
     <thead>
-<tr><th>Name</th><th>Method</th><th>Pattern</th><th>Action</th></tr>
+<tr><th>Description</th><th>Method</th><th>Pattern</th><th>Action</th></tr>
     </thead>
     <tbody>
-<tr><td>create</td><td>POST</td><td>/CONTROLLER(/)*$</td><td>create</td></tr>
-<tr><td>edit</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}/edit$</td><td>edit</td></tr>
-<tr><td>get</td><td>GET</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>get</td></tr>
-<tr><td>init</td><td>GET</td><td>/CONTROLLER/init$</td><td>init</td></tr>
-<tr><td>remove</td><td>DELETE</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>remove</td></tr>
-<tr><td>update</td><td>PUT</td><td>/CONTROLLER/{id=[0-9]+}$</td><td>update</td></tr>
-<tr><td>action</td><td>GET,POST</td><td>/CONTROLLER//{id=[0-9]+}{action}$</td><td>${action}</td></tr>
-<tr><td>default</td><td>GET,POST</td><td>/CONTROLLER/{action}$</td><td>cmd-${action}</td></tr>
+<tr><td>controller</td><td>GET</td><td>/controller$</td><td>${controller}</td></tr>
+<tr><td>delete</td><td>POST</td><td>/controller/{id=[0-9]+}/delete$</td><td>delete</td></tr>
+<tr><td>create</td><td>POST</td><td>/controller(/)*$</td><td>create</td></tr>
+<tr><td>edit</td><td>GET</td><td>/controller/{id=[0-9]+}/edit$</td><td>edit</td></tr>
+<tr><td>get</td><td>GET</td><td>/controller/{id=[0-9]+}$</td><td>get</td></tr>
+<tr><td>init</td><td>GET</td><td>/controller/init$</td><td>init</td></tr>
+<tr><td>list</td><td>GET</td><td>/controller/list$</td><td>list</td></tr>
+<tr><td>stream</td><td>GET</td><td>/controller/stream$</td><td>stream</td></tr>
+<tr><td>remove</td><td>DELETE</td><td>/controller/{id=[0-9]+}$</td><td>remove</td></tr>
+<tr><td>update</td><td>PUT</td><td>/controller/{id=[0-9]+}/{action}(/)*$</td><td>update</td></tr>
+<tr><td>action</td><td>GET,POST</td><td>/controller//{id=[0-9]+}{action}$</td><td>${controller}/${action}</td></tr>
     </tbody>
 </table>
+    <p>The delete route is a POST method variant of remove. The stream route is for WebSockets streaming of
+    updates. </p>
 <!-- MOB
        <a id="config"></a>
         <h2 >Configuring Controllers</h2>
@@ -155,10 +162,8 @@ ESP_EXPORT int esp_controller_APP_NAME(HttpRoute *route)
             <pre class="ui code segment">espBindProc(route, "/do/something", callback);</pre>
             <h3>Missing Actions</h3>
             <p>When responding to a request, if the required controller and action is not found, ESP will look for a
-            corresponding ESP page of the same name. If that is not found, then it will search for an action called
-            "<em>missing</em>". If that is not defined in the controller, it will look for a global 
-            "missing" action.  Otherwise it will respond with a HTTP 404 error indicating that the required 
-            action could not be found.</p>
+            corresponding ESP page of the same name. If that is not defined, ESP will respond with an HTTP 404 
+            error indicating that the required action and page could not be found.</p>
             
             <a id="processing"></a>
             <h3>Processing the Request</h3>

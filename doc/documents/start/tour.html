@@ -53,7 +53,7 @@
                 <div class="menu">
                     <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
                     <a class="item" href="../users/config.html">Configuring ESP</a>
-                    <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                    <a class="item" href="../users/pages.html">ESP Pages</a>
                     <a class="item" href="../users/program.html">ESP Utility</a>
                     <a class="item" href="../users/controllers.html">ESP Controllers</a>
                     <a class="item" href="../users/database.html">ESP Databases</a>
@@ -167,9 +167,9 @@
                 <p>To run esp, create a directory to contain your ESP application and then from that directory,
                 run <em>esp</em>. In this example, we create a directory called "<em>test</em>".</p>
                 <pre class="ui code segment">
-<b>mkdir test
-cd test
-esp</b>
+<b>$ mkdir test
+$ cd test
+$ esp</b>
 esp: 2: Started HTTP service on "127.0.0.1:4000"
 esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>ESP is now running and ready to serve documents from the "<em>test</em>" directory.</p>
@@ -222,7 +222,7 @@ esp: 2: Loading native module view_d2f3bdb8df0a0f0b440ea83c81b618c5.dylib
 esp: 2:   HTTP/1.1 200 OK</pre>
             <p>This output traces each request and response, but also notifies you that the page was recompiled.
             Any request or page syntax errors will be show in the esp log output.</p>
-            <p>You can also embed more complex C code in your ESP page, like:</p>
+            <p>You can also embed arbitrary C code in your ESP page, like:</p>
             <pre class="ui code segment">
 <b>&lt;h3&gt;&lt;% render("Request method is %s", getMethod()); %&gt;&lt;/h3&gt;</b>
 <b>&lt;% 
@@ -234,7 +234,7 @@ esp: 2:   HTTP/1.1 200 OK</pre>
 </pre>
             <p>By using the ESP statement directive <em>&lt;% code %&gt;</em>, you can embed arbitrary "C" language
             statements in your web page. The <em>render</em> function allows you to write arbitrary data which is patched
-            back where the directive was defined in the page. See the <a href="../users/pages.html">Web Pages and Templates</a>
+            back where the directive was defined in the page. See the <a href="../users/pages.html">ESP Pages</a>
             document for full details about all the ESP web page directives.</p>
  
             <a id="applications"></a>
@@ -246,44 +246,42 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <p>In the test directory we created above, we can install ESP extensions packs via <em>esp</em>.
             <p>For example to install the ESP server-side MVC framework:</p>
             <pre class="ui code segment">
-<b>esp install html-mvc</b>
-   [Install] esp-html-mvc 1.0.0-rc0
-   [Install] esp-mvc 1.0.0-rc0
-   [Install] esp-server 1.0.0-rc0
+<b>$ pak install esp-html-skeleton</b>
+   [Install] esp-server 5.3.0
+   [Install] esp-mvc 5.3.0
+   [Install] esp-html-skeleton 5.3.0
 </pre>
-            <h3>MVC Paks</h3>
-            <p>ESP supports two MVC framework paks to get you started quickly. These frameworks provide
+            <h3>Skeletons</h3>
+            <p>ESP provides MVC skeletons paks to get you started quickly. These skeletons provide
             the core structure of your application and include templates and scaffolds that are used to 
             generate models, views and controllers as your application grows. </p>
             <ul>
-                <li>esp-html-mvc &mdash; For a server-side MVC application</li>
-                <li>esp-angular-mvc &mdash; For a client-side MVC application using 
+                <li>esp-html-skeleton &mdash; For a server-side MVC application</li>
+                <li>esp-angular-skeleton &mdash; For a client-side MVC application using 
                     <a href="http://angularjs.org">AngularJS</a></li>
             </ul>
-            <p>To add the esp-html-mvc framework, type:</p>
-<pre class="ui code segment">esp install esp-html-mvc</pre>
-            <p>This will install the <em>esp-html-mvc</em> Pak, all dependent paks and create the 
+            <p>To use the esp-html-skeleton framework, type:</p>
+<pre class="ui code segment">esp install esp-html-skeleton</pre>
+            <p>This will install the <em>esp-html-skeleton</em> Pak, all dependent paks and create the 
             necessary directories for your application to grow. It will create:</p>
             <ul>
-                <li>package.json &mdash; This describes and configures your ESP application</li>
-                <li>templates &mdash; This directory contains template files used by the esp generator</li>
-                <li>start.me &mdash; <a href="https://embedthis.com/makeme/">MakeMe</a> build file</li>
-                <li>client &mdash; Directory containing the client-side of your application.</li>
-                <li>client/assets &mdash; Media assets for your application.</li>
-                <li>client/css &mdash; CSS and Less stylesheets for your application.</li>
-                <li>client/layouts &mdash; Master ESP page layouts.</li>
-                <li>client/index.esp &mdash; Home page for your application.</li>
-                <li>client/paks &mdash; Installed Paks.</li>
+                <li>esp.json &mdash; This describes and configures your ESP application</li>
+                <li>source &mdash; Directory containing the client-side of your application.</li>
+                <li>source/assets &mdash; Media assets for your application.</li>
+                <li>source/css &mdash; CSS and Less stylesheets for your application.</li>
+                <li>layouts &mdash; Master ESP page layouts.</li>
+                <li>paks &mdash; Installed Paks.</li>
+                <li>source/index.esp &mdash; Home page for your application.</li>
             </ul>
             <p>Once installed, you can generate other assets such as controllers, database tables, migrations and 
                 MVC scaffolds.</p>
+
             <h3>Using the Pak Manager</h3>
-            <p>ESP includes a set of common ESP extension packs, but by using the
-            <a href="https://embedthis.com/pak/">Pak</a> package manager, you can retrieve more
+            <p>Using the <a href="https://embedthis.com/pak/">Pak</a> package manager, you can retrieve more
             extension packs from the online <a href="https://embedthis.com/catalog/">Pak Catalog</a>.
             For example, to install jQuery:</p>
             <pre class="ui code segment">
-<b>pak install jquery</b>
+<b>$ pak install jquery</b>
    [Install] jquery 1.9.1
     [Update] package.json
 </pre>
@@ -293,11 +291,12 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <h3>Compiling</h3>
             <p>Your application will be automatically compiled by ESP as required, but you can pre-compile 
             using the esp utility.</p>
-            <pre class="ui code segment">esp compile
+            <pre class="ui code segment">$ esp compile
      [Parse] index.esp
    [Compile] cache/view_fd3d62020d8ebee515b3a93388834acd.c</pre>
+
             <h3>Generating Scaffolds</h3>
-            <p>Scaffods are simple MVC components to Create-Read-Update-Delete database tables. ESP provides 
+            <p>Scaffods are simple MVC components to Create-Read-Update-Delete (CRUD) database tables. ESP provides 
             an easy mechansim to generate scaffolds that include:</p>
             <ul>
                 <li>Database table schema</li>
@@ -306,19 +305,20 @@ esp: 2:   HTTP/1.1 200 OK</pre>
                 <li>Views to display table and record data</li>
             </ul>
             <p>For example, to create a blog "post" table and views: </p>
-            <pre class="ui code segment">esp generate scaffold post title:string body:text</pre>
+            <pre class="ui code segment">$ esp generate scaffold post title:string body:text</pre>
             <p>This will generate:
             <ul>
                 <li>db/test.sdb</li>
                 <li>db/migrations</li>
                 <li>db/migrations/201404141540360_create_scaffold_post.c</li>
-                <li>client/app/post/post-edit.esp</li>
-                <li>client/app/post/post-list.esp</li>
+                <li>source/post/edit.esp</li>
+                <li>source/post/list.esp</li>
             </ul>
             <p>Now run <em>esp</em> and navigate to in your browser to view a table of blog posts.</p>
-            <pre class="ui code segment">http://localhost:4000/do/post</pre> 
+            <pre class="ui code segment">http://localhost:4000/post</pre> 
             <p>
             <img src="../images/esp/tour/scaffold.png" alt="hello" class= "bare-screen" /> </p>
+
             <a id="hosting"></a>
             <h2 >Hosting in Appweb</h2>
             <p>If you want to host your application in <a href="https://embedthis.com/appweb/">Appweb</a>,
@@ -327,7 +327,7 @@ esp: 2:   HTTP/1.1 200 OK</pre>
             <p>This will generate a stand-alone appweb.conf that includes the required 
                 EspApp directive to define your application. </p>
             <pre class="ui code segment">
-&lt;EspApp name="test" routes="esp-html-mvc"&gt;</pre>
+&lt;EspApp name="test" routes="esp-restful"&gt;</pre>
             
             <a id="learn"></a>
             <h2 >Learn More ...</h2>

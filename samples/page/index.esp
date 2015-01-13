@@ -23,10 +23,10 @@
     Timestamp: <%= %d mprGetTime() %>
     Hostname: <%= %s mprGetHostName() %>
     <!-- Note that variables use safe render to HTML escapse input -->
-    Favorite color: @@color
-    Lucky Number: @@number
+    Favorite color: %$color
+    Lucky Number: %$number
     <!-- Local string variable access -->
-    Weather: @!weather
+    Weather: %!weather
 
     Formatted Number: <%= %,d 12345678 %>
     Safe Strings: <%= %S "<bold>" %>

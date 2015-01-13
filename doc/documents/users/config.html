@@ -53,7 +53,7 @@
                 <div class="menu">
                     <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
                     <a class="item" href="../users/config.html">Configuring ESP</a>
-                    <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                    <a class="item" href="../users/pages.html">ESP Pages</a>
                     <a class="item" href="../users/program.html">ESP Utility</a>
                     <a class="item" href="../users/controllers.html">ESP Controllers</a>
                     <a class="item" href="../users/database.html">ESP Databases</a>
@@ -154,200 +154,124 @@
     <div class="content">
 
             <h1>Configuring ESP</h1>
-            <p>ESP applications are configured via a <em>package.json</em> file.
-            This is a JSON property file that is made available to server-side 
-            controllers and pages, and portions are provided to client-side scripts.</p>
-            <p>The package.json describes and configures:</p> 
+            <p>When serving stand-alone <em>esp</em> pages, you do not need any external ESP configuration.
+            ESP provides sensible defaults and you can just run <em>esp</em> to serve pages. </p>
+
+            <pre class="ui code segment">$ <b>esp run</b></pre>
+
+            <p>However, larger ESP applications are configured via an <em>esp.json</em> file that permits
+            fine-grained control over how the application will run. The esp.json file manages:</p>
             <ul>
                 <li>Application name, version and description</li>
-                <li>Directory locations and structure</li>
-                <li>Extension packages and dependencies</li>
+                <li>Directory locations</li>
                 <li>Client-side scripts</li>
-                <li>Execution mode: debug or release</li>
+                <li>Per-mode (debug or release) configuration</li>
                 <li>Response Caching</li>
                 <li>Request timeouts</li>
                 <li>Error handling</li>
                 <li>Database name and location</li>
                 <li>Default data formats</li>
+                <li>Extension package definitions</li>
             </ul>
-            <p>This document will cover the various package.json properties and the steps to 
-                configure ESP applications.</p>
-            <p>If you are hosting your application in Appweb and need to do more complex routing of 
-                URIs or more granular control of authentication, you may need to specify additional 
-                routes in an <em>appweb.conf</em> configuration file. For details, see
+            <p>This document will cover the various esp.json properties and the steps to configure ESP 
+            applications. If you are hosting your application in Appweb you may need to specify additional 
+            configuration in the <em>appweb.conf</em> configuration file. For details, see
                 the <a href="https://embedthis.com/appweb/doc/">Appweb Documentation</a>.</p>
 
-            <h2>Package.json</h2>
-            <p>The package.json schema is defined by the <a href="https://embedthis.com/pak/">Pak</a>
-            package manager and conforms to the <a href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS
-            Packages 1.1</a> specification. One package.json file is used for the ESP application itself and 
-            each installed extension package will have its own package.json file. This permits <em>esp</em>
-            to easily manage installed packages and dependencies.</p>
-            <p>The <em>esp</em> manager program contains a subset of the 
-            <a href="https://embedthis.com/pak/">Pak</a> package manager.
-            As such, it can install, list, uninstall and upgrade packages. You can use either <em>esp</em> or
-            <em>pak</em> to install, uninstall or upgrade paks for your application.</p>
-            <p>Here is a quick look at a package.json file. The <em>app</em> property section (in yellow)
-            defines the application specific configuration. The other properties are generic to any package 
-            using the Pak package manager.</p>
+            <h2>esp.json</h2>
+            <p>Here is a quick look at a sample.json file. The format is an enhanced JSON literal that 
+            supports property names without quotes, multi-line literals and commas on trailing properties.</p>
 <pre class="ui code segment">{
-    "name": "blog",
-    "title": "My Blog",
-    "description": "My blog with thoughts and tales from my travels in Africa",
-    "version": "1.2.0",
-    "dependencies": {
-        "esp-server": "1.x",
-    },
-    <b>app: {
-        client: {
-            scripts: [
-                "app/**.js*",
-            ],
+    name: "blog",
+    title: "My Blog",
+    description: "My blog with thoughts and tales from my travels in Africa",
+    version: "1.0.0",
+    <b>
+    http: {
+        database: "mdb://blog.mdb",
+        auth: {
+            store: "app",
         },
-        http: {
-            database: "mdb://blog.mdb",
-            serverPrefix: "/do",
-            auth: {
-                store: "app",
-            },
-            routes: "esp-html-mvc",
-        },
-    }</b>,
-},</pre>
-            <h3>Creating a package.json file</h3>
-            <p>When serving stand-alone <em>esp</em> pages, you do not need a package.json file, ESP has
-            sensible defaults and you can just run esp to serve pages. </p>
-            <pre class="ui code segment">$ <b>esp run</b></pre>
-            <p>However, when creating more complex applications, you will need a package.json
-            to store your application configuration.</p>
-            <p>To create a package.json, you can either run <em>esp init</em> or you can install one or more
-            ESP paks and the package.json will be created automatically.</p>
-            <pre class="ui code segment"><b>esp init</b></pre> 
-            <p>This will create a default package.json using the name of the current directory as the application 
-            name. For example:</p>
-            <pre class="ui code segment">{
-    "name": "test",
-    "title": "test",
-    "description": "test",
-    "version": "0.0.0",
-    "dependencies": {},
-    "app": {
-        "http: {
-            "routes": "esp-server"
+        routes: "esp-restful",
+        server: {
+            listen: [
+                "http://127.0.0.1:4000",
+            ]
         }
-    }
+    }</b>
 }</pre>
-            <p>Alternatively, a package.json will be created if you install one more more packs.</p>
-            <pre class="ui code segment"><b>esp install esp-html-mvc</b></pre>
+
+            <h2>Application Name and Description</h2>
+            <p>All ESP applications have name, title, description and version properties that uniquely identify 
+            the application. The application name is used in C function entry points, so it is important that 
+            it only contain valid C identifer characters. The title provides a multi-word title suitable 
+            for display to the user.</p>
+            <p>These identifying properties may alternatively be defined in an optional package.json file
+            that is used by the <a href="https://embedthis.com/pak">Pak</a> package manager when installing 
+            ESP extensions packages and skeletons.</p>
+
+            <h2>Creating an esp.json file</h2>
+            <p>To create an esp.json, run:</p>
+            <pre class="ui code segment"><b>esp init</b></pre>
+
+            <p>Alternatively, or you can install one or more ESP paks and esp.json and package.json files 
+            will be created for you. For example:</p>
+
+            <pre class="ui code segment"><b>pak install esp-html-skeleton</b></pre>
+
             <a id="mode"></a>
-            <h3>Execution Mode</h3>
+            <h2>Configuration Mode</h2>
             <p>ESP provides a convenient way to select a set of properties that correspond to a desired execution
-            mode. Example modes are: <em>debug</em>, <em>test</em> or <em>release</em>. In each mode, different
-            compilation, logging, authentication, and timeout parameters may be required. The <em>app.mode</em>
-            property specifies a collection that will be copied to the top-level "<em>app</em>" collection
-            before the application runs. By modifying the <em>app.mode</em> setting, an entirely different 
-            execution configuration may be selected. ESP makes this easy via the command:</p>
-            <pre class="ui code segment">esp mode NAME</pre> 
-            <p>Where NAME is set to a collection of properties in the package.json to copy. This is typically
-                <em>debug</em> or <em>release</em>.</p>
-            <a id="errors"></a>
-            <h3>Error Handling</h3>
-            <p>If an ESP page has a syntax error or a run-time error, messages will be sent to the ESP log file.
-            This defaults to the console, but can be sent elsewhere by invoking esp with the <em>--log</em> option.</p>
-            <p>Often during development, it is useful to send errors back to the browser. To do this, 
-            set the <em>http.showErrors</em> property to true: </p>
-            <pre class="ui code segment">esp edit app.http.showErrors=true</pre>
-            <a id="reload"></a>
-            <h3>Reloading</h3>
-            <p>ESP supports an "edit-and-continue" development style where you can make modifications to 
-            ESP controllers and pages and when you click reload in your browser, the controller or page 
-            will be transparently recompiled and reloaded. This can be a great boost for development productivity.</p>
-            <p>If your ESP application is running in debug mode, then ESP
-            will automatically rebuild modified ESP pages and controllers. If your ESP application is 
-            running release mode, the default is to not reload. </p>
+            mode such as: <em>debug</em>, <em>test</em> or <em>release</em> modes. In each mode, different 
+            configuration may be defined.</p>
 
-            <a id="keep"></a>
-            <h3>Keep Source</h3>
-            <p>Sometimes, it is helpful to preserve intermediate "C" source files so that you can debug
-            your application at the source code level. When an ESP page is parsed, it is blended with a 
-            layout page and then an intermediate C source file is generated. 
-            This is normally removed after compilation. Setting the
-            <em>http.keep</em> property to "<em>true</em>" will cause ESP to preserve this 
-            intermediate source file in the <em>cache</em> directory.</p>
+            <p>The selected mode is specified by the <em>mode</em> property in the package.json file.
+            This then selects a collection of properties of that same name that will be copied to the 
+            top-level before the application runs. By modifying the <em>mode</em> setting, an entirely 
+            different execution configuration may be selected. ESP makes this easy via the command:</p>
 
-            <pre class="ui code segment">esp edit app.http.keep=true</pre>
+            <pre class="ui code segment">esp mode debug
+  # or
+pak mode debug</pre> 
+            <p>This will select the <em>debug</em> collection of properties in the esp.json file.</p>
+            <p>The <em>mode</em> property is centralized in the package.json file because the Pak and 
+            Expansive utilities follow a similar scheme and having one single <em>mode</em> property is
+            desirable over each utility replicating the mode definition.</p>
 
-            <a id="database"></a>
-            <h2 >Databases</h2>
-            <p>Databases can be specified and pre-opened via the <em>app.http.database</em> property 
-                in the package.json file. The database property takes the form: 
-                <em>provider://database-connection</em>. For example:</p>
-<pre class="ui code segment">
-    database: "mdb://blog.mdb"
-or
-    database "sdb://sqlite.sdb"
-</pre>
-            <p>For SQLite and MDB databases, the database-connection string is the name of the database in the ESP
-            <em>db</em> directory.</p>
-
-            <p>ESP supports multiple database engines through a single Embedded Database Interface. 
-            Support is included for SQLite and MDB. See <a href="database.html">Database Interface</a> 
-            for more information about Database Support.</p>
-
-            <a id="pages"></a>
-            <h2>ESP Pages</h2>
-            <p>There is no additional configuration require to support ESP pages. If you only wish to stand-alone
-            ESP pages, a package.json is not even required.</p>
-
-            <h4>Layouts</h4>
-            <p>Layout pages define a common look and feel for the application and provide the "outer" content for
-            every page. If you do not define a layout page, the ESP pages will be served as-is.
-            If you create a <em>layouts/default.esp</em> layout page, it will be used to wrap the ESP page.</p>
-            <p>You can select a different layout page via the <em>layout</em> directive at the top of an ESP page.
-            For example:</p>
-            <pre class="ui code segment">&lt;% layout "mylayout.esp" %&gt;</pre>
-
-            <h2 >ESP Package.json Properties</h2>
-            <h3>Top Level Properties</h3>
+            <h2>Package.json Properties</h2>
             <table title="top-level collections" class="ui table segment">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><a href="#app">app</a></td>
-                        <td>Application specific configuration.</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#dependencies">dependencies</a></td>
-                        <td>Other paks the application requires. The key is the pak name and the value
-                            is a version expression. See
-                            <a href="https://embedthis.com/pak/doc/index.html">Pak Documentation for details.</a></td>
-                    </tr>
-                    <tr>
                         <td>description</td>
                         <td>Sort-sentance description of the application.</td>
+                    </tr>
+                    <tr>
+                        <td>dependencies</td>
+                        <td>Extension Paks used by the ESP application. The key is the pak name and the value is a 
+                        <a href="http://semver.org">SemVer</a> version expression. 
+                        See <a href="https://embedthis.com/pak/doc/index.html">Pak</a> Documentation for details.</td>
                     </tr>
                     <tr>
                         <td><a href="#directories">directories</a></td>
                         <td>Directory locations</td>
                     </tr>
                     <tr>
-                        <td>ignore</td>
-                        <td>File patterns to ignore when installing the application or package.</td>
-                    </tr>
-                    <tr>
                         <td>include</td>
                         <td>List of external files to include.</td>
                     </tr>
                     <tr>
-                        <td>keywords</td>
-                        <td>Descriptive keywords that Pak can use if the application is published in the
-                            <a href="https://embedthis.com/catalog/">Pak catalog</a>.</td>
+                        <td>mode</td>
+                        <td>Configuration mode for the application that selects a property collection of the 
+                        same name from the <em>modes</em> collection in the package.json or esp.json files. 
+                        Those properties are copied up to the top level.</td>
                     </tr>
                     <tr>
                         <td>name</td>
-                        <td>One word application name.</td>
+                        <td>One word application name. This value is used to name the application and will be used
+                            in controller and application function entry point names.</td>
                     </tr>
                     <tr>
                         <td>title</td>
@@ -362,8 +286,8 @@ or
 
             <a name="dependencies"></a>
             <h3>Dependency Expressions</h3>
-            <p>Dependent packs may be specified in the <em>dependencies</em> property. This is an object 
-            collection of paks with version expressions. When esp installs a new pak, an entry for the new pak
+            <p>Dependent extension Paks may be specified in the <em>dependencies</em> property. This is an object 
+            collection of paks with version expressions. When Pak installs a package, an entry for the new pak
             will be added to the dependency collection. For example:</p>
 
             <pre class="ui code segment">"dependencies": {
@@ -403,18 +327,10 @@ or
                 </thead>
                 <tbody>
                     <tr>
-                        <td>app</td>
-                        <td>Directory for client-side application code. Defaults to <em>client/app</em>.</td>
-                    </tr>
-                    <tr>
                         <td>cache</td>
                         <td>Directory for caching compiled items. Defaults to <em>cache</em>.</td>
                     </tr>
-                    <tr>
-                        <td>client</td>
-                        <td>Directory containing client-side content. All files under this
-                                directory are visible to the client. Defaults to <em>client</em>.</td>
-                    </tr>
+
                     <tr>
                         <td>controllers</td>
                         <td>Directory for server-side MVC controllers. Defaults to "<em>controllers</em>".</td>
@@ -423,9 +339,11 @@ or
                         <td>db</td>
                         <td>Directory for server-side database files. Defaults to "<em>db</em>".</td>
                     </tr>
+
                     <tr>
                         <td>documents</td>
-                        <td>Directory for documents to serve. Defaults to "<em>.</em>".</td>
+                        <td>Directory containing client visible document content. All files under this
+                            directory are visible to the client. Defaults to <em>documents</em>.</td>
                     </tr>
                     <tr>
                         <td>home</td>
@@ -433,7 +351,8 @@ or
                     </tr>
                     <tr>
                         <td>layouts</td>
-                        <td>Directory for ESP layout pages. Defaults to "<em>layouts</em>".</td>
+                        <td>Directory for <a href="https://embedthis.com/expansive/">Expansive</a> layout pages. 
+                        Defaults to "<em>layouts</em>".</td>
                     </tr>
                     <tr>
                         <td>lib</td>
@@ -444,35 +363,37 @@ or
                         <td>Directory to contain installed Paks. Defaults to "<em>./paks</em>".</td>
                     </tr>
                     <tr>
+                        <td>partials</td>
+                        <td>Directory for <a href="https://embedthis.com/expansive/">Expansive</a> partial pages. 
+                        Defaults to "<em>partials</em>".</td>
+                    </tr>
+                    <tr>
                         <td>pakcache</td>
                         <td>Location of the per-user Pak cache of packages. Defaults to "<em>~/.paks</em>".</td>
                     </tr>
                     <tr>
+                        <td>source</td>
+                        <td>Source of input documents for <a href="https://embedthis.com/expansive/">Expansive</a>
+                        to render. Defaults to "source". </td>
+                    </tr>
+                    <tr>
                         <td>src</td>
-                        <td>Directory for application source. Defaults to "<em>src</em>".</td>
+                        <td>Directory for application C/C++ code. Defaults to "<em>src</em>".</td>
                     </tr>
                     <tr>
                         <td>upload</td>
                         <td>Directory for uploaded files. Defaults to "<em>/tmp</em>".</td>
                     </tr>
-                    <tr>
-                        <td>views</td>
-                        <td>Directory for view pages. Defaults to "<em>views</em>".</td>
-                    </tr>
                 </tbody>
             </table>
 
-            <a name="app"></a>
-            <h3>Application Specific Configuration &mdash; app.*</h3>
-            <table title="app" class="ui table segment">
+            <h2>Esp.json Properties</h2>
+            <a name="top"></a>
+            <table title="top" class="ui table segment">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><a href="#client">client</a></td>
-                        <td>Collection of client-side configuration.</td>
-                    </tr>
                     <tr>
                         <td><a href="#esp">esp</a></td>
                         <td>Collection of ESP configuration.</td>
@@ -481,11 +402,7 @@ or
                         <td><a href="#http">http</a></td>
                         <td>Collection of HTTP configuration.</td>
                     </tr>
-                    <tr>
-                        <td>mode</td>
-                        <td>Execution mode for the application. This selects a property collection of the same name
-                            from the <em>modes</em> collection and copies those properties up to the "app" level. </td>
-                    </tr>
+
                     <tr>
                         <td>modes</td>
                         <td>Collection of mode specific configuration. Typically there will be collections for
@@ -495,7 +412,7 @@ or
             </table>
 
             <a name="client"></a>
-            <h3>Client Configuration &mdash; app.client.*</h3>
+            <h3>Client Configuration &mdash; http.client.*</h3>
             <table title="client" class="ui table segment">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -506,46 +423,48 @@ or
                         <td><p>Set of property keys that map server-side properties to client-side properties to send to the client. 
                         Mappings select a subset of properties so the entire JSON configuration is not sent to the client.
                         For example: </p>
-<pre class="ui code segment">app: {
-    client: {
-        mappings: {
-            auth: 'http.auth',
-            timeouts: {
-                session: 'http.timeouts.session',
-            }
-        }
+<pre class="ui code segment">
+mappings: {
+    auth: 'http.auth',
+    timeouts: {
+        session: 'http.timeouts.session',
     }
 }</pre>
+                            <p>This computes a JSON string with properties "auth" and "timeouts" to send to the client.</p>
                             </td>
                         </tr>
                     <tr>
-                        <td>scripts</td>
+<!--  MOB - move -->
+                        <td>render</td>
                         <td><p>Ordered set of scripts to send to the client when parsing the ESP <em>scripts()</em> 
                             API. This may include the "*" wildcard to match any file or "**" to match any file in 
                             any directory. For example:</p>
-                  <pre class="ui code segment">app: {
-    cient: {                    
-        scripts:{
-            'lib/angular/angular.js',
-            'lib/angular/angular-animate.js',
-            'lib/angular/angular-route.js',
-            'app/main.js',
-            'app/*/**.js*',
-            'lib/esp-gui/*.js',
-        }
-    }
+                  <pre class="ui code segment">render: {                    
+    js: [
+        'lib/angular/angular.js',
+        'lib/angular/angular-animate.js',
+        'lib/angular/angular-route.js',
+        'main.js',
+        '*/**.js*',
+        'lib/esp-gui/*.js',
+    ]
 }</pre></td>
                     </tr>
                 </tbody>
             </table>
 
             <a name="esp"></a>
-            <h3>ESP Collection &mdash; app.esp.*</h3>
+            <h3>ESP Collection &mdash; esp.*</h3>
             <table title="esp" class="ui table segment">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td>combine</td>
+                        <td>Define whether to combine the entire ESP application into a single output source 
+                            file and library. This is typically enabled for release mode. Defaults to false.</td>
+                    </tr>
                     <tr>
                         <td>compile</td>
                         <td>Define whether to compile with "<em>symbols</em>" or "<em>optimized</em>". Defaults to
@@ -569,10 +488,10 @@ or
             </table>
 
             <a name="http"></a>
-            <h3>Http Configuration &mdash; app.http.*</h3>
-            <p>All properties in the <em>app.http</em> collection with the exception of the <em>app.http.server</em> 
+            <h3>Http Configuration &mdash; http.*</h3>
+            <p>All properties in the <em>http</em> collection with the exception of the <em>http.server</em> 
             collection apply per-route. This means these properties they may be nested in routes defined under
-            <em>app.http.routes</em>. The <em>app.htt.server</em> collection is ignored if ESP is hosted in a web server
+            <em>http.routes</em>. The <em>http.server</em> collection is ignored if ESP is hosted in a web server
             such as Appweb.</p>
             <table title="http" class="ui table segment">
                 <thead>
@@ -586,10 +505,6 @@ or
                     <tr>
                         <td><a href="#cache">cache</a></td>
                         <td>List of cache directives.</td>
-                    </tr>
-                    <tr>
-                        <td><a href="#content">content</a></td>
-                        <td>Collection of configuration to manage how content is combined, compressed and minified.</td>
                     </tr>
                     <tr>
                         <td>database</td>
@@ -719,14 +634,6 @@ methods: [
                         </td>
                     </tr>
                     <tr>
-                        <td>mode</td>
-                        <td>Execution mode. Selects a set of properties from modes.</td>
-                    </tr>
-                    <tr>
-                        <td>name</td>
-                        <td>Descriptive name for the route. Used when showing the route table in logs.</td>
-                    </tr>
-                    <tr>
                         <td>params</td>
                         <td>List of required parameters before the request will match the current route.
                         For example:
@@ -743,10 +650,10 @@ params: [
                     </tr>
                     <tr>
                         <td>pattern</td>
-                        <td>Matching URI prefix for requests to be served by the current route.
+                        <td>Matching URI regular expression for requests to be served by the current route.
                         For example:
                         <pre class="ui code segment">pattern: '^/route/auth',</pre>
-                        Use <em>^</em> to anchor to the start of the URI.
+                        Use <em>^</em> to anchor to the start of the URI and $ for the end of the URI.
                         </td>
                     </tr>
                     <tr>
@@ -790,12 +697,13 @@ pipeline: {
                     </tr>
                     <tr>
                         <td>resources</td>
-                        <td><p>Create routes sets for the requested resources. Route sets select pre-defined route sets.
-Some of the available sets are: 'esp-server' and 'esp-html-mvc'. Resource groups greate RESTful routes for a resource
-that has multiple instances. Singletons create RESTful routes for singleton resources.</p>
+                        <td><p>Create routes sets for the requested resources. Route sets select 
+                        pre-defined route sets. Some of the available sets are: 'esp-server' and 'esp-restful'.
+                        Resource groups greate RESTful routes for a resource that has multiple 
+                        instances. Singletons create RESTful routes for singleton resources.</p>
 <pre class="ui code segment">
 resources: {
-    sets: [ 'esp-html-mvc' ],
+    sets: [ 'esp-restful' ],
     groups: [ 'users', 'administrators' ],
     singletons: [ 'profile' ],
 }
@@ -803,11 +711,11 @@ resources: {
                     </tr>
                     <tr>
                         <td>routes</td>
-                        <td>Ordered list of routes. This may be a pre-defined route set name or it may be an array
-                            of routes. Examples:
+                        <td>Ordered list of routes. This may be a pre-defined route set name or it may be an 
+                        array of routes. Examples:
                             <pre class="ui code segment">
-routes: 'esp-html-mvc',
-routes [ 'esp-html-mvc'],
+routes: 'esp-restful',
+routes [ 'esp-restful'],
 routes [ {
     routeName: 'custom',
     pipeline: {
@@ -894,7 +802,7 @@ routes [ {
             </table>
 
             <a name="server"></a>
-            <h3>Http Server Configuration &mdash; app.http.server.*</h3>
+            <h3>Http Server Configuration &mdash; http.server.*</h3>
             <p>The <em>server</em> collection is special in that it is only parsed when ESP is not hosted in
                 a web server such as Appweb. If hosted, it is expected that the web server will define
                 these attributes externally. All <em>server</em> properties apply to the whole server and are not
@@ -975,7 +883,7 @@ server: {
             </table>
 
             <a name="auth"></a>
-            <h3>Authentication Configuration &mdash; app.http.auth.*</h3>
+            <h3>Authentication Configuration &mdash; http.auth.*</h3>
             <table title="auth" class="ui table segment">
                 <thead>
                     <tr><th>Name</th><th>Description</th></tr>
@@ -1006,16 +914,16 @@ server: {
     users: [ 'julie' ]
 }, </pre>
                         If <em>users</em> is defined, then a user must login before using the application. The
-                        <em>users</em> property may be set to a list of users, a string with a single user name or <em>true</em> to imply
-                        any authenticated user. Note: it is application dependent how the required login feature is implemented.
+                        <em>users</em> property may be set to a list of users, a string with a single 
+                        user name or <em>true</em> to imply any authenticated user. Note: it is 
+                        application dependent how the required login feature is implemented.
                         The <em>esp-user</em> Angular pak implements this feature.</td>
                         </tr>
                         <tr>
                         <td>single</td>
                         <td>Set to true to permit only one simultaneous login. Ideal for some management user
                         interfaces. Note: it is application dependent how the required login feature is implemented.
-                        The <em>esp-user</em> Angular pak implements this feature.
-                        </td>
+                        The <em>esp-user</em> Angular pak implements this feature.</td>
                     </tr>
                     <tr>
                         <td>roles</td>
@@ -1025,7 +933,7 @@ server: {
     executive:      ['manage', 'direct'],
     user:           ['view'],
     administrator:  ['view', 'edit'],
-},</pre>
+},</pre></td>
                     </tr>
                     <tr>
                         <td>session</td>
@@ -1064,17 +972,20 @@ session: {
         roles:    ['user', 'administrator', 'purchase'],
     },
 },</pre>
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
             <a name="cache"></a>
-            <h3>Cache Collection &mdash; app.http.cache.*</h3>
+            <h3>Cache Collection &mdash; http.cache.*</h3>
             <p>The cache property contains a list of cache records. For example:</p>
 <pre class="ui code segment">cache: [{
     client: '1day',
     extensions: [ 'css', 'html', 'js' ],
 }],</pre>
+            <p>The cache property may also be set to <em>true</em> which is equivalent to defining
+            caching on the client side for one day for common static file types.</p>
 
             <table title="cache" class="ui table segment">
                 <thead>
@@ -1119,44 +1030,8 @@ session: {
                 </tbody>
             </table>
 
-            <a name="content"></a>
-            <h3>Content Collection &mdash; app.http.content.*</h3>
-            <p>The content property describes how web content should be built and processed.</p>
-<pre class="ui code segment">content: {
-    combine:  [ 'c', 'css', 'html', 'js' ],
-    compress: [ 'css', 'html', 'js' ],
-    minify:   [ 'css', 'html', 'js' ],
-    stylesheets: "css",
-},</pre>
-            <table title="cache" class="ui table segment">
-                <thead>
-                    <tr><th>Name</th><th>Description</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>combine</td>
-                        <td>List of exensions to catentate and combine into a single resource. This optimizes network
-                        delivery for suitable clients. This is used for Kickstart applications and requires special
-                        build instructions.</td>
-                    </tr>
-                    <tr>
-                        <td>compress</td>
-                        <td>List of exensions to compress using gzip. This optimizes network delivery for suitable clients. 
-                        This is used for Kickstart applications and requires special build instructions.</td>
-                    </tr>
-                    <tr>
-                        <td>minify</td>
-                        <td>List of exensions to minify. This optimizes network delivery for suitable clients. 
-                        This is used for Kickstart applications and requires special build instructions.</td>
-                    </tr>
-                    <tr>
-                        <td>stylesheets</td>
-                        <td>Set to the exension to use for stylesheets. Set to "css" or "less".</td>
-                </tbody>
-            </table>
-
             <a name="ssl"></a>
-            <h3>SSL Collection &mdash; app.http.ssl.*</h3>
+            <h3>SSL Collection &mdash; http.ssl.*</h3>
             <p>The content property describes how web content should be built and processed.
             The SSL directives may be used globally or per-route.</p>
 <pre class="ui code segment">ssl {
@@ -1213,7 +1088,7 @@ session: {
             </table>
 
             <a name="timeouts"></a>
-            <h3>Timeouts Collection &mdash; app.http.timeouts.*</h3>
+            <h3>Timeouts Collection &mdash; http.timeouts.*</h3>
             <p>The timeouts property specifies the various request and connection timeouts.
                 Timeouts are expressed as strings with natural language suffixes like: "30mins".</p>
             <table title="ssl" class="ui table segment">

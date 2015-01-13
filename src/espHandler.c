@@ -308,23 +308,6 @@ static int runAction(HttpConn *conn)
     assert(eroute->top);
     action = mprLookupKey(eroute->top->actions, rx->target);
 
-    /// MOB - missing must be moved somewhere else
-#if UNUSED
-    if ((action = mprLookupKey(eroute->actions, rx->target)) == 0) {
-        if (!mprPathExists(pagePath(conn), R_OK)) {
-            /*
-                Actions are registered as: source/TARGET where TARGET is typically CONTROLLER-ACTION
-             */
-            if ((action = mprLookupKey(eroute->actions, sfmt("%s/missing", controllers))) == 0) {
-                if ((action = mprLookupKey(eroute->actions, "missing")) == 0) {
-                    httpError(conn, HTTP_CODE_NOT_FOUND, "Missing action for \"%s\"", rx->target);
-                    return 0;
-                }
-            }
-        }
-    }
-#endif
-
     if (route->flags & HTTP_ROUTE_XSRF && !(rx->flags & HTTP_GET)) {
         if (!httpCheckSecurityToken(conn)) {
             httpSetStatus(conn, HTTP_CODE_UNAUTHORIZED);

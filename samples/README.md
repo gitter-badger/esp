@@ -14,7 +14,7 @@ The following samples are available:
 
 * [config](config/README.md)                 Configuring ESP.
 * [controller](controller/README.md)         Creating ESP controllers.
-* [html-mvc](html-mvc/README.md)             ESP esp-html-mvc application (stand-alone).
+* [html-mvc](html-mvc/README.md)             ESP esp-html-mvc application.
 * [layout](layout/README.md)                 ESP layout templates.
 * [login-database](login-database/README.md) ESP database storage of passwords for login.
 * [login-form](login-form/README.md)         ESP form-based login.

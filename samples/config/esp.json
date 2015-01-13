@@ -2,7 +2,8 @@
     esp.json - ESP configuration file
 
     The file is an enhanced JSON file. Property keys do not need to be enclosed in quotes.
-    Also the last property in a collection may be terminated with a comma.
+    Also the last property in a collection may be terminated with a comma, and strings may
+    span multiple lines.
 */
 {
     /*
@@ -15,7 +16,7 @@
         Multi-word title for the application. Used for display.
         This is typically provided by the package.json instead.
      */
-    title: "My Blog"
+    title: "My Blog",
 
     /*
         One-line description for the application. Used in the Pak catalog.
@@ -33,56 +34,22 @@
         Opportunity to remap directories. These are the default values.
      */
     directories: {
-        "app": "documents",
         "cache": "cache",
         "controllers": "controllers",
         "db": "db",
-        "documents": ".",
+        "documents": "documents",
         "home": ".",
         "layouts": "layouts",
         "lib": "lib",
         "paks": "paks",
         "pakscache": "~/.paks",
-        "public": "public",
+        "partials": "partials",
+        "source": "source",
         "src": "src",
         "top": ".",
         "upload": "/tmp",
     },
 
-    /*
-        Client-side configuration
-     */
-    client: {
-        /*
-            Selection of properties to send to the client
-         */
-        mappings: {
-            auth: {
-                login:    "app.http.auth.auto",
-                store:    "app.http.auth.store",
-            },
-            formats:      "app.http.formats",
-            prefix:       "app.http.prefix",
-            timeouts:     "app.http.timeouts",
-        },
-        /*
-            List of browser scripts to serve to the client via the scripts() API
-            Also used when building the app to create a single, combined, minified, compressed JS file.
-         */
-        scripts: [
-            "paks/angular/angular.js",
-            "paks/angular/angular-animate.js",
-            "paks/angular/angular-route.js",
-            "paks/angular-bootstrap/*.js",
-            "paks/esp-angular/*.js",
-            "app/main.js",
-            "app/*/**.js*",
-            "paks/esp-gui/*.js",
-            "paks/html5/html5shiv.js",
-            "paks/less/less.js",
-            "paks/respond/respond.js"
-        ],
-    },
     esp: {
         /*
             Templates used for "esp generate"
@@ -94,7 +61,7 @@
             "clientList": "esp-angular-mvc/list.html",
             "clientModel": "esp-angular-mvc/model.js",
             "controller": "esp-mvc/controller.c",
-            "controllerSingleton": "esp-angular-mvc/generate/controllerSingleton.c"
+            "controllerSingleton": "esp-angular-mvc/generate/controllerSingleton.c",
             "migration": "esp-mvc/migration.c",
             "module": "esp-mvc/src/app.c",
         },
@@ -104,6 +71,24 @@
         HTTP related configuration
      */
     http: {
+        /*
+            Client-side configuration
+         */
+        client: {
+            /*
+                Selection of properties to send to the client
+             */
+            mappings: {
+                auth: {
+                    login:    "http.auth.auto",
+                    store:    "http.auth.store",
+                },
+                formats:      "http.formats",
+                prefix:       "http.prefix",
+                timeouts:     "http.timeouts",
+            },
+        },
+
         /*
             Server related configuration that applies globally
             Ignored if hosted in Appweb, when server configuration comes from appweb.conf.
@@ -368,6 +353,7 @@
         
         /*
             Response caching directives
+            Can also just set "cache" to true which defines a client cache of 1 day for common static file types.
          */
         cache: [ {
             /*
@@ -411,31 +397,6 @@
              */
             unique: true,
         } ],
-
-        /*
-            Content processing instructions
-         */ 
-        content: {
-            /*
-                Combine multiple files into a single file
-             */
-            combine: [ "c", "css", "html", "js" ],
-
-            /*
-                Compress using gzip
-             */
-            compress: [ "css", "html", "js" ],
-
-            /*
-                Minify using language-specific minification
-             */
-            minify: [ "css", "html", "js" ],
-
-            /*
-                Kind of style sheets to serve (css, less, sass)
-             */
-            stylesheets: "css"
-        },
 
         /*
             Database specification. Supported providers: sdb for SQLite and mdb for Memory Database.
@@ -800,18 +761,18 @@
     },
 
     /*
-        Mode specific property collections. The designated mode collection is copied to "app".
+        Mode specific property collections. The designated mode collection is copied to the top level.
         The mode property set is selected by the package.json "mode" property.
      */
     modes: {
         debug: { 
             /*
-                Collection of properties that are copied to "app" if in debug mode
+                Collection of properties that are copied to the top-level if in debug mode
              */
         },
         release: {
             /*
-                Collection of properties that are copied to "app" if in release mode
+                Collection of properties that are copied to the top level if in release mode
              */
         }
     }

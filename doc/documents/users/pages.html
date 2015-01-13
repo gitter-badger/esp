@@ -53,7 +53,7 @@
                 <div class="menu">
                     <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
                     <a class="item" href="../users/config.html">Configuring ESP</a>
-                    <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                    <a class="item" href="../users/pages.html">ESP Pages</a>
                     <a class="item" href="../users/program.html">ESP Utility</a>
                     <a class="item" href="../users/controllers.html">ESP Controllers</a>
                     <a class="item" href="../users/database.html">ESP Databases</a>
@@ -165,7 +165,7 @@
             
             <pre class="ui code segment">
 &lt;h1&gt;Hello World&lt;/h1&gt;
-&lt;h2&gt;Today is &lt;%= mprGetDate(0); %&gt;&lt;/h2&gt;
+&lt;h2&gt;Today is &lt;&#37;= mprGetDate(0); &#37;&gt;&lt;/h2&gt;
 </pre>
             
             <h3>Why "C"?</h3>
@@ -185,7 +185,7 @@
             If the original web page is modified, the page is transparently recompiled and re-cached. For production, 
             pages can be pre-compiled, and locked-down without recompiling in the field. This updating behavior can 
             be controlled by the 
-            <em><a href="config.html">app.http.update</a></em> configuration directive.</p>
+            <em><a href="config.html">http.update</a></em> configuration directive.</p>
             <p>Alternatively, ESP pages can be precompiled via the <em>esp</em> generator program. For example:</p>
             <pre class="ui code segment">$ <b>esp compile</b></pre>
             <p>In fact, the entire application can be compiled into a single combined module by compiling in combined mode.
@@ -200,7 +200,7 @@
             <p>The use of garbage collection enables the use of decorator patterns and API chaining where the outputs of one
             function can be used as arguments to others. If you need to manually free memory, this style of programming
             is often quite difficult, ... but with ESP, it is much easier. For example:</p>
-<pre class="ui code segment">Resource name: &lt;%= mprJoinExt(mprJoinPath(dir, supper(name)), "jpg") %&gt; </pre>
+<pre class="ui code segment">Resource name: &lt;&#37;= mprJoinExt(mprJoinPath(dir, supper(name)), "jpg") &#37;&gt; </pre>
             <p>This joins the directory with an upper-case of "name" and appends a "jpg" extension if one is not already
             in the name. All allocated memory is automatically freed ensuring no memory leaks.</p>
             
@@ -212,117 +212,100 @@
             <table class="ui table" title="directives">
                 <thead>
                     <tr>
-                        <th>Directive</th>
+                        <th class="four wide">Directive</th>
                         <th>Purpose</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>&lt;%@ include "file" %&gt;</td>
+                        <td>&lt;&#37;^ include "file" &#37;&gt;</td>
                         <td>Include the named file at this location</td>
                     </tr>
                     <tr>
-                        <td>&lt;%@ layout "file" %&gt;</td>
-                        <td>Use the specified layout file for this page</td>
-                    </tr>
-                    <tr>
-                        <td>&lt;%@ content %&gt;</td>
-                        <td>Used in layout pages to specify where the content should be inserted </td>
-                    </tr>
-                    <tr>
-                        <td>&lt;%^ global ...</td>
+                        <td>&lt;&#37;^ global ...</td>
                         <td>Specify that the code from this block must be at a "global" C scope. This is useful
                             for global declarations, extern statements and #include statements.</td>
                     </tr>
                     <tr>
-                        <td>&lt;%^ start ...</td>
+                        <td>&lt;&#37;^ start ...</td>
                         <td>Specify that the code from this block will be positioned at the start of the
                             generated function for the template. This is useful for local variable declarations.</td>
                     </tr>
                     <tr>
-                        <td>&lt;%^ end ...</td>
+                        <td>&lt;&#37;^ end ...</td>
                         <td>Specify that the code from this block will be positioned at the end of the
                             generated function for the template.</td>
                     <tr>
-                        <td>&lt;%= expression %&gt;</td>
+                        <td>&lt;&#37;= expression &#37;&gt;</td>
                         <td>"C" expression</td>
                     </tr>
                     <tr>
-                        <td class="nowrap">&lt;%= [%fmt] expression %&gt;</td>
+                        <td class="nowrap">&lt;&#37;= [&#37;fmt] expression &#37;&gt;</td>
                         <td>Formatted "C" expression. The expression is passed through a "printf" style formatter.
-                            Use "%S" for HTML-escaped safe strings.</td>
+                            Use "&#37;S" for HTML-escaped safe strings.</td>
                     </tr>
                     <tr>
-                        <td>&lt;% statements %&gt;</td>
+                        <td>&lt;&#37; statements &#37;&gt;</td>
                         <td>"C" statements</td>
                     </tr>
                     <tr>
-                        <td>&lt;-%&gt;</td>
-                        <td>Trim the trailing newline for the generated block</td>
+                        <td>-&#37;&gt;</td>
+                        <td>Trim the trailing newline for the generated block.</td>
                     </tr>
                     <tr>
-                        <td>&#64;&#64;variable</td>
+                        <td>&#37;&#36;name</td>
                         <td>Request parameter or session variable. This is equivalent to "<em>renderVar(variable)</em>"</td>
                     </tr>
                     <tr>
-                        <td>@!variable</td>
+                        <td>&#37!variable</td>
                         <td>C string variable</td>
                     </tr>
                     <tr>
-                        <td>@#field</td>
+                        <td>&#37#field</td>
                         <td>Record field variable. This is equivalent to "<em>ediGetField(getRec(), field))</em>"</td>
                     </tr>
                     <tr>
-                        <td>../</td>
+                        <td>&#37~</td>
                         <td>Top level application URL. Use this to create relative URLs without having to hard
                             code URI prefixes in your application.</td>
                     </tr>
-                    <tr>
-                        <td>@|</td>
-                        <td>Top level server-side application URL. Use this to get the URI prefix for server-side
-                            controllers.</td>
-                    </tr>
+
                 </tbody>
             </table>
-            <h3>&lt;%@ include "file" %&gt;</h3>
+            <h3>&lt;&#37;^ include "file" &#37;&gt;</h3>
             <p>This directive can be used to include other HTML or ESP files at this location. The included 
                 contents will be parsed as an ESP page and the results substituted at this location. ESP include
                 directives can be nested to an arbitrary depth.</p>
-            <h3>&lt;%@ layout "file" %&gt;</h3>
-            <p>The layout directive specifies the filename of the layout page to use. If set to the empty string <em>""</em>
-            then no layout page will be used. The default layout page is <em>layouts/default.esp</em></p>
-            <h3>&lt;%@ content %&gt;</h3>
-            <p>This directive is used only in layout pages to specify where the content page should be inserted. 
-            There should be only one such directive in a layout page.</p>
-            <h3>&lt;%^ global ....</h3>
+
+            <h3>&lt;&#37;^ global ....</h3>
             <p>This directive specifies that the code from this block must be at a "global" C scope. This is useful
                 for global declarations, extern statements and #include statements.</p>
-            <h3>&lt;%^ start ...</h3>
+            <h3>&lt;&#37;^ start ...</h3>
             <p>This directive specifies that the code from this block will be positioned at the start of the
             generated function for the template. Some "C" compilers do not allow variable declarations to be placed other
             than at the start of a block. So this directive is useful for local variable declarations.</p>
-            <h3>&lt;%^ end ...</h3>
+            <h3>&lt;&#37;^ end ...</h3>
             <p>This directive specifies that the code from this block will be positioned at the end of the
                 generated function for the template.</p>
-            <h3>&lt;%= expression %&gt;</h3>
+            <h3>&lt;&#37;= expression &#37;&gt;</h3>
             <p>Use this directive to embed the result of a "C" expression. The result must be a null-terminated string.
             This example below calls the 
             <a href="../ref/api/mpr.html#mpr_8h_1a8ecdc6cb45d8758203e09764faaf5e2d">mprGetDate</a>
             function which returns the local date and time as a string.</p>
             <pre class="ui code segment">
-Today is &lt;%= mprGetDate(0); %&gt;&lt;
+Today is &lt;&#37;= mprGetDate(0); &#37;&gt;&lt;
 </pre>
-            <h3>&lt;% statements %&gt;</h3>
+            <h3>&lt;&#37; statements &#37;&gt;</h3>
             <p>Use this directive to run "C" code statements. No value is substituted back into the page in
             place of the directive. If you need to write data inside a statement block, use the 
             <!--TODO-->
             render API.</p>
             <pre class="ui code segment">
-&lt;% 
+&lt;&#37; 
     for (i = 0; i &lt; 10; i++) {
-        render("I is %d &lt;br/&gt;\n", i);
+        render("I is &#37;d &lt;br/&gt;\n", i);
     }
-%&gt;
+&#37;&gt;
 </pre>
             <!-- TODO links -->
             <p><em>Security Note</em>: you should never use <em>render</em> to write back user data that has not been
@@ -332,11 +315,11 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             <p>You can also iterate over regular HTML code. The following code will display <b>Hello World</b> ten
             times in the web page.</p>
             <pre class="ui code segment">
-&lt;% for (i = 0; i &lt; 10; i++) { %&gt;
+&lt;&#37; for (i = 0; i &lt; 10; i++) { &#37;&gt;
     Hello World
-&lt;% } %&gt;
+&lt;&#37; } &#37;&gt;
 </pre>
-            <h3>&#64;&#64;variables</h3>
+            <h3>&#37;&#36;variables</h3>
             <p>ESP provides a shorthand for accessing request parameters. Request parameters are a collection of
             query variables, posted form fields, routing tokens, session variables and any explicitly set parameters. 
             These are stored in a params table and in session data stores and are accessible via the
@@ -344,34 +327,35 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             <a href="../ref/api/esp.html#group___esp_req_1ga98e63a9a924ec667a3c1b540e56792d3">espGetParam</a> and
             <a href="../ref/api/esp.html#group___esp_session_1ga60a5effb2a9ef53fdb02dbe865bf6093">espGetSession</a>
             APIs. However,
-            the <em>&#64;&#64;variable</em> directive provides an easier way. With this directive, the params and session data
+            the <em>&#37;&#36;variable</em> directive provides an easier way. With this directive, the params and session data
             are examined (in that order) for the given variable name.</p>
             <p>In this example below if the URI: <em>http://example.com/test.esp?name=John</em> was used the following ESP
             template could be used to access the "<em>name</em>" query value.</p>
             <pre class="ui code segment">
-&lt;h2&gt;My name is <b>&#64;&#64;name</b>&lt;/h2&gt;
+&lt;h2&gt;My name is <b>&#37;&#36;name</b>&lt;/h2&gt;
 </pre>
             <p>This directive is very useful for accessing any request, form, query or session data.</p>
-            <h3>@!variables</h3>
+
+            <h3>&#37;!variables</h3>
             <p>ESP provides a shorthand for accessing C string variables inline.</p>
 <pre class="ui code segment">
-&lt;%^start
+&lt;&#37;^start
     char *weather = "fine";
-%&gt;
-&lt;h2&gt;Current weather is <b>@!fine</b>&lt;/h2&gt;
+&#37;&gt;
+&lt;h2&gt;Current weather is <b>&#37;!fine</b>&lt;/h2&gt;
 </pre>
             <p>This is equivalent to:</p>
             <pre class="ui code segment">
-&lt;%= fine %&gt;
+&lt;&#37;= fine &#37;&gt;
 </pre>
-            <h3>@#field</h3>
+            <h3>&#37;#field</h3>
             <p>ESP provides a shorthand for accessing field data in the current database record. Controllers will
             often setup the environment for a view by defining a "current" database record.
-            The <em>@#field</em> directive provides an easy way to access any field in the current record. </p>
+            The <em>&#37;#field</em> directive provides an easy way to access any field in the current record. </p>
             <p>If a controller defined a current "<em>user</em>" record, this example below would extract the 
             "<em>name</em>" field for display.</p>
             <pre class="ui code segment">
-&lt;h2&gt;My name is <b>@#name</b>&lt;/h2&gt;
+&lt;h2&gt;My name is <b>&#37;#name</b>&lt;/h2&gt;
 </pre>
         <a id="context"></a>
         <h2 >Request Context </h2>
@@ -421,7 +405,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             <p>ESP provides a set of rendering APIs to send formatted and unformatted data in the response.
             The most common is <a href="../ref/api/esp.html#group___esp_abbrev_1gaf89154adc3cbf6d6a6a32c6b4457c593">render</a>
             which uses printf style formatting before sending the data to the client. For example:</p>
-            <pre class="ui code segment">render("Today, the temp is %d", temp);</pre>
+            <pre class="ui code segment">render("Today, the temp is &#37;d", temp);</pre>
             <p>Other useful render routines include:</p>
             <ul>
                 <li><a href="../ref/api/esp.html#group___esp_abbrev_1ga40445cbba9d5b3a5baec51e59e3d6340">renderSafe</a> which
@@ -456,16 +440,16 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             For example:</p>
             <pre class="ui code segment">setHeader("X-ACCESS_CODE", "42");</pre>
            
-            <a id="layouts"></a>
-            <h2 >Layout Pages</h2>
+            <a id="expansive"></a>
+            <h2>Using Expansive for Layouts</h2>
             <p>Highly usable applications have consistent structure, menus and appearance so the user can easily 
             navigate that application. Such applications may consist of many web pages that share a common look
             and feel.  However, designing and maintaining that consistency is sometimes a challenge.</p>
             
-            <p>ESP provide a powerful and flexible solution for implementing a consistent UI via layout pages.
-            that define the look and feel of an application. Content pages are then
-            rendered to clients by merging specific content with one or more layout pages. 
-            This creates a composite page that is what the user will actually see. In this way, a web application 
+            <p>ESP uses the <a href="http://embedthis.com/expansive/">Expansive</a> tool to provide a powerful and flexible solution for implementing a consistent UI via layout pages.
+            Layouts pages define the look and feel of an application while content pages provide page specific
+            content. HTML pages are then rendered to clients by merging content pages with one or more layout pages. 
+            This creates a composite page for what the user will actually see. In this way, a web application 
             can easily maintain a consistent look and feel without repeating boilerplate code from page to page. 
             ESP believes strongly in the DRY principle: <em>"Don't Repeat Yourself"</em>. </p>
             
@@ -480,7 +464,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
         &lt;img src="banner.jpg" /&gt;
     &lt;/div&gt;
     &lt;div class="content"&gt;
-        <b>&lt;%@ content %&gt;</b>
+        <b>&lt;&#64; content &#64;&gt;</b>
     &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -490,7 +474,7 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
             <a id="content"></a>
             <h3>Content Pages</h3>
             <p>A content page defines only the HTML and code that is unique for a specific page. It is merged with a
-            layout page by inserting the content and replacing the <em>&lt;%@ content %&gt;</em> tag in the layout
+            layout page by inserting the content and replacing the <em>&lt;&#64; content &#64;&gt;</em> tag in the layout
             page before rendering to the client.</p>
             <p>For example, consider the content page named "<em>demo-index.esp</em>":</p>
             <pre class="ui code segment">
@@ -511,31 +495,15 @@ Today is &lt;%= mprGetDate(0); %&gt;&lt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
-            <p>Note that the blending of layout and content page happens only once and the result is compiled and
-            saved for subsequent requests. If either the layout or content page is modified, the page will be 
-            recompiled.</p>
-            <a id="alternateLayout"></a>
-            <h3>Alternate Layout Pages</h3>
-            <p>ESP pages look for the layout page <em>layouts/default.esp</em> by default. 
-            However, a content page can request a specific layout page by using the <em>&lt;%@ layout "file"&gt;</em>
-            directive.</p>
-            <pre class="ui code segment">
-<b>&lt;%@ layout "alternateLayout.esp"&gt;</b>
-&lt;h1&gt;Content Page&lt;/h1&gt;
-&lt;p&gt;Hello World&lt;/p&gt;
-</pre>
-            <p>This instructs the templating engine to use the "alternateLayout.esp" file rather than the default
-            layout.</p>
-            <a id="multiple"></a>
-            <h3>Multiple Layout Pages</h3>
-            <p>You are not restricted to a simple two level layout and content page scheme. A layout page can itself
-            refer to another layout page to gradually build up the application's look and feel. To do this, the layout
-            page needs to include an explicit <em>&lt;%@ layout "file"&gt;</em> directive.</p>
+            <p>Note that the blending of layout and content page happens only once and the result is save under
+            the "documents" directory. For more information, read the
+            <a href="https://embedthis.com/expansive/doc/">Expansive Documentation</a>.</p>
+
             <a id="include"></a>
             <h3>Include Pages</h3>
             <p>Sometimes you need to just include some arbitrary HTML file at any point in a page. Use the <em>
             include</em> directive at any point in the page you wish to include another file. For example:</p>
-            <pre class="ui code segment">&lt;%@ include "common/header.html" %&gt;</pre> 
+            <pre class="ui code segment">&lt;&#37;@ include "common/header.html" &#37;&gt;</pre> 
             <a id="debugging"></a>
             <h2 >Debugging</h2>
             <p>You can inject debugging code into your views to trace data to the appweb log file or back to the client's

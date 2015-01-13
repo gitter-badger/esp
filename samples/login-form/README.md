@@ -26,8 +26,8 @@ Notes:
 * Session cookies are created to manage server-side session state storage and to optimize authentication.
 
 * The sample creates three routes. A "public" route for the login form and required assets. This route
-    does not employ authentication. A "web" route that requires authentication for web content. A
-    "login" route for the login controller that processes the login and logout request.
+    does not employ authentication. A default route that requires authentication for access. And a
+    action route for the login controller that processes the login and logout requests.
 
 Requirements
 ---
@@ -50,12 +50,12 @@ Code:
 ---
 * cache - Directory for cached ESP pages
 * controllers - Directory for controllers
-* public - Web pages and resources accessible without authentication
-* web - Web pages requiring authentication for access
-* [web/index.esp](web/index.esp) - Home page
-* [public/login.esp](public/login.esp) - Login page
+* documents/public - Web pages and resources accessible without authentication
+* documents - Web pages requiring authentication for access
+* [documents/index.esp](documents/index.esp) - Home page
+* [documents/public/login.esp](documents/public/login.esp) - Login page
 * [controllers/user.c](controllers/user.c) - User login controller code
-* [package.json](package.json) - ESP configuration file
+* [esp.json](esp.json) - ESP configuration file
 
 Documentation:
 ---

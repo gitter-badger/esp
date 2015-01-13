@@ -3779,7 +3779,14 @@ PUBLIC int httpFinalizeConfig(HttpRoute *route)
     /*
         Create a subset, optimized configuration to send to the client
      */
-    if ((obj = mprGetJsonObj(route->config, "http.mappings")) != 0) {
+    if ((obj = mprGetJsonObj(route->config, "http.client.mappings")) == 0) {
+#if DEPRECATED || 1
+        if ((obj = mprGetJsonObj(route->config, "http.mappings")) != 0) {
+            mprLog("warn http", 0, "Using deprecated http.mappings. use http.client.mappings instead");
+        }
+#endif
+    }
+    if (obj) {
         mappings = mprCreateJson(MPR_JSON_OBJ);
         copyMappings(route, mappings, obj);
         mprWriteJson(mappings, "prefix", route->prefix);
@@ -14070,11 +14077,10 @@ PUBLIC char *httpTemplate(HttpConn *conn, cchar *template, MprHash *options)
             mprPutStringToBuf(buf, route->prefix);
 
 #if DEPRECATE || 1
-        } else if (cp == template && *cp == ME_SERVER_PREFIX_CHAR) {
+        } else if (cp == template && *cp == '|') {
             mprPutStringToBuf(buf, route->prefix);
             //  DEPRECATE in version 6
             mprPutStringToBuf(buf, route->serverPrefix);
-            assert(*cp != ME_SERVER_PREFIX_CHAR);
 #endif
 
         } else if (*cp == '$' && cp[1] == '{' && (cp == template || cp[-1] != '\\')) {
@@ -21811,8 +21817,8 @@ static cchar *expandRouteName(HttpConn *conn, cchar *routeName)
     }
 #if DEPRECATE || 1
     //  DEPRECATE in version 6
-    if (routeName[0] == ME_SERVER_PREFIX_CHAR) {
-        assert(routeName[0] != ME_SERVER_PREFIX_CHAR);
+    if (routeName[0] == '|') {
+        assert(routeName[0] != '|');
         return sjoin(route->prefix, &routeName[1], NULL);
     }
 #endif

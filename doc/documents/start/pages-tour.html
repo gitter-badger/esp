@@ -53,7 +53,7 @@
                 <div class="menu">
                     <a class="item" href="../users/mvc.html">ESP MVC Framework</a>
                     <a class="item" href="../users/config.html">Configuring ESP</a>
-                    <a class="item" href="../users/pages.html">ESP Pages and Layouts</a>
+                    <a class="item" href="../users/pages.html">ESP Pages</a>
                     <a class="item" href="../users/program.html">ESP Utility</a>
                     <a class="item" href="../users/controllers.html">ESP Controllers</a>
                     <a class="item" href="../users/database.html">ESP Databases</a>
@@ -163,9 +163,9 @@
             <p>The first step is to create a directory for your ESP pages and run the <em>esp</em> utility to start
             listening for web requests from your browser.
             In this example, we create a directory called "<em>test</em>".</p>
-<pre class="ui code segment"><b>mkdir test
-cd test
-esp</b>
+<pre class="ui code segment"><b>$ mkdir test
+$ cd test
+$ esp</b>
 esp: 2: Started HTTP service on "127.0.0.1:4000"
 esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>ESP is now running and ready to serve documents from the "<em>test</em>" directory. ESP will display
@@ -182,7 +182,8 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <p>This code blends HTML with embedded "C" language code inside a special ESP web page 
             directive. This code will be executed and converted to HTML before being sent to the client. 
             There are a variety of ESP page directives, the one you'll use first, is: </p>
-            <p><em>&lt;%= expression %&gt;</em>.</p>
+<pre class="ui code segment"><b>&lt;%= expression %&gt;</b></pre>
+
             <p>Now when you re-run the page, it will display the current date and time. If you refresh the page by
             pressing reload, the new date and time will be displayed.</p>
             
@@ -225,15 +226,33 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <h2 >Forms and Request Params</h2>
             <p>When an HTML form is submitted via a POST request, ESP converts form data and query parameters into 
             ESP request parameters. 
-            These can be accessed via the <em>param()</em> function or more conveniently via the literal <em>&#64;&#64;variable</em> 
-            directive. By prefixing a variable with <em>&#64;&#64;</em> ESP will automatically look up the request parameters,
+            These can be accessed via the <em>param()</em> function or more conveniently via the literal <em>&#64;$variable</em> 
+            directive. By prefixing a variable with <em>&#64;$</em> ESP will automatically look up the request parameters,
             and if not found, the session data store for the variable, and then substitute its value.</p>
             <p>If an HTTP request has the URI: <em>http://localhost/submit.esp?name=julie</em>, then the following
             ESP code could access the user name directly.</p>
-<pre class="ui code segment">&lt;p&gt;User Name: <b>&#64;&#64;name</b>&lt;/p&gt;</pre>
+<pre class="ui code segment">&lt;p&gt;User Name: <b>&#64;$name</b>&lt;/p&gt;</pre>
+
+            <h3>Varible Access</h3>
+            <p>ESP provides other short-forms for convenience.</p>
+            <table title="directives" class="ui table segment">
+                <thead>
+                    <tr><th>Sequence</th><th>Description</th>
+                </thead>
+                <tbody>
+                    <tr><td>&lt;&#37; code &#37;&gt;</td><td>Code</td>
+                    <tr><td>&lt;&#37;= expression &#37;&gt;</td><td>C string expression</td>
+                    <tr><td>&lt;&#37;^ control</td><td>ESP control statement</td>
+                    <tr><td>&#37;&#36;name</td><td>Parameter or Session variable</td>
+                    <tr><td>&#37;#field</td><td>ESP database record field</td>
+                    <tr><td>&#37;!variable</td><td>C variable (in scope)</td>
+                    <tr><td>&#37;~</td><td>Top level home URL</td>
+                </tbody>
+            </table>
+
             <h3>XSS Security</h3>
             <p>Normally, echoing user input back to the client in a web page is bad practice and can invite XSS security
-            attacks. Fortunately, ESP HTML escapes the &#64;&#64;variable value to prevent such attacks. </p>
+            attacks. Fortunately, ESP HTML escapes the &#64;$variable value to prevent such attacks. </p>
             <p>General ESP output can also be escaped by using a "safe" "%S" format specifier. The renderSafe function
             can also be used.</p>
 <pre class="ui code segment">&lt;p&gt;User Name: <b>&lt;%=%S param("name"); %&gt;</b>&lt;/p&gt;
@@ -242,13 +261,14 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
             <a id="sessions"></a>
             <h2>Sessions and Flash</h2>
             <p>ESP provides an integrated session store so that state can be shared across requests. Session variables
-            can be accessed using the <em>&#64;&#64;variable</em> directive in ESP pages or via the
+            can be accessed using the <em>&#64;$variable</em> directive in ESP pages or via the
             <em>getSessionVar()</em> API.</p>
             <p>Flash storage is a portion of the session storage used to pass messages and state to the next request 
             controller only. This is useful after an error, to pass information to the next controller. 
             Messages can be added to flash storage via the <em>flash</em> API.</p>
 <pre class="ui code segment">&lt;% <b>flash</b>("inform", Record updated"); %&gt;</pre>
             
+            <!--
             <a id="layouts"></a>
             <h2>Layouts</h2>
             <p>ESP Layouts provide a powerful and flexible solution for implementing a consistent UI. 
@@ -282,6 +302,7 @@ esp: 1: Started at Mon Apr 14 15:00:42 2014 PDT</pre>
 &lt;%@ layout "custom-layout.esp" %&gt;
 &lt;h1&gt;Hello Bright World&lt;/h1&gt;
 </pre>
+-->
             <a id="learn"></a>
             <h2 >Learn More ...</h2>
             <p>That concludes a quick tour through some of the capabilities of the ESP web framework.</p>

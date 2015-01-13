@@ -1,18 +1,25 @@
 ESP Layout Sample
 ===
 
-This sample shows how to use ESP layout pages with stand-alone ESP pages.
+This sample shows how to use Expansive layout pages with ESP pages.
 
-The page to be served, index.esp specifies the desired layout page, "default.esp".
-It does this with the <%@ layout "file" %> directive.
+The page to be served, source/index.esp provides the content while the
+layout page: layouts/default.esp, provides the common look and feel.
 
 Requirements
 ---
 * [ESP](https://embedthis.com/esp/download.html)
 
+To build:
+---
+    expansive render
+
 To run:
 ---
     esp run
+
+or 
+    expansive
 
 The server listens on port 4000. Browse to: 
  
@@ -29,9 +36,10 @@ Documentation:
 * [ESP APIs](https://embedthis.com/esp/doc/api/esp.html)
 * [ESP Guide](https://embedthis.com/esp/doc/users/index.html)
 * [ESP Overview](https://embedthis.com/esp/doc/users/using.html)
+* [Expansive](https://embedthis.com/expansive/)
 
 See Also:
 ---
-* [esp-html-mvc - ESP MVC Application](../esp-html-mvc/README.md)
+* [html-mvc - ESP MVC Application](../html-mvc/README.md)
 * [esp-controller - ESP Page](../esp-controller/README.md)
 * [esp-page - ESP Page](../esp-page/README.md)

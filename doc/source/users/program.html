@@ -11,31 +11,37 @@
             applications, database schema, scaffolds and views. 
             <p>The <em>esp</em> program is not just for MVC applications. It can be used to pre-compile stand-alone
             ESP web pages too.</p> 
+
             <a id="generating"></a>
             <h2 >Creating Applications</h2>
-            <p>To start a new web application, create a directory named for the application then run 
-            "<em>esp install</em>" to install the required Paks to initialize the application. 
-            For example:</p>
+            <p>To start a new web application, first create a new directory named for the application then run 
+            "<em>pak install</em>" to install ESP extensions or skeletons:</p>
             <pre class="ui code segment">$ <b>mkdir blog</b>
 $ <b>cd blog</b>
-$ <b>esp install esp-server</b>
-      [Save] /Users/mob/git/junk/package.json
-   [Install] esp-server 1.0.0-rc0
-    [Create] client/paks/esp-server/LICENSE.md
-    [Create] client/paks/esp-server/package.json
-    [Create] client/paks/esp-server/README.md
-    [Create] templates/esp-server/appweb.conf
-      [Info] esp-server successfully installed</pre>
-            <p>This installs the bare minimum ESP application without additional packs. The <em>pacakge.json</em> file
-            contains the ESP configuration.</p>
-            <p>The format of the "<em>esp install</em>" command is:</p>
-            <pre class="ui code segment">$ <b>esp install [PACKS...]</b></pre>
-            <p>The PACKS are optional extension packs for the 
-            generated application. The standard packs included with ESP are:</p>
+$ <b>pak install esp-html-skeleton</b>
+   [Install] esp-server 5.3.0
+   [Install] esp-mvc 5.3.0
+   [Install] esp-html-skeleton 5.3.0</pre>
+            <p>This example installs and initializes an HTML5 ESP application. The esp-html-skeleton
+            Pak creates an esp.json configuration file, a default home page, master layout, style sheet 
+            and processing instructions for Expansive.</p>
+
+            <p>The format of the "<em>pak install</em>" command is:</p>
+            <pre class="ui code segment">$ <b>pak install packName</b></pre>
+
+            <p>ESP provides two skeleton paks in the Pak <a href="https://embedthis.com/catalog/">catalog</a>:
             <ul>
-<li>esp-server &mdash; Default ESP service-side configuration</li>
-<li>esp-mvc &mdash; ESP server-side MVC application skeleton</li>
-<li>esp-html-mvc &mdash; ESP server-side MVC application skeleton</li>
+                <li>esp-html-skeleton &mdash; ESP HTML5 MVC skeleton</li>
+                <li>esp-angular-skeleton &mdash; ESP Angular MVC skeleton</li>
+            </ul>
+            <p>These skeletons leverage several other paks including:</p>
+            <ul>
+                <li>esp-server &mdash; Default ESP service-side configuration</li>
+                <li>esp-mvc &mdash; ESP server-side MVC application skeleton</li>
+                <li>exp-js &mdash; Expansive Javascript minification</li>
+                <li>exp-less &mdash; Expansive LessJS compilation</li>
+                <li>exp-css &mdash; Expansive CSS minification and auto-prefixing</li>
+                <li>exp-esp &mdash; Expansive support for ESP applications</li>
             </ul>
             <p>You can also install packs from a wide variety paks published in the online 
             <a href="https://embedthis.com/catalog/">Pak Catalog</a> by using the 
@@ -43,26 +49,24 @@ $ <b>esp install esp-server</b>
             <p> For example:</p>
             <pre class="ui code segment">
 $ <b>pak install esp-angular-mvc</b></pre>
-            <p>Once Pak has downloaded the desired pack, it will save a copy locally in the Pak cache. 
-            Thereafter, you can use
-            <em>esp</em> to install that pack in other applications. You can also use <em>pak</em> to pre-load
-            the Pak cache via the <em>pak cache</em> command.</p>
-            <h3>Pack Dependencies</h3>
-            <p>Pack may depend on other packs. The <em>esp</em> program will resolve these 
-            dependencies and install all the required packs. For example: the 
-            <em>esp-angular-mvc</em> pack depends on the: angular, esp-angular-session, esp-angular and
-            less packs. After installing, the pack dependencies are described in the
-            <em>package.json</em> file in the <em>dependencies</em> property.</p>
+
+            <h3>Pak Dependencies</h3>
+            <p>ESP Paks may depend on other packs. The <em>pak</em> program will resolve these 
+            dependencies and install all the required paks. For example: the 
+            <em>esp-angular-mvc</em> pak depends on: angular, esp-angular and other paks.
+            After installing, the dependencies are described in the <em>package.json</em> file.</p>
+
             <h3>Overwriting</h3>
-            <p>The <em>esp</em> command will create directories and configuration and 
-            source code files that can then be manually edited as required. The <em>esp</em> 
-            command is intelligent and will not overwrite existing files after you have install and modified files 
-            &mdash; so you can safely edit without losing your changes. 
-            <p>You can overwrite your changes if you wish to by using the <em>--overwrite</em> switch.</p>
+            <p>The <em>pak</em> command will create directories and 
+            files that can be manually edited as required. The <em>pak</em> and <em>esp</em> 
+            commands are intelligent and will not overwrite existing files after you have installed 
+            and modified files &mdash; so you can safely edit without losing your changes. 
+            <p>You can overwrite your changes if you wish to by using the <em>--force</em> switch with 
+            either <em>pak</em> or <em>esp</em>.</p>
             
             <h3>Created Directories</h3>
-            <p>The <em>esp</em> command will create directories as required when generating an application.
-            Not all these directories will be created depending on the generated packs.</p>
+            <p>The <em>pak</em> command and various ESP extensions will create directories as required 
+            when generating an application.</p>
             <table class="ui table" title="Directories">
                 <thead>
                     <tr>
@@ -76,21 +80,17 @@ $ <b>pak install esp-angular-mvc</b></pre>
                         <td>Cached compiled controllers and pages</td>
                     </tr>
                     <tr>
-                        <td>client</td>
-                        <td>The <em>client</em> directory is the document root for the application. 
-                            In other words, this is the top-level web content directory that is public to all clients.
-                            Directories and files outside the <em>client</em> directory are not visible to the client.</td>
+                        <td>documents</td>
+                        <td>The <em>documents</em> directory is the top-level public web content directory 
+                        visible to all clients. Directories and files outside the <em>documents</em> directory 
+                        are not visible to the client.</td>
                     </tr>
                     <tr>
-                        <td>client/app</td>
-                        <td>Client side application Javascript code</td>
-                    </tr>
-                    <tr>
-                        <td>client/assets</td>
+                        <td>documents/assets</td>
                         <td>Client side assets: images and media</td>
                     </tr>
                     <tr>
-                        <td>client/css</td>
+                        <td>documents/css</td>
                         <td>Client side CSS</td>
                     </tr>
                     <tr>
@@ -103,11 +103,19 @@ $ <b>pak install esp-angular-mvc</b></pre>
                     </tr>
                     <tr>
                         <td>layouts</td>
-                        <td>Layout template pages</td>
+                        <td>Layout template pages used by Expansive.</td>
                     </tr>
                     <tr>
                         <td>paks</td>
                        <td>Installed packs</td>
+                    </tr>
+                    <tr>
+                        <td>partials</td>
+                       <td>Partial ESP pages used by Expansive</td>
+                    </tr>
+                    <tr>
+                        <td>source</td>
+                        <td>Web content source directory used by Expansive when rendering into "documents"</td>
                     </tr>
                     <tr>
                         <td>src</td>
@@ -126,15 +134,16 @@ $ <b>pak install esp-angular-mvc</b></pre>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>package.json</td>
-                        <td>ESP configuration file. Available to server and client.</td>
+                        <td>esp.json</td>
+                        <td>ESP configuration file.</td>
                     </tr>
                     <tr>
-                        <td>client/index.esp</td>
-                        <td>Application home web page</td>
+                        <td>package.json</td>
+                        <td>Package management file used by Pak.</td>
                     </tr>
                 </tbody>
             </table>
+
             <a id="controllers"></a>
             <h2 >Generating Controllers</h2>
             <p>Controllers are the primary mechanism for responding to client requests. 
@@ -155,11 +164,14 @@ $ <b>esp generate controller admin edit login logout command</b></pre>
             initialization function is invoked once when the controller is first loaded.</p>
             <pre class="ui code segment">
 #include "esp.h"
+
 static void edit() {}
 static void login() {}
 static void logout() {}
 static void command() {}
-ESP_EXPORT int esp_module_admin(HttpRoute *route) {
+
+ESP_EXPORT int esp_module_admin(HttpRoute *route) 
+{
     espDefineAction(route, "admin-cmd-edit", edit);
     espDefineAction(route, "admin-cmd-login", login);
     espDefineAction(route, "admin-cmd-logout", logout);
@@ -262,24 +274,19 @@ $ <b>esp compile /directory/of/apps</b>
             Then only the resources managed by that route will be compiled.</p>
 
             <h3>Keep Source</h3>
-            <p>When compiling ESP pages, the <em>app.http.keep</em> configuration file directive will control
-            if the intermediate C source code generated from the ESP will be preserved.  This can sometimes be helpful
-            for debugging. You also keep the generated source via the <em>esp --keep compile</em> option.</p> 
+            <p>When compiling ESP pages, the <em>http.keep</em> configuration file directive will control
+            if the intermediate C source code generated from the ESP will 
+            be preserved.  This can sometimes be helpful for debugging. 
+            You also keep the generated source via the <em>esp --keep compile</em> option.</p> 
             
             <h3>Production Deployment</h3>
             <p>For deployment in a production environment, it optimal to compile the entire application including
-            all controllers, views and web pages into a single combined library. This is refered to as "combined" mode.
-            The normal mode is called "discrete" mode. To do a combined compile, set the app.http.content.combine
-                property in package.json to include "c" in an array, and then invoke <em>esp compile</em>. For example:</p>
+            all controllers, views and web pages into a single library. This is refered to as "combined" mode.
+            The normal mode is called "discrete" mode. To do a combined compile, set the esp.combine
+                property in esp.json to true, and then invoke <em>esp compile</em>. For example:</p>
 <pre class="ui code segment">
-    app: {
-        http: {
-            content: {
-                combine: [
-                    "c",
-                ],
-            }
-        }
+    esp: {
+        combine: true
     }
 </pre>
             <h3>Static Linking</h3>
@@ -308,9 +315,9 @@ $ <b>esp --platform vxworks-arm-debug compile</b>
             <p>This will compile the application for VxWorks on arm. Of course, the resulting module cannot be 
             run on the development system if cross-compiling. 
             
-            <p>The --platform option will search current directory and parent directories for an Appweb platform directory
-            of the same name. You can provide a full path name as an argument to the --platform switch if your application
-            is outside the Appweb source tree.</p>
+            <p>The --platform option will search current directory and parent directories for an Appweb 
+            platform directory of the same name. You can provide a full path name as an argument to the 
+            --platform switch if your application is outside the Appweb source tree.</p>
             
             <p>Note: You may need to modify the esp.conf configuration file
             to add rules for your operating system and CPU architecture or to customize for your application.</p>
@@ -335,20 +342,22 @@ $ <b>esp clean</b>
 ESP Usage:
   esp [options] [commands]
   Options:
-    --appweb appwebConfig      # Use named config file instead appweb.conf
+    --appweb appweb.conf       # Use named config file instead appweb.conf
+    --cipher ciphter           # Password cipher 'md5|blowfish'
     --database name            # Database provider 'mdb|sdb'
+    --force                    # Force requested action overwriting existing files
     --genlink filename         # Generate a static link module for combined compilations
     --home directory           # Change to directory first
     --keep                     # Keep intermediate source
     --listen [ip:]port         # Generate app to listen at address
     --log logFile:level        # Log to file file at verbosity level
     --name appName             # Name for the app when compiling combined
+    --noupdate                 # Do not update the esp.json
     --optimize                 # Compile optimized without symbols
-    --overwrite                # Overwrite existing files
     --quiet                    # Don't emit trace
     --platform os-arch-profile # Target platform
     --rebuild                  # Force a rebuild
-    --routeName name           # Name of route to select
+    --route pattern               # Name of route to select
     --routePrefix prefix       # Prefix of route to select
     --single                   # Generate a singleton controller
     --show                     # Show compile commands

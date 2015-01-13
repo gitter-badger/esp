@@ -7,7 +7,7 @@
             <h1>ESP MVC Tour</h1>
             <p>This quick tour of the ESP MVC Framework provides an overview of the ESP generator for 
             Model-View-Controller applications. The generated application will use the 
-            <em>esp-html-mvc</em> Pak which provides a server-side MVC framework.</p>
+            <em>esp-html-skeleton</em> Pak which provides a server-side MVC framework.</p>
             <p>Before starting, first make sure you have read the <a href="quick.html">Quick Start</a>,
             and the <a href="tour.html">ESP Tour</a> and that you have ESP installed on your system so you
             can type along as you go. This tour uses the <em><a href="../users/program.html">esp</a></em> application
@@ -15,27 +15,23 @@
             <a id="blog"></a>
             <h2 >Creating a New Application</h2>
             <p>To create a new ESP application, you will use <em>esp</em>, the ESP application generator
-            program. Make a directory named <em>blog</em> and then install the esp-html-mvc Pak.</p>
-            <pre class="ui code segment">
-home&gt; <b>mkdir blog
-cd blog
-esp install esp-html-mvc</b>
-      [Save] /Users/mob/git/junk/package.json
-   [Install] esp-html-mvc 1.0.0-rc0
-         ... 
-      [Info] esp-html-mvc successfully installed
+            program. Make a directory named <em>blog</em> and then install the esp-html-skeleton Pak.</p>
+            <pre class="ui code segment"><b>$ mkdir blog
+$ cd blog
+$ pak install esp-html-skeleton</b>
+   [Install] esp-server 5.3.0
+   [Install] esp-mvc 5.3.0
+   [Install] esp-html-skeleton 5.3.0
 </pre>
             <p>This simple command accomplished quite a bit, including:
             <ul>
                 <li>Create a core structure with directories for various parts of the application. Initially, some of
                     these directories are empty, but they will be used as your application grows.</li>
-                <li><p>Installed the esp-html-mvc, esp-mvc and esp-server Paks. You can see these via:</p>
-                    <pre class="ui code segment"><b>esp list</b>
-esp-html-mvc 1.0.0-rc0
-esp-mvc 1.0.0-rc0
-esp-server 1.0.0-rc0</pre></li>
-                <li>Created a <em>package.json</em> files that configures and control how your application will run.</li>
+                <li><p>Installed the esp-html-skeleton, esp-mvc and esp-server Paks. You can see these via
+                    the <em>pak list</em> command.</p>
+                <li>Created <em>esp.json</em> and <em>package.json</em> files that configures and control how your application will run.</li>
             </ul>
+
             <h2>Conventions</h2>
             <p>The ESP web framework follows the <i>"convention over
             configuration"</i> philosophy popularized by <a href="http://www.rubyonrails.org">Ruby on Rails</a>. This
@@ -56,16 +52,8 @@ esp-server 1.0.0-rc0</pre></li>
                         <td>Cached compiled controller and view modules</td>
                     </tr>
                     <tr>
-                        <td>client</td>
-                        <td>Client-side scripts, pages and style-sheets</td>
-                    </tr>
-                    <tr>
-                        <td>client/app</td>
-                        <td>Application views</td>
-                    </tr>
-                    <tr>
-                        <td>client/paks</td>
-                        <td>Installed Paks</td>
+                        <td>documents</td>
+                        <td>Client-side documents including scripts, pages and style-sheets</td>
                     </tr>
                     <tr>
                         <td>controllers</td>
@@ -77,7 +65,19 @@ esp-server 1.0.0-rc0</pre></li>
                     </tr>
                     <tr>
                         <td>layouts</td>
-                        <td>Server-side web page layout templates</td>
+                        <td>ESP page templates</td>
+                    </tr>
+                    <tr>
+                        <td>paks</td>
+                        <td>Locally installed extension Paks</td>
+                    </tr>
+                    <tr>
+                        <td>partials</td>
+                        <td>ESP partial pages. Used by Expansive.</td>
+                    </tr>
+                    <tr>
+                        <td>source</td>
+                        <td>Input source documents for the Expansive tool to render into "documents"</td>
                     </tr>
                 </tbody>
             </table>
@@ -92,13 +92,13 @@ esp-server 1.0.0-rc0</pre></li>
  
             <a id="scaffolds"></a>
             <h2>Scaffolds</h2>
-            <p>Scaffolding is a quick way to generate pieces of your application. Once the <em>esp-html-mvc</em> framework
+            <p>Scaffolding is a quick way to generate pieces of your application. Once the <em>esp-html-skeleton</em> framework
             pak is installed, the <em>esp</em> command can generate
             database tables, views and controllers for you. The command below will create a <em>post</em> database table
             with a blog post title and post comment body. The <em>title</em> is a string data type and the <em>body</em> is a
             multi-line text field.</p>
             <pre class="ui code segment">
-home/blog&gt; <b>esp generate scaffold post title:string body:text</b>
+$ <b>esp generate scaffold post title:string body:text</b>
     [Create] Directory: client/app
     [Create] client/app/post.c
     [Create] Directory: app/post
@@ -218,9 +218,9 @@ ESP_EXPORT int esp_controller_post(EspRoute *eroute, MprModule *module)
             <a href="../ref/api/edi.html#group___edi_service_1ga889df64bdd239f71c66b4fa920be8f46">ediDefineValidation</a>.
             <a id="homePage"></a>
             <h2>Edit the Home Page</h2>
-            <p>ESP applications based on Angular use a single home page that applies different view templates to modify
-            the content. Consequently, the index.esp home page is typically also the master application layout page. 
-            Modifying index.esp will modify all the views presented to the client.</p>
+            <p>ESP applications based on Angular use a single home page that applies different view templates 
+            to modify the content. Consequently, the index.esp home page is typically also the master 
+            application layout page. Modifying index.esp will modify all the views presented to the client.</p>
             <a id="learn"></a>
             <h2 >Learn More ...</h2>
             <p>That concludes the a quick tour through some of the capabilities of the ESP web framework.</p>
