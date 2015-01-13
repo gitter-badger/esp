@@ -75,24 +75,23 @@ ESP(1)                           User Commands                          ESP(1)
 
 <B>GENERATING APPLICATIONS</B>
        To start a new web application, create a directory named for the appli-
-       cation. Then from that directory run <B>esp </B>to install the  required  sup-
+       cation. Then from that directory run <B>pak </B>to install the  required  sup-
        porting packs. For example:
 
              <B>mkdir blog</B>
              <B>cd blog</B>
-             <B>esp install esp-html-mvc</B>
+             <B>pak install esp-html-skeleton</B>
 
        This  will  will  create  a  set of directories that have the following
        meaning:
 
-             client           - Public client web content
-             client/assets    - Images and assets
-             client/css       - Client CSS and Less style sheets
-             client/index.esp - Home web page
-             client/paks      - Extension packs
-             db               - Databases and scripts
-             start.me         - MakeMe build file
-             templates        - Template files used when generating
+             documents           - Public client web content
+             documents/assets    - Images and assets
+             documents/css       - Client CSS and Less style sheets
+             documents/index.esp - Home web page
+             paks                - Extension packs
+             db                  - Databases and scripts
+             generate            - Template files used when generating
 
        Other directories will be created as needed:
              cache            - Cache directory for compiled content
@@ -203,15 +202,13 @@ ESP(1)                           User Commands                          ESP(1)
             the filter pathnames are compiled.
 
        To  compile the entire application and produce a single combined shared
-       library file, set the  "http.content.combine"  property  in  the  pack-
-       age.json file, to include "c" files. This is typically achieved by set-
-       ting the ESP mode to release which selects the release profile  in  the
-       package.json.
+       library file, set the "esp.combine" property in the esp.json  file,  to
+       true.
 
 <B>AUTHENTICATION</B>
        ESP  can use the system password database or it can define passwords in
-       the package.json or in an application database.  To define passwords in
-       the package.json, use:
+       the esp.json or in an application database.  To define passwords in the
+       esp.json, use:
 
         <B>esp user add username password roles...</B>
 
@@ -269,8 +266,8 @@ ESP(1)                           User Commands                          ESP(1)
 <B>OPTIONS</B>
        <B>--appweb configFile</B>
              Use  the  specified appweb config file to define and host the ESP
-             application.  By default the esp command looks for a package.json
-             and uses that to define the applicaiton.
+             application.  By default the esp command looks for a esp.json and
+             uses that to define the applicaiton.
 
        <B>--cipher cipher</B>
              Password cipher to use. Set to "md5" or "blowfish".
@@ -313,7 +310,7 @@ ESP(1)                           User Commands                          ESP(1)
              tory containing the application.
 
        <B>--noupdate</B>
-             Do not update package.json.
+             Do not update esp.json.
 
        <B>--optimize</B>
              Compile optimized without debug symbols.
