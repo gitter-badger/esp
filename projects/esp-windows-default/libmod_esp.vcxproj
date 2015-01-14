@@ -104,7 +104,7 @@
     <ClCompile Include="..\..\src\espAbbrev.c" />
     <ClCompile Include="..\..\src\espConfig.c" />
     <ClCompile Include="..\..\src\espFramework.c" />
-    <ClCompile Include="..\..\src\esphandler.c" />
+    <ClCompile Include="..\..\src\espHandler.c" />
     <ClCompile Include="..\..\src\espHtml.c" />
     <ClCompile Include="..\..\src\espTemplate.c" />
     <ClCompile Include="..\..\src\mdb.c" />

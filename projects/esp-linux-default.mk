@@ -122,9 +122,9 @@ clean:
 	rm -f "$(BUILD)/obj/espAbbrev.o"
 	rm -f "$(BUILD)/obj/espConfig.o"
 	rm -f "$(BUILD)/obj/espFramework.o"
+	rm -f "$(BUILD)/obj/espHandler.o"
 	rm -f "$(BUILD)/obj/espHtml.o"
 	rm -f "$(BUILD)/obj/espTemplate.o"
-	rm -f "$(BUILD)/obj/esphandler.o"
 	rm -f "$(BUILD)/obj/httpLib.o"
 	rm -f "$(BUILD)/obj/makerom.o"
 	rm -f "$(BUILD)/obj/manager.o"
@@ -342,35 +342,35 @@ $(BUILD)/obj/espFramework.o: \
 	$(CC) -c -o $(BUILD)/obj/espFramework.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espFramework.c
 
 #
-#   espHtml.o
+#   espHandler.o
 #
 DEPS_21 += src/esp.h
-DEPS_21 += src/edi.h
+
+$(BUILD)/obj/espHandler.o: \
+    src/espHandler.c $(DEPS_21)
+	@echo '   [Compile] $(BUILD)/obj/espHandler.o'
+	$(CC) -c -o $(BUILD)/obj/espHandler.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHandler.c
+
+#
+#   espHtml.o
+#
+DEPS_22 += src/esp.h
+DEPS_22 += src/edi.h
 
 $(BUILD)/obj/espHtml.o: \
-    src/espHtml.c $(DEPS_21)
+    src/espHtml.c $(DEPS_22)
 	@echo '   [Compile] $(BUILD)/obj/espHtml.o'
 	$(CC) -c -o $(BUILD)/obj/espHtml.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espHtml.c
 
 #
 #   espTemplate.o
 #
-DEPS_22 += src/esp.h
-
-$(BUILD)/obj/espTemplate.o: \
-    src/espTemplate.c $(DEPS_22)
-	@echo '   [Compile] $(BUILD)/obj/espTemplate.o'
-	$(CC) -c -o $(BUILD)/obj/espTemplate.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espTemplate.c
-
-#
-#   esphandler.o
-#
 DEPS_23 += src/esp.h
 
-$(BUILD)/obj/esphandler.o: \
-    src/esphandler.c $(DEPS_23)
-	@echo '   [Compile] $(BUILD)/obj/esphandler.o'
-	$(CC) -c -o $(BUILD)/obj/esphandler.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/esphandler.c
+$(BUILD)/obj/espTemplate.o: \
+    src/espTemplate.c $(DEPS_23)
+	@echo '   [Compile] $(BUILD)/obj/espTemplate.o'
+	$(CC) -c -o $(BUILD)/obj/espTemplate.o $(CFLAGS) $(DFLAGS) $(IFLAGS) src/espTemplate.c
 
 #
 #   http.h
@@ -618,7 +618,7 @@ DEPS_45 += $(BUILD)/obj/edi.o
 DEPS_45 += $(BUILD)/obj/espAbbrev.o
 DEPS_45 += $(BUILD)/obj/espConfig.o
 DEPS_45 += $(BUILD)/obj/espFramework.o
-DEPS_45 += $(BUILD)/obj/esphandler.o
+DEPS_45 += $(BUILD)/obj/espHandler.o
 DEPS_45 += $(BUILD)/obj/espHtml.o
 DEPS_45 += $(BUILD)/obj/espTemplate.o
 DEPS_45 += $(BUILD)/obj/mdb.o
@@ -640,7 +640,7 @@ endif
 
 $(BUILD)/bin/libmod_esp.so: $(DEPS_45)
 	@echo '      [Link] $(BUILD)/bin/libmod_esp.so'
-	$(CC) -shared -o $(BUILD)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/edi.o" "$(BUILD)/obj/espAbbrev.o" "$(BUILD)/obj/espConfig.o" "$(BUILD)/obj/espFramework.o" "$(BUILD)/obj/esphandler.o" "$(BUILD)/obj/espHtml.o" "$(BUILD)/obj/espTemplate.o" "$(BUILD)/obj/mdb.o" "$(BUILD)/obj/sdb.o" $(LIBPATHS_45) $(LIBS_45) $(LIBS_45) $(LIBS) 
+	$(CC) -shared -o $(BUILD)/bin/libmod_esp.so $(LDFLAGS) $(LIBPATHS) "$(BUILD)/obj/edi.o" "$(BUILD)/obj/espAbbrev.o" "$(BUILD)/obj/espConfig.o" "$(BUILD)/obj/espFramework.o" "$(BUILD)/obj/espHandler.o" "$(BUILD)/obj/espHtml.o" "$(BUILD)/obj/espTemplate.o" "$(BUILD)/obj/mdb.o" "$(BUILD)/obj/sdb.o" $(LIBPATHS_45) $(LIBS_45) $(LIBS_45) $(LIBS) 
 
 #
 #   espcmd
@@ -812,7 +812,7 @@ installBinary: $(DEPS_52)
 	rm -f "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
 	ln -s "$(ME_VAPP_PREFIX)/inc/sqlite3.h" "$(ME_INC_PREFIX)/esp/sqlite3.h" ; \
 	mkdir -p "$(ME_VAPP_PREFIX)/doc/man/man1" ; \
-	cp doc/documents/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
+	cp doc/source/man/esp.1 $(ME_VAPP_PREFIX)/doc/man/man1/esp.1 ; \
 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
 	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
 	ln -s "$(ME_VAPP_PREFIX)/doc/man/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1"
