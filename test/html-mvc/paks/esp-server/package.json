@@ -1,37 +1,21 @@
 {
     "name": "esp-server",
     "description": "ESP Server-Side Configuration",
-    "version": "5.0.0-rc1",
+    "version": "5.3.0",
+    "pak": ">=0.10",
     "licenses": [
         {
             "type": "GPL",
             "url": "http://www.gnu.org/licenses/gpl-2.0.html"
         }, {
             "type": "Commercial",
-            "url": "http://embedthis.com/licensing/"
+            "url": "https://embedthis.com/licensing/"
         }
     ],
     "keywords": [
-        "esp",
+        "esp"
     ],
-    "app": {
-        "esp": {
-            "generate": {
-                "?appweb": "esp-server/generate/appweb.conf",
-            },
-        },
-        "http": {
-            "?routes": "esp-server",
-        },
-        "?mode": "debug",
-        "modes": {
-            "debug": {
-                "http": {
-                    "content": {
-                        "?keep": [ "c" ],
-                    },
-                },
-            },
-        },
-    },
+    "blend": [
+        "esp.json"
+    ]
 }

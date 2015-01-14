@@ -25,14 +25,14 @@ ttrue(http.status == 200)
 ttrue(http.response.contains("<h1>Welcome to Embedded Server Pages</h1>"))
 http.close()
 
-//  /html/all.less
-http.get(prefix + "/css/all.less")
+//  /html/all.css
+http.get(prefix + "/css/all.css")
 ttrue(http.status == 200)
 ttrue(http.response.contains("Aggregate all stylesheets"))
 http.close()
 
-//  /html/do/post/init - this tests a controller without view
-http.get(prefix + "/do/post/init")
+//  /html/post/init - this tests a controller without view
+http.get(prefix + "/post/init")
 ttrue(http.status == 200)
 ttrue(http.response.contains('<h1>Create Post</h1>'))
 http.close()

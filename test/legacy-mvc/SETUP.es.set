@@ -1,0 +1,14 @@
+/*
+    SETUP.es.set - Server-side test setup
+ */
+require ejs.unix
+
+tset('libraries', 'http mpr')
+
+let json = Path('package.json').readJSON()
+let httpEndpoint = json.http.server.listen[0]
+let sslEndpoint = json.http.server.listen[1]
+tset('TM_HTTP', httpEndpoint)
+tset('TM_HTTPS', sslEndpoint)
+
+startStopService('esp', {address: httpEndpoint})

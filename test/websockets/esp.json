@@ -1,0 +1,43 @@
+/*
+    esp.json - ESP configuration file
+ */
+{
+    name: 'esptest',
+    description: 'ESP Unit Tests with Server',
+    version: '0.1.0',
+    http: {
+        server: {
+            listen: [
+                'http://127.0.0.1:4100',
+                'https://127.0.0.1:4443',
+            ],
+            ssl: {
+                key: '../crt/test.key',
+                certificate: '../crt/test.crt',
+            },
+        },
+        routes: [ 
+            {
+                pattern: '^/websockets/{controller}/{action}$',
+                prefix: '/websockets',
+                source: 'websockets.c',
+                target: '$1/$2',
+                pipeline: {
+                    filters: [ 'webSocketFilter' ],
+                    handlers: 'espHandler',
+                },
+                timeouts: {
+                    inactivity: '300secs',
+                    request: 'never',
+                },
+                limits: {
+                    webSockets: 20,
+                    webSocketsMessage: '10MB',
+                    webSocketsPacket: '8K',
+                    webSocketsFrame: '4K',
+                    requestBody: 'unlimited',
+                },
+            },
+        ],
+    },
+}

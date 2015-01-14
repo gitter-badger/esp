@@ -339,28 +339,21 @@ PUBLIC void espRenderDocument(HttpConn *conn, cchar *path)
     HttpTx      *tx;
 
     tx = conn->tx;
-
-    path = mprJoinPath(conn->rx->route->documents, path);
-    path = httpMapContent(conn, path);
-    httpSetFilename(conn, path, 0);
-    if (!tx->fileInfo.valid) {
-        path = mprJoinPathExt(path, ".esp");
-        httpSetFilename(conn, path, 0);
+    path = httpMapContent(conn, mprJoinPath(conn->rx->route->documents, path));
+    if (!httpSetFilename(conn, path, 0)) {
+        httpSetFilename(conn, mprJoinPathExt(path, ".esp"), 0);
     }
     if (tx->fileInfo.isDir) {
         httpHandleDirectory(conn);
-        //  MOB _ refactor
         if (tx->finalized) {
-            tx->handler = conn->http->passHandler;
             return;
         }
-        path = tx->filename;
     }
     if (smatch(tx->ext, "esp")) {
-        espRenderView(conn, path);
-        return;
+        espRenderView(conn, tx->filename);
+    } else {
+        httpSetFileHandler(conn, NULL);
     }
-    httpSetFileHandler(conn, NULL);
 }
 
 

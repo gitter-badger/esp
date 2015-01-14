@@ -1,0 +1,26 @@
+{
+    "esp": {
+        "generate": {
+            "controllerSingleton": "esp-mvc/generate/controller.c",
+            "migration": "esp-mvc/generate/migration.c",
+            "module": "esp-mvc/generate/src/app.c",
+            "appweb": "esp-html-skeleton/generate/appweb.conf",
+            "clientList": "esp-html-skeleton/generate/list.esp",
+            "clientEdit": "esp-html-skeleton/generate/edit.esp",
+            "controller": "esp-html-skeleton/generate/controller.c"
+        }
+    },
+    "http": {
+        "database": "default",
+        "auth": {
+            "store": "app"
+        },
+        "routes": "esp-restful",
+        "server": {
+            listen: [
+                'http://127.0.0.1:4100',
+                'https://127.0.0.1:4443',
+            ],
+        }
+    }
+}
