@@ -9,3 +9,4 @@ cache/
 test/cmd/support.mod
 testme/
 .gitattributes
+*.bak

@@ -803,10 +803,7 @@ PUBLIC void stylesheets(cchar *patterns)
     route = rx->route;
     eroute = route->eroute;
     patterns = httpExpandRouteVars(route, patterns);
-#if FUTURE
-    client => public
-#endif
-    clientDir = httpGetDir(route, "client");
+    clientDir = httpGetDir(route, "documents");
 
     if (!patterns || !*patterns) {
         version = espGetConfig(route, "version", "1.0.0");

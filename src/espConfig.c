@@ -43,7 +43,7 @@ static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
 
 static void serverRouteSet(HttpRoute *route, cchar *set)
 {
-    httpAddRestfulRoute(route, "GET,POST,OPTIONS", "/{action}(/)*$", "${action}", "{controller}");
+    httpAddRestfulRoute(route, "GET,POST", "/{action}(/)*$", "${action}", "{controller}");
 }
 
 

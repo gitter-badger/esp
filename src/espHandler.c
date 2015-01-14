@@ -334,14 +334,24 @@ static int runAction(HttpConn *conn)
 }
 
 
-PUBLIC void espRenderDocument(HttpConn *conn, cchar *path)
+PUBLIC void espRenderDocument(HttpConn *conn, cchar *document)
 {
     HttpTx      *tx;
+    cchar       *path;
 
     tx = conn->tx;
-    path = httpMapContent(conn, mprJoinPath(conn->rx->route->documents, path));
+    path = httpMapContent(conn, mprJoinPath(conn->rx->route->documents, document));
     if (!httpSetFilename(conn, path, 0)) {
-        httpSetFilename(conn, mprJoinPathExt(path, ".esp"), 0);
+        if (conn->rx->flags & (HTTP_GET | HTTP_HEAD)) {
+            if (!httpSetFilename(conn, mprJoinPathExt(path, ".esp"), 0)) {
+#if DEPRECATE || 1
+                path = httpMapContent(conn, mprJoinPaths(conn->rx->route->documents, "app", document, NULL));
+                if (!httpSetFilename(conn, path, 0)) {
+                    httpSetFilename(conn, mprJoinPathExt(path, ".esp"), 0);
+                }
+#endif
+            }
+        }
     }
     if (tx->fileInfo.isDir) {
         httpHandleDirectory(conn);
