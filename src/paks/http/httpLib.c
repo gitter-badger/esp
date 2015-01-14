@@ -11112,6 +11112,9 @@ PUBLIC void httpSetSendConnector(HttpConn *conn, cchar *path)
 }
 
 
+/*
+    Set the fileHandler as the selected handler for the request
+ */
 PUBLIC void httpSetFileHandler(HttpConn *conn, cchar *path)
 {
     HttpStage   *fp;
@@ -11122,14 +11125,13 @@ PUBLIC void httpSetFileHandler(HttpConn *conn, cchar *path)
     if (path && path != tx->filename) {
         httpSetFilename(conn, path, 0);
     }
-    fp = tx->handler = HTTP->fileHandler;
-
-    //  MOB this should be refactored with espRenderDocuments
     if ((conn->rx->flags & HTTP_GET) && !(tx->flags & HTTP_TX_HAS_FILTERS) && !conn->secure && !httpTracing(conn)) {
         tx->flags |= HTTP_TX_SENDFILE;
         tx->connector = HTTP->sendConnector;
     }
     tx->entityLength = tx->fileInfo.size;
+
+    fp = tx->handler = HTTP->fileHandler;
     fp->open(conn->writeq);
     fp->start(conn->writeq);
     conn->writeq->service = fp->outgoingService;
@@ -19878,7 +19880,7 @@ static void setHeaders(HttpConn *conn, HttpPacket *packet)
             httpAddHeader(conn, "Content-Length", "%lld", length);
         }
 
-    } else if (/* UNUSED tx->length < 0 && */ tx->chunkSize > 0) {
+    } else if (tx->chunkSize > 0) {
         httpSetHeaderString(conn, "Transfer-Encoding", "chunked");
 
     } else if (httpServerConn(conn)) {
@@ -19951,8 +19953,6 @@ PUBLIC void httpSetEntityLength(HttpConn *conn, int64 len)
 
     tx = conn->tx;
     tx->entityLength = len;
-
-    //  MOB - should this be done here?
     if (tx->outputRanges == 0) {
         tx->length = len;
     }
@@ -20111,7 +20111,7 @@ PUBLIC void httpWriteHeaders(HttpQueue *q, HttpPacket *packet)
     /*
         By omitting the "\r\n" delimiter after the headers, chunks can emit "\r\nSize\r\n" as a single chunk delimiter
      */
-    if (/* UNUSED tx->length >= 0 || */ tx->chunkSize <= 0) {
+    if (tx->chunkSize <= 0) {
         mprPutStringToBuf(buf, "\r\n");
     }
     tx->headerSize = mprGetBufLength(buf);
