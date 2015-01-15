@@ -4433,7 +4433,7 @@ Windows SDK.
   </div>
   <div class="apiDetail">
 <p>Expand a compile or link command template.</p>
-    <dl><dt><b>Description</b>:</dt><dd>This expands a command template and replaces &quot;${tokens}&quot; with their equivalent value. The supported tokens are: <ul><li>ARCH - Build architecture (i386, x86_64) </li><li>CC - Compiler pathname </li><li>DEBUG - Compiler debug options (-g, -Zi, -Od) </li><li>INC - Include directory (out/inc) </li><li>LIB - Library directory (out/lib, out/bin) </li><li>LIBS - Required libraries directory (mod_esp, libappweb) </li><li>OBJ - Name of compiled source (out/lib/view-MD5.o) </li><li>OUT - Output module (view_MD5.dylib) </li><li>SHLIB - Shared library extension (.lib, .so) </li><li>SHOBJ - Shared object extension (.dll, .so) </li><li>SRC - Path to source code for view or controller (already templated) </li><li>TMP - System temporary directory </li><li>WINSDK - Path to the Windows SDK </li><li>VS - Path to Visual Studio </li></ul></dd></dl>
+    <dl><dt><b>Description</b>:</dt><dd>This expands a command template and replaces &quot;${tokens}&quot; with their equivalent value. The supported tokens are: <ul><li>ARCH - Build architecture (i386, x86_64) </li><li>CC - Compiler pathname </li><li>DEBUG - Compiler debug options (-g, -Zi, -Od) </li><li>INC - Include directory (out/inc) </li><li>LIB - Library directory (out/lib, out/bin) </li><li>LIBS - Required libraries directory (esp, mpr) </li><li>OBJ - Name of compiled source (out/lib/view-MD5.o) </li><li>OUT - Output module (view_MD5.dylib) </li><li>SHLIB - Shared library extension (.lib, .so) </li><li>SHOBJ - Shared object extension (.dll, .so) </li><li>SRC - Path to source code for view or controller (already templated) </li><li>TMP - System temporary directory </li><li>WINSDK - Path to the Windows SDK </li><li>VS - Path to Visual Studio </li></ul></dd></dl>
     <dl><dt>Parameters:</dt><dd>
     <table class="parameters" title="Parameters">
     <tr><td class="param">route</td><td>HttpRoute object.</td>
@@ -4783,9 +4783,6 @@ Create a URI link based on a given target an expanding embedded tokens based on 
 <p>Top level ESP structure.</p>
     <dl><dt>Fields:</dt><dd>
     <table class="parameters" title="Parameters">
-    <tr><td class="param">int</td><td><td>canCompile</td><td>
-Configured for compilation.
-</td>
     <tr><td class="param">int</td><td><td>compileMode</td><td>
 Force a debug compile.
 </td>

@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
     <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-      <ItemDefinitionGroup>
-        <ClCompile>
-          <AdditionalIncludeDirectories>$(IncDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-          <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-          <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-          <SubSystem>Console</SubSystem>
-    </Link>
-      </ItemDefinitionGroup>
-
       <PropertyGroup Label="Globals">
-        <ProjectGuid>{891febcf-4811-4915-8281-2973add7e3ee}</ProjectGuid>
+        <ProjectGuid>{8018f930-a3ae-485f-abfa-7d350d4af48e}</ProjectGuid>
         <RootNamespace />
         <Keyword>Win32Proj</Keyword>
       </PropertyGroup>
@@ -38,19 +27,19 @@
   </ItemGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <ConfigurationType></ConfigurationType>
         <CharacterSet>NotSet</CharacterSet>
       </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <ConfigurationType></ConfigurationType>
         <CharacterSet>NotSet</CharacterSet>
       </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <ConfigurationType></ConfigurationType>
         <CharacterSet>NotSet</CharacterSet>
       </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <ConfigurationType></ConfigurationType>
         <CharacterSet>NotSet</CharacterSet>
       </PropertyGroup>
 
@@ -83,64 +72,36 @@
         <_ProjectFileVersion>10</_ProjectFileVersion>
 
         <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(BinDir)\</OutDir>
-        <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ObjDir)\libappweb\</IntDir>
+        <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ObjDir)\esp-compile.json\</IntDir>
         <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PreBuildEvent</CustomBuildBeforeTargets>
 
         <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(BinDir)\</OutDir>
-        <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ObjDir)\libappweb\</IntDir>
+        <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ObjDir)\esp-compile.json\</IntDir>
         <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PreBuildEvent</CustomBuildBeforeTargets>
 
         <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(BinDir)\</OutDir>
-        <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ObjDir)\libappweb\</IntDir>
+        <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ObjDir)\esp-compile.json\</IntDir>
         <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PreBuildEvent</CustomBuildBeforeTargets>
 
         <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(BinDir)\</OutDir>
-        <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ObjDir)\libappweb\</IntDir>
+        <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ObjDir)\esp-compile.json\</IntDir>
         <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PreBuildEvent</CustomBuildBeforeTargets>
   </PropertyGroup>
-  
-      <ItemGroup>
-    <ClCompile Include="..\..\src\paks\appweb\appwebLib.c" />
-  </ItemGroup>
-
-      <ItemGroup>
-    <ClInclude Include="$(IncDir)\appweb.h" />
-  </ItemGroup>
 
       <ItemDefinitionGroup>
       <Link>
-        <AdditionalDependencies>libhttp.lib;libmpr.lib;libpcre.lib;%(AdditionalDependencies)</AdditionalDependencies>
-        <AdditionalLibraryDirectories>$(OutDir);build\$(Cfg)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies>
+        <AdditionalLibraryDirectories>$(OutDir);;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       </Link>
 
       <CustomBuildStep>
-        <Command>cd ..\..\src\paks\appweb
-copy /Y /B appweb.h $(IncDir)
-cd ..\..\..\projects\esp-windows-default</Command>
-        <Outputs>$(BinDir)\libappweb.dll</Outputs>
+        <Command>cd ..\..\src
+if exist $(BinDir)\esp-compile.json del /Q $(BinDir)\esp-compile.json
+copy /Y esp-compile.json $(BinDir)\esp-compile.json
+cd ..\projects\esp-windows-default</Command>
+        <Outputs>$(BinDir)\esp-compile.json</Outputs>
       </CustomBuildStep>
   </ItemDefinitionGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="libhttp.vcxproj">
-      <Project>3bc80a8c-23db-4258-a7b2-a7f553b711df</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      </ProjectReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="libpcre.vcxproj">
-      <Project>9f59a794-2f2a-4991-b2bf-25d39031215e</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      </ProjectReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="libmpr.vcxproj">
-      <Project>40d07ab8-5586-4eb8-b0e5-29a5aa12297f</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      </ProjectReference>
-    </ItemGroup>
 
   <Import Project="$(VCTargetsPath)Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

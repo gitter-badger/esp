@@ -8,6 +8,10 @@
 
 #include    "esp.h"
 
+/************************************* Locals *********************************/
+#define ITERATE_CONFIG(route, obj, child, index) \
+    index = 0, child = obj ? obj->children: 0; obj && index < obj->length && !route->error; child = child->next, index++
+
 /************************************** Code **********************************/
 
 
@@ -29,16 +33,145 @@ static void parseCombine(HttpRoute *route, cchar *key, MprJson *prop)
     }
 }
 
-static void parseCompile(HttpRoute *route, cchar *key, MprJson *prop)
+
+#if UNUSED
+/*
+    Define Visual Studio environment if not already present
+ */
+static void defineVisualStudioEnv(HttpRoute *route)
+{
+    Http    *http;
+    int     is64BitSystem;
+
+    http = MPR->httpService;
+    if (scontains(getenv("LIB"), "Visual Studio") &&
+        scontains(getenv("INCLUDE"), "Visual Studio") &&
+        scontains(getenv("PATH"), "Visual Studio")) {
+        return;
+    }
+    if (scontains(http->platform, "-x64-")) {
+        is64BitSystem = smatch(getenv("PROCESSOR_ARCHITECTURE"), "AMD64") || getenv("PROCESSOR_ARCHITEW6432");
+        defineEnv(route, "LIB", "${WINSDK}\\LIB\\${WINVER}\\um\\x64;${WINSDK}\\LIB\\x64;${VS}\\VC\\lib\\amd64");
+        if (is64BitSystem) {
+            defineEnv(route, "PATH",
+                "${VS}\\Common7\\IDE;${VS}\\VC\\bin\\amd64;${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;"
+                "${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x64");
+
+        } else {
+            /* Cross building on x86 for 64-bit */
+            defineEnv(route, "PATH",
+                "${VS}\\Common7\\IDE;${VS}\\VC\\bin\\x86_amd64;"
+                "${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x86");
+        }
+
+    } else if (scontains(http->platform, "-arm-")) {
+        /* Cross building on x86 for arm. No winsdk 7 support for arm */
+        defineEnv(route, "LIB", "${WINSDK}\\LIB\\${WINVER}\\um\\arm;${VS}\\VC\\lib\\arm");
+        defineEnv(route, "PATH", "${VS}\\Common7\\IDE;${VS}\\VC\\bin\\x86_arm;${VS}\\Common7\\Tools;"
+            "${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin\\arm");
+
+    } else {
+        /* Building for X86 */
+        defineEnv(route, "LIB", "${WINSDK}\\LIB\\${WINVER}\\um\\x86;${WINSDK}\\LIB\\x86;"
+            "${WINSDK}\\LIB;${VS}\\VC\\lib");
+        defineEnv(route, "PATH", "${VS}\\Common7\\IDE;${VS}\\VC\\bin;${VS}\\Common7\\Tools;"
+            "${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin");
+    }
+    defineEnv(route, "INCLUDE", "${VS}\\VC\\INCLUDE;${WINSDK}\\include;${WINSDK}\\include\\um;"
+        "${WINSDK}\\include\\shared");
+}
+#endif
+
+
+static void defineEnv(HttpRoute *route, cchar *key, cchar *value)
+{
+    EspRoute    *eroute;
+    MprJson     *child, *set;
+    cchar       *arch;
+    int         ji;
+
+    eroute = route->eroute;
+    if (smatch(key, "set")) {
+        httpParsePlatform(HTTP->platform, NULL, &arch, NULL);
+#if ME_WIN_LIKE
+        if (smatch(value, "VisualStudio")) {
+            if (scontains(getenv("LIB"), "Visual Studio") &&
+                scontains(getenv("INCLUDE"), "Visual Studio") &&
+                scontains(getenv("PATH"), "Visual Studio")) {
+                return;
+            }
+        }
+        if (scontains(HTTP->platform, "-x64-") &&
+            !(smatch(getenv("PROCESSOR_ARCHITECTURE"), "AMD64") || getenv("PROCESSOR_ARCHITEW6432"))) {
+            /* Cross 64 */
+            arch = sjoin(arch, "-cross", NULL);
+        }
+#endif
+        if ((set = mprGetJsonObj(route->config, sfmt("esp.build.env.%s.default", value))) != 0) {
+            for (ITERATE_CONFIG(route, set, child, ji)) {
+                defineEnv(route, child->name, child->value);
+            }
+        }
+        if ((set = mprGetJsonObj(route->config, sfmt("esp.build.env.%s.%s", value, arch))) == 0) {
+            httpParseError(route, "Cannnot find environment set %s.%s", value, arch);
+            return;
+        } else {
+            for (ITERATE_CONFIG(route, set, child, ji)) {
+                defineEnv(route, child->name, child->value);
+            }
+        }
+
+    } else {
+        value = espExpandCommand(route, value, "", "");
+        mprAddKey(eroute->env, key, value);
+        if (scaselessmatch(key, "PATH")) {
+            if (eroute->searchPath) {
+                eroute->searchPath = sclone(value);
+            } else {
+                eroute->searchPath = sjoin(eroute->searchPath, MPR_SEARCH_SEP, value, NULL);
+            }
+        }
+    }
+}
+
+
+static void parseBuild(HttpRoute *route, cchar *key, MprJson *prop)
+{
+    EspRoute    *eroute;
+    MprJson     *child, *env, *rules;
+    cchar       *buildType, *os, *rule, *stem;
+    int         ji;
+
+    eroute = route->eroute;
+    buildType = HTTP->staticLink ? "static" : "dynamic";
+    httpParsePlatform(HTTP->platform, &os, NULL, NULL);
+
+    stem = sfmt("esp.build.rules.%s.%s", buildType, os);
+    if ((rules = mprGetJsonObj(route->config, stem)) != 0) {
+        if ((rule = mprGetJson(route->config, sfmt("%s.%s", stem, "compile"))) != 0) {
+            eroute->compile = rule;
+        }
+        if ((rule = mprGetJson(route->config, sfmt("%s.%s", stem, "link"))) != 0) {
+            eroute->link = rule;
+        }
+        if ((env = mprGetJsonObj(route->config, sfmt("%s.%s", stem, "env"))) != 0) {
+            if (eroute->env == 0) {
+                eroute->env = mprCreateHash(-1, MPR_HASH_STABLE);
+            }
+            for (ITERATE_CONFIG(route, env, child, ji)) {
+                defineEnv(route, child->name, child->value);
+            }
+        }
+    }
+}
+
+
+static void parseOptimize(HttpRoute *route, cchar *key, MprJson *prop)
 {
     EspRoute    *eroute;
 
     eroute = route->eroute;
-    if (smatch(prop->value, "debug") || smatch(prop->value, "symbols")) {
-        eroute->compileMode = ESP_COMPILE_SYMBOLS;
-    } else if (smatch(prop->value, "release") || smatch(prop->value, "optimized")) {
-        eroute->compileMode = ESP_COMPILE_OPTIMIZED;
-    }
+    eroute->compileMode = smatch(prop->value, "true") ? ESP_COMPILE_OPTIMIZED : ESP_COMPILE_SYMBOLS;
 }
 
 static void serverRouteSet(HttpRoute *route, cchar *set)
@@ -68,8 +201,9 @@ PUBLIC int espInitParser()
 #endif
     
     httpAddConfig("esp", parseEsp);
+    httpAddConfig("esp.build", parseBuild);
     httpAddConfig("esp.combine", parseCombine);
-    httpAddConfig("esp.compile", parseCompile);
+    httpAddConfig("esp.optimize", parseOptimize);
     return 0;
 } 
 

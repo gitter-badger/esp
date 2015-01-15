@@ -1530,13 +1530,6 @@
     <filename>struct_esp.html</filename>
     <member kind="variable">
       <type>int</type>
-      <name>canCompile</name>
-      <anchorfile>struct_esp.html</anchorfile>
-      <anchor>a351e3545dfe7dbcee2e5c753c7d1bc48</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>int</type>
       <name>compileMode</name>
       <anchorfile>struct_esp.html</anchorfile>
       <anchor>a5ec88db443bf2c900465c69d7503ed8f</anchor>

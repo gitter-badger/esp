@@ -3,15 +3,16 @@
  */
 
 Me.load({
+    blend: [ 'http' ],
     targets: {
         'esp.h': {
             type: 'header',
             headers: [ '*.h' ],
         },
 
-        libmod_esp: {
+        libesp: {
             type: 'lib',
-            depends: [ 'libappweb', 'sqlite' ],
+            depends: [ 'sqlite', 'libhttp' ],
             sources: [ '*.c' ],
             headers: [ '*.h' ],
             exclude: /esp\.c/,
@@ -21,7 +22,7 @@ Me.load({
             pname: 'esp',
             path: '${BIN}/esp${EXE}',
             type: 'exe',
-            depends: [ 'libappweb', 'sqlite', 'libmod_esp' ],
+            depends: [ 'sqlite', 'libesp' ],
             sources: [ 'esp.c' ]
             platforms: [ 'local' ],
             postblend: function (target) {
@@ -31,9 +32,9 @@ Me.load({
             },
         },
 
-        'esp.conf': {
+        'esp-compile.json': {
             type: 'file',
-            files: [ 'esp.conf' ],
+            files: [ 'esp-compile.json' ],
         }
     }
 })

@@ -9,8 +9,6 @@
 
 /********************************* Includes ***********************************/
 
-#include    "appweb.h"
-
 #include    "edi.h"
 
 #ifdef __cplusplus
@@ -126,7 +124,9 @@ typedef struct Esp {
     int             compileMode;            /**< Force a debug compile */
     int             inUse;                  /**< Active ESP request counter */
     int             reloading;              /**< Reloading ESP and modules */
+#if UNUSED
     int             canCompile;             /**< Configured for compilation */
+#endif
 } Esp;
 
 /**
@@ -138,6 +138,9 @@ typedef struct Esp {
     @stability Stable
   */
 typedef int (*EspModuleEntry)(struct HttpRoute *route, MprModule *module);
+
+//  MOB
+PUBLIC int espOpen(MprModule *module);
 
 /**
     Initialize a static library ESP module
@@ -255,6 +258,7 @@ PUBLIC int espDefineApp(HttpRoute *route, cchar *name, cchar *prefix, cchar *hom
 PUBLIC int espConfigureApp(HttpRoute *route);
 PUBLIC int espLoadApp(HttpRoute *route);
 PUBLIC int espLoadConfig(HttpRoute *route);
+PUBLIC EspRoute *espRoute(HttpRoute *route);
 
 /**
     Add caching for response content.
@@ -423,7 +427,7 @@ PUBLIC void espDefineView(HttpRoute *route, cchar *path, void *viewProc);
             <li>DEBUG - Compiler debug options (-g, -Zi, -Od)</li>
             <li>INC - Include directory (out/inc)</li>
             <li>LIB - Library directory (out/lib, out/bin)</li>
-            <li>LIBS - Required libraries directory (mod_esp, libappweb)</li>
+            <li>LIBS - Required libraries directory (esp, mpr)</li>
             <li>OBJ - Name of compiled source (out/lib/view-MD5.o)</li>
             <li>OUT - Output module (view_MD5.dylib)</li>
             <li>SHLIB - Shared library extension (.lib, .so)</li>

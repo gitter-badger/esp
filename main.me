@@ -6,9 +6,7 @@ Me.load({
     plugins: [ 'configuration', 'package' ],
 
     blend: [
-        'appweb',
         'sqlite',
-        
         'samples/samples.me',
         'src/esp.me',
         'test/test.me',
@@ -16,7 +14,7 @@ Me.load({
     ],
 
     configure: {
-        requires:  [ 'compiler', 'appweb', 'osdep', 'http', 'mpr', 'pcre'],
+        requires:  [ 'compiler', 'osdep', 'http', 'mpr', 'pcre'],
         discovers: [ 'mdb', 'sqlite', 'ssl', ],
         extras:    [ 'cgi', 'dir' ],
     },
@@ -79,7 +77,7 @@ Me.load({
 
     scripts: {
         loaded: `
-            me.targets.httpcmd.enable = false
+            //MOB me.targets.httpcmd.enable = false
             //MOB me.targets.makerom.enable = false
         `,
     },

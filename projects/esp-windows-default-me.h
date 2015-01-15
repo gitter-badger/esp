@@ -226,9 +226,6 @@
 #endif
 
 /* Components */
-#ifndef ME_COM_APPWEB
-    #define ME_COM_APPWEB 1
-#endif
 #ifndef ME_COM_CGI
     #define ME_COM_CGI 0
 #endif
