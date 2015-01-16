@@ -15,6 +15,7 @@
 
 /************************************** Code **********************************/
 
+#if FUTURE
 static void parseApplications(HttpRoute *parent, cchar *key, MprJson *prop)
 {
     HttpRoute   *route;
@@ -41,8 +42,8 @@ static void parseApplications(HttpRoute *parent, cchar *key, MprJson *prop)
             espLoadApp(route);
         }
     }
-    return 0;
 }
+#endif
 
 
 static void parseCombine(HttpRoute *route, cchar *key, MprJson *prop)
