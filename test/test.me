@@ -10,7 +10,13 @@ Me.load({
         },
         'clean-test': {
             type: 'clean',                                                                                 
-            action: `run('testme --clean')`
+            action: `
+                run('testme --clean')
+                for each (dir in Path().files('**/cache')) {
+                    trace('Clean', dir)
+                    dir.removeAll()
+                }
+            `
         },  
     },
 })

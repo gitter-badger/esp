@@ -61,5 +61,5 @@ part of the license benefits.
 Copyright
 ---
 
-Copyright (c) 2003-2014 Embedthis Software, LLC. All Rights Reserved.  Embedthis and ESP are trademarks of 
+Copyright (c) Embedthis Software. All Rights Reserved.  Embedthis and ESP are trademarks of 
 Embedthis Software, LLC. Other brands and their products are trademarks of their respective holders.
