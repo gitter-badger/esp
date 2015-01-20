@@ -509,15 +509,7 @@ PUBLIC ssize renderCached()
 
 PUBLIC ssize renderConfig()
 {
-    HttpConn    *conn;
-    HttpRoute   *route;
-
-    conn = getConn();
-    route = conn->rx->route;
-    if (route->clientConfig) {
-        return renderString(route->clientConfig);
-    }
-    return 0;
+    return espRenderConfig(getConn());;
 }
 
 

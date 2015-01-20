@@ -499,6 +499,11 @@ mappings: {
                 </thead>
                 <tbody>
                     <tr>
+                        <td>aliases</a></td>
+                        <td>Collection of URL to directory mapping aliases. The property key is the leading URI prefix
+                            and the value is the directory</td>
+                    </tr>
+                    <tr>
                         <td><a href="#auth">auth</a></td>
                         <td>Collection of authentication configuration.</td>
                     </tr>
@@ -717,7 +722,6 @@ resources: {
 routes: 'esp-restful',
 routes [ 'esp-restful'],
 routes [ {
-    routeName: 'custom',
     pipeline: {
         handlers: 'espHandler'
     }

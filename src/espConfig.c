@@ -15,35 +15,36 @@
 
 /************************************** Code **********************************/
 
-#if FUTURE
-static void parseApplications(HttpRoute *parent, cchar *key, MprJson *prop)
+static void loadApp(HttpRoute *route, cchar *pattern)
 {
-    HttpRoute   *route;
-    MprJson     *child, *inc;
     MprList     *files;
     cchar       *path;
-    int         ji, next;
+    int         next;
 
-    for (ITERATE_CONFIG(parent, inc, child, ji)) {
-        files = mprGlobPathFiles(".", child->value, MPR_PATH_NO_DIRS | MPR_PATH_RELATIVE);
-        for (ITERATE_ITEMS(files, path, next)) {
-            parent = httpCreateInheritedRoute(route);
-            route->flags |= HTTP_ROUTE_HOSTED;
-#if UNUSED
-            if (espDefineApp(route, name, prefix, home, documents, routeSet) < 0) {
-                return MPR_ERR_CANT_CREATE;
-            }
-            if (prefix) {
-                espSetConfig(route, "esp.appPrefix", prefix);
-            }
-#endif
-            espConfigureApp(route);
-            httpFinalizeRoute(route);
-            espLoadApp(route);
+    files = mprGlobPathFiles(".", pattern, MPR_PATH_RELATIVE);
+    for (ITERATE_ITEMS(files, path, next)) {
+        if (espLoadApp(route, path) < 0) {
+            httpParseError(route, "Cannot define ESP application at: %s", path);
+            return;
+        }
+    }
+}       
+
+
+static void parseApps(HttpRoute *route, cchar *key, MprJson *prop)
+{
+    MprJson     *child;
+    int         ji;
+
+    if (prop->type & MPR_JSON_STRING) {
+        loadApp(route, prop->value);
+
+    } else {
+        for (ITERATE_CONFIG(route, prop, child, ji)) {
+            loadApp(route, child->value);
         }
     }
 }
-#endif
 
 
 static void parseCombine(HttpRoute *route, cchar *key, MprJson *prop)
@@ -59,7 +60,7 @@ static void parseCombine(HttpRoute *route, cchar *key, MprJson *prop)
 }
 
 
-#if UNUSED
+#if KEEP
 /*
     Define Visual Studio environment if not already present
  */
@@ -218,6 +219,9 @@ static void legacyRouteSet(HttpRoute *route, cchar *set)
 
 PUBLIC int espInitParser() 
 {
+    HttpRoute   *route;
+    cchar       *path;
+
     httpDefineRouteSet("esp-server", serverRouteSet);
     httpDefineRouteSet("esp-restful", restfulRouteSet);
 #if DEPRECATED || 1
@@ -226,9 +230,20 @@ PUBLIC int espInitParser()
 #endif
     
     httpAddConfig("esp", httpParseAll);
+    httpAddConfig("esp.apps", parseApps);
     httpAddConfig("esp.build", parseBuild);
     httpAddConfig("esp.combine", parseCombine);
     httpAddConfig("esp.optimize", parseOptimize);
+
+    path = mprJoinPath(mprGetAppDir(), "esp-compile.json");
+    if (mprPathExists(path, R_OK)) {
+        route = httpGetDefaultRoute(0);
+        espRoute(route);
+        if (httpLoadConfig(route, path) < 0) {
+            mprLog("error esp", 0, "Cannot parse %s", path);
+            return MPR_ERR_CANT_OPEN;
+        }
+    }
     return 0;
 } 
 

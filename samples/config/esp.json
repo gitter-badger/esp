@@ -52,6 +52,24 @@
 
     esp: {
         /*
+            Client-side configuration
+         */
+        client: {
+            /*
+                Selection of properties to send to the client
+             */
+            mappings: {
+                auth: {
+                    login:    "http.auth.auto",
+                    store:    "http.auth.store",
+                },
+                formats:      "http.formats",
+                prefix:       "http.prefix",
+                timeouts:     "http.timeouts",
+            },
+        },
+
+        /*
             Templates used for "esp generate"
          */
         generate: {
@@ -169,24 +187,6 @@
         HTTP related configuration
      */
     http: {
-        /*
-            Client-side configuration
-         */
-        client: {
-            /*
-                Selection of properties to send to the client
-             */
-            mappings: {
-                auth: {
-                    login:    "http.auth.auto",
-                    store:    "http.auth.store",
-                },
-                formats:      "http.formats",
-                prefix:       "http.prefix",
-                timeouts:     "http.timeouts",
-            },
-        },
-
         /*
             Server related configuration that applies globally
             Ignored if hosted in Appweb, when server configuration comes from appweb.conf.

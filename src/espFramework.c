@@ -8,6 +8,11 @@
 
 #include    "esp.h"
 
+/************************************* Locals *********************************/
+
+#define ITERATE_CONFIG(route, obj, child, index) \
+    index = 0, child = obj ? obj->children: 0; obj && index < obj->length && !route->error; child = child->next, index++
+
 /************************************* Code ***********************************/
 
 #if DEPRECATED || 1
@@ -537,6 +542,70 @@ PUBLIC ssize espRenderCached(HttpConn *conn)
 }
 
 
+static void copyMappings(HttpRoute *route, MprJson *dest, MprJson *obj)
+{
+    MprJson     *child, *job, *jvalue;
+    cchar       *key, *value;
+    int         ji;
+
+    for (ITERATE_CONFIG(route, obj, child, ji)) {
+        if (child->type & MPR_JSON_OBJ) {
+            job = mprCreateJson(MPR_JSON_OBJ);
+            copyMappings(route, job, child);
+            mprSetJsonObj(dest, child->name, job);
+        } else {
+            key = child->value;
+            if (sends(key, "|time")) {
+                key = ssplit(sclone(key), " \t|", NULL);
+                if ((value = mprGetJson(route->config, key)) != 0) {
+                    mprSetJson(dest, child->name, itos(httpGetTicks(value)), MPR_JSON_NUMBER);
+                }
+            } else {
+                if ((jvalue = mprGetJsonObj(route->config, key)) != 0) {
+                    mprSetJsonObj(dest, child->name, mprCloneJson(jvalue));
+                }
+            }
+        }
+    }
+}
+
+
+static cchar *getClientConfig(HttpConn *conn)
+{
+    HttpRoute   *route;
+    MprJson     *mappings, *obj;
+
+    conn = getConn();
+    for (route = conn->rx->route; route; route = route->parent) {
+        if (route->clientConfig) {
+            return route->clientConfig;
+        }
+    }
+    route = conn->rx->route;
+    if ((obj = mprGetJsonObj(route->config, "esp.mappings")) == 0) {
+        mappings = mprCreateJson(MPR_JSON_OBJ);
+        copyMappings(route, mappings, obj);
+        mprWriteJson(mappings, "prefix", route->prefix, 0);
+        route->clientConfig = mprJsonToString(mappings, MPR_JSON_QUOTES);
+    }
+    return route->clientConfig;
+}
+
+
+PUBLIC ssize espRenderConfig(HttpConn *conn)
+{
+    HttpRoute   *route;
+    cchar       *config;
+
+    config = getClientConfig(conn);
+    route = conn->rx->route;
+    if (route->clientConfig) {
+        return renderString(route->clientConfig);
+    }
+    return 0;
+}
+
+
 PUBLIC ssize espRenderError(HttpConn *conn, int status, cchar *fmt, ...)
 {
     va_list     args;
@@ -708,7 +777,7 @@ PUBLIC int espSaveConfig(HttpRoute *route)
 {
     cchar       *path;
 
-    path = mprJoinPath(route->home, ME_ESP_CONFIG);
+    path = mprJoinPath(route->home, "esp.json");
 #if KEEP
     mprBackupLog(path, 3);
 #endif

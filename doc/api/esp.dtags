@@ -73,13 +73,6 @@
       <arglist>(HttpRoute *route, cchar *targetKey, void *actionProc)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
-      <name>espDefineApp</name>
-      <anchorfile>group___esp_route.html</anchorfile>
-      <anchor>gab2088c94c6f9a0484def185b9ae715d6</anchor>
-      <arglist>(HttpRoute *route, cchar *name, cchar *prefix, cchar *home, cchar *documents, cchar *routeSet)</arglist>
-    </member>
-    <member kind="function">
       <type>void</type>
       <name>espDefineBase</name>
       <anchorfile>group___esp_route.html</anchorfile>
@@ -116,10 +109,31 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>espLoadApp</name>
+      <anchorfile>group___esp_route.html</anchorfile>
+      <anchor>ga036d3f215a5b357ccb836c4feed7f3b2</anchor>
+      <arglist>(HttpRoute *route, cchar *path)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>espLoadConfig</name>
+      <anchorfile>group___esp_route.html</anchorfile>
+      <anchor>ga8719b78bdfb4e3228c6e9be843f45140</anchor>
+      <arglist>(HttpRoute *route)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>espLoadModule</name>
       <anchorfile>group___esp_route.html</anchorfile>
       <anchor>ga24a90a6be3709ef846828deb50ceb0c8</anchor>
       <arglist>(HttpRoute *route, MprDispatcher *dispatcher, cchar *kind, cchar *source, cchar **errMsg)</arglist>
+    </member>
+    <member kind="function">
+      <type>EspRoute *</type>
+      <name>espRoute</name>
+      <anchorfile>group___esp_route.html</anchorfile>
+      <anchor>ga1f27d029ea92c75a16d2c67d31f64141</anchor>
+      <arglist>(HttpRoute *route)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -201,6 +215,13 @@
       <name>espAutoFinalize</name>
       <anchorfile>group___esp_req.html</anchorfile>
       <anchor>gab6aeea9bb5cb500eabf3e1cfd1745f03</anchor>
+      <arglist>(HttpConn *conn)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>espClearCurrentSession</name>
+      <anchorfile>group___esp_req.html</anchorfile>
+      <anchor>gad47b01dcb2ca01085b18fce4636a8a8d</anchor>
       <arglist>(HttpConn *conn)</arglist>
     </member>
     <member kind="function">
@@ -552,6 +573,20 @@
       <anchorfile>group___esp_req.html</anchorfile>
       <anchor>ga94594750521ce6621691dcec43a2d670</anchor>
       <arglist>(HttpConn *conn)</arglist>
+    </member>
+    <member kind="function">
+      <type>ssize</type>
+      <name>espRenderConfig</name>
+      <anchorfile>group___esp_req.html</anchorfile>
+      <anchor>ga0089c449429cb9e4021acbc82ee80177</anchor>
+      <arglist>(HttpConn *conn)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>espRenderDocument</name>
+      <anchorfile>group___esp_req.html</anchorfile>
+      <anchor>gaf20a43f48bfe4741cc6bb9f2877932b1</anchor>
+      <arglist>(HttpConn *conn, cchar *path)</arglist>
     </member>
     <member kind="function">
       <type>ssize</type>
