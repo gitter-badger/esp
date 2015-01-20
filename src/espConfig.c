@@ -173,7 +173,11 @@ static void parseBuild(HttpRoute *route, cchar *key, MprJson *prop)
     httpParsePlatform(HTTP->platform, &os, NULL, NULL);
 
     stem = sfmt("esp.build.rules.%s.%s", buildType, os);
-    if ((rules = mprGetJsonObj(route->config, stem)) != 0) {
+    if ((rules = mprGetJsonObj(route->config, stem)) == 0) {
+        stem = sfmt("esp.build.rules.%s.default", buildType);
+        rules = mprGetJsonObj(route->config, stem);
+    }
+    if (rules) {
         if ((rule = mprGetJson(route->config, sfmt("%s.%s", stem, "compile"))) != 0) {
             eroute->compile = rule;
         }
@@ -188,6 +192,8 @@ static void parseBuild(HttpRoute *route, cchar *key, MprJson *prop)
                 defineEnv(route, child->name, child->value);
             }
         }
+    } else {
+        httpParseError(route, "Cannot find esp-compile rules for O/S \"%s\"", os);
     }
 }
 
