@@ -594,13 +594,10 @@ static cchar *getClientConfig(HttpConn *conn)
 
 PUBLIC ssize espRenderConfig(HttpConn *conn)
 {
-    HttpRoute   *route;
     cchar       *config;
 
-    config = getClientConfig(conn);
-    route = conn->rx->route;
-    if (route->clientConfig) {
-        return renderString(route->clientConfig);
+    if ((config = getClientConfig(conn)) != 0) {
+        return renderString(config);
     }
     return 0;
 }
