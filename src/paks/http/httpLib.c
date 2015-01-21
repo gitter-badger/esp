@@ -4550,7 +4550,7 @@ static void parseLimitsWorkers(HttpRoute *route, cchar *key, MprJson *prop)
 
 static void parseMethods(HttpRoute *route, cchar *key, MprJson *prop)
 {
-    httpSetRouteMethods(route, getList(prop));
+    httpSetRouteMethods(route, supper(getList(prop)));
 }
 
 
@@ -4763,11 +4763,37 @@ static void parseHttp(HttpRoute *route, cchar *key, MprJson *prop)
 }
 
 
+static void parseRoute(HttpRoute *route, cchar *key, MprJson *prop)
+{
+    HttpRoute   *newRoute;
+    cchar       *pattern;
+
+    if (prop->type & MPR_JSON_STRING) {
+        httpAddRouteSet(route, prop->value);
+
+    } else if (prop->type & MPR_JSON_OBJ) {
+        newRoute = 0;
+        pattern = mprReadJson(prop, "pattern");
+        if (pattern) {
+            newRoute = httpLookupRoute(route->host, pattern);
+            if (!newRoute) {
+                newRoute = httpCreateInheritedRoute(route);
+                httpSetRouteHost(newRoute, route->host);
+            }
+        } else {
+            newRoute = route;
+        }
+        httpParseAll(newRoute, key, prop);
+        if (pattern) {
+            httpFinalizeRoute(newRoute);
+        }
+    }
+}
+
+
 static void parseRoutes(HttpRoute *route, cchar *key, MprJson *prop)
 {
     MprJson     *child;
-    HttpRoute   *newRoute;
-    cchar       *pattern;
     int         ji;
 
     if (route->loaded) {
@@ -4777,32 +4803,14 @@ static void parseRoutes(HttpRoute *route, cchar *key, MprJson *prop)
     if (prop->type & MPR_JSON_STRING) {
         httpAddRouteSet(route, prop->value);
 
+    } else if (prop->type & MPR_JSON_OBJ) {
+        key = sreplace(key, ".routes", "");
+        parseRoute(route, key, prop);
+
     } else if (prop->type & MPR_JSON_ARRAY) {
         key = sreplace(key, ".routes", "");
         for (ITERATE_CONFIG(route, prop, child, ji)) {
-            if (child->type & MPR_JSON_STRING) {
-                httpAddRouteSet(route, child->value);
-
-            } else if (child->type & MPR_JSON_OBJ) {
-                newRoute = 0;
-                pattern = mprReadJson(child, "pattern");
-                if (pattern) {
-                    newRoute = httpLookupRoute(route->host, pattern);
-                    if (!newRoute) {
-                        newRoute = httpCreateInheritedRoute(route);
-                        httpSetRouteHost(newRoute, route->host);
-                    }
-                } else {
-                    newRoute = route;
-                }
-                httpParseAll(newRoute, key, child);
-                if (newRoute->error) {
-                    break;
-                }
-                if (pattern) {
-                    httpFinalizeRoute(newRoute);
-                }
-            }
+            parseRoute(route, key, child);
         }
     }
 }

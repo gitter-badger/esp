@@ -880,7 +880,9 @@ static void manageEsp(Esp *esp, int flags)
 
 
 /*********************************** Directives *******************************/
-
+/*
+    Path is the path to the esp.json
+ */
 static int defineApp(HttpRoute *route, cchar *path)
 {
     EspRoute    *eroute;
@@ -902,7 +904,7 @@ static int defineApp(HttpRoute *route, cchar *path)
     httpAddRouteIndex(route, "index.esp");
     httpAddRouteIndex(route, "index.html");
     httpSetRouteXsrf(route, 1);
-    mprLog("info esp", 2, "Define ESP app at %s", path);
+    mprLog("info esp", 2, "Define ESP app from: %s", path);
     return 0;
 }
 
@@ -921,9 +923,13 @@ PUBLIC int espLoadConfig(HttpRoute *route)
     }
     eroute = route->eroute;
     package = mprJoinPath(mprGetPathDir(eroute->configFile), "package.json");
-    modified = 0;
-    ifConfigModified(route, eroute->configFile, &modified);
-    ifConfigModified(route, package, &modified);
+    if (route->loaded) {
+        modified = 0;
+        ifConfigModified(route, eroute->configFile, &modified);
+        ifConfigModified(route, package, &modified);
+    } else {
+        modified = 1;
+    }
     if (modified) {
         lock(esp);
         httpInitConfig(route);
@@ -1003,6 +1009,10 @@ PUBLIC int espLoadConfig(HttpRoute *route)
 }
 
 
+/*
+    Prefix is the URI prefix for the application
+    Path is the path to the esp.json
+ */
 PUBLIC int espLoadApp(HttpRoute *route, cchar *prefix, cchar *path)
 {
     if (!route) {

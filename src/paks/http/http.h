@@ -4833,7 +4833,7 @@ PUBLIC void httpAddRouteMapping(HttpRoute *route, cchar *extensions, cchar *mapp
     @description This defines additional HTTP methods for requests to match this route
     @param route Route to modify
     @param methods Set to a comma or space separated list of methods. Can also set to "All" or "*" for all possible
-        methods.  Typical methods include: "DELETE, GET, OPTIONS, POST, PUT, TRACE".
+        methods. Typical methods include: "DELETE, GET, OPTIONS, POST, PUT, TRACE". Must be upper case.
     @ingroup HttpRoute
     @stability Evolving
  */
