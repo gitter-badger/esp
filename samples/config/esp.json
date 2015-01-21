@@ -52,22 +52,16 @@
 
     esp: {
         /*
-            Client-side configuration
+            Load multiple esp applications. Can also use prefix+config property form.
          */
-        client: {
-            /*
-                Selection of properties to send to the client
-             */
-            mappings: {
-                auth: {
-                    login:    "http.auth.auto",
-                    store:    "http.auth.store",
-                },
-                formats:      "http.formats",
-                prefix:       "http.prefix",
-                timeouts:     "http.timeouts",
-            },
-        },
+        apps: [
+            'apps/*/esp.json'
+        ],
+
+        /*
+            Combine ESP into one single library
+         */
+        combine: true,
 
         /*
             Templates used for "esp generate"
@@ -85,102 +79,23 @@
         },
 
         /*
+            Selection of properties to send to the client
+         */
+        mappings: {
+            auth: {
+                login:    "http.auth.auto",
+                store:    "http.auth.store",
+            },
+            formats:      "http.formats",
+            prefix:       "http.prefix",
+            timeouts:     "http.timeouts",
+        },
+
+        /*
             How to compile ESP components. Set to true to optimize, set to false for 
             symbolic debugging support.
          */
         optimize: false,
-
-        /*
-            Combine ESP into one single library
-         */
-        combine: true,
-
-        build: {
-            rules: {
-                dynamic: {
-                    macosx: {
-                        compile: '${CC} -c ${DEBUG} -Wall -DPIC -fPIC -arch ${GCC_ARCH} -I. -I${APPINC} -I${INC} \
-                            ${SRC} -o ${OBJ}',
-                        link: '${CC} -dynamiclib ${DEBUG} -arch ${GCC_ARCH} -L${LIBPATH} -Wl,-rpath,@executable_path/ \
-                            -Wl,-rpath,@loader_path/ ${CFLAGS} ${LIBS} ${LDFLAGS} -o ${MOD}${SHOBJ} ${OBJ}'
-                    },
-                    windows: {
-                        env: {
-                            set: 'VisualStudio',
-                        },
-                        compile: '"${CC}" -LD ${DEBUG} -D_REENTRANT -D_MT -nologo -GR- -W3 -MDd -I. -I${APPINC} \
-                            "-I${INC}" "-Fo${MOD}.obj" "-Fd${MOD}.pdb" "-Fe${MOD}${SHOBJ}" "${SRC}" ${CFLAGS} \
-                            ${LIBS} ${LDFLAGS} ws2_32.lib'
-                    },
-                    vxworks: {
-                        compile: '"${WIND_GNU_PATH}/${WIND_HOST_TYPE}/bin/${WIND_CCNAME}" -c ${DEBUG} -DVXWORKS \
-                            -DRW_MULTI_THREAD -D_REENTRANT -D_GNU_TOOL -DCPU=${VXCPU} -Wall -fno-builtin \
-                            -fno-defer-pop -fvolatile "-I." "-I${APPINC}" "-I${WIND_BASE}/target/h" \
-                            "-I${WIND_BASE}/target/h/wrn/coreip" -I${INC} ${CFLAGS} ${LDFLAGS} -o ${MOD}${SHOBJ} ${SRC}'
-                    },
-                    cygwin: {
-                        compile: '${CC} -shared ${DEBUG} -Wall -Wno-unused-result -DPIC -fPIC -I. -I${APPINC} -I${INC} \
-                            -L${LIBPATH} -Wl,-rpath,$ORIGIN/ ${CFLAGS} ${LIBS} ${LDFLAGS} -o ${MOD}${SHOBJ} ${SRC}'
-                    },
-                    default: {
-                        compile: '${CC} -shared ${DEBUG} -Wall -Wno-unused-result -DPIC -fPIC -I. -I${APPINC} -I${INC} \
-                            -L${LIBPATH} -Wl,--enable-new-dtags -Wl,-rpath,$ORIGIN/ ${CFLAGS} ${LIBS} ${LDFLAGS} \
-                            -o ${MOD}${SHOBJ} ${SRC}'
-                    }
-                },
-                static: {
-                    macosx: {
-                        compile: '${CC} -c ${DEBUG} -Wall -DPIC -fPIC -arch ${GCC_ARCH} -I. -I${APPINC} -I${INC} -c \
-                            ${SRC} -o ${OBJ}',
-                        link: '${AR} -cr ${MOD}${ARLIB} ${OBJ}'
-                    },
-                    windows: {
-                        env: {
-                            set: 'VisualStudio',
-                        },
-                        compile: '"${CC}" -LD ${DEBUG} -D_REENTRANT -D_MT -nologo -GR- -W3 -MDd -I. -I${APPINC} \
-                            -I"${INC}" -Fd"${MOD}.pdb" -Fe"${MOD}${SHOBJ}" "${SRC}"',
-                        link: '${AR} -nologo cr ${MOD}${ARLIB} ${OBJ}'
-                    },
-                    vxworks: {
-                        compile: '"${WIND_GNU_PATH}/${WIND_HOST_TYPE}/bin/${WIND_CCNAME}" -c ${DEBUG} -DVXWORKS \
-                            -DRW_MULTI_THREAD -D_REENTRANT -D_GNU_TOOL -DCPU=${VXCPU} -Wall -fno-builtin \
-                            -fno-defer-pop -fvolatile "-I." "-I${APPINC}" "-I${WIND_BASE}/target/h" \
-                            "-I${WIND_BASE}/target/h/wrn/coreip" -I${INC} -o ${MOD}${SHOBJ} ${SRC}',
-                        link: '"${WIND_GNU_PATH}/${WIND_HOST_TYPE}/bin/${WIND_ARNAME}" ${DEBUG} -cr ${MOD}${ARLIB} ${OBJ}'
-                    }
-                }
-            },
-            env: {
-                VisualStudio: {
-                    x64: {
-                        lib: '${WINSDK}\\LIB\\${WINVER}\\um\\x64;${WINSDK}\\LIB\\x64;${VS}\\VC\\lib\\amd64',
-                        path: '${VS}\\Common7\\IDE;${VS}\\VC\\bin\\amd64;${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;\
-                               ${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x64'
-                    },
-                    'x64-cross': {
-                        lib: '${WINSDK}\\LIB\\${WINVER}\\um\\x64;${WINSDK}\\LIB\\x64;${VS}\\VC\\lib\\amd64',
-                        path: '${VS}\\Common7\\IDE;${VS}\\VC\\bin\\x86_amd64; \
-                               ${VS}\\Common7\\Tools;${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin\\x86'
-                    }
-                    arm: {
-                        lib: '${WINSDK}\\LIB\\${WINVER}\\um\\arm;${VS}\\VC\\lib\\arm',
-                        path: '${VS}\\Common7\\IDE;${VS}\\VC\\bin\\x86_arm;${VS}\\Common7\\Tools; \
-                               ${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin\\arm'
-                    },
-                    x86: {
-                        lib: '${WINSDK}\\LIB\\${WINVER}\\um\\x86;${WINSDK}\\LIB\\x86; \
-                              ${WINSDK}\\LIB;${VS}\\VC\\lib',
-                        path: '${VS}\\Common7\\IDE;${VS}\\VC\\bin;${VS}\\Common7\\Tools; \
-                               ${VS}\\SDK\\v3.5\\bin;${VS}\\VC\\VCPackages;${WINSDK}\\bin'
-                    },
-                    default: {
-                        include: '${VS}\\VC\\INCLUDE;${WINSDK}\\include;${WINSDK}\\include\\um; \
-                                  ${WINSDK}\\include\\shared'
-                    }
-                }
-            }
-        }
     },
 
     /*
@@ -637,9 +552,9 @@
         },
 
         /*
-            Supported request methods for this route. Use "*" for all methods, or omit definition.
+            Supported request methods for this route. Use "*" for all methods, or omit definition. Upper case.
          */
-        methods: [ "get", "post" ],
+        methods: [ "GET", "POST" ],
 
         /*
             Required request parameters before this route will match a request
@@ -653,7 +568,7 @@
         /*
             Regular expression used to match the route with the request URI
          */
-        pattern:    "^/route/auth",
+        pattern: "^/route/auth",
 
         /*
             Request pipeline construction
@@ -676,7 +591,7 @@
         },
 
         /*
-            Request URI prefix. This prefix is removed from the URI before processing the request
+            Request URI prefix. This prefix is removed from the URI before processing the request.
          */
         prefix: "/route/auth",
 

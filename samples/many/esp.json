@@ -1,0 +1,8 @@
+{
+    "name": "many",
+    "esp": {
+        apps: [
+            'apps/*/esp.json'
+        ]
+    }
+}

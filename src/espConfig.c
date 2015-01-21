@@ -15,17 +15,33 @@
 
 /************************************** Code **********************************/
 
-static void loadApp(HttpRoute *route, cchar *pattern)
+static void loadApp(HttpRoute *parent, MprJson *prop)
 {
+    HttpRoute   *route;
     MprList     *files;
-    cchar       *path;
+    cchar       *config, *prefix;
     int         next;
 
-    files = mprGlobPathFiles(".", pattern, MPR_PATH_RELATIVE);
-    for (ITERATE_ITEMS(files, path, next)) {
-        if (espLoadApp(route, 0, path) < 0) {
-            httpParseError(route, "Cannot define ESP application at: %s", path);
+    if (prop->type & MPR_JSON_OBJ) {
+        prefix = mprGetJson(prop, "prefix"); 
+        config = mprGetJson(prop, "config");
+        route = httpCreateInheritedRoute(parent);
+        if (espLoadApp(route, prefix, config) < 0) {
+            httpParseError(route, "Cannot define ESP application at: %s", config);
             return;
+        }
+        httpFinalizeRoute(route);
+
+    } else if (prop->type & MPR_JSON_STRING) {
+        files = mprGlobPathFiles(".", prop->value, MPR_PATH_RELATIVE);
+        for (ITERATE_ITEMS(files, config, next)) {
+            route = httpCreateInheritedRoute(parent);
+            prefix = mprGetPathBase(mprGetPathDir(mprGetAbsPath(config)));
+            if (espLoadApp(route, prefix, config) < 0) {
+                httpParseError(route, "Cannot define ESP application at: %s", config);
+                return;
+            }
+            httpFinalizeRoute(route);
         }
     }
 }       
@@ -37,11 +53,14 @@ static void parseApps(HttpRoute *route, cchar *key, MprJson *prop)
     int         ji;
 
     if (prop->type & MPR_JSON_STRING) {
-        loadApp(route, prop->value);
+        loadApp(route, prop);
 
-    } else {
+    } else if (prop->type & MPR_JSON_OBJ) {
+        loadApp(route, prop);
+        
+    } else if (prop->type & MPR_JSON_ARRAY) {
         for (ITERATE_CONFIG(route, prop, child, ji)) {
-            loadApp(route, child->value);
+            loadApp(route, child);
         }
     }
 }

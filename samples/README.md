@@ -19,6 +19,7 @@ The following samples are available:
 * [login-database](login-database/README.md) ESP database storage of passwords for login.
 * [login-form](login-form/README.md)         ESP form-based login.
 * [login-roles](login-roles/README.md)       ESP role based user authorization.
+* [many](many/README.md)                     Run many ESP applications in one instance.
 * [page](page/README.md)                     Serving ESP web pages.
 * [session](session/README.md)               Using ESP session state storage.
 * [upload](upload/README.md)                 ESP file upload.
