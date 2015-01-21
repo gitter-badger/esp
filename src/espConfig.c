@@ -23,7 +23,7 @@ static void loadApp(HttpRoute *route, cchar *pattern)
 
     files = mprGlobPathFiles(".", pattern, MPR_PATH_RELATIVE);
     for (ITERATE_ITEMS(files, path, next)) {
-        if (espLoadApp(route, path) < 0) {
+        if (espLoadApp(route, 0, path) < 0) {
             httpParseError(route, "Cannot define ESP application at: %s", path);
             return;
         }

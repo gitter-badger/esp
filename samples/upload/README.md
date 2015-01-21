@@ -37,7 +37,6 @@ Documentation:
 
 See Also:
 ---
-* [esp-html-mvc - ESP HTML MVC Application](../esp-html-mvc/README.md)
-* [esp-controller - Creating ESP controllers](../esp-controller/README.md)
-* [esp-html-mvc - ESP MVC Application](../esp-html-mvc/README.md)
-* [esp-page - Serving ESP pages](../esp-page/README.md)
+* [html-mvc - ESP HTML MVC Application](../html-mvc/README.md)
+* [controller - Creating ESP controllers](../controller/README.md)
+* [page - Serving ESP pages](../page/README.md)

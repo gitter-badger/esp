@@ -4418,7 +4418,7 @@ PUBLIC void httpSetStreaming(struct HttpHost *host, cchar *mime, cchar *uri, boo
 #define HTTP_ROUTE_REDIRECT             0x4000      /**< Redirect secureCondition */
 #define HTTP_ROUTE_STRICT_TLS           0x8000      /**< Emit Strict-Transport-Security header */
 #define HTTP_ROUTE_HOSTED               0x10000     /**< Route being hosted (appweb) */
-#define HTTP_ROUTE_UTILITY              0x20000     /**< Not listening on endpoints */
+#define HTTP_ROUTE_NO_LISTEN            0x20000     /**< Not listening on endpoints */
 
 #if DEPRECATE || 1
 #define HTTP_ROUTE_SET_DEFINED          0x10000     /**< Route set defined */

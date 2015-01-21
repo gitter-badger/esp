@@ -30,8 +30,8 @@ Documentation:
 
 See Also:
 ---
-* [esp-page - ESP page](../esp-page/README.md)
-* [esp-controller - ESP controller](../esp-controller/README.md)
+* [page - ESP page](../page/README.md)
+* [controller - ESP controller](../controller/README.md)
 * [secure-server - Secure server](../secure-server/README.md)
 * [simple-server - Simple server and embedding API](../simple-server/README.md)
 * [typical-server - Fully featured server and embedding API](../typical-server/README.md)

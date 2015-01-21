@@ -41,5 +41,5 @@ Documentation:
 See Also:
 ---
 * [html-mvc - ESP MVC Application](../html-mvc/README.md)
-* [esp-controller - ESP Page](../esp-controller/README.md)
-* [esp-page - ESP Page](../esp-page/README.md)
+* [controller - ESP Page](../controller/README.md)
+* [page - ESP Page](../page/README.md)

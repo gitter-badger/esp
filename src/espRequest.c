@@ -881,20 +881,9 @@ static void manageEsp(Esp *esp, int flags)
 
 /*********************************** Directives *******************************/
 
-static cchar *testDir(HttpRoute *route, cchar *path)
-{
-    if (mprPathExists(mprJoinPath(route->home, path), X_OK)) {
-        return path;
-    }
-    return 0;
-}
-
 static int defineApp(HttpRoute *route, cchar *path)
 {
     EspRoute    *eroute;
-#if DEPRECATE || 1
-    cchar       *documents;
-#endif
 
     if ((eroute = espRoute(route)) == 0) {
         return MPR_ERR_MEMORY;
@@ -905,24 +894,10 @@ static int defineApp(HttpRoute *route, cchar *path)
             return MPR_ERR_CANT_FIND;
         }
         eroute->configFile = sclone(path);
-        httpSetRouteHome(route, mprGetPathBase(mprGetPathDir(path)));
+        httpSetRouteHome(route, mprGetPathDir(path));
     }
     espSetDefaultDirs(route);
 
-#if DEPRECATE || 1
-    if (testDir(route, "documents")) {
-        documents = "documents";
-    } else if (testDir(route, "client")) {
-        documents = "client";
-    } else if (testDir(route, "public")) {
-        documents = "public";
-    } else {
-        documents = 0;
-    }
-    if (documents) {
-        httpSetRouteDocuments(route, documents);
-    }
-#endif
     httpAddRouteHandler(route, "espHandler", "");
     httpAddRouteIndex(route, "index.esp");
     httpAddRouteIndex(route, "index.html");
@@ -984,7 +959,7 @@ PUBLIC int espLoadConfig(HttpRoute *route)
         }
     }
 #if !ME_STATIC
-    if (!(route->flags & HTTP_ROUTE_UTILITY)) {
+    if (!(route->flags & HTTP_ROUTE_NO_LISTEN)) {
         MprJson     *preload, *item;
         cchar       *errMsg, *source;
         char        *kind;
@@ -1028,8 +1003,19 @@ PUBLIC int espLoadConfig(HttpRoute *route)
 }
 
 
-PUBLIC int espLoadApp(HttpRoute *route, cchar *path)
+PUBLIC int espLoadApp(HttpRoute *route, cchar *prefix, cchar *path)
 {
+    if (!route) {
+        return MPR_ERR_BAD_ARGS;
+    }
+    if (prefix) {
+        if (*prefix != '/') {
+            prefix = sjoin("/", prefix, NULL);
+        }
+        prefix = stemplate(prefix, route->vars);
+        httpSetRoutePrefix(route, prefix);
+        httpSetRoutePattern(route, sfmt("^%s.*$", prefix), 0);
+    }
     if (defineApp(route, path) < 0) {
         return MPR_ERR_CANT_LOAD;
     }
@@ -1077,10 +1063,10 @@ PUBLIC int espOpenDatabase(HttpRoute *route, cchar *spec)
 
 PUBLIC void espSetDefaultDirs(HttpRoute *route)
 {
-#if DEPRECATE || 1
     cchar   *documents;
 
     documents = mprJoinPath(route->home, "documents");
+#if DEPRECATE || 1
     if (!mprPathExists(documents, X_OK)) {
         documents = mprJoinPath(route->home, "client");
         if (!mprPathExists(documents, X_OK)) {
@@ -1089,6 +1075,10 @@ PUBLIC void espSetDefaultDirs(HttpRoute *route)
                 documents = route->home;
             }
         }
+    }
+#else
+    } else {
+        documents = route->home;
     }
 #endif
     httpSetDir(route, "CACHE", 0);

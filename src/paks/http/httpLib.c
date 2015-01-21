@@ -3857,8 +3857,8 @@ PUBLIC int httpFinalizeConfig(HttpRoute *route)
             httpParseError(route, "Cannot change working directory to %s", home);
             return MPR_ERR_BAD_STATE;
         }
-        if (route->flags & HTTP_ROUTE_UTILITY) {
-            /* Not running a web server but rather a utility like the "esp" generator program */
+        if (route->flags & HTTP_ROUTE_NO_LISTEN) {
+            /* Not running a web server */
             mprLog("info http config", 2, "Change directory to: \"%s\"", home);
         } else {
             if (chroot(home) < 0) {
@@ -15499,8 +15499,12 @@ PUBLIC void httpSetDir(HttpRoute *route, cchar *name, cchar *value)
     }
     path = httpMakePath(route, 0, value);
     path = mprJoinPath(route->home, path);
-    rpath = mprGetRelPath(path, 0);
     name = supper(name);
+
+    /*
+        Define the variable as a relative path to the route home
+     */
+    rpath = mprGetRelPath(path, route->home);
     httpSetRouteVar(route, sjoin(name, "_DIR", NULL), rpath);
 
     /*

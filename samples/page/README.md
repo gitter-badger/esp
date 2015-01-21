@@ -39,6 +39,6 @@ Documentation:
 
 See Also:
 ---
-* [esp-controller - ESP Controller](../esp-controller/README.md)
-* [esp-html-mvc - ESP HTML MMVC](../esp-html-mvc/README.md)
-* [esp-layout - ESP Layouts](../esp-layout/README.md)
+* [controller - ESP Controller](../controller/README.md)
+* [html-mvc - ESP HTML MMVC](../html-mvc/README.md)
+* [layout - ESP Layouts](../layout/README.md)

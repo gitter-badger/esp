@@ -36,6 +36,6 @@ Documentation:
 
 See Also:
 ---
-* [esp-html-mvc - ESP HTML MMVC](../esp-html-mvc/README.md)
-* [esp-layout - ESP Layouts](../esp-layout/README.md)
-* [esp-page - Serving ESP pages](../esp-page/README.md)
+* [html-mvc - ESP HTML MMVC](../html-mvc/README.md)
+* [layout - ESP Layouts](../layout/README.md)
+* [page - Serving ESP pages](../page/README.md)
