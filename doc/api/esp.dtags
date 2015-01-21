@@ -111,8 +111,8 @@
       <type>int</type>
       <name>espLoadApp</name>
       <anchorfile>group___esp_route.html</anchorfile>
-      <anchor>ga036d3f215a5b357ccb836c4feed7f3b2</anchor>
-      <arglist>(HttpRoute *route, cchar *path)</arglist>
+      <anchor>gad360dd0edd53dcd9e50c2825b468f699</anchor>
+      <arglist>(HttpRoute *route, cchar *prefix, cchar *path)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
