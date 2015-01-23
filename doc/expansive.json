@@ -1,11 +1,15 @@
 {
     meta: {
-        title:       'Embedthis ESP Documentation',
-        url:         'https://embedthis.com/esp/doc/',
-        description: 'The amazing C web framework',
+        url: 'https://embedthis.com/esp/doc/',
     },
     control: {
         copy: [ 'images' ],
-        listen: '127.0.0.1:5000'
+    },
+    debug: {
+        services: {
+            'compress':  false,
+            'minify-js':  false,
+            'minify-css': false
+        }
     }
 }
