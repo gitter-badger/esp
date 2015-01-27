@@ -1,4 +1,4 @@
-ESP Layout Sample
+layout -- ESP Layout Sample
 ===
 
 This sample shows how to use Expansive layout pages with ESP pages.
