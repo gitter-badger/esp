@@ -33,6 +33,9 @@ To run:
 ---
     esp run
 
+or
+    expansive
+
 The server listens on port 4000. Browse to: 
  
      http://localhost:4000/post
