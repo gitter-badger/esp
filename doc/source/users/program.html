@@ -247,9 +247,14 @@ $ <b>esp generate scaffold NAME [field:type ...]</b>
             <pre class="ui code segment">
 $ <b>esp compile</b>
 </pre>
-            <p>This will compile and link all controllers and views and place the generated shared libraries (DLLs)
+            <p>This will compile and link all controllers and views and save the generated shared libraries (DLLs)
             in the <em>cache</em> directory.</p>
             <p>If you are using static linking, use the <em>--static</em> switch to generate archive libraries instead of shared libraries. If you are doing this, you must manually call the ESP initializers. See the --genlink option for how to generate the code to call the ESP initializers.</p>
+            <p>If you have custom compiler flags or libraries, you can pass these to <b>esp</b> by defining the CFLAGS
+            environment variable. For example:</p>
+            <pre class="ui code segment">
+$ CFLAGS="-DMY_MODE=test -lmylib" <b>esp compile</b>
+</pre>
 
             <h3>Routes</h3>
             <p>When <em>esp</em> is invoked it, loads the <em>package.json</em> configuration file from the current directory. The <em>--home</em> esp option may be used to specify an alternative

@@ -52,7 +52,11 @@
 
     esp: {
         /*
-            Load multiple esp applications. Can also use prefix+config property form.
+            Load external esp applications. Can also use string or [prefix+config] property form.
+                apps: 'myapp/esp.json',
+                apps: [
+                    { prefix: '/blog', config: 'blog/esp.json' }
+                ],
          */
         apps: [
             'apps/*/esp.json'
@@ -278,6 +282,13 @@
          */
 
         /*
+            Alias a URL prefix to a directory under the route home
+         */
+        aliases: {
+            '/cgi-bin/': 'cgi-bin',
+        },
+
+        /*
             Authentication configuration
          */
         auth: {
@@ -410,6 +421,12 @@
              */
             unique: true,
         } ],
+
+        /*
+            Serve compressed content
+            Can also set to an array of extensions to serve compressed.
+         */
+        compress: true,
 
         /*
             Database specification. Supported providers: sdb for SQLite and mdb for Memory Database.

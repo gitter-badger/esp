@@ -461,6 +461,27 @@ mappings: {
                 </thead>
                 <tbody>
                     <tr>
+                        <td>apps</td>
+                        <td><p>Define external ESP applications to load. ESP can host multiple applications by defining
+                            the URI prefix and ESP configuration file for each application. This directive takes three
+                            forms. The first is just a simple string with the path to the configuration file for a single
+                            application. The URI prefix is determined by the last path segment before the esp.json 
+                            filename.
+                            The second form takes an array of esp configuration file names. Both these forms may use
+                            wild-cards in the filename. The last form is an array of URI prefix and config file 
+                            properties for each application.</p>
+                        <p>Examples: <pre class="ui code segment">
+apps: 'blog/esp.json',
+apps: [ 'apps/*/esp.json', 'test/*/esp.json' ],
+apps: [ 
+    { 
+        prefix: '/blog', 
+        config: 'apps/blog/esp.json' 
+    }
+]
+</pre></p></td>
+                    </tr>
+                    <tr>
                         <td>combine</td>
                         <td>Define whether to combine the entire ESP application into a single output source 
                             file and library. This is typically enabled for release mode. Defaults to false.</td>
@@ -510,6 +531,19 @@ mappings: {
                     <tr>
                         <td><a href="#cache">cache</a></td>
                         <td>List of cache directives.</td>
+                    </tr>
+                    <tr>
+                        <td>compress</td>
+                        <td><p>Enable serving of compressed content. ESP can serve files compressed with gzip and with an
+                            additional <b>.gz</b> extension. ESP adds the appropriate HTTP header so the browser can
+                            automatically decompress. Ideal for big files or slow networks.</p>
+                            <pre class="ui code segment">compress: true
+  or
+compress: [ 'html', 'js', 'css' ]
+</pre>
+                            <p>If the Expansive exp-gzip extension is installed, suitable static content will be 
+                                automatically gzipped.</p>
+                            </td>
                     </tr>
                     <tr>
                         <td>database</td>
